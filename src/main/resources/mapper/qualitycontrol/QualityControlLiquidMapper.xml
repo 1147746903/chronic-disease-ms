@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.qualitycontrol.mapper.QualityControlLiquidMapper">
+
+  <resultMap id="BaseResultMap" type="com.comvee.cdms.qualitycontrol.model.po.QualityControlLiquidPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
+    <result column="product_date" jdbcType="DATE" property="productDate" />
+    <result column="invalid_date" jdbcType="DATE" property="invalidDate" />
+    <result column="level_code" jdbcType="TINYINT" property="levelCode" />
+    <result column="level_name" jdbcType="VARCHAR" property="levelName" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+  </resultMap>
+
+  <insert id="addQualityControlLiquid" parameterType="com.comvee.cdms.qualitycontrol.model.po.QualityControlLiquidPO">
+    insert into t_quality_control_liquid (sid, operator_id, hospital_id,
+      batch_no, product_date, invalid_date, 
+      level_code, level_name)
+    values (#{sid,jdbcType=BIGINT}, #{operatorId,jdbcType=BIGINT}, #{hospitalId,jdbcType=BIGINT}, 
+      #{batchNo,jdbcType=VARCHAR}, #{productDate,jdbcType=DATE}, #{invalidDate,jdbcType=DATE}, 
+      #{levelCode,jdbcType=TINYINT}, #{levelName,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateQualityControlLiquid" parameterType="com.comvee.cdms.qualitycontrol.model.po.QualityControlLiquidPO">
+    update t_quality_control_liquid
+    <set>
+      <if test="batchNo != null and '' != batchNo">
+        batch_no = #{batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="productDate != null and '' != productDate">
+        product_date = #{productDate,jdbcType=DATE},
+      </if>
+      <if test="invalidDate != null and '' != invalidDate">
+        invalid_date = #{invalidDate,jdbcType=DATE},
+      </if>
+      <if test="levelCode != null">
+        level_code = #{levelCode,jdbcType=TINYINT},
+      </if>
+      <if test="levelName != null and '' != levelName">
+        level_name = #{levelName,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        valid = #{valid,jdbcType=TINYINT},
+      </if>
+    </set>
+    where valid = 1 and sid = #{sid,jdbcType=BIGINT}
+  </update>
+
+  <select id="getQualityControlLiquidById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select sid, operator_id, hospital_id, batch_no, product_date, invalid_date, level_code,
+    level_name, insert_dt, update_dt, valid
+    from t_quality_control_liquid
+    where valid = 1
+    <if test="sid != null and '' != sid">
+      and sid = #{sid,jdbcType=BIGINT}
+    </if>
+    <if test="hospitalId != null and '' != hospitalId">
+      and hospital_id = #{hospitalId}
+    </if>
+    <if test="batchNo != null and '' != batchNo">
+      and batch_no = #{batchNo}
+    </if>
+    limit 1
+  </select>
+
+  <select id="listQualityControlLiquid" resultMap="BaseResultMap">
+    select sid, operator_id, hospital_id, batch_no, product_date, invalid_date, level_code,
+    level_name, insert_dt, update_dt, valid
+    from t_quality_control_liquid
+    where valid = 1 and hospital_id = #{hospitalId}
+    order by product_date desc
+  </select>
+  <select id="listQualityControlLiquidValid" resultMap="BaseResultMap">
+     select sid, operator_id, hospital_id, batch_no, product_date, invalid_date, level_code,
+    level_name, insert_dt, update_dt, valid
+    from t_quality_control_liquid
+    where valid = 1 and hospital_id = #{hospitalId}
+    and invalid_date &gt; DATE_FORMAT(NOW(),'%Y-%m-%d')
+    order by product_date desc
+  </select>
+</mapper>

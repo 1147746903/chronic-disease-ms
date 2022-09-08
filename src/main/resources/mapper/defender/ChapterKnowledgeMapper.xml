@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.ChapterKnowledgeMapper">
+    <sql id="ChapterKnowledgeColumns">
+         t.sid As sid ,  t.chapter_id As chapterId ,  t.knowledge_id As knowledgeId ,  t.is_valid As isValid ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  t.sort As sort  
+    </sql>
+
+	<!--根据id获取章节文章关联表表信息 -->
+	<select id="loadChapterKnowledgeById" resultType="com.comvee.cdms.defender.model.ChapterKnowledgeModel">
+		SELECT 
+			<include refid="ChapterKnowledgeColumns"/>
+		FROM tiq_chapter_knowledge t
+		WHERE t.sid = #{sid} 
+	</select>
+	
+	
+	
+	<select id="loadKnowledgeRelation" parameterType="Map" resultType="com.comvee.cdms.defender.model.KnowledgeModel">
+		select k.title,k.id from tiq_chapter_knowledge t,tiq_knowledge k
+		where t.knowledge_id = k.id and t.is_valid = 1 and k.is_valid = 1
+		and t.chapter_id = #{chapterId}
+	</select>
+	<!-- 获取章节文章关联表分页信息  -->
+	<select id="loadChapterKnowledge" parameterType="Map" resultType="com.comvee.cdms.defender.model.ChapterKnowledgeModel">
+		SELECT 
+			<include refid="ChapterKnowledgeColumns"/>
+		FROM tiq_chapter_knowledge t
+		
+		
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+        AND t.sid = #{sid}  
+        </if>  
+	    <if test="chapterId!=null and chapterId!='' ">     
+        AND t.chapter_id = #{chapterId}  
+        </if>  
+	    <if test="knowledgeId!=null and knowledgeId!='' ">     
+        AND t.knowledge_id = #{knowledgeId}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+    <!-- 统计章节文章关联表记录数 -->
+	<select id="countChapterKnowledge" parameterType="Map" resultType="Long">
+		SELECT count( sid )
+		FROM tiq_chapter_knowledge t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+         AND t.sid = #{sid}    
+        </if>  
+	    <if test="chapterId!=null and chapterId!='' ">     
+         AND t.chapter_id = #{chapterId}    
+        </if>  
+	    <if test="knowledgeId!=null and knowledgeId!='' ">     
+         AND t.knowledge_id = #{knowledgeId}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加章节文章关联表记录 -->
+	<insert id="addChapterKnowledge">
+		INSERT INTO tiq_chapter_knowledge(
+				sid,
+				chapter_id,
+				knowledge_id,
+				is_valid,
+				modify_dt,
+				insert_dt,
+				sort
+		) VALUES (
+			    #{sid},
+				#{chapterId},
+				#{knowledgeId},
+				1,
+				now(),
+				now(),
+				#{sort}
+		)
+	</insert>
+
+    <!-- 修改章节文章关联表记录 -->
+	<update id="modifyChapterKnowledge">
+		UPDATE tiq_chapter_knowledge 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="sid!=null and sid!='' ">    
+	        sid = #{sid},
+	        </if>
+	        <if test="chapterId!=null and chapterId!='' ">    
+	        chapter_id = #{chapterId},
+	        </if>
+	        <if test="knowledgeId!=null and knowledgeId!='' ">    
+	        knowledge_id = #{knowledgeId},
+	        </if>
+	        modify_dt = now(),
+	        <if test="sort!=null and sort!='' ">    
+	        sort = #{sort},
+	        </if>
+		</trim>
+		WHERE sid = #{sid}
+	</update>
+	
+	<!-- 删除章节文章关联表记录  -->
+	<update id="delChapterKnowledge" parameterType="Long">
+		UPDATE tiq_chapter_knowledge SET modify_dt = now(), is_valid = 0
+		WHERE sid = #{sid} and is_valid = 1
+	</update>
+	
+	<!-- 根据章节删除 -->
+	<update id="delByChapterId" parameterType="Long">
+		UPDATE tiq_chapter_knowledge SET modify_dt = now(), is_valid = 0
+		WHERE  chapter_id= #{chapterId} and is_valid = 1
+	</update>
+	
+	
+
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.qualitycontrol.mapper.QualityControlMaterialConfigMapper">
+
+  <resultMap id="config" type="com.comvee.cdms.qualitycontrol.model.po.QualityControlMaterialConfigPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="config_data" jdbcType="VARCHAR" property="configData" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+  </resultMap>
+
+  <insert id="addOrUpdateQualityControlMaterialConfig" parameterType="com.comvee.cdms.qualitycontrol.model.po.QualityControlMaterialConfigPO">
+    insert into t_quality_control_material_config (sid, operator_id, hospital_id,
+      config_data)
+    values (#{sid,jdbcType=BIGINT}, #{operatorId,jdbcType=BIGINT}, #{hospitalId,jdbcType=BIGINT}, 
+      #{configData,jdbcType=VARCHAR})
+      on duplicate key update
+      config_data = #{configData}
+  </insert>
+
+  <select id="getQualityControlMaterialConfig" parameterType="java.lang.String" resultMap="config">
+    select sid, operator_id, hospital_id, config_data, insert_dt, update_dt, valid
+    from t_quality_control_material_config
+    where valid = 1 and hospital_id = #{hospitalId} limit 1
+  </select>
+</mapper>

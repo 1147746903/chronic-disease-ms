@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.complication.mapper.ScreeningKnowledgeMapper">
+
+    <resultMap id="screeningKnowledge" type="com.comvee.cdms.complication.model.po.ScreeningKnowledgePO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="title_name" jdbcType="VARCHAR" property="titleName" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="summary_text" jdbcType="VARCHAR" property="summaryText" />
+        <result column="serial_number" jdbcType="INTEGER" property="serialNumber" />
+        <result column="content_text" jdbcType="LONGVARCHAR" property="contentText" />
+        <result column="origin_type" jdbcType="INTEGER" property="originType" />
+    </resultMap>
+
+    <resultMap id="screeningMemberKnowledge" type="com.comvee.cdms.complication.model.po.ScreeningMemberKnowledgePO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="last_serial_number" jdbcType="INTEGER" property="lastSerialNumber" />
+    </resultMap>
+
+    <resultMap id="screeningMemberKnowledgeDetail" type="com.comvee.cdms.complication.model.po.ScreeningMemberKnowledgeDetailPO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="knowledge_id" jdbcType="BIGINT" property="knowledgeId" />
+        <result column="serial_number" jdbcType="INTEGER" property="serialNumber" />
+    </resultMap>
+
+
+    <select id="getScreeningKnowledge" resultMap="screeningKnowledge">
+        select sid, title_name, insert_dt, update_dt, summary_text, serial_number, content_text ,origin_type
+        from t_screening_knowledge
+        <where>
+            <if test="sid != null and '' != sid">
+                and sid = #{sid}
+            </if>
+            <if test="serialNumber != null">
+                and serial_number = #{serialNumber}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addScreeningMemberKnowledge" parameterType="com.comvee.cdms.complication.model.po.ScreeningMemberKnowledgePO">
+        insert into t_screening_member_knowledge (sid, member_id, last_serial_number)
+        values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},  #{lastSerialNumber,jdbcType=INTEGER})
+    </insert>
+
+    <select id="getScreeningMemberKnowledgeByMemberId" parameterType="java.lang.String" resultMap="screeningMemberKnowledge">
+        select sid, member_id, insert_dt, update_dt, last_serial_number
+        from t_screening_member_knowledge
+        where member_id = #{memberId} limit 1
+    </select>
+
+    <insert id="addScreeningMemberKnowledgeDetail" parameterType="com.comvee.cdms.complication.model.po.ScreeningMemberKnowledgeDetailPO">
+    insert into t_screening_member_knowledge_detail (sid, member_id, knowledge_id, serial_number
+      )
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{knowledgeId,jdbcType=BIGINT}, #{serialNumber,jdbcType=INTEGER}
+      )
+    </insert>
+
+    <select id="getNextScreeningKnowledge" resultMap="screeningKnowledge">
+        select sid, title_name, insert_dt, update_dt, summary_text, serial_number, content_text ,origin_type
+        from t_screening_knowledge
+        <where>
+            <if test="serialNumber != null">
+                and serial_number > #{serialNumber}
+            </if>
+        </where>
+        order by serial_number limit 1
+    </select>
+
+    <select id="listScreeningKnowledgePushMember" resultMap="screeningMemberKnowledge">
+        select sid, member_id, insert_dt, update_dt, last_serial_number
+        from t_screening_member_knowledge
+    </select>
+
+    <update id="updateScreeningMemberKnowledge" parameterType="com.comvee.cdms.complication.model.po.ScreeningMemberKnowledgePO">
+        update t_screening_member_knowledge
+        <set>
+            <if test="lastSerialNumber != null">
+                last_serial_number = #{lastSerialNumber,jdbcType=INTEGER},
+            </if>
+        </set>
+        where sid = #{sid,jdbcType=BIGINT}
+    </update>
+
+    <select id="listScreeningKnowledge" resultMap="screeningKnowledge">
+        select sid, title_name, insert_dt, update_dt, summary_text, serial_number, content_text ,origin_type
+        from t_screening_knowledge t
+        <where>
+            <if test="keyword != null and '' != keyword">
+                and instr(title_name , #{keyword}) > 0
+            </if>
+        </where>
+        order by serial_number asc
+    </select>
+
+    <insert id="addScreeningKnowledge" parameterType="com.comvee.cdms.complication.model.po.ScreeningKnowledgePO">
+        insert into t_screening_knowledge (sid, title_name,summary_text, serial_number,
+          origin_type, content_text)
+        values (#{sid,jdbcType=BIGINT}, #{titleName,jdbcType=VARCHAR}, #{summaryText,jdbcType=VARCHAR}, #{serialNumber,jdbcType=INTEGER},
+          #{originType,jdbcType=TINYINT}, #{contentText,jdbcType=LONGVARCHAR})
+    </insert>
+
+    <update id="updateScreeningKnowledge" parameterType="com.comvee.cdms.complication.model.po.ScreeningKnowledgePO">
+        update t_screening_knowledge
+        <set>
+            <if test="titleName != null and '' != titleName">
+                title_name = #{titleName,jdbcType=VARCHAR},
+            </if>
+            <if test="summaryText != null and '' != summaryText">
+                summary_text = #{summaryText,jdbcType=VARCHAR},
+            </if>
+            <if test="serialNumber != null and '' != serialNumber">
+                serial_number = #{serialNumber,jdbcType=INTEGER},
+            </if>
+            <if test="originType != null">
+                origin_type = #{originType,jdbcType=TINYINT},
+            </if>
+            <if test="contentText != null and '' != contentText">
+                content_text = #{contentText,jdbcType=LONGVARCHAR}
+            </if>
+        </set>
+        where sid = #{sid,jdbcType=BIGINT}
+    </update>
+</mapper>

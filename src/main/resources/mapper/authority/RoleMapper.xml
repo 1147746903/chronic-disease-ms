@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.authority.mapper.RoleMapper">
+
+  <resultMap id="role" type="com.comvee.cdms.authority.model.po.RolePO">
+    <id column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="role_type" jdbcType="TINYINT" property="roleType" />
+    <result column="role_describe" jdbcType="VARCHAR" property="roleDescribe" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="role_status" jdbcType="TINYINT" property="roleStatus" />
+    <result column="role_code" jdbcType="VARCHAR" property="roleCode" />
+  </resultMap>
+
+  <delete id="deleteRole" parameterType="java.lang.String">
+    delete from t_role
+    where role_id = #{roleId,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="addRole" parameterType="com.comvee.cdms.authority.model.po.RolePO">
+    insert into t_role (role_id, role_name, role_type,
+      role_describe,  role_status, role_code)
+    values (#{roleId,jdbcType=BIGINT}, #{roleName,jdbcType=VARCHAR}, #{roleType,jdbcType=TINYINT}, 
+      #{roleDescribe,jdbcType=VARCHAR},#{roleStatus,jdbcType=TINYINT}, #{roleCode,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateRole" parameterType="com.comvee.cdms.authority.model.po.RolePO">
+    update t_role
+    <set>
+      <if test="roleName != null and '' != roleName">
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleDescribe != null and '' != roleDescribe">
+        role_describe = #{roleDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="roleStatus != null">
+        role_status = #{roleStatus,jdbcType=TINYINT},
+      </if>
+    </set>
+    where role_id = #{roleId,jdbcType=BIGINT}
+  </update>
+
+  <select id="listRole" parameterType="com.comvee.cdms.authority.model.dto.ListRoleDTO" resultMap="role">
+    select role_id, role_name, role_type, role_describe, insert_dt, update_dt, role_status,
+    role_code
+    from t_role
+    <where>
+      <if test="keyword != null and '' != keyword">
+        and instr(role_name, #{keyword}) > 0
+      </if>
+      <if test="roleStatus != null">
+        and role_status= #{roleStatus}
+      </if>
+      <if test="roleType != null">
+        and role_type= #{roleType}
+      </if>
+    </where>
+--     order by role_id desc
+    order by CONVERT(role_name USING gbk) ASC
+  </select>
+
+  <select id="getRole" resultMap="role">
+    select role_id, role_name, role_type, role_describe, insert_dt, update_dt, role_status,
+    role_code
+    from t_role where role_id = #{roleId} limit 1
+  </select>
+
+  <insert id="addRoleUser">
+    <foreach collection="list" item="item">
+      INSERT INTO `t_role_user` (`sid`, `role_id`, `role_type`, `foreign_id`)
+      VALUES (#{item.sid}, #{item.roleId}, #{item.roleType}, #{item.foreignId});
+    </foreach>
+  </insert>
+
+  <select id="listUserRole" resultMap="role">
+    select q.insert_dt,q.role_code,q.role_describe,q.role_id,q.role_name,q.role_status
+    ,q.role_type,q.update_dt from t_role_user t , t_role q
+    where t.role_id = q.role_id
+    <if test="foreignId != null and '' != foreignId">
+      and t.foreign_id = #{foreignId}
+    </if>
+    <if test="roleType != null">
+      and t.role_type = #{roleType}
+    </if>
+    <if test="roleStatus != null">
+      and q.role_status = #{roleStatus}
+    </if>
+
+  </select>
+
+  <delete id="deleteUserRole">
+    delete t from t_role_user t where t.foreign_id = #{foreignId} and t.role_type = #{roleType}
+  </delete>
+
+  <delete id="delRole">
+    delete from t_role where role_id = #{roleId}
+  </delete>
+
+  <delete id="delAuthorityRole">
+    delete from t_role_authority where role_id = #{roleId}
+  </delete>
+</mapper>

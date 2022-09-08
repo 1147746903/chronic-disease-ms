@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.clinicaldiagnosis.mapper.YzMapper" >
+  <resultMap id="BaseResultMap" type="com.comvee.cdms.clinicaldiagnosis.po.YzPO" >
+	  <id column="sid" jdbcType="BIGINT" property="sid" />
+	  <result column="patient_id" jdbcType="VARCHAR" property="patientId" />
+	  <result column="visit_no" jdbcType="VARCHAR" property="visitNo" />
+	  <result column="member_id" jdbcType="BIGINT" property="memberId" />
+	  <result column="yz_id" jdbcType="VARCHAR" property="yzId" />
+	  <result column="yz_group_id" jdbcType="VARCHAR" property="yzGroupId" />
+	  <result column="yz_item_type" jdbcType="TINYINT" property="yzItemType" />
+	  <result column="yz_type" jdbcType="TINYINT" property="yzType" />
+	  <result column="yz_item_name" jdbcType="VARCHAR" property="yzItemName" />
+	  <result column="yz_item_code" jdbcType="VARCHAR" property="yzItemCode" />
+	  <result column="drug_dose" jdbcType="VARCHAR" property="drugDose" />
+	  <result column="drug_dose_unit" jdbcType="VARCHAR" property="drugDoseUnit" />
+	  <result column="drug_dose_unit_desc" jdbcType="VARCHAR" property="drugDoseUnitDesc" />
+	  <result column="drug_freq_code" jdbcType="VARCHAR" property="drugFreqCode" />
+	  <result column="drug_freq_desc" jdbcType="VARCHAR" property="drugFreqDesc" />
+	  <result column="drug_duration_code" jdbcType="VARCHAR" property="drugDurationCode" />
+	  <result column="drug_duration_desc" jdbcType="VARCHAR" property="drugDurationDesc" />
+	  <result column="drug_specification" jdbcType="VARCHAR" property="drugSpecification" />
+	  <result column="doctor_code" jdbcType="VARCHAR" property="doctorCode" />
+	  <result column="doctor_name" jdbcType="VARCHAR" property="doctorName" />
+	  <result column="start_date" jdbcType="VARCHAR" property="startDate" />
+	  <result column="start_time" jdbcType="VARCHAR" property="startTime" />
+	  <result column="stop_date" jdbcType="VARCHAR" property="stopDate" />
+	  <result column="stop_time" jdbcType="VARCHAR" property="stopTime" />
+	  <result column="price" jdbcType="VARCHAR" property="price" />
+	  <result column="skin_test" jdbcType="VARCHAR" property="skinTest" />
+	  <result column="emergency" jdbcType="VARCHAR" property="emergency" />
+	  <result column="priority_code" jdbcType="VARCHAR" property="priorityCode" />
+	  <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+	  <result column="record_origin" jdbcType="TINYINT" property="recordOrigin" />
+	  <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+	  <result column="department_id" jdbcType="BIGINT" property="departmentId" />
+	  <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+	  <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+	  <result column="use_drug_way" jdbcType="VARCHAR" property="useDrugWay" />
+	  <result column="yz_status" jdbcType="TINYINT" property="yzStatus" />
+	  <result column="yz_explain" jdbcType="VARCHAR" property="yzExplain" />
+	  <result column="start_dt" jdbcType="TIMESTAMP" property="startDt" />
+	  <result column="stop_dt" jdbcType="TIMESTAMP" property="stopDt" />
+	  <result column="foreign_id" jdbcType="VARCHAR" property="foreignId" />
+	  <result column="use_plan_json" jdbcType="LONGVARCHAR" property="usePlanJson" />
+	  <result column="ext_data" jdbcType="LONGVARCHAR" property="extData" />
+	  <result column="executive_departments_name" jdbcType="VARCHAR" property="executiveDepartmentsName" />
+	  <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+  </resultMap>
+
+	<resultMap id="memberYzList" type="com.comvee.cdms.clinicaldiagnosis.vo.MemberYzListVO">
+		<id column="sid" jdbcType="BIGINT" property="sid" />
+		<result column="patient_id" jdbcType="VARCHAR" property="patientId" />
+		<result column="visit_no" jdbcType="VARCHAR" property="visitNo" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="yz_id" jdbcType="VARCHAR" property="yzId" />
+		<result column="yz_group_id" jdbcType="VARCHAR" property="yzGroupId" />
+		<result column="yz_item_type" jdbcType="TINYINT" property="yzItemType" />
+		<result column="yz_type" jdbcType="TINYINT" property="yzType" />
+		<result column="yz_item_name" jdbcType="VARCHAR" property="yzItemName" />
+		<result column="yz_item_code" jdbcType="VARCHAR" property="yzItemCode" />
+		<result column="drug_dose" jdbcType="VARCHAR" property="drugDose" />
+		<result column="drug_dose_unit" jdbcType="VARCHAR" property="drugDoseUnit" />
+		<result column="drug_dose_unit_desc" jdbcType="VARCHAR" property="drugDoseUnitDesc" />
+		<result column="drug_freq_code" jdbcType="VARCHAR" property="drugFreqCode" />
+		<result column="drug_freq_desc" jdbcType="VARCHAR" property="drugFreqDesc" />
+		<result column="drug_duration_code" jdbcType="VARCHAR" property="drugDurationCode" />
+		<result column="drug_duration_desc" jdbcType="VARCHAR" property="drugDurationDesc" />
+		<result column="drug_specification" jdbcType="VARCHAR" property="drugSpecification" />
+		<result column="doctor_code" jdbcType="VARCHAR" property="doctorCode" />
+		<result column="doctor_name" jdbcType="VARCHAR" property="doctorName" />
+		<result column="start_date" jdbcType="VARCHAR" property="startDate" />
+		<result column="start_time" jdbcType="VARCHAR" property="startTime" />
+		<result column="stop_date" jdbcType="VARCHAR" property="stopDate" />
+		<result column="stop_time" jdbcType="VARCHAR" property="stopTime" />
+		<result column="price" jdbcType="VARCHAR" property="price" />
+		<result column="skin_test" jdbcType="VARCHAR" property="skinTest" />
+		<result column="emergency" jdbcType="VARCHAR" property="emergency" />
+		<result column="priority_code" jdbcType="VARCHAR" property="priorityCode" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="record_origin" jdbcType="TINYINT" property="recordOrigin" />
+		<result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+		<result column="department_id" jdbcType="BIGINT" property="departmentId" />
+		<result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+		<result column="use_drug_way" jdbcType="VARCHAR" property="useDrugWay" />
+		<result column="yz_status" jdbcType="TINYINT" property="yzStatus" />
+		<result column="yz_explain" jdbcType="VARCHAR" property="yzExplain" />
+		<result column="start_dt" jdbcType="TIMESTAMP" property="startDt" />
+		<result column="stop_dt" jdbcType="TIMESTAMP" property="stopDt" />
+		<result column="use_plan_json" jdbcType="LONGVARCHAR" property="usePlanJson" />
+		<result column="ext_data" jdbcType="LONGVARCHAR" property="extData" />
+		<result column="checker_id" jdbcType="BIGINT" property="checkerId" />
+		<result column="checker_name" jdbcType="VARCHAR" property="checkerName" />
+		<result column="last_execute_time" jdbcType="TIMESTAMP" property="lastExecuteTime" />
+		<result column="check_dt" jdbcType="TIMESTAMP" property="checkDt" />
+		<result column="foreign_id" jdbcType="VARCHAR" property="foreignId" />
+		<result column="executive_departments_name" jdbcType="VARCHAR" property="executiveDepartmentsName" />
+		<result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+	</resultMap>
+
+	<resultMap id="yzExecuteLog" type="com.comvee.cdms.clinicaldiagnosis.vo.YzExecuteLogVO">
+		<id column="sid" jdbcType="BIGINT" property="sid" />
+		<result column="patient_id" jdbcType="VARCHAR" property="patientId" />
+		<result column="visit_no" jdbcType="VARCHAR" property="visitNo" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="yz_id" jdbcType="VARCHAR" property="yzId" />
+		<result column="yz_group_id" jdbcType="VARCHAR" property="yzGroupId" />
+		<result column="yz_item_type" jdbcType="TINYINT" property="yzItemType" />
+		<result column="yz_type" jdbcType="TINYINT" property="yzType" />
+		<result column="yz_item_name" jdbcType="VARCHAR" property="yzItemName" />
+		<result column="yz_item_code" jdbcType="VARCHAR" property="yzItemCode" />
+		<result column="drug_dose" jdbcType="VARCHAR" property="drugDose" />
+		<result column="drug_dose_unit" jdbcType="VARCHAR" property="drugDoseUnit" />
+		<result column="drug_dose_unit_desc" jdbcType="VARCHAR" property="drugDoseUnitDesc" />
+		<result column="drug_freq_code" jdbcType="VARCHAR" property="drugFreqCode" />
+		<result column="drug_freq_desc" jdbcType="VARCHAR" property="drugFreqDesc" />
+		<result column="drug_duration_code" jdbcType="VARCHAR" property="drugDurationCode" />
+		<result column="drug_duration_desc" jdbcType="VARCHAR" property="drugDurationDesc" />
+		<result column="drug_specification" jdbcType="VARCHAR" property="drugSpecification" />
+		<result column="doctor_code" jdbcType="VARCHAR" property="doctorCode" />
+		<result column="doctor_name" jdbcType="VARCHAR" property="doctorName" />
+		<result column="start_date" jdbcType="VARCHAR" property="startDate" />
+		<result column="start_time" jdbcType="VARCHAR" property="startTime" />
+		<result column="stop_date" jdbcType="VARCHAR" property="stopDate" />
+		<result column="stop_time" jdbcType="VARCHAR" property="stopTime" />
+		<result column="price" jdbcType="VARCHAR" property="price" />
+		<result column="skin_test" jdbcType="VARCHAR" property="skinTest" />
+		<result column="emergency" jdbcType="VARCHAR" property="emergency" />
+		<result column="priority_code" jdbcType="VARCHAR" property="priorityCode" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="record_origin" jdbcType="TINYINT" property="recordOrigin" />
+		<result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+		<result column="department_id" jdbcType="BIGINT" property="departmentId" />
+		<result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+		<result column="use_drug_way" jdbcType="VARCHAR" property="useDrugWay" />
+		<result column="yz_status" jdbcType="TINYINT" property="yzStatus" />
+		<result column="yz_explain" jdbcType="VARCHAR" property="yzExplain" />
+		<result column="start_dt" jdbcType="TIMESTAMP" property="startDt" />
+		<result column="stop_dt" jdbcType="TIMESTAMP" property="stopDt" />
+		<result column="use_plan_json" jdbcType="LONGVARCHAR" property="usePlanJson" />
+		<result column="ext_data" jdbcType="LONGVARCHAR" property="extData" />
+		<result column="checker_id" jdbcType="BIGINT" property="checkerId" />
+		<result column="checker_name" jdbcType="VARCHAR" property="checkerName" />
+		<result column="last_execute_time" jdbcType="TIMESTAMP" property="lastExecuteTime" />
+		<result column="check_dt" jdbcType="TIMESTAMP" property="checkDt" />
+		<result column="department_name" jdbcType="VARCHAR" property="departmentName" />
+		<result column="bed_no" jdbcType="VARCHAR" property="bedNo" />
+		<result column="executive_departments_name" jdbcType="VARCHAR" property="executiveDepartmentsName" />
+	</resultMap>
+
+  <!-- 获取医嘱分页总记录数 -->
+  <select id="getYzByPageCount" parameterType="map" resultType="long">
+  		SELECT COUNT(1) FROM t_yz t  
+  		WHERE t.member_id = #{memberId}
+		<if test="yzType != null and yzType != '' ">
+			and t.yz_type = #{yzType}
+		</if>
+		<if test="yzItemType != null and yzItemType != '' ">
+			and t.yz_item_type = #{yzItemType}
+		</if>
+  </select>
+  
+  <select id="listYzByPage" parameterType="map" resultMap="BaseResultMap">
+  		SELECT `sid`,`patient_id`, `visit_no`,`member_id`,`yz_id`,`yz_group_id`,`yz_item_type`,`yz_type`,`yz_item_name`,`yz_item_code`,`drug_dose`,`drug_dose_unit`,`drug_dose_unit_desc`,`drug_freq_code`, `drug_freq_desc`,
+  		`drug_duration_code`,`drug_duration_desc`,`drug_specification`, `doctor_code`,`doctor_name`,`start_date`,`start_time`,`stop_date`,`stop_time`,`price`,`skin_test`,`emergency` ,card_no
+		FROM t_yz t 
+		WHERE t.member_id = #{memberId}
+		<if test="yzType != null and yzType != '' ">
+			and t.yz_type = #{yzType}
+		</if>
+		<if test="yzItemType != null and yzItemType != '' ">
+			and t.yz_item_type = #{yzItemType}
+		</if>
+		order by t.sid desc
+  </select>
+  
+  <insert id="saveYz" parameterType="com.comvee.cdms.clinicaldiagnosis.po.YzPO">
+  		insert into t_yz (sid, patient_id, visit_no, 
+	      member_id, yz_id, yz_group_id, 
+	      yz_item_type, yz_type, yz_item_name, 
+	      yz_item_code, drug_dose, drug_dose_unit, 
+	      drug_dose_unit_desc, drug_freq_code, drug_freq_desc, 
+	      drug_duration_code, drug_duration_desc, drug_specification, 
+	      doctor_code, doctor_name, start_date, 
+	      start_time, stop_date, stop_time, 
+	      price, skin_test, emergency,insert_dt,priority_code,record_origin,use_plan_json
+	      ,use_drug_way ,yz_status ,yz_explain ,ext_data ,start_dt ,stop_dt ,foreign_id
+	      ,department_id ,hospital_id,executive_departments_name ,card_no
+	      )
+	    values (#{sid,jdbcType=BIGINT}, #{patientId,jdbcType=VARCHAR}, #{visitNo,jdbcType=VARCHAR},
+	      #{memberId,jdbcType=BIGINT}, #{yzId,jdbcType=VARCHAR}, #{yzGroupId,jdbcType=VARCHAR}, 
+	      #{yzItemType,jdbcType=TINYINT}, #{yzType,jdbcType=TINYINT}, #{yzItemName,jdbcType=VARCHAR}, 
+	      #{yzItemCode,jdbcType=VARCHAR}, #{drugDose,jdbcType=VARCHAR}, #{drugDoseUnit,jdbcType=VARCHAR}, 
+	      #{drugDoseUnitDesc,jdbcType=VARCHAR}, #{drugFreqCode,jdbcType=VARCHAR}, #{drugFreqDesc,jdbcType=VARCHAR}, 
+	      #{drugDurationCode,jdbcType=VARCHAR}, #{drugDurationDesc,jdbcType=VARCHAR}, #{drugSpecification,jdbcType=VARCHAR}, 
+	      #{doctorCode,jdbcType=VARCHAR}, #{doctorName,jdbcType=VARCHAR}, #{startDate,jdbcType=VARCHAR}, 
+	      #{startTime,jdbcType=VARCHAR}, #{stopDate,jdbcType=VARCHAR}, #{stopTime,jdbcType=VARCHAR}, 
+	      #{price,jdbcType=VARCHAR}, #{skinTest,jdbcType=VARCHAR}, #{emergency,jdbcType=VARCHAR},now(),#{priorityCode},
+	      #{recordOrigin},#{usePlanJson} ,#{useDrugWay} ,#{yzStatus} ,#{yzExplain} ,#{extData} ,#{startDt} ,#{stopDt} ,#{foreignId}
+	      ,#{departmentId} ,#{hospitalId},#{executiveDepartmentsName} ,#{cardNo}
+	      )
+  </insert>
+  
+  <select id="getYzByYzId" parameterType="com.comvee.cdms.clinicaldiagnosis.po.YzPO" resultMap="BaseResultMap">
+		select sid, patient_id, visit_no, member_id, yz_id, yz_group_id, yz_item_type, yz_type,
+		yz_item_name, yz_item_code, drug_dose, drug_dose_unit, drug_dose_unit_desc, drug_freq_code,
+		drug_freq_desc, drug_duration_code, drug_duration_desc, drug_specification, doctor_code,
+		doctor_name, start_date, start_time, stop_date, stop_time, price, skin_test, emergency,
+		priority_code, insert_dt, record_origin, hospital_id, department_id, doctor_id, is_valid,
+		use_drug_way, yz_status, yz_explain, start_dt, stop_dt, foreign_id, use_plan_json,
+		ext_data ,card_no
+		FROM t_yz t
+		WHERE is_valid = 1 and t.yz_id = #{yzId} limit 1
+  </select>
+
+	<select id="getYzById" parameterType="com.comvee.cdms.clinicaldiagnosis.po.YzPO" resultMap="BaseResultMap">
+		select sid, patient_id, visit_no, member_id, yz_id, yz_group_id, yz_item_type, yz_type,
+		yz_item_name, yz_item_code, drug_dose, drug_dose_unit, drug_dose_unit_desc, drug_freq_code,
+		drug_freq_desc, drug_duration_code, drug_duration_desc, drug_specification, doctor_code,
+		doctor_name, start_date, start_time, stop_date, stop_time, price, skin_test, emergency,
+		priority_code, insert_dt, record_origin, hospital_id, department_id, doctor_id, is_valid,
+		use_drug_way, yz_status, yz_explain, start_dt, stop_dt, foreign_id, use_plan_json,
+		ext_data ,card_no
+		FROM t_yz t
+		WHERE t.sid = #{sid}
+	</select>
+  
+  <select id="getYzByMemberId" parameterType="String" resultMap="BaseResultMap">
+  		select sid, patient_id, visit_no, member_id, yz_id, yz_group_id, yz_item_type, yz_type,
+		yz_item_name, yz_item_code, drug_dose, drug_dose_unit, drug_dose_unit_desc, drug_freq_code,
+		drug_freq_desc, drug_duration_code, drug_duration_desc, drug_specification, doctor_code,
+		doctor_name, start_date, start_time, stop_date, stop_time, price, skin_test, emergency,
+		priority_code, insert_dt, record_origin, hospital_id, department_id, doctor_id, is_valid,
+		use_drug_way, yz_status, yz_explain, start_dt, stop_dt, foreign_id, use_plan_json,
+		ext_data ,card_no
+		FROM t_yz t
+		WHERE t.member_id = #{memberId}
+  </select>
+
+	<select id="getYzByMemberIdByYzItemType"  resultMap="BaseResultMap">
+  		select sid, patient_id, visit_no, member_id, yz_id, yz_group_id, yz_item_type, yz_type,
+		yz_item_name, yz_item_code, drug_dose, drug_dose_unit, drug_dose_unit_desc, drug_freq_code,
+		drug_freq_desc, drug_duration_code, drug_duration_desc, drug_specification, doctor_code,
+		doctor_name, start_date, start_time, stop_date, stop_time, price, skin_test, emergency,
+		priority_code, insert_dt, record_origin, hospital_id, department_id, doctor_id, is_valid,
+		use_drug_way, yz_status, yz_explain, start_dt, stop_dt, foreign_id, use_plan_json,
+		ext_data ,t.card_no
+		FROM t_yz t
+		WHERE t.member_id = #{memberId}
+		and t.start_date = #{startDate}
+		and t.yz_item_type = #{yzItemType}
+		<if test="yzStatusList != null and yzStatusList.size() > 0">
+			and t.yz_status in
+			<foreach collection="yzStatusList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		and t.is_valid = 1
+  </select>
+
+	<select id="listYzByMemberIdAndHospital"  resultMap="BaseResultMap">
+		select sid, patient_id, visit_no, member_id, yz_id, yz_group_id, yz_item_type, yz_type,
+		yz_item_name, yz_item_code, drug_dose, drug_dose_unit, drug_dose_unit_desc, drug_freq_code,
+		drug_freq_desc, drug_duration_code, drug_duration_desc, drug_specification, doctor_code,
+		doctor_name, start_date, start_time, stop_date, stop_time, price, skin_test, emergency,
+		priority_code, insert_dt, record_origin, hospital_id, department_id, doctor_id, is_valid,
+		use_drug_way, yz_status, yz_explain, start_dt, stop_dt, foreign_id, use_plan_json,
+		ext_data ,card_no
+		FROM t_yz t
+		WHERE
+		start_dt &lt;= #{outHospitalDt}
+    	AND ( stop_dt >= #{inHospitalDt}OR stop_dt IS NULL)
+		and t.member_id = #{memberId}
+		and t.hospital_id = #{hospitalId}
+		and t.yz_item_type = #{yzItemType}
+		<if test="yzStatus != null and yzStatus.size() > 0">
+			and t.yz_status in
+			<foreach collection="yzStatus" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		and t.is_valid = 1
+	</select>
+
+	<select id="listInsulinPumpDoctorAdvice"  resultMap="BaseResultMap">
+		select sid, patient_id, visit_no, member_id, yz_id, yz_group_id, yz_item_type, yz_type,
+		yz_item_name, yz_item_code, drug_dose, drug_dose_unit, drug_dose_unit_desc, drug_freq_code,
+		drug_freq_desc, drug_duration_code, drug_duration_desc, drug_specification, doctor_code,
+		doctor_name, start_date, start_time, stop_date, stop_time, price, skin_test, emergency,
+		priority_code, insert_dt, record_origin, hospital_id, department_id, doctor_id, is_valid,
+		use_drug_way, yz_status, yz_explain, start_dt, stop_dt, foreign_id, use_plan_json,
+		ext_data ,card_no
+		FROM t_yz t
+		WHERE
+		t.member_id = #{memberId}
+		and t.hospital_id = #{hospitalId}
+		and t.yz_item_type = #{yzItemType}
+		and t.is_valid = 1
+	</select>
+
+	<select id="listYzByMemberIdAndTypeAndItemType"  resultMap="BaseResultMap">
+  		select sid, patient_id, visit_no, member_id, yz_id, yz_group_id, yz_item_type, yz_type,
+		yz_item_name, yz_item_code, drug_dose, drug_dose_unit, drug_dose_unit_desc, drug_freq_code,
+		drug_freq_desc, drug_duration_code, drug_duration_desc, drug_specification, doctor_code,
+		doctor_name, start_date, start_time, stop_date, stop_time, price, skin_test, emergency,
+		priority_code, insert_dt, record_origin, hospital_id, department_id, doctor_id, is_valid,
+		use_drug_way, yz_status, yz_explain, start_dt, stop_dt, foreign_id, use_plan_json,
+		ext_data ,card_no
+		FROM t_yz
+		WHERE
+		is_valid = 1
+		<if test="memberId != null and memberId != '' ">
+			and member_id = #{memberId}
+		</if>
+		<if test="yzStatus != null and yzStatus.size() > 0">
+			and yz_status in
+			<foreach collection="yzStatus" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		<if test="memberId != null and memberId != '' ">
+		and yz_item_type = #{yzItemType}
+		</if>
+		<if test="memberId != null and memberId != '' ">
+		and yz_type = #{yzType}
+		</if>
+		<if test="yzItemCode != null and yzItemCode != '' ">
+			and yz_item_code = #{yzItemCode}
+		</if>
+		<if test="hospitalId != null and hospitalId != '' ">
+			and hospital_id = #{hospitalId}
+		</if>
+
+  </select>
+
+	<select id="listYzByParams" parameterType="map" resultMap="BaseResultMap">
+		SELECT `sid`,`patient_id`, `visit_no`,`member_id`,`yz_id`,`yz_group_id`,`yz_item_type`,`yz_type`,`yz_item_name`,`yz_item_code`,`drug_dose`,`drug_dose_unit`,`drug_dose_unit_desc`,`drug_freq_code`, `drug_freq_desc`,
+		`drug_duration_code`,`drug_duration_desc`,`drug_specification`, `doctor_code`,`doctor_name`,`start_date`,`start_time`,`stop_date`,`stop_time`,`price`,`skin_test`,`emergency`
+		FROM t_yz t ,card_no
+		WHERE 1=1
+		<if test="memberId != null and memberId != '' ">
+			and t.member_id = #{memberId}
+		</if>
+		<if test="yzItemType != null and yzItemType != '' ">
+			and t.yz_item_type = #{yzItemType}
+		</if>
+		<if test="yzType != null and yzType != '' ">
+			and t.yz_type = #{yzType}
+		</if>
+		<if test="startDt != null and startDt != '' ">
+			and t.start_date &gt;= #{startDt}
+		</if>
+		<if test="endDt != null and endDt != '' ">
+			and t.start_date &lt;= #{endDt}
+		</if>
+		order by t.sid desc
+	</select>
+
+	<select id="listDrugRecordByMemberId" parameterType="string" resultType="com.comvee.cdms.clinicaldiagnosis.vo.MemberYzAndDrugVO">
+			SELECT ifnull(v.visit_type,'其他') visitType,z.sid,z.price,z.`doctor_name` doctorName,z.`yz_type` yzType,z.`yz_item_name` yzItemName,
+			z.`drug_dose` drugDose,ifnull(z.`drug_dose_unit`,drug_dose_unit_desc) drugDoseUnit,z.`drug_freq_code` drugFreqCode,z.`drug_freq_desc` drugFreqDesc,z.`start_date` startDate,z.`stop_date` stopDate
+			FROM `t_yz` z
+			JOIN `t_member_visit` v ON v.`visit_no`=z.`visit_no` and v.member_id=z.member_id
+			WHERE z.`yz_item_type`=1
+			AND z.`member_id`= #{memberId}
+			order by z.sid desc
+	</select>
+
+	<select id="listYzRecordByMemberId" parameterType="com.comvee.cdms.clinicaldiagnosis.dto.ListYzRecordDTO" resultType="com.comvee.cdms.clinicaldiagnosis.vo.MemberYzAndDrugVO">
+			SELECT z.`doctor_name` doctorName,ifnull(v.visit_type,'其他') visitType,z.`yz_type` yzType,z.`yz_item_type` yzItemType,z.`yz_item_name` yzItemName,
+			z.`drug_dose` drugDose,z.`drug_dose_unit` drugDoseUnit,z.`drug_duration_desc` drugDurationDesc,
+			z.`drug_specification` drugSpecification,z.`start_date` startDate,z.`stop_date` stopDate ,z.card_no cardNo
+			FROM `t_yz` z
+			JOIN `t_member_visit` v ON v.`visit_no`=z.`visit_no` and v.member_id=z.member_id
+			WHERE z.`member_id`= #{memberId} and z.`yz_item_type`!=1
+			<if test="yzType!=null">
+				and z.`yz_type`=#{yzType}
+			</if>
+			<if test="yzItemType!=null">
+				and z.`yz_item_type`=#{yzItemType}
+			</if>
+			<if test="startDt!=null and startDt!=''">
+				and z.`start_date` &gt;=#{startDt}
+			</if>
+			<if test="endDt!=null and endDt!=''">
+				and z.`start_date` &lt;=#{endDt}
+			</if>
+			order by z.sid desc
+	</select>
+
+	<select id="getYzByMemberIdAndHospitalId" parameterType="String" resultType="com.comvee.cdms.clinicaldiagnosis.po.YzPO">
+		SELECT z.`doctor_name` doctorName,ifnull(v.visit_type,'其他') visitType,z.`yz_type` yzType,z.`yz_item_type` yzItemType,z.`yz_item_name` yzItemName,
+		z.`drug_dose` drugDose,z.`drug_dose_unit` drugDoseUnit,z.`drug_duration_desc` drugDurationDesc,
+		z.`drug_specification` drugSpecification,z.`start_date` startDate,z.`stop_date` stopDate ,z.card_no cardNo
+		FROM `t_yz` z
+		WHERE z.`member_id`= #{memberId} and z.`yz_item_type`!=1
+		<if test="yzType!=null">
+			and z.`yz_type`=#{yzType}
+		</if>
+		<if test="yzItemType!=null">
+			and z.`yz_item_type`=#{yzItemType}
+		</if>
+		<if test="startDt!=null and startDt!=''">
+			and z.`start_date` &gt;=#{startDt}
+		</if>
+		<if test="endDt!=null and endDt!=''">
+			and z.`start_date` &lt;=#{endDt}
+		</if>
+		order by z.sid desc
+	</select>
+
+	<select id="listYzDrugNewByMemberId" parameterType="map" resultMap="BaseResultMap">
+		SELECT `sid`,`patient_id`, `visit_no`,`member_id`,`yz_id`,`yz_group_id`,`yz_item_type`,`yz_type`,`yz_item_name`,`yz_item_code`,`drug_dose`,`drug_dose_unit`,`drug_dose_unit_desc`,`drug_freq_code`, `drug_freq_desc`,
+		`drug_duration_code`,`drug_duration_desc`,`drug_specification`, `doctor_code`,`doctor_name`,`start_date`,`start_time`,`stop_date`,`stop_time`,`price`,`skin_test`,`emergency`
+		FROM t_yz
+		WHERE member_id = #{memberId} AND start_date=#{startDate} AND yz_item_type = "1"
+		order by sid DESC
+	</select>
+
+	<select id="listDrugYzOfOutHospitalMember" parameterType="String" resultMap="BaseResultMap">
+		select ty.sid,ty.yz_item_name,ty.drug_specification,ty.drug_freq_desc,ty.drug_freq_code,ty.start_date,ty.drug_dose,
+		ty.drug_dose_unit from t_yz ty,t_member_checkin_info tc
+		where ty.yz_item_type=1 and ty.member_id=#{memberId} and ty.priority_code = 'OUT'
+		and tc.member_id=ty.member_id and ty.start_date >= tc.in_hospital_date
+		order by ty.sid DESC
+	</select>
+
+	<select id="getYzStartDateNewByMemberId" parameterType="String" resultType="String">
+		SELECT MAX(start_date) FROM t_yz t WHERE t.member_id = #{memberId} AND t.`yz_item_type`="1"
+	</select>
+
+	<select id="listYzDrugNearlyTwoMonths" parameterType="map" resultMap="BaseResultMap">
+		SELECT `sid`,`patient_id`, `visit_no`,`member_id`,`yz_id`,`yz_group_id`,`yz_item_type`,`yz_type`,`yz_item_name`,`yz_item_code`,`drug_dose`,`drug_dose_unit`,`drug_dose_unit_desc`,`drug_freq_code`, `drug_freq_desc`,
+		`drug_duration_code`,`drug_duration_desc`,`drug_specification`, `doctor_code`,`doctor_name`,`start_date`,`start_time`,`stop_date`,`stop_time`,`price`,`skin_test`,`emergency`
+		FROM t_yz
+		WHERE member_id = #{memberId}
+		AND start_date &gt;= DATE_SUB(CURDATE(), INTERVAL 2 MONTH)
+		AND yz_item_type = '1'
+		order by sid DESC
+	</select>
+
+	<select id="listMemberYz" resultMap="memberYzList" parameterType="com.comvee.cdms.clinicaldiagnosis.dto.ListMemberYzDTO">
+		select t.sid, t.patient_id, t.visit_no, t.member_id, t.yz_id, t.yz_group_id, t.yz_item_type, t.yz_type,
+		t.yz_item_name, t.yz_item_code, t.drug_dose, t.drug_dose_unit, t.drug_dose_unit_desc, t.drug_freq_code,
+		t.drug_freq_desc, t.drug_duration_code, t.drug_duration_desc, t.drug_specification, t.doctor_code,
+		t.doctor_name, t.start_date, t.start_time, t.stop_date, t.stop_time, t.price, t.skin_test, t.emergency,
+		t.priority_code, t.insert_dt, t.record_origin, t.hospital_id, t.department_id, t.doctor_id, t.is_valid,
+		t.use_drug_way, t.yz_status, t.yz_explain, t.start_dt, t.stop_dt, t.use_plan_json, t.ext_data
+		,q.checker_id,q.checker_name,q.check_dt,q.last_execute_time,t.foreign_id,t.executive_departments_name ,t.card_no
+		from t_yz t left join t_yz_log q on t.yz_id = q.yz_id
+		where t.is_valid = 1
+		<if test="memberId != null and '' != memberId">
+			and t.member_id = #{memberId}
+		</if>
+		<if test="yzType != null and '' != yzType">
+			and t.yz_type = #{yzType}
+		</if>
+		<if test="startDt != null and '' != startDt">
+			and t.start_dt &gt;= #{startDt}
+		</if>
+		<if test="endDt != null and '' != endDt">
+			and t.start_dt &lt;= #{endDt}
+		</if>
+		<if test="visitNo != null and '' != visitNo">
+			and t.visit_no = #{visitNo}
+		</if>
+		<if test="hospitalId != null and '' != hospitalId">
+			and t.hospital_id = #{hospitalId}
+		</if>
+		<if test="useDrugWay != null">
+			and t.use_drug_way = #{useDrugWay}
+		</if>
+		<!--<if test="yzItemTypeString != null and '' != yzItemTypeString">-->
+			<!--and t.yz_item_type = #{yzItemTypeString}-->
+		<!--</if>-->
+		<if test="yzItemTypeList != null and yzItemTypeList.size() > 0">
+			and t.yz_item_type in
+			<foreach collection="yzItemTypeList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		<if test="yzStatusList != null and yzStatusList.size() > 0">
+			and t.yz_status in
+			<foreach collection="yzStatusList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		<if test="visitNoList != null and visitNoList.size() > 0">
+			and t.visit_no in
+			<foreach collection="visitNoList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		<if test="recordOriginList != null and recordOriginList.size() > 0">
+			and t.record_origin in
+			<foreach collection="recordOriginList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		<if test="foreignIdList != null and foreignIdList.size() > 0">
+			and t.foreign_id in
+			<foreach collection="foreignIdList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		<if test="yzItemCodeList != null and yzItemCodeList.size() > 0">
+			and t.yz_item_code in
+			<foreach collection="yzItemCodeList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		order by t.insert_dt desc
+	</select>
+
+	<select id="listMemberYzByMemberCheckInfo" resultMap="memberYzList" parameterType="com.comvee.cdms.clinicaldiagnosis.dto.ListMemberYzDTO">
+		select t.sid, t.patient_id, t.visit_no, t.member_id, t.yz_id, t.yz_group_id, t.yz_item_type, t.yz_type,
+		t.yz_item_name, t.yz_item_code, t.drug_dose, t.drug_dose_unit, t.drug_dose_unit_desc, t.drug_freq_code,
+		t.drug_freq_desc, t.drug_duration_code, t.drug_duration_desc, t.drug_specification, t.doctor_code,
+		t.doctor_name, t.start_date, t.start_time, t.stop_date, t.stop_time, t.price, t.skin_test, t.emergency,
+		t.priority_code, t.insert_dt, t.record_origin, t.hospital_id, t.department_id, t.doctor_id, t.is_valid,
+		t.use_drug_way, t.yz_status, t.yz_explain, t.start_dt, t.stop_dt, t.use_plan_json, t.ext_data
+		,q.checker_id,q.checker_name,q.check_dt,q.last_execute_time,t.foreign_id ,t.card_no
+		from t_yz t left join t_yz_log q on t.yz_id = q.yz_id
+		left join t_member_checkin_info mci on mci.member_id = t.member_id
+		where t.is_valid = 1
+		<if test="memberId != null and '' != memberId">
+			and t.member_id = #{memberId}
+		</if>
+		<if test="hospitalId != null and '' != hospitalId">
+			and t.hospital_id = #{hospitalId}
+		</if>
+		<if test="yzType != null and '' != yzType">
+			and t.yz_type = #{yzType}
+		</if>
+		<if test="startDt != null and '' != startDt">
+			and t.start_dt &gt;= #{startDt}
+		</if>
+		<if test="endDt != null and '' != endDt">
+			and t.start_dt &lt;= #{endDt}
+		</if>
+		<if test="visitNo != null and '' != visitNo">
+			and t.visit_no = #{visitNo}
+		</if>
+		<if test="useDrugWay != null">
+			and t.use_drug_way = #{useDrugWay}
+		</if>
+		<if test="yzItemTypeList != null and yzItemTypeList.size() > 0">
+			and t.yz_item_type in
+			<foreach collection="yzItemTypeList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		<if test="yzStatusList != null and yzStatusList.size() > 0">
+			and t.yz_status in
+			<foreach collection="yzStatusList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		<if test="visitNoList != null and visitNoList.size() > 0">
+			and t.visit_no in
+			<foreach collection="visitNoList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		<if test="recordOriginList != null and recordOriginList.size() > 0">
+			and t.record_origin in
+			<foreach collection="recordOriginList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		<if test="foreignIdList != null and foreignIdList.size() > 0">
+			and t.foreign_id in
+			<foreach collection="foreignIdList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		<if test="yzItemCodeList != null and yzItemCodeList.size() > 0">
+			and t.yz_item_code in
+			<foreach collection="yzItemCodeList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		<if test="yzId != null and '' != yzId">
+			and t.yz_id = #{yzId}
+		</if>
+		order by t.insert_dt desc
+	</select>
+
+	<select id="getYzExecuteLogByYzId" resultMap="yzExecuteLog">
+		select t.sid, t.patient_id, t.visit_no, t.member_id, t.yz_id, t.yz_group_id, t.yz_item_type, t.yz_type,
+		t.yz_item_name, t.yz_item_code, t.drug_dose, t.drug_dose_unit, t.drug_dose_unit_desc, t.drug_freq_code,
+		t.drug_freq_desc, t.drug_duration_code, t.drug_duration_desc, t.drug_specification, t.doctor_code,
+		t.doctor_name, t.start_date, t.start_time, t.stop_date, t.stop_time, t.price, t.skin_test, t.emergency,
+		t.priority_code, t.insert_dt, t.record_origin, t.hospital_id, t.department_id, t.doctor_id, t.is_valid,
+		t.use_drug_way, t.yz_status, t.yz_explain, t.start_dt, t.stop_dt, t.use_plan_json, t.ext_data
+		,q.checker_id,q.checker_name,q.check_dt,q.last_execute_time,w.department_name,w.bed_no,t.card_no,
+		t.executive_departments_name ,q.checker_id,q.checker_name,q.check_dt,q.last_execute_time,w.department_name,w.bed_no
+		from t_yz t left join t_yz_log q on t.yz_id = q.yz_id
+		left join t_member_in_hospital_log w on w.is_valid = 1 and w.adm_no = t.visit_no
+		where t.is_valid = 1 and t.yz_id = #{yzId} limit 1
+	</select>
+
+	<update id="updateYz" parameterType="com.comvee.cdms.clinicaldiagnosis.po.YzPO">
+        update t_yz t
+        <set>
+            <if test="yzStatus != null">
+                t.yz_status = #{yzStatus},
+            </if>
+            <if test="stopDt != null and '' != stopDt">
+                t.stop_dt = #{stopDt},
+            </if>
+            <if test="stopDate != null and '' != stopDate">
+                t.stop_date = #{stopDate},
+            </if>
+            <if test="stopTime != null and '' != stopTime">
+                t.stop_time = #{stopTime},
+            </if>
+            <if test="startDate != null and '' != startDate">
+                t.start_date = #{startDate},
+            </if>
+            <if test="startTime != null and '' != startTime">
+                t.start_time = #{startTime},
+            </if>
+            <if test="startDt != null and '' != startDt">
+                t.start_dt = #{startDt},
+            </if>
+            <if test="isValid != null">
+                t.is_valid = #{isValid},
+            </if>
+			<if test="yzItemType != null">
+				yz_item_type = #{yzItemType,jdbcType=TINYINT},
+			</if>
+			<if test="yzItemName != null and '' != yzItemName">
+				yz_item_name = #{yzItemName,jdbcType=VARCHAR},
+			</if>
+			<if test="yzItemCode != null and '' != yzItemCode">
+				yz_item_code = #{yzItemCode,jdbcType=VARCHAR},
+			</if>
+			<if test="drugDose != null and '' != drugDose">
+				drug_dose = #{drugDose,jdbcType=VARCHAR},
+			</if>
+			<if test="drugDoseUnit != null and '' != drugDoseUnit">
+				drug_dose_unit = #{drugDoseUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="drugDoseUnitDesc != null and '' != drugDoseUnitDesc">
+				drug_dose_unit_desc = #{drugDoseUnitDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="drugFreqCode != null and '' != drugFreqCode">
+				drug_freq_code = #{drugFreqCode,jdbcType=VARCHAR},
+			</if>
+			<if test="drugFreqDesc != null and '' != drugFreqDesc">
+				drug_freq_desc = #{drugFreqDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="drugDurationCode != null and '' != drugDurationCode">
+				drug_duration_code = #{drugDurationCode,jdbcType=VARCHAR},
+			</if>
+			<if test="drugDurationDesc != null and '' != drugDurationDesc">
+				drug_duration_desc = #{drugDurationDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="drugSpecification != null and '' != drugSpecification">
+				drug_specification = #{drugSpecification,jdbcType=VARCHAR},
+			</if>
+			<if test="useDrugWay != null">
+				use_drug_way = #{useDrugWay,jdbcType=TINYINT},
+			</if>
+			<if test="yzExplain != null and '' != yzExplain">
+				yz_explain = #{yzExplain,jdbcType=VARCHAR},
+			</if>
+			<if test="usePlanJson != null and '' != usePlanJson">
+				use_plan_json = #{usePlanJson,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="extData != null and '' != extData">
+				ext_data = #{extData,jdbcType=LONGVARCHAR},
+			</if>
+        </set>
+        where t.yz_id = #{yzId} and t.is_valid = 1
+	</update>
+</mapper>

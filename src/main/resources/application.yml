@@ -1,0 +1,24 @@
+server:
+  port: 9094
+spring:
+  datasource:
+      url: jdbc:mysql://192.168.5.205:3306/comvee_174?useUnicode=true&character-set-server=utf8mb4&allowMultiQueries=true&serverTimezone=Asia/Shanghai&useSsl=false&allowPublicKeyRetrieval=true
+      username: root
+      password: rootMysql968696@
+#    url: jdbc:mysql://192.168.5.214:3306/chronic_disease_ms?useUnicode=true&character-set-server=utf8mb4&allowMultiQueries=true&serverTimezone=Asia/Shanghai&useSsl=false&allowPublicKeyRetrieval=true
+#    username: root
+#    password: comvee968696
+#mybatis:
+#  mapper-locations: classpath:mapper/*/*.xml
+mybatis-plus:
+  mapper-locations: classpath:mapper/*/*.xml
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+xxl-job:
+  adminAddresses: http://192.168.5.214:8040/xxl-job-admin
+  appName: zhenghe-xxl-job-executor
+  ip: 123456789
+  port: 9999
+  accessToken:
+  logPath: D://xx-job-log
+  logRetentionDays: 7

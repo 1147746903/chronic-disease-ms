@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.complication.mapper.ScreeningReportMapper">
+
+    <resultMap id="screeningReport" type="com.comvee.cdms.complication.model.po.ScreeningReportPO">
+        <id column="report_id" jdbcType="VARCHAR" property="reportId" />
+        <result column="screening_id" jdbcType="VARCHAR" property="screeningId" />
+        <result column="screening_type" jdbcType="TINYINT" property="screeningType" />
+        <result column="pdf_url" jdbcType="VARCHAR" property="pdfUrl" />
+        <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
+        <result column="cut_image_url" jdbcType="VARCHAR" property="cutImageUrl" />
+        <result column="report_json" jdbcType="VARCHAR" property="reportJson" />
+        <result column="edit_status" jdbcType="TINYINT" property="editStatus" />
+        <result column="nursing_advice" jdbcType="VARCHAR" property="nursingAdvice" />
+        <result column="data_json" jdbcType="VARCHAR" property="dataJson" />
+        <result column="print_time" jdbcType="INTEGER" property="printTime" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="report_dt" jdbcType="TIMESTAMP" property="reportDt" />
+        <result column="abnormal_sign" jdbcType="VARCHAR" property="abnormalSign" />
+        <result column="abnormal_level" jdbcType="VARCHAR" property="abnormalLevel" />
+        <result column="abnormal_msg" jdbcType="VARCHAR" property="abnormalMsg" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+        <result column="result_status"  property="resultStatus" />
+        <result column="valid"  property="valid" />
+    </resultMap>
+
+    <insert id="addScreeningReport" parameterType="com.comvee.cdms.complication.model.po.ScreeningReportPO">
+        insert into t_screening_report (report_id, screening_id, screening_type,
+        pdf_url, image_url, cut_image_url,
+        report_json, edit_status, nursing_advice,
+        data_json, print_time, report_dt, abnormal_sign,
+        abnormal_level, abnormal_msg, member_id,
+        doctor_id  ,result_status ,valid)
+        values (#{reportId,jdbcType=VARCHAR}, #{screeningId,jdbcType=VARCHAR}, #{screeningType,jdbcType=TINYINT},
+        #{pdfUrl,jdbcType=VARCHAR}, #{imageUrl,jdbcType=VARCHAR}, #{cutImageUrl,jdbcType=VARCHAR},
+        #{reportJson,jdbcType=VARCHAR}, #{editStatus,jdbcType=TINYINT}, #{nursingAdvice,jdbcType=VARCHAR},
+        #{dataJson,jdbcType=VARCHAR}, #{printTime,jdbcType=INTEGER},#{reportDt,jdbcType=TIMESTAMP}, #{abnormalSign,jdbcType=VARCHAR},
+        #{abnormalLevel,jdbcType=VARCHAR}, #{abnormalMsg,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT},
+        #{doctorId,jdbcType=BIGINT}  ,#{resultStatus} ,#{valid})
+    </insert>
+
+    <update id="updateScreeningReport" parameterType="com.comvee.cdms.complication.model.po.ScreeningReportPO">
+        update t_screening_report
+        <set>
+            <if test="pdfUrl != null and '' != pdfUrl">
+                pdf_url = #{pdfUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="reportJson != null and '' != reportJson">
+                report_json = #{reportJson,jdbcType=VARCHAR},
+            </if>
+            <if test="editStatus != null">
+                edit_status = #{editStatus,jdbcType=TINYINT},
+            </if>
+            <if test="nursingAdvice != null and '' != nursingAdvice">
+                nursing_advice = #{nursingAdvice,jdbcType=VARCHAR},
+            </if>
+            <if test="dataJson != null and '' != dataJson">
+                data_json = #{dataJson,jdbcType=VARCHAR},
+            </if>
+            <if test="printTime != null">
+                print_time = #{printTime,jdbcType=INTEGER},
+            </if>
+            <if test="reportDt != null and '' != reportDt">
+                report_dt = #{reportDt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="abnormalSign != null and '' != abnormalSign">
+                abnormal_sign = #{abnormalSign,jdbcType=VARCHAR},
+            </if>
+            <if test="abnormalLevel != null and '' != abnormalLevel">
+                abnormal_level = #{abnormalLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="abnormalMsg != null and '' != abnormalMsg">
+                abnormal_msg = #{abnormalMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="imageUrl != null and '' != imageUrl">
+                image_url = #{imageUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="cutImageUrl != null and '' != cutImageUrl">
+                cut_image_url = #{cutImageUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="valid != null">
+                valid = #{valid},
+            </if>
+            <if test="resultStatus != null">
+                result_status = #{resultStatus},
+            </if>
+        </set>
+        where report_id = #{reportId,jdbcType=VARCHAR}
+    </update>
+
+
+    <select id="getScreeningReportById"  resultMap="screeningReport">
+        select report_id, screening_id, screening_type, pdf_url, image_url, cut_image_url,
+        report_json, edit_status, nursing_advice, data_json, print_time, insert_dt, update_dt,
+        report_dt, abnormal_sign, abnormal_level, abnormal_msg, member_id, doctor_id ,result_status
+        from t_screening_report
+        <where>
+            <if test="valid != null ">
+                and valid = #{valid}
+            </if>
+            <if test="reportId != null and '' != reportId">
+                and report_id = #{reportId,jdbcType=VARCHAR}
+            </if>
+            <if test="screeningId != null and '' != screeningId">
+                and screening_id = #{screeningId,jdbcType=VARCHAR}
+            </if>
+            <if test="screeningType != null ">
+                and screening_type = #{screeningType,jdbcType=VARCHAR}
+            </if>
+        </where>
+
+        limit 1
+    </select>
+
+    <select id="listScreeningReport" resultMap="screeningReport">
+        select report_id, screening_id, screening_type, pdf_url, image_url, cut_image_url,
+        report_json, edit_status, nursing_advice, data_json, print_time, insert_dt, update_dt,
+        report_dt, abnormal_sign, abnormal_level, abnormal_msg, member_id, doctor_id
+        from t_screening_report where valid = 1 and  screening_id = #{screeningId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="listMemberScreeningReport" parameterType="com.comvee.cdms.complication.model.dto.ListMemberScreeningReportDTO" resultMap="screeningReport">
+        select t.report_id, t.screening_id, t.screening_type, t.pdf_url, t.image_url, t.cut_image_url,
+        t.report_json, t.edit_status, t.nursing_advice, t.data_json, t.print_time, t.insert_dt, t.update_dt,
+        t.report_dt, t.abnormal_sign, t.abnormal_level, t.abnormal_msg, t.member_id, t.doctor_id
+        from t_screening_report t
+        left join t_screening_list_item li
+        on li.screening_type = t.screening_type and li.screening_id = t.screening_id
+        where t.valid = 1
+        <if test="memberId != null and '' != memberId">
+            and t.member_id = #{memberId,jdbcType=VARCHAR}
+        </if>
+        <if test="dealStatus!=null">
+            and li.deal_status = #{dealStatus}
+        </if>
+        <if test="screeningType != null">
+            and t.screening_type = #{screeningType}
+        </if>
+        <if test="startDt != null and '' != startDt">
+            and t.report_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and t.report_dt &lt;= #{endDt}
+        </if>
+        order by t.report_dt desc
+    </select>
+
+    <select id="getLastScreeningReport" resultMap="screeningReport" parameterType="com.comvee.cdms.complication.model.dto.GetLastScreeningReportDTO">
+        SELECT t.report_id,t.screening_id,t.screening_type,t.pdf_url,t.image_url, t.cut_image_url, t.report_json,t.edit_status,t.nursing_advice,
+        t.data_json,t.print_time, t.insert_dt, t.update_dt, t.report_dt,t.abnormal_sign,t.abnormal_level,t.abnormal_msg
+        FROM t_screening_report t ,t_screening_list_item q
+        where t.screening_id = q.screening_id and t.screening_type = q.screening_type
+        and t.valid = 1 and t.screening_type = #{screeningType} and t.member_id = #{memberId}
+        <if test="unScreeningId != null and '' != unScreeningId">
+            and t.screening_id &lt;&gt; #{unScreeningId}
+        </if>
+        <if test="doctorId != null and '' != doctorId">
+            and t.doctor_id = #{doctorId}
+        </if>
+        <if test="editStatus != null">
+            and t.edit_status = #{editStatus}
+        </if>
+        <if test="dealStatus != null">
+            and q.deal_status = #{dealStatus}
+        </if>
+        order by t.report_dt desc limit 1
+    </select>
+
+    <select id="listScreeningReportOfTypeNearlySixMonth" resultMap="screeningReport">
+        select * from (
+        select r.report_id, r.screening_id, r.screening_type, r.pdf_url, r.image_url, r.cut_image_url,
+        r.report_json, r.edit_status, r.nursing_advice, r.data_json, r.print_time, r.insert_dt, r.update_dt,
+        r.report_dt, r.abnormal_sign, r.abnormal_level, r.abnormal_msg, r.member_id, r.doctor_id,d.hospital_id
+        from t_screening_report r,t_doctor d where r.valid = 1 and r.doctor_id=d.doctor_id
+        and r.member_id = #{memberId,jdbcType=VARCHAR}
+        and r.insert_dt &gt;= #{startDt}
+        <if test="hospitalId!=null and hospitalId != ''">
+            and d.hospital_id=#{hospitalId}
+        </if>
+        order by r.insert_dt desc)temp group by screening_type
+    </select>
+
+    <select id="listIntelligentResultOfThStatistics" resultMap="screeningReport" parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO">
+        <!--visitType类型 1住院 2门诊&居家 -->
+        <if test="visitType==1">
+            select * from (
+            select r.* from t_screening_report r JOIN t_member m
+            on m.member_id=r.member_id
+            join t_member_checkin_info mci on mci.member_id = m.member_id and mci.is_valid =1
+            join t_member_in_hospital_log h on m.member_id=h.member_id
+            where h.is_valid=1 and mci.checkin_status = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and h.hospital_id=#{hospitalId}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and (h.in_hospital_date &lt; #{endDt} and (h.out_hospital_date &gt; #{startDt} or h.out_hospital_date is null))
+                and r.insert_dt between #{startDt} and #{endDt}
+            </if>
+            <if test="diabetesType!=null and diabetesType!=''">
+                and m.diabetes_type = #{diabetesType}
+            </if>
+            and r.result_status = 1
+            AND r.screening_type=5
+            order by r.insert_dt desc
+            )cnt
+            GROUP BY cnt.member_id
+        </if>
+        <if test="visitType==2">
+            select * from (
+            select m.* from t_screening_report m
+            join t_member_join_hospital mjh on m.member_id = mjh.member_id and mjh.valid = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and mjh.hospital_id=#{hospitalId}
+            </if>
+            left join
+            (select member_id,checkin_status,hospital_id from t_member_checkin_info where is_valid = 1) mci
+            on mci.member_id = mjh.member_id
+            where m.valid=1
+            and(mci.checkin_status is null or mci.checkin_status != 1)
+            <if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+                and m.report_dt BETWEEN #{startDt} and #{endDt}
+
+            </if>
+            and m.result_status = 1
+            AND m.screening_type=5
+            order by m.insert_dt desc
+            )cnt
+            GROUP BY cnt.member_id
+        </if>
+        <if test="visitType==3">
+            select * from (
+                select m.* from t_screening_report m ,t_research_group a1 ,t_research_group_member a2
+                where
+                m.valid=1 and a1.valid = 1 and a2.valid = 1
+                and a1.hospital_id = #{hospitalId}
+                <if test="researchGroupId != null and '' != researchGroupId">
+                    and a1.group_id = #{researchGroupId}
+                </if>
+                and m.member_id = a2.member_id
+                and a1.group_id = a2.research_group_id
+                and m.result_status = 1
+                AND m.screening_type=5
+                and m.report_dt BETWEEN DATE_FORMAT(a2.insert_dt,'%Y-%m-%d') and #{endDt}
+                order by m.insert_dt desc
+            )cnt
+            GROUP BY cnt.member_id
+        </if>
+    </select>
+
+    <select id="getScreeningOfMemberCount" resultType="java.lang.Long" parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO">
+        <!--visitType类型 1住院 2门诊&居家 -->
+        <if test="visitType==1">
+            select count(1) from (
+            select m.* from t_screening_report m
+            join t_member_checkin_info mci on mci.member_id = m.member_id and mci.is_valid =1
+            join t_member_in_hospital_log h on m.member_id=h.member_id
+            where h.is_valid=1 and mci.checkin_status = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and h.hospital_id=#{hospitalId}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and (h.in_hospital_date &lt; #{endDt} and (h.out_hospital_date &gt; #{startDt} or h.out_hospital_date is null))
+                and m.insert_dt between #{startDt} and #{endDt}
+            </if>
+            and m.result_status = 1
+            <if test="abnormalSign!=null and abnormalSign!=''">
+                and m.abnormal_sign=#{abnormalSign}
+            </if>
+            <if test="modular!=null and modular!=''">
+                and m.screening_type=#{modular}
+            </if>
+            GROUP BY m.member_id
+            )cnt
+        </if>
+        <if test="visitType==2">
+            select count(1) from (
+            select m.* from t_screening_report m
+            join t_member_join_hospital mjh on m.member_id = mjh.member_id
+            <if test="hospitalId!=null and hospitalId!=''">
+                and mjh.hospital_id=#{hospitalId}
+            </if>
+            left join
+            (select member_id,checkin_status,hospital_id from t_member_checkin_info where is_valid = 1) mci
+            on mci.member_id = mjh.member_id
+            where m.valid=1
+            and(mci.checkin_status is null or mci.checkin_status != 1)
+            <if test="abnormalSign!=null and abnormalSign!=''">
+                and m.abnormal_sign=#{abnormalSign}
+            </if>
+            <if test="modular!=null and modular!=''">
+                and m.screening_type=#{modular}
+            </if>
+            and m.result_status = 1
+            GROUP BY m.member_id
+            )cnt
+        </if>
+        <if test="visitType==3">
+            select count(1) from (
+            select m.* from t_screening_report m ,t_research_group a1 ,t_research_group_member a2
+            where
+            m.valid=1 and a1.valid = 1 and a2.valid = 1
+            and a1.hospital_id = #{hospitalId}
+            <if test="researchGroupId != null and '' != researchGroupId">
+                and a1.group_id = #{researchGroupId}
+            </if>
+            and m.member_id = a2.member_id
+            and a1.group_id = a2.research_group_id
+            and m.insert_dt between DATE_FORMAT(a2.insert_dt,'%Y-%m-%d') and #{endDt}
+            <if test="modular!=null and modular!=''">
+                and m.screening_type=#{modular}
+            </if>
+            <if test="abnormalSign!=null and abnormalSign!=''">
+                and m.abnormal_sign=#{abnormalSign}
+            </if>
+            GROUP BY m.member_id
+            )cnt
+        </if>
+    </select>
+    <select id="getScreeningOfMemberCountByHospitalId" parameterType="com.comvee.cdms.statistics.dto.GetScreeningReportDTO" resultType="java.lang.Long">
+        select ifnull(count(1),0) from (
+        select member_id,result_status from (
+        select t.member_id,t.result_status
+        from t_screening_report t join t_member_join_hospital h
+        on t.member_id = h.member_id
+        join t_screening_list_item li
+        on li.screening_type = t.screening_type and li.screening_id = t.screening_id
+        where
+        t.valid = 1 and h.valid = 1
+        <if test="dealStatus!=null">
+            and li.deal_status = #{dealStatus}
+        </if>
+        <if test="screeningType!=null">
+            and t.screening_type = #{screeningType}
+        </if>
+
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+        <if test="startDt != null and startDt != '' ">
+            and t.report_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and endDt != '' ">
+            and t.report_dt &lt;= #{endDt}
+        </if>
+        order by t.report_dt desc ) a group by a.member_id
+       having 1= 1
+       <if test="resultStatus!=null">
+        and a.result_status = #{resultStatus}
+        </if>
+      ) b
+    </select>
+    <select id="listMemberScreeningReportByHospitalId" parameterType="com.comvee.cdms.complication.model.dto.ListMemberScreeningReportDTO" resultMap="screeningReport">
+        select t.report_id, t.screening_id, t.screening_type, t.pdf_url, t.image_url, t.cut_image_url,
+        t.report_json, t.edit_status, t.nursing_advice, t.data_json, t.print_time, t.insert_dt, t.update_dt,
+        t.report_dt, t.abnormal_sign, t.abnormal_level, t.abnormal_msg, t.member_id, t.doctor_id
+        from t_screening_report t left join t_member_join_hospital h
+        on t.member_id = h.member_id
+        left join t_screening_list_item li
+        on li.screening_type = t.screening_type and li.screening_id = t.screening_id
+        where t.valid = 1 and h.valid = 1
+        <if test="memberId != null and '' != memberId">
+            and t.member_id = #{memberId,jdbcType=VARCHAR}
+        </if>
+        <if test="dealStatus!=null">
+            and li.deal_status = #{dealStatus}
+        </if>
+        <if test="screeningType != null">
+            and t.screening_type = #{screeningType}
+        </if>
+        <if test="startDt != null and '' != startDt">
+            and t.report_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and t.report_dt &lt;= #{endDt}
+        </if>
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+        order by t.report_dt desc
+    </select>
+
+</mapper>

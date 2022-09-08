@@ -1,0 +1,761 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.packages.mapper.PackageMapper">
+
+  <resultMap id="memberPackage" type="com.comvee.cdms.packages.po.MemberPackagePO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="package_id" jdbcType="BIGINT" property="packageId" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="start_dt" jdbcType="TIMESTAMP" property="startDt" />
+    <result column="end_dt" jdbcType="TIMESTAMP" property="endDt" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="package_name" jdbcType="VARCHAR" property="packageName" />
+    <result column="price" jdbcType="BIGINT" property="price" />
+    <result column="package_status" jdbcType="TINYINT" property="packageStatus" />
+  </resultMap>
+
+  <resultMap id="memberOrderPackage" type="com.comvee.cdms.packages.po.MemberOrderPackagePO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="package_id" jdbcType="BIGINT" property="packageId" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="start_dt" jdbcType="TIMESTAMP" property="startDt" />
+    <result column="end_dt" jdbcType="TIMESTAMP" property="endDt" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="package_name" jdbcType="VARCHAR" property="packageName" />
+    <result column="price" jdbcType="BIGINT" property="price" />
+    <result column="package_status" jdbcType="TINYINT" property="packageStatus" />
+    <result column="sex"  property="sex" />
+    <result column="doctor_name"  property="doctorName" />
+  </resultMap>
+
+
+  <resultMap id="orderPackage" type="com.comvee.cdms.packages.po.OrderPackagePO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="package_id" jdbcType="BIGINT" property="packageId" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="start_dt" jdbcType="TIMESTAMP" property="startDt" />
+    <result column="end_dt" jdbcType="TIMESTAMP" property="endDt" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="package_name" jdbcType="VARCHAR" property="packageName" />
+    <result column="price" jdbcType="BIGINT" property="price" />
+    <result column="package_status" jdbcType="TINYINT" property="packageStatus" />
+    <result column="member_name"  property="memberName" />
+    <result column="sex"  property="sex" />
+    <result column="doctor_name"  property="doctorName" />
+    <result column="in_hos" property="inHos"/>
+  </resultMap>
+
+  <resultMap id="package" type="com.comvee.cdms.packages.po.PackagePO">
+    <id column="package_id" jdbcType="BIGINT" property="packageId" />
+    <result column="package_name" jdbcType="VARCHAR" property="packageName" />
+    <result column="price" jdbcType="BIGINT" property="price" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="time_unit" jdbcType="VARCHAR" property="timeUnit" />
+    <result column="time_num" jdbcType="INTEGER" property="timeNum" />
+  </resultMap>
+
+  <resultMap id="packageService" type="com.comvee.cdms.packages.po.PackageServicePO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="service_name" jdbcType="VARCHAR" property="serviceName" />
+    <result column="service_code" jdbcType="VARCHAR" property="serviceCode" />
+    <result column="use_type" jdbcType="TINYINT" property="useType" />
+    <result column="package_id" jdbcType="BIGINT" property="packageId" />
+    <result column="use_time" jdbcType="INTEGER" property="useTime" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+  </resultMap>
+
+  <resultMap id="monthPriceTotal" type="com.comvee.cdms.packages.po.PackageMonthPricePO">
+    <result column="month" property="month"/>
+    <result column="priceTotal" property="priceTotal"/>
+  </resultMap>
+
+  <resultMap id="monthPackage" type="com.comvee.cdms.packages.po.CountMonthPackagePO">
+    <result column="count" property="count"/>
+    <result column="month" property="month"/>
+  </resultMap>
+
+  <resultMap id="memberPackageService" type="com.comvee.cdms.packages.po.MemberPackageServicePO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_package_id" jdbcType="BIGINT" property="memberPackageId" />
+    <result column="service_name" jdbcType="VARCHAR" property="serviceName" />
+    <result column="remain_time" jdbcType="INTEGER" property="remainTime" />
+    <result column="total_time" jdbcType="INTEGER" property="totalTime" />
+    <result column="service_type" jdbcType="TINYINT" property="serviceType" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="service_code" jdbcType="VARCHAR" property="serviceCode" />
+  </resultMap>
+
+  <select id="listHospitalPackage" resultMap="package">
+    select q.package_id,q.package_name,q.price,q.time_num,q.time_unit
+    from t_package_hospital t , t_package q
+    where t.package_id = q.package_id
+    and t.hospital_id = #{hospitalId}
+  </select>
+
+  <select id="listMemberPackage" resultMap="memberOrderPackage" parameterType="com.comvee.cdms.packages.dto.ListMemberPackageMapperDTO">
+    select sid, member_id, w.doctor_id, package_id, order_id
+    ,DATE_FORMAT( start_dt,'%Y-%m-%d %T') start_dt
+    ,DATE_FORMAT( end_dt,'%Y-%m-%d %T') end_dt
+    ,DATE_FORMAT( w.insert_dt,'%Y-%m-%d %T') insert_dt
+    ,update_dt, package_name, price, package_status
+    ,q.doctor_name,q.sex
+    from t_member_package w, t_doctor q
+    where w.is_valid = 1 and w.doctor_id = q.doctor_id and w.is_valid=1
+    <if test="memberId != null and '' != memberId">
+      and member_id = #{memberId}
+    </if>
+    <if test="doctorId != null and '' != doctorId">
+      and w.doctor_id = #{doctorId}
+    </if>
+    <if test="keyword != null and '' != keyword">
+      and instr(package_name, #{keyword}) > 0
+    </if>
+    <if test="packageStatus != null">
+      and package_status = #{packageStatus}
+    </if>
+    <if test="hospitalId!=null and hospitalId!=''">
+      and q.hospital_id = #{hospitalId}
+    </if>
+    <if test="doctorList != null and doctorList.size() > 0">
+      and w.doctor_id in
+      <foreach collection="doctorList" index="index" separator="," close=")" open="(" item="item">
+        #{item}
+      </foreach>
+    </if>
+    order by w.insert_dt desc
+  </select>
+
+  <insert id="addMemberPackage" parameterType="com.comvee.cdms.packages.dto.AddMemberPackageMapperDTO">
+    insert into t_member_package (sid, member_id, doctor_id,
+      package_id, order_id, start_dt,
+      end_dt,
+      package_name, price, package_status
+      )
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT},
+      #{packageId,jdbcType=BIGINT}, #{orderId,jdbcType=VARCHAR}, #{startDt,jdbcType=TIMESTAMP},
+      #{endDt,jdbcType=TIMESTAMP},
+      #{packageName,jdbcType=VARCHAR}, #{price,jdbcType=BIGINT}, #{packageStatus,jdbcType=TINYINT}
+      )
+  </insert>
+
+  <select id="listPackageService" resultMap="packageService">
+    select sid, service_name, service_code, use_type, package_id, use_time, insert_dt,
+    update_dt
+    from t_package_service where package_id = #{packageId}
+  </select>
+
+  <select id="getPackageById" resultMap="package">
+    select package_id, package_name, price, insert_dt, update_dt, time_unit, time_num
+    from t_package
+    where package_id = #{packageId} limit 1
+  </select>
+
+  <insert id="addMemberPackageService" parameterType="com.comvee.cdms.packages.dto.AddMemberPackageServiceMapperDTO">
+    insert into t_member_package_service (sid, member_package_id, service_name,
+      remain_time, total_time, service_type,service_code)
+    values (#{sid,jdbcType=BIGINT}, #{memberPackageId,jdbcType=BIGINT}, #{serviceName,jdbcType=VARCHAR},
+      #{remainTime,jdbcType=INTEGER}, #{totalTime,jdbcType=INTEGER}, #{serviceType,jdbcType=TINYINT}, #{serviceCode})
+  </insert>
+
+  <select id="sumPackagePrice" parameterType="com.comvee.cdms.packages.dto.SumPackagePriceDTO" resultType="long">
+    select ifnull(sum(t.price),0) from t_member_package t where t.is_valid = 1
+      <if test = "doctorId != null and '' !=doctorId">
+        and t.doctor_id = #{doctorId}
+      </if>
+      <if test = "packageStatus != null">
+        and t.package_status = #{packageStatus}
+      </if>
+  </select>
+
+  <select id="sumPackageMonthPrice" resultMap="monthPriceTotal" parameterType="com.comvee.cdms.packages.dto.SumPackageMonthPriceDTO">
+    select DATE_FORMAT(t.insert_dt,'%m') month,ifnull(sum(t.price),0) priceTotal from t_member_package t where t.is_valid = 1
+      <if test = "doctorId != null and '' != doctorId">
+        and t.doctor_id = #{doctorId}
+      </if>
+      <if test = "year != null and '' != year">
+        and DATE_FORMAT(t.insert_dt,'%Y') = #{year}
+      </if>
+    group by DATE_FORMAT(t.insert_dt,'%Y-%m')
+  </select>
+
+  <select id="countMonthPackage" parameterType="com.comvee.cdms.packages.dto.CountMonthPackageDTO" resultMap="monthPackage">
+    select DATE_FORMAT(t.insert_dt,'%m') month, count(t.sid) count from t_member_package t
+    where t.is_valid = 1 and DATE_FORMAT(t.insert_dt,'%Y') = #{year} and t.package_status=1
+    and t.doctor_id = #{doctorId}
+    group by DATE_FORMAT(t.insert_dt, '%Y-%m')
+  </select>
+
+  <select id="getMemberPackageById" resultMap="memberPackage">
+    select sid, member_id, doctor_id, package_id, order_id
+    ,DATE_FORMAT( start_dt,'%Y-%m-%d %T') start_dt
+    ,DATE_FORMAT( end_dt,'%Y-%m-%d %T') end_dt
+    ,DATE_FORMAT( insert_dt,'%Y-%m-%d %T') insert_dt
+    ,update_dt, package_name, price, package_status
+    from t_member_package where is_valid = 1 and sid = #{memberPackageId} limit 1
+  </select>
+
+  <select id="listValidMemberPackage" resultMap="memberPackage" parameterType="com.comvee.cdms.packages.dto.ListValidMemberPackageDTO">
+    select t.doctor_id,t.end_dt,t.insert_dt,t.member_id,t.order_id
+    ,t.origin,t.package_id,t.package_name,t.package_status
+    ,t.price,t.sid,t.start_dt
+    from t_member_package t , t_member_package_service q
+    where t.sid = q.member_package_id and t.is_valid = 1 and q.is_valid = 1
+    <if test="memberId != null and '' != memberId">
+      and t.member_id = #{memberId}
+    </if>
+    <if test="doctorId != null and '' != doctorId">
+      and t.doctor_id = #{doctorId}
+    </if>
+    <if test="codeList != null and codeList.size > 0">
+      and service_code in
+      <foreach collection="codeList" index="index" item = "item" open="(" close=")" separator=",">
+        #{item, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+      </foreach>
+    </if>
+    <if test="packageId != null and '' != packageId">
+      and t.package_id = #{packageId}
+    </if>
+     and now() BETWEEN t.start_dt and t.end_dt
+    and q.remain_time > 0
+    group by t.sid order by t.insert_dt desc
+  </select>
+
+  <select id="getNewestValidMemberPackage" resultMap="memberPackage" parameterType="com.comvee.cdms.packages.dto.ListValidMemberPackageDTO">
+    select t.doctor_id,t.end_dt,t.insert_dt,t.member_id,t.order_id
+    ,t.origin,t.package_id,t.package_name,t.package_status
+    ,t.price,t.sid,t.start_dt
+    from t_member_package t , t_member_package_service q
+    where t.sid = q.member_package_id and t.is_valid=1 and q.is_valid = 1
+    <if test="memberId != null and '' != memberId">
+      and t.member_id = #{memberId}
+    </if>
+    <if test="doctorId != null and '' != doctorId">
+      and t.doctor_id = #{doctorId}
+    </if>
+    <if test="packageId != null and '' != packageId">
+      and t.package_id = #{packageId}
+    </if>
+    <if test="codeList != null and codeList.size > 0">
+      and service_code in
+      <foreach collection="codeList" index="index" item = "item" open="(" close=")" separator=",">
+        #{item, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+      </foreach>
+    </if>
+    and t.end_dt > now()
+    and q.remain_time > 0
+    order by t.end_dt desc limit 1
+  </select>
+
+  <select id="listHasValidPackageMember" resultType="string">
+    select t.member_id
+    from t_member_package t , t_member_package_service q
+    where t.sid = q.member_package_id and q.remain_time > 0 and t.is_valid = 1 and q.is_valid = 1
+    and now() BETWEEN t.start_dt and t.end_dt
+    <if test="doctorId != null and '' != doctorId">
+      and t.doctor_id = #{doctorId}
+    </if>
+    <if test="memberIdList != null and memberIdList.size() > 0">
+      and t.member_id in
+      <foreach collection="memberIdList" index="index" item="item" open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+    </if>
+    group by t.member_id
+  </select>
+
+  <select id="listHasValidServiceMember" resultType="string">
+      select t.member_id
+      from t_member_package t , t_member_package_service q
+      where t.sid = q.member_package_id and t.is_valid = 1 and q.is_valid = 1
+      and q.service_code = #{serviceCode}
+       and now() BETWEEN t.start_dt and t.end_dt
+      and q.remain_time > 0
+      group by t.member_id
+  </select>
+  
+  <!-- gwxadd -->
+  <!-- 付费套餐 -->
+  <select id="countHasValidPayPackageMember" resultType="long">
+    select count(distinct member_id)
+    from t_member_package t , t_member_package_service q
+    where t.sid = q.member_package_id and q.remain_time > 0 and t.price>0 and t.is_valid = 1 and q.is_valid = 1
+    <if test="doctorId != null and '' != doctorId">
+      and t.doctor_id = #{doctorId}
+    </if>
+    <if test="memberIdList != null and memberIdList.size() > 0">
+      and t.member_id in
+      <foreach collection="memberIdList" index="index" item="item" open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+    </if>
+  </select>  
+  
+  <!-- 过滤获取已经付费的患者id -->
+  <select id="listIfPayPackageMember" resultType="string">
+    select t.member_id
+    from t_member_package t , t_member_package_service q
+    where t.sid = q.member_package_id and q.remain_time > 0 and t.price>0 and t.is_valid = 1 and q.is_valid = 1
+    <if test="doctorId != null and '' != doctorId">
+      and t.doctor_id = #{doctorId}
+    </if>
+    <if test="memberIdList != null and memberIdList.size() > 0">
+      and t.member_id in
+      <foreach collection="memberIdList" index="index" item="item" open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+    </if>
+    group by t.member_id
+  </select> 
+  
+  <select id="getAllPackage" resultMap="package">
+    select distinct package_id, package_name
+    from t_member_package
+    where is_valid = 1 and doctor_id in
+    <foreach collection="doctorList" open="(" close=")" separator="," item="item">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="getValidPackageMemberList" resultMap="memberPackage">
+    select p.member_id,p.doctor_id from t_member_package p
+    join t_member_package_service s on p.sid =s.member_package_id
+    WHERE p.package_id = 123 and p.is_valid = 1 and s.is_valid = 1
+    and 0 &lt; s.remain_time  and now() &lt; p.END_DT
+    GROUP BY p.member_id
+  </select>
+
+  <select id="listMemberPackageServie" resultMap="memberPackageService">
+    select sid, member_package_id, service_name, remain_time, total_time, service_type,
+    insert_dt, update_dt, service_code
+    from t_member_package_service
+    where is_valid = 1 and member_package_id = #{memberPackageId,jdbcType=BIGINT}
+  </select>
+
+  <select id="listOrderPackage" resultMap="orderPackage" parameterType="com.comvee.cdms.packages.dto.ListMemberPackageMapperDTO">
+      select t.sid, t.member_id, t.doctor_id, t.package_id, t.order_id
+      ,DATE_FORMAT( t.start_dt,'%Y-%m-%d %T') start_dt
+      ,DATE_FORMAT( t.end_dt,'%Y-%m-%d %T') end_dt
+      ,DATE_FORMAT( t.insert_dt,'%Y-%m-%d %T') insert_dt
+      ,t.update_dt, t.package_name, t.price, t.package_status
+      ,q.member_name,q.sex,w.doctor_name,ifnull(mci.checkin_status,0)in_hos
+      from t_member_package t join t_member q
+      on t.member_id = q.member_id and q.is_valid = 1
+      join t_doctor w on t.doctor_id = w.doctor_id
+      left join t_member_checkin_info mci on mci.member_id=t.member_id and mci.is_valid=1
+    where t.is_valid = 1
+        <if test="memberId != null and '' != memberId">
+          and t.member_id = #{memberId}
+        </if>
+        <if test="doctorId != null and '' != doctorId">
+          and t.doctor_id = #{doctorId}
+        </if>
+        <if test="keyword != null and '' != keyword">
+          and instr(t.package_name, #{keyword}) > 0
+        </if>
+        <if test="packageStatus != null">
+          and t.package_status = #{packageStatus}
+        </if>
+        <if test = "doctorList != null and doctorList.size() > 0">
+          and t.doctor_id in
+          <foreach collection="doctorList" item="item" open="(" close=")" separator=",">
+             #{item}
+          </foreach>
+        </if>
+        <if test="isRead!=null">
+          and is_read = #{isRead}
+        </if>
+      order by t.insert_dt desc
+  </select>
+
+  <update id="setMemberPackageIsRead" parameterType="string">
+    update t_member_package
+    set is_read = 1
+    where is_valid = 1 and sid = #{memberPackageId}
+  </update>
+
+  <select id="getValidMemberService" resultMap="memberPackageService" parameterType="com.comvee.cdms.packages.dto.UsePackageServiceDTO">
+    select q.insert_dt,q.member_package_id,q.remain_time,q.service_code
+    ,q.service_name,q.service_type,q.sid,q.total_time,q.update_dt
+    from t_member_package t , t_member_package_service q
+    where t.is_valid = 1 and q.is_valid = 1 and t.sid = q.member_package_id and t.member_id = #{memberId} and t.doctor_id = #{doctorId}
+    and now() BETWEEN t.start_dt and t.end_dt and q.remain_time > 0
+    and q.service_code = #{serviceCode, typeHandler=org.apache.ibatis.type.EnumTypeHandler} order by q.insert_dt limit 1
+  </select>
+
+  <update id="useService">
+    update t_member_package_service t set t.remain_time = t.remain_time - 1
+    where t.sid = #{sid}
+  </update>
+
+  <select id="listMemberPackageByExpireDay" resultMap="memberPackage">
+    select sid, member_id, doctor_id, package_id, order_id
+    ,DATE_FORMAT( start_dt,'%Y-%m-%d %T') start_dt
+    ,DATE_FORMAT( end_dt,'%Y-%m-%d %T') end_dt
+    ,DATE_FORMAT( insert_dt,'%Y-%m-%d %T') insert_dt
+    ,update_dt, package_name, price, package_status
+    from t_member_package where is_valid = 1 and date_format(end_dt, '%Y-%m-%d') = #{date}
+    order by insert_dt
+  </select>
+
+  <select id="countMemberPackage" resultType="long"
+          parameterType="com.comvee.cdms.packages.dto.CountMemberPackageDTO">
+    select count(*) from t_member_package t where t.is_valid = 1
+    <if test="memberId != null and '' != memberId">
+      and t.member_id = #{memberId}
+    </if>
+    <if test="packageId != null and '' != packageId">
+      and t.package_id = #{packageId}
+    </if>
+    <if test="doctorId != null and '' != doctorId">
+      and t.doctor_id = #{doctorId}
+    </if>
+    <if test="packageStatus != null">
+      and t.package_status = #{packageStatus}
+    </if>
+    <if test="startDtMin != null and '' != startDtMin">
+      and t.start_dt &gt;= #{startDtMin}
+    </if>
+    <if test="startDtMax != null and '' != startDtMax">
+      and t.start_dt &lt;= #{startDtMax}
+    </if>
+    <if test="isRead!=null">
+      and is_read = #{isRead}
+    </if>
+  </select>
+
+  <select id="listPackageManage" parameterType="com.comvee.cdms.packages.dto.PackageManageDTO" resultType="com.comvee.cdms.packages.po.PackageManagePO">
+    SELECT p.sid sid,p.package_name packageName,DATE_FORMAT(p.start_dt,'%Y-%m-%d')startDt,DATE_FORMAT(p.end_dt,'%Y-%m-%d')endDt,DATEDIFF(p.end_dt,NOW()) remainTime ,
+    p.member_id memberId,m.member_name memberName,m.mobile_phone mobilePhone,m.id_card idCard,p.package_status packageStatus,p.is_valid isValid,
+    p.doctor_id doctorId,d.doctor_name doctorName,d.hospital_id hospitalId,d.hospital_name hospitalName,d.depart_id departId,d.depart_name departName
+    FROM t_member_package p ,t_member m ,t_doctor_member e ,t_doctor d
+    WHERE p.is_valid = 1 AND p.member_id=m.member_id AND p.doctor_id = d.doctor_id AND m.member_id = e.member_id AND e.is_valid = 1 and e.doctor_id=d.doctor_id
+    <if test="hospitalId != null and ''!=hospitalId">
+      and d.hospital_id = #{hospitalId}
+    </if>
+    <if test="departId != null and ''!=departId">
+      and d.depart_id = #{departId}
+    </if>
+    <if test="doctorId != null and ''!=doctorId">
+      and d.doctor_id = #{doctorId}
+    </if>
+    <if test="memberName != null and ''!=memberName">
+      and instr(m.member_name,#{memberName})>0
+    </if>
+    <if test="idCard != null and ''!=idCard">
+      and m.id_card = #{idCard}
+    </if>
+    <if test="mobilePhone != null and ''!=mobilePhone">
+      and instr(m.mobile_phone,#{mobilePhone})>0
+    </if>
+    <if test="packageId != null and ''!=packageId">
+      and p.package_id = #{packageId}
+    </if>
+    order by p.start_dt desc
+  </select>
+  <select id="pullpackage" resultMap="package" >
+    select package_id,package_name,price,insert_dt,update_dt,time_unit,time_num
+    from t_package
+  </select>
+  <select id="getEarlyMemberPackage" parameterType="com.comvee.cdms.statistics.dto.SynthesizeDataDTO" resultType="com.comvee.cdms.packages.po.MemberPackagePO">
+    select a.sid sid,a.member_id memberId,a.doctor_id doctorId,a.package_id packageId,
+    a.order_id orderId,DATE_FORMAT(a.start_dt,'%Y-%m-%d')startDt,DATE_FORMAT(a.end_dt,'%Y-%m-%d')endDt,DATE_FORMAT(a.insert_dt,'%Y-%m-%d') insertDt,
+    DATE_FORMAT(a.update_dt,'%Y-%m-%d')udateDt,a.package_name packageName,a.price price,a.package_status packageStatus
+    from t_member_package a,t_doctor b where a.is_valid = 1 and a.doctor_id = b.doctor_id
+    <if test="memberId != null and ''!=memberId">
+      and a.member_id = #{memberId}
+    </if>
+    <if test="doctorId != null and ''!=doctorId">
+      and a.doctor_id = #{doctorId}
+    </if>
+    <if test="hospitalId!= null and ''!=hospitalId">
+      and b.hospital_id = #{hospitalId}
+    </if>
+    <if test="departmentId!= null and ''!=departmentId">
+      and b.depart_id = #{departmentId}
+    </if>
+    <if test="startDt != null and ''!=startDt">
+      and a.insert_dt >= #{startDt}
+    </if>
+    <if test="endDt != null and ''!=endDt">
+      and a.insert_dt &lt;= #{endDt}
+    </if>
+    order by a.insert_dt asc
+  </select>
+
+  <select id="countNewPackage" resultType="java.lang.Long" parameterType = "com.comvee.cdms.statistics.dto.SynthesizeDataDTO">
+    select count(p.sid) from t_member_package p,t_doctor d
+    where  p.doctor_id = d.doctor_id and p.is_valid = 1
+    <if test = "packageStatus != null">
+          and p.package_status = #{packageStatus}
+    </if>
+    <if test="memberId != null and ''!=memberId">
+      and p.member_id = #{memberId}
+    </if>
+    <if test="doctorId != null and ''!=doctorId">
+      and p.doctor_id = #{doctorId}
+    </if>
+    <if test="hospitalId != null and ''!=hospitalId">
+      and d.hospital_id = #{hospitalId}
+    </if>
+    <if test="departmentId != null and ''!=departmentId">
+      and d.depart_id = #{departmentId}
+    </if>
+    <if test="startDt != null and ''!=startDt">
+      and p.insert_dt &gt;= #{startDt}
+    </if>
+    <if test="endDt != null and ''!=endDt">
+      and p.insert_dt &lt;= #{endDt}
+    </if>
+  </select>
+
+  <update id="deletePackage" parameterType="java.lang.String">
+    update t_member_package set is_valid = 0 where sid = #{sid}
+  </update>
+
+  <select id="listPackageByMemberDoctor" parameterType="java.lang.String" resultType="com.comvee.cdms.packages.po.MemberPackagePO">
+    select sid sid,member_id memberId,doctor_id doctorId,package_id packageId,
+    order_id orderId,DATE_FORMAT(start_dt,'%Y-%m-%d')startDt,DATE_FORMAT(end_dt,'%Y-%m-%d')endDt,DATE_FORMAT(insert_dt,'%Y-%m-%d') insertDt,DATE_FORMAT(update_dt,'%Y-%m-%d')udateDt,
+    package_name packageName,price price,package_status packageStatus
+    from t_member_package where member_id = #{memberId} and doctor_id = #{doctorId} and is_valid = 1 and package_status = 1
+  </select>
+
+  <update id="updateMemberPackageService">
+    update t_member_package_service t set is_valid = 0
+    <where>
+    <if test="memberPackageId != null and ''!=memberPackageId">
+      and member_package_id = #{memberPackageId}
+    </if>
+    </where>
+  </update>
+
+  <select id="sumPackageMonthPriceForHos" resultMap="monthPriceTotal" parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO">
+    <!--visitType类型 1住院 2门诊&居家 -->
+    <if test="visitType==1">
+      select DATE_FORMAT(m.insert_dt,'%Y-%m') month,ifnull(sum(m.price),0) priceTotal from t_member_package m
+      join t_member_in_hospital_log h
+      on m.member_id=h.member_id
+      where h.is_valid=1
+      <if test="departIdList!=null and departIdList.size()&gt;0">
+        and h.department_id in
+        <foreach collection="departIdList" index="index" item="item" open="(" close=")" separator=",">
+          #{item}
+        </foreach>
+      </if>
+      <if test="hospitalId!=null and hospitalId!=''">
+        and h.hospital_id=#{hospitalId}
+      </if>
+      <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+        and m.insert_dt between #{startDt} and #{endDt}
+        and (h.out_hospital_date between #{startDt} and #{endDt}
+        or in_status=1)
+      </if>
+      <!--<if test = "year != null and '' != year">
+        and DATE_FORMAT(m.insert_dt,'%Y') = #{year}
+      </if>-->
+      group by DATE_FORMAT(m.insert_dt,'%Y-%m')
+    </if>
+    <if test="visitType==2">
+      select DATE_FORMAT(m.insert_dt,'%Y-%m') month,ifnull(sum(m.price),0) priceTotal from t_member_package m
+      join t_doctor d on m.doctor_id=d.doctor_id
+      <if test="hospitalId!=null and hospitalId!=''">
+        and d.hospital_id=#{hospitalId}
+      </if>
+      LEFT JOIN (select * from t_member_visit
+      where visit_date BETWEEN DATE_FORMAT(date_add(#{endDt}, interval -7 day),'%Y-%m-%d 00:00:00')
+      and DATE_FORMAT(#{endDt},'%Y-%m-%d %H:%i:%s') group by member_id) v
+      ON m.member_id = v.member_id and d.depart_id = v.depart_code
+      and v.hospital_id=d.hospital_id
+      where (m.is_valid=1
+      <if test="doctorIdList!=null and doctorIdList.size&gt;0">
+        and m.doctor_id in
+        <foreach collection="doctorIdList" index="index" item="item" open="(" close=")" separator=",">
+          #{item}
+        </foreach>
+      </if>
+      <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+        and m.insert_dt between #{startDt} and #{endDt}
+      </if>
+      <!--<if test = "year != null and '' != year">
+        and DATE_FORMAT(m.insert_dt,'%Y') = #{year}
+      </if>-->)
+      OR (v.sid IS NOT NULL
+      <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+        and m.insert_dt between #{startDt} and #{endDt}
+      </if>
+      <!--<if test = "year != null and '' != year">
+        and DATE_FORMAT(m.insert_dt,'%Y') = #{year}
+      </if>--> and m.is_valid=1)
+      group by DATE_FORMAT(m.insert_dt,'%Y-%m')
+    </if>
+  </select>
+
+  <select id="countMonthPackageForHos" parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO" resultMap="monthPackage">
+    <!--visitType类型 1住院 2门诊&居家 -->
+    <if test="visitType==1">
+      select DATE_FORMAT(m.insert_dt,'%Y-%m') yearMonth, count(m.sid) count from t_member_package m
+      join t_member_in_hospital_log h
+      on m.member_id=h.member_id
+      where h.is_valid=1
+      <if test="hospitalId!=null and hospitalId!=''">
+        and h.hospital_id=#{hospitalId}
+      </if>
+      <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+        and (h.out_hospital_date between #{startDt} and #{endDt}
+        or in_status=1)
+        and m.insert_dt between #{startDt} and #{endDt}
+      </if>
+      <!--and DATE_FORMAT(m.insert_dt,'%Y') = #{year}-->
+      and m.package_status=1
+      group by DATE_FORMAT(m.insert_dt, '%Y-%m')
+    </if>
+    <if test="visitType==2">
+      select DATE_FORMAT(m.insert_dt,'%Y-%m') yearMonth, count(m.sid) count from t_member_package m
+      join t_doctor d on m.doctor_id=d.doctor_id
+      <if test="hospitalId!=null and hospitalId!=''">
+        and d.hospital_id=#{hospitalId}
+      </if>
+      LEFT JOIN (select * from t_member_visit
+      where visit_date BETWEEN DATE_FORMAT(date_add(#{endDt}, interval -7 day),'%Y-%m-%d 00:00:00')
+      and DATE_FORMAT(#{endDt},'%Y-%m-%d %H:%i:%s') group by member_id) v
+      ON m.member_id = v.member_id and d.depart_id = v.depart_code
+      and v.hospital_id=d.hospital_id
+      where (m.is_valid=1
+      <if test="doctorIdList!=null and doctorIdList.size&gt;0">
+        and m.doctor_id in
+        <foreach collection="doctorIdList" index="index" item="item" open="(" close=")" separator=",">
+          #{item}
+        </foreach>
+      </if>
+      <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+        and m.insert_dt between #{startDt} and #{endDt}
+      </if>
+      <!--and DATE_FORMAT(m.insert_dt,'%Y') = #{year}-->
+      and m.package_status=1)
+      OR (v.sid IS NOT NULL
+      <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+        and m.insert_dt between #{startDt} and #{endDt}
+      </if>
+      <!--and DATE_FORMAT(m.insert_dt,'%Y') = #{year}-->
+      and m.package_status=1
+      and m.is_valid=1)
+      group by DATE_FORMAT(m.insert_dt, '%Y-%m')
+    </if>
+  </select>
+
+  <select id="sumPackagePriceForHos" parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO" resultType="long">
+    <!--visitType类型 1住院 2门诊&居家 -->
+    <if test="visitType==1">
+      select ifnull(sum(m.price),0) from t_member_package m
+      join t_member_in_hospital_log h
+      on m.member_id=h.member_id
+      where h.is_valid=1
+      <if test="departIdList!=null and departIdList.size()&gt;0">
+        and h.department_id in
+        <foreach collection="departIdList" index="index" item="item" open="(" close=")" separator=",">
+          #{item}
+        </foreach>
+      </if>
+      <if test="hospitalId!=null and hospitalId!=''">
+        and h.hospital_id=#{hospitalId}
+      </if>
+      <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+        and m.insert_dt between #{startDt} and #{endDt}
+        and (h.out_hospital_date between #{startDt} and #{endDt}
+        or in_status=1)
+      </if>
+      <if test = "packageStatus != null">
+        and m.package_status = #{packageStatus}
+      </if>
+    </if>
+    <if test="visitType==2">
+      select ifnull(sum(m.price),0) from (select m.price from t_member_package m
+      join t_doctor d on m.doctor_id=d.doctor_id
+      <if test="hospitalId!=null and hospitalId!=''">
+        and d.hospital_id=#{hospitalId}
+      </if>
+      LEFT JOIN (select * from t_member_visit
+      where visit_date BETWEEN DATE_FORMAT(date_add(#{endDt}, interval -7 day),'%Y-%m-%d 00:00:00')
+      and DATE_FORMAT(#{endDt},'%Y-%m-%d %H:%i:%s') group by member_id) v
+      ON m.member_id = v.member_id and d.depart_id = v.depart_code
+      and v.hospital_id=d.hospital_id
+      where (m.is_valid=1
+      <if test="doctorIdList!=null and doctorIdList.size&gt;0">
+        and m.doctor_id in
+        <foreach collection="doctorIdList" index="index" item="item" open="(" close=")" separator=",">
+          #{item}
+        </foreach>
+      </if>
+      <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+        and m.insert_dt between #{startDt} and #{endDt}
+      </if>
+      <if test = "packageStatus != null">
+        and m.package_status = #{packageStatus}
+      </if>)
+      OR (v.sid IS NOT NULL
+      <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+        and m.insert_dt between #{startDt} and #{endDt}
+      </if>
+      <if test = "packageStatus != null">
+        and m.package_status = #{packageStatus}
+      </if>
+      and m.is_valid=1)
+      GROUP by m.sid)m
+    </if>
+  </select>
+
+
+  <select id="countPackagePeopleNumber" resultType="long">
+    select count(*) from (
+    select t.member_id from t_member_package t , t_member_package_service q
+    where t.is_valid = 1 and q.is_valid = 1 and t.sid = q.member_package_id
+    and t.doctor_id in
+    <foreach collection="doctorList" item="item" open="(" close=")" separator=",">
+      #{item}
+    </foreach>
+    and t.package_id = #{packageId} and now() BETWEEN t.start_dt and t.end_dt
+    and q.remain_time > 0 group by t.member_id
+    ) p
+  </select>
+
+  <select id="listMemberAllPackage" resultMap="memberPackage" parameterType="com.comvee.cdms.packages.dto.ListValidMemberPackageDTO">
+    select t.doctor_id,t.end_dt,t.insert_dt,t.member_id,t.order_id
+    ,t.origin,t.package_id,t.package_name,t.package_status
+    ,t.price,t.sid,t.start_dt
+    from t_member_package t , t_member_package_service q
+    where t.sid = q.member_package_id and t.is_valid = 1 and q.is_valid = 1
+    <if test="memberId != null and '' != memberId">
+      and t.member_id = #{memberId}
+    </if>
+    <if test="doctorId != null and '' != doctorId">
+      and t.doctor_id = #{doctorId}
+    </if>
+    <if test="codeList != null and codeList.size > 0">
+      and service_code in
+      <foreach collection="codeList" index="index" item = "item" open="(" close=")" separator=",">
+        #{item, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+      </foreach>
+    </if>
+    <if test="packageId != null and '' != packageId">
+      and t.package_id = #{packageId}
+    </if>
+    group by t.sid order by t.insert_dt desc
+  </select>
+
+  <select id="listAllMemberValidPackage" parameterType="java.lang.String" resultMap="memberPackage">
+    select sid,member_id,doctor_id,package_id,order_id,start_dt,end_dt,insert_dt,update_dt,package_name,price,package_status
+    FROM t_member_package where is_valid = 1 and package_status = 1 and now() BETWEEN start_dt and end_dt and member_id = #{memberId}
+  </select>
+
+</mapper>

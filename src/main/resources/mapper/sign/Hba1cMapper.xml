@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.sign.mapper.Hba1cMapper">
+
+    <resultMap id="hba1c" type="com.comvee.cdms.sign.po.Hba1cPO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="record_value" jdbcType="REAL" property="recordValue" />
+        <result column="record_level" jdbcType="TINYINT" property="recordLevel" />
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+        <result column="operator_type" jdbcType="TINYINT" property="operatorType" />
+        <result column="record_dt" jdbcType="TIMESTAMP" property="recordDt" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="valid" jdbcType="TINYINT" property="valid" />
+        <result column="range_max" jdbcType="VARCHAR" property="rangeMax" />
+        <result column="origin" jdbcType="TINYINT" property="origin" />
+    </resultMap>
+
+    <insert id="addHba1c" parameterType="com.comvee.cdms.sign.po.Hba1cPO">
+        insert into t_hba1c (sid, member_id, record_value,
+          record_level, operator_id, operator_type,
+          record_dt, remark,  range_max,origin
+          )
+        values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{recordValue,jdbcType=REAL},
+          #{recordLevel,jdbcType=TINYINT}, #{operatorId,jdbcType=BIGINT}, #{operatorType,jdbcType=TINYINT},
+          #{recordDt,jdbcType=TIMESTAMP},   #{remark,jdbcType=VARCHAR}, #{rangeMax,jdbcType=VARCHAR},#{origin,jdbcType=TINYINT}
+          )
+    </insert>
+
+    <select id="listMemberHba1c" resultMap="hba1c">
+        select sid, member_id, record_value, record_level, operator_id, operator_type, record_dt,
+        insert_dt, update_dt, remark, valid, range_max,origin from (
+            select sid, member_id, record_value, record_level, operator_id, operator_type, record_dt,
+            insert_dt, update_dt, remark, valid, range_max,origin
+            from t_hba1c
+            where valid = 1 and member_id = #{memberId}
+            <if test="startDt != null and '' != startDt">
+                and record_dt &gt;= #{startDt}
+            </if>
+            <if test="endDt != null and '' != endDt">
+                and record_dt &lt;= #{endDt}
+            </if>
+            order by record_dt desc
+        ) q group by DATE_FORMAT(q.record_dt,'%Y-%m-%d') order by q.record_dt desc
+    </select>
+
+    <select id="getHba1cById" resultMap="hba1c">
+        select sid, member_id, record_value, record_level, operator_id, operator_type, record_dt,
+        insert_dt, update_dt, remark, valid, range_max,origin
+        from t_hba1c
+        where valid = 1 and sid = #{sid} limit 1
+    </select>
+
+    <select id="getNewHba1c" resultMap="hba1c">
+        select sid, member_id, record_value, record_level, operator_id, operator_type, record_dt,
+        insert_dt, update_dt, remark, valid, range_max,origin
+        from t_hba1c
+        where valid = 1 and member_id = #{memberId} order by record_dt desc limit 1
+    </select>
+
+    <select id="listHba1cMemberIdsByDto" resultType="java.lang.String">
+        select
+        distinct t.member_id
+        from (select a.* from
+        (select sid, member_id, record_value, record_level, operator_id, operator_type, record_dt,
+        insert_dt, update_dt, remark, valid, range_max,origin
+        from t_hba1c
+        having 1
+        order by record_dt desc) a
+        group by a.member_id) t
+        join t_member_join_hospital h on t.member_id = h.member_id
+        where t.valid = 1 and h.valid = 1
+        <if test="memberId != null and '' != memberId">
+            and t.member_id = #{memberId}
+        </if>
+        <if test="startDt != null and '' != startDt">
+            and t.record_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and t.record_dt &lt;= #{endDt}
+        </if>
+        <if test="recordLevel != null">
+            and t.record_level = #{recordLevel}
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and h.hospital_id = #{hospitalId}
+        </if>
+        <if test="hospitalIdList!=null and hospitalIdList.size()&gt;0">
+            AND h.hospital_id IN
+            <foreach collection="hospitalIdList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+</mapper>

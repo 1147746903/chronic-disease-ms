@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.DictMapper">
+  
+   <sql id="dict_column" >
+    sid,code, pcode,memo,name,order_num
+  </sql>
+    
+    <select id="listDictByPcode"  resultType="com.comvee.cdms.defender.model.DictModel">
+    	select <include refid="dict_column" /> from tiq_dict where is_valid=1 and pcode=#{pcode}
+    	order by order_num,name
+    </select>
+</mapper>

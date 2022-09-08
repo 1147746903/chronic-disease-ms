@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.records.mapper.SportRecordMapper">
+    <resultMap id="baseMap" type="com.comvee.cdms.records.model.po.SportRecordPO">
+        <id column="sid" property="sid" jdbcType="BIGINT"/>
+        <result column="member_id" property="memberId" jdbcType="VARCHAR"/>
+        <result column="sport_id" property="sportId" jdbcType="VARCHAR"/>
+        <result column="sport_name" property="sportName" jdbcType="VARCHAR"/>
+        <result column="total" property="total" jdbcType="DOUBLE"/>
+        <result column="sport_type" property="sportType" jdbcType="TINYINT"/>
+        <result column="sport_state" property="sportState" jdbcType="TINYINT"/>
+        <result column="record_main_id" property="recordMainId" jdbcType="VARCHAR"/>
+        <result column="record_dt" property="recordDt" jdbcType="DOUBLE"/>
+        <result column="record_time" property="recordTime" jdbcType="TIMESTAMP"/>
+        <result column="intensity" property="intensity" jdbcType="TINYINT"/>
+        <result column="operation_type" property="operationType" jdbcType="TINYINT"/>
+        <result column="operation_id" property="operationId" jdbcType="VARCHAR"/>
+        <result column="origin" property="origin" jdbcType="TINYINT"/>
+        <result column="origin_id" property="originId" jdbcType="VARCHAR"/>
+        <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP"/>
+        <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP"/>
+        <result column="valid" property="valid" jdbcType="TINYINT"/>
+        <result column="paramTime" property="paramTime" jdbcType="VARCHAR"/>
+        <result column="sportEndTime" property="sportEndTime" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="sportMap" type="com.comvee.cdms.records.model.po.SportPO">
+        <id column="sid" property="sid" jdbcType="BIGINT"/>
+        <result column="sport_name" property="sportName" jdbcType="VARCHAR"/>
+        <result column="intensity" property="intensity" jdbcType="TINYINT"/>
+        <result column="met" property="met" jdbcType="DOUBLE"/>
+        <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP"/>
+        <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP"/>
+        <result column="valid" property="valid" jdbcType="TINYINT"/>
+    </resultMap>
+    <insert id="addSportRecord" parameterType="com.comvee.cdms.records.model.po.SportRecordPO">
+        insert into t_sport_records(sid, member_id, sport_id, sport_name, total, sport_type, sport_state,
+                                    record_main_id, record_dt, record_time, intensity, operation_type, operation_id,
+                                    origin, origin_id, insert_dt, modify_dt, valid)
+        values (#{sid}, #{memberId}, #{sportId}, #{sportName}, #{total}, #{sportType}, #{sportState}, #{recordMainId},
+                #{recordDt}, #{recordTime}, #{intensity}, #{operationType}, #{originId}, #{origin}, #{originId},
+                now(), now(), 1);
+    </insert>
+    <update id="updateSportRecord" parameterType="com.comvee.cdms.records.model.po.SportRecordPO">
+        update t_sport_records
+        set modify_dt = now()
+        <if test="total != null ">
+            , total = #{total}
+        </if>
+        <if test="sportId != null ">
+            , sport_id = #{sportId}
+        </if>
+        <if test="sportName != null ">
+            , sport_name = #{sportName}
+        </if>
+        <if test="sportState != null ">
+            , sport_state = #{sportState}
+        </if>
+        <if test="recordDt != null and recordDt != '' ">
+            , record_dt = #{recordDt}
+        </if>
+        <if test="recordTime != null and recordTime != '' ">
+            , record_time = #{recordTime}
+        </if>
+        <if test="intensity != null ">
+            , intensity = #{intensity}
+        </if>
+        where sid = #{sid};
+    </update>
+    <delete id="deleteSportRecord" parameterType="com.comvee.cdms.records.model.dto.SportRecordDTO">
+        delete
+        from t_sport_records
+        where 1 = 1
+        and record_main_id = #{recordMainId}
+        <if test="idList != null">
+            and sid not in
+            <foreach collection="idList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </delete>
+    <select id="listSport" parameterType="com.comvee.cdms.records.model.dto.SportRecordDTO"
+            resultMap="sportMap">
+        select *
+        from t_sports
+        where 1=1
+        <if test=" sportName != null and sportName != '' ">
+            and instr(sport_name, #{sportName}) > 0
+        </if>
+        <if test="intensity != null ">
+            and intensity = #{intensity}
+        </if>
+    </select>
+    <select id="getSportById" resultMap="sportMap">
+        select *
+        from t_sports
+        where sid = #{sid}
+    </select>
+    <select id="listRecentSportRecord" parameterType="com.comvee.cdms.records.model.dto.SportRecordDTO"
+            resultMap="baseMap">
+        select distinct sport_id, sport_name, intensity, total
+        from t_sport_records
+        where 1 = 1
+          and member_id = #{memberId}
+        order by record_time desc limit 6
+    </select>
+    <select id="listSportRecord" parameterType="com.comvee.cdms.records.model.dto.SportRecordDTO"
+            resultMap="baseMap">
+        select a.*, date_format(record_time, '%H:%i') paramTime, date_add(record_time, INTERVAL total MINUTE)
+        sportEndTime
+        from t_sport_records a
+        where 1 = 1
+        and member_id = #{memberId}
+        <if test="recordDt != null and recordDt != '' ">
+            and record_dt = #{recordDt}
+        </if>
+        <if test="begin != null and begin != '' ">
+            and record_time >= #{begin}
+        </if>
+        <if test="end != null and end != '' ">
+            and #{end} >= record_time
+        </if>
+        order by record_time
+    </select>
+</mapper>

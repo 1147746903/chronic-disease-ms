@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.wechat.mapper.BarrierQuesMapper">
+
+    <resultMap type="com.comvee.cdms.defender.wechat.po.BarrierQuesPO" id="TiqBarrierQuesMap">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="batchId" column="batch_id" jdbcType="VARCHAR"/>
+        <result property="barrierId" column="barrier_id" jdbcType="VARCHAR"/>
+        <result property="quesId" column="ques_id" jdbcType="VARCHAR"/>
+        <result property="answer" column="answer" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="VARCHAR"/>
+        <result property="isCorrect" column="is_correct" jdbcType="INTEGER"/>
+        <result property="overTime" column="over_time" jdbcType="INTEGER"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <resultMap type="com.comvee.cdms.defender.wechat.po.BarrierQuesCfgPO" id="TiqBarrierQuesCfgMap">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="answerOptions" column="answer_options" jdbcType="VARCHAR"/>
+        <result property="answerKey" column="answer_key" jdbcType="VARCHAR"/>
+        <result property="analyse" column="analyse" jdbcType="VARCHAR"/>
+        <result property="quesType" column="ques_type" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="tag" column="tag" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TiqBarrierQuesMap">
+        select
+          sid, batch_id,barrier_id, ques_id, sort,answer,is_correct, is_valid, insert_dt, modify_dt
+        from tiq_barrier_ques
+        where sid = #{sid}
+    </select>
+
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TiqBarrierQuesMap">
+        select
+        sid, batch_id,barrier_id, ques_id,  sort,answer, is_correct,is_valid, insert_dt, modify_dt
+        from tiq_barrier_ques
+        <where>
+            <if test="sid != null and sid != ''">
+                and sid = #{sid}
+            </if>
+            <if test="batchId != null and batchId != ''">
+                and batch_id = #{batchId}
+            </if>
+            <if test="barrierId != null and barrierId != ''">
+                and barrier_id = #{barrierId}
+            </if>
+            <if test="quesId != null and quesId != ''">
+                and ques_id = #{quesId}
+            </if>
+            <if test="answer != null and answer != ''">
+                and answer = #{answer}
+            </if>
+            <if test="isValid != null">
+                and is_valid = #{isValid}
+            </if>
+            <if test="insertDt != null and insertDt != ''">
+                and insert_dt = #{insertDt}
+            </if>
+            <if test="modifyDt != null">
+                and modify_dt = #{modifyDt}
+            </if>
+        </where>
+        order by sort asc
+    </select>
+
+    <select id="queryErrorQuesByBarrierId" resultMap="TiqBarrierQuesCfgMap">
+         select
+        q.sid, q.title, q.answer_options, q.answer_key, q.analyse, q.ques_type,q.type, q.tag, q.is_valid, q.insert_dt, q.modify_dt
+        from tiq_barrier_ques b
+        left join tiq_barrier_ques_cfg q on b.ques_id = q.sid
+        where b.barrier_id = #{sid} and b.is_valid = 1 and q.is_valid = 1 and (b.is_correct = 0 or b.is_correct is null)
+        <if test="batchId != null and batchId != ''">
+            and b.batch_id = #{batchId}
+        </if>
+        group by q.sid
+        <choose>
+            <when test="batchId != null and batchId !=''">
+                order by b.sort asc
+            </when>
+            <otherwise>
+                order by b.insert_dt desc
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sid" useGeneratedKeys="true">
+        insert into tiq_barrier_ques(sid,batch_id,barrier_id, ques_id, sort,answer,is_correct,over_time,is_valid, insert_dt, modify_dt)
+        values (#{sid}, #{batchId},#{barrierId}, #{quesId}, #{sort},#{answer,jdbcType=VARCHAR},#{isCorrect,jdbcType=TINYINT},#{overTime},1,#{insertDt},#{modifyDt})
+    </insert>
+
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tiq_barrier_ques
+        <set>
+            <if test="batchId != null and batchId != ''">
+                 batch_id = #{batchId},
+            </if>
+            <if test="barrierId != null and barrierId != ''">
+                barrier_id = #{barrierId},
+            </if>
+            <if test="quesId != null and quesId != ''">
+                ques_id = #{quesId},
+            </if>
+            <if test="answer != null and answer != ''">
+                answer = #{answer},
+            </if>
+            <if test="isCorrect != null">
+                is_correct = #{isCorrect},
+            </if>
+            <if test="overTime != null">
+                over_time = #{overTime},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid},
+            </if>
+            <if test="insertDt != null and insertDt != ''">
+                insert_dt = #{insertDt},
+            </if>
+            <if test="modifyDt != null">
+                modify_dt = #{modifyDt},
+            </if>
+        </set>
+        <where>
+            <if test="sid != null and sid != ''">
+                 sid = #{sid}
+            </if>
+            <if test="barrierId != null and barrierId != ''">
+                AND barrier_id = #{barrierId}
+            </if>
+            <if test="quesId != null and quesId != ''">
+                AND ques_id = #{quesId}
+            </if>
+        </where>
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tiq_barrier_ques where sid = #{sid}
+    </delete>
+
+</mapper>
+

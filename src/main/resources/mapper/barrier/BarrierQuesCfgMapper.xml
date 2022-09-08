@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.wechat.mapper.BarrierQuesCfgMapper">
+
+    <resultMap type="com.comvee.cdms.defender.wechat.po.BarrierQuesCfgPO" id="TiqBarrierQuesCfgMap">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="answerOptions" column="answer_options" jdbcType="VARCHAR"/>
+        <result property="answerKey" column="answer_key" jdbcType="VARCHAR"/>
+        <result property="analyse" column="analyse" jdbcType="VARCHAR"/>
+        <result property="quesType" column="ques_type" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="barrierType" column="barrier_type" jdbcType="VARCHAR"/>
+        <result property="tag" column="tag" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap type="com.comvee.cdms.defender.wechat.vo.BarrierQuesCfgVO" id="BarrierQuesCfgVO">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="answerOptions" column="answer_options" jdbcType="VARCHAR"/>
+        <result property="answerKey" column="answer_key" jdbcType="VARCHAR"/>
+        <result property="analyse" column="analyse" jdbcType="VARCHAR"/>
+        <result property="quesType" column="ques_type" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="barrierType" column="barrier_type" jdbcType="VARCHAR"/>
+        <result property="tag" column="tag" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="VARCHAR"/>
+        <result property="courseId" column="course_id" jdbcType="VARCHAR"/>
+        <result property="courseTitle" column="name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TiqBarrierQuesCfgMap">
+        select
+          sid, title, answer_options, answer_key, analyse,ques_type, type, barrier_type,tag, is_valid, insert_dt, modify_dt
+        from tiq_barrier_ques_cfg
+        where sid = #{sid}
+    </select>
+
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TiqBarrierQuesCfgMap">
+        select
+        sid, title, answer_options, answer_key, analyse,ques_type, type, barrier_type,tag, is_valid, insert_dt, modify_dt
+        from tiq_barrier_ques_cfg
+        <where>
+            <if test="sid != null and sid != ''">
+                and sid = #{sid}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="answerOptions != null and answerOptions != ''">
+                and answer_options = #{answerOptions}
+            </if>
+            <if test="answerKey != null and answerKey != ''">
+                and answer_key = #{answerKey}
+            </if>
+            <if test="analyse != null and analyse != ''">
+                and analyse = #{analyse}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            <if test="barrierType != null">
+                and barrier_type = #{barrierType}
+            </if>
+            <if test="tag != null and tag != ''">
+                and tag = #{tag}
+            </if>
+            <if test="isValid != null">
+                and is_valid = #{isValid}
+            </if>
+            <if test="insertDt != null and insertDt != ''">
+                and insert_dt = #{insertDt}
+            </if>
+            <if test="modifyDt != null and modifyDt != ''">
+                and modify_dt = #{modifyDt}
+            </if>
+        </where>
+    </select>
+    <select id="getQuesCfgById" resultMap="BarrierQuesCfgVO">
+        select
+          q.sid, q.title, q.answer_options, q.answer_key, q.analyse,q.ques_type, q.type,
+        q.barrier_type,q.tag, q.is_valid, q.insert_dt, q.modify_dt,c.course_id,t.name
+        from tiq_barrier_ques_cfg q
+        left join tiq_barrier_course_ques_cfg c on q.sid = c.ques_id
+        left join tiq_course t on t.sid = c.course_id
+        where q.sid = #{sid}
+    </select>
+    <select id="listAllQuesCfg" resultMap="BarrierQuesCfgVO">
+          select
+          q.sid, q.title, q.answer_options, q.answer_key, q.analyse,q.ques_type, q.type,
+        q.barrier_type,q.tag, q.is_valid, q.insert_dt, q.modify_dt,c.course_id,t.name
+        from tiq_barrier_ques_cfg q
+        left join tiq_barrier_course_ques_cfg c on q.sid = c.ques_id
+        left join tiq_course t on t.sid = c.course_id
+        where q.is_valid = 1
+        <if test="title != null and title != ''">
+            and  (q.title like concat('%',concat(#{title},'%')) or t.name like concat('%',concat(#{title},'%')))
+        </if>
+        order by insert_dt asc,sid asc
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sid" useGeneratedKeys="true">
+        insert into tiq_barrier_ques_cfg(sid,title, answer_options, answer_key, analyse,ques_type, type,barrier_type, tag, is_valid, insert_dt, modify_dt)
+        values (#{sid},#{title}, #{answerOptions}, #{answerKey}, #{analyse}, #{quesType},#{type},#{barrierType}, #{tag}, 1, now(), now())
+    </insert>
+
+
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tiq_barrier_ques_cfg
+        <set>
+                title = #{title},
+                answer_options = #{answerOptions},
+                answer_key = #{answerKey},
+                analyse = #{analyse},
+                ques_type = #{quesType},
+                type = #{type},
+                barrier_type = #{barrierType},
+                tag = #{tag},
+                modify_dt = now()
+        </set>
+        where sid = #{sid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tiq_barrier_ques_cfg where sid = #{sid}
+    </delete>
+
+</mapper>
+

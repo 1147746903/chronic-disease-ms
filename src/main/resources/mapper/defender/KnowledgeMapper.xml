@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.TiqKnowledgeMapper">
+    <sql id="KnowledgeColumns">
+         t.id As id ,  t.title As title ,  t.is_valid As isValid ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  t.type As type,t.img,t.memo  
+    </sql>
+
+	<!--根据id获取知识点表表信息 -->
+	<select id="loadKnowledgeById" resultType="com.comvee.cdms.defender.model.KnowledgeModel">
+		SELECT 
+			<include refid="KnowledgeColumns"/>
+		FROM tiq_knowledge t
+		WHERE t.id = #{id} 
+	</select>
+	
+	<!-- 获取知识点表分页信息  -->
+	<select id="loadKnowledge" parameterType="Map" resultType="com.comvee.cdms.defender.model.KnowledgeModel">
+		SELECT 
+			<include refid="KnowledgeColumns"/>
+		FROM tiq_knowledge t
+		
+		where is_valid = 1
+		
+		 <if test="type!=null ">     
+        AND t.type = #{type}  
+        </if> 
+		
+		<if test="param !=null and param!='' ">     
+	        AND ( title like  CONCAT(CONCAT('%',#{param},'%'))  )
+	    </if>  
+		
+		order by t.id desc
+		<!--
+		<where>
+	    <if test="id!=null and id!='' ">     
+        AND t.id = #{id}  
+        </if>  
+	    <if test="title!=null and title!='' ">     
+        AND t.title = #{title}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+	    <if test="type!=null and type!='' ">     
+        AND t.type = #{type}  
+        </if>  
+	    <if test="sort!=null and sort!='' ">     
+        AND t.sort = #{sort}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+    <!-- 统计知识点表记录数 -->
+	<select id="countKnowledge" parameterType="Map" resultType="Long">
+		SELECT count( id )
+		FROM tiq_knowledge t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="id!=null and id!='' ">     
+         AND t.id = #{id}    
+        </if>  
+	    <if test="title!=null and title!='' ">     
+         AND t.title = #{title}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+	    <if test="type!=null and type!='' ">     
+         AND t.type = #{type}    
+        </if>  
+	    <if test="sort!=null and sort!='' ">     
+         AND t.sort = #{sort}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加知识点表记录 -->
+	<insert id="addKnowledge">
+		INSERT INTO tiq_knowledge(
+				
+				    id,
+				
+				title,
+				is_valid,
+				modify_dt,
+				insert_dt,
+				type,
+				img,
+				memo
+		) VALUES (
+			         #{id},
+				#{title},
+				1,
+				now(),
+				now(),
+				#{type},
+				#{img},
+				#{memo}
+		)
+	</insert>
+
+    <!-- 修改知识点表记录 -->
+	<update id="modifyKnowledge">
+		UPDATE tiq_knowledge 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="id!=null and id!='' ">    
+	        id = #{id},
+	        </if>
+	        <if test="title!=null and title!='' ">    
+	        title = #{title},
+	        </if>
+	        <if test="type!=null and type!='' ">    
+	        type = #{type},
+	        </if>
+	        <if test="img!=null and img!='' ">    
+	        img = #{img},
+	        </if>
+	        <if test="memo!=null and memo!='' ">    
+	        memo = #{memo},
+	        </if>
+	        modify_dt = now(),
+		</trim>
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 删除知识点表记录  -->
+	<update id="delKnowledge" parameterType="Long">
+		UPDATE tiq_knowledge SET modify_dt = now(),  is_valid = 0
+		WHERE id = #{id} and is_valid = 1
+	</update>
+	
+	<select id="loadKnowledgeByChapterId" resultType="com.comvee.cdms.defender.model.KnowledgeModel">
+		SELECT <include refid="KnowledgeColumns"/>
+		from tiq_knowledge t left join tiq_chapter_knowledge ck on t.id=ck.knowledge_id
+		where ck.chapter_id=#{chapterId} and t.is_valid=1 and ck.is_valid=1 order by ck.sort
+	</select>
+	
+
+</mapper>

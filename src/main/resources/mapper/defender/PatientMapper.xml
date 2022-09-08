@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.defender.mapper.PatientMapper">
+	
+	
+  <sql id="PatientColumns">
+         t.pid As pid ,  t.openid As openid ,  t.pname As pname ,  t.pidcardno As pidcardno ,  t.pphonenum As pphonenum ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid
+         ,t.diabetes_accede as diabetesAccede , t.daccede_time as daccedeTime , t.pressure_accede as pressureAccede , t.paccede_time as paccedeTime,
+         pic_url as picUrl,sex as sex
+    </sql>
+	
+
+
+<!--根据id获取用户信息表信息 -->
+	<select id="loadPatientByPid" resultType="com.comvee.cdms.defender.model.PatientModel">
+		SELECT 
+			<include refid="PatientColumns"/>
+		FROM tiq_patient t
+		WHERE t.pid = #{pid} 
+	</select>
+	
+	<!-- 添加用户信息记录 -->
+	<insert id="addPatient">
+		INSERT INTO tiq_patient(
+				pid,
+				openid,
+				pname,
+				pidcardno,
+				pphonenum,
+				insert_dt,
+				modify_dt,
+				is_valid,
+				pic_url,
+				sex
+		) VALUES (
+			    #{pid},
+				#{openid},
+				#{pname},
+				#{pidcardno},
+				#{pphonenum},
+				now(),
+				now(),
+				1,
+				#{picUrl},
+				#{sex}
+		)
+		ON DUPLICATE KEY UPDATE
+		pname = VALUES(pname),
+		openid = VALUES(openid),
+		pidcardno = VALUES(pidcardno),
+		pphonenum = VALUES(pphonenum),
+		pic_url = VALUES(pic_url),
+		sex = VALUES(sex)
+	</insert>
+
+    <!-- 修改用户信息记录 -->
+	<update id="modifyPatient">
+		UPDATE tiq_patient 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="openid!=null and openid!='' ">    
+	        openid = #{openid},
+	        </if>
+	        <if test="pname!=null and pname!='' ">    
+	        pname = #{pname},
+	        </if>
+	        <if test="pidcardno!=null and pidcardno!='' ">    
+	        pidcardno = #{pidcardno},
+	        </if>
+	        <if test="pphonenum!=null and pphonenum!='' ">    
+	        pphonenum = #{pphonenum},
+	        </if>
+	        
+	        <if test="diabetesAccede !=null and diabetesAccede!='' ">    
+	        diabetes_accede = #{diabetesAccede},
+	        </if>
+	        
+	        <if test="daccedeTime !=null and daccedeTime != '' ">    
+	        daccede_time = #{daccedeTime},
+	        </if>
+	        
+	        <if test="pressureAccede !=null and pressureAccede != '' ">    
+	        pressure_accede = #{pressureAccede},
+	        </if>
+	        
+	        <if test="paccedeTime !=null and paccedeTime != '' ">    
+	        paccede_time = #{paccedeTime},
+	        </if>
+	        
+	        <if test="picUrl !=null and picUrl != '' ">    
+	        pic_url = #{picUrl},
+	        </if>
+	        <if test="sex !=null and sex != '' ">    
+	        sex = #{sex},
+	        </if>
+	        
+	        modify_dt = now(),
+		</trim>
+		WHERE pid = #{pid}
+	</update>
+	
+	<!-- 删除用户信息记录  -->
+	<update id="delPatient" parameterType="String">
+		UPDATE tiq_patient SET  is_valid = 0 , modify_dt = now()
+		WHERE pid = #{pid}
+	</update>
+
+
+	<select id="loadPatientLabel"
+		resultType="com.comvee.cdms.defender.model.PatientLabelModel">
+		select pid ,label
+		from tiq_patient_label where pid=#{pid}
+		limit 1
+	</select>
+
+	
+</mapper>

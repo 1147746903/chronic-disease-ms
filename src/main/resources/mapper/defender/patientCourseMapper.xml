@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.defender.wechat.mapper.PatientCourseMapper" >
+  <resultMap id="patientCourse" type="com.comvee.cdms.defender.wechat.model.PatientCourseModel" >
+    <id column="sid" property="sid" jdbcType="BIGINT" />
+    <result column="pid" property="pid" jdbcType="BIGINT" />
+    <result column="course_id" property="courseId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="is_valid" property="isValid" jdbcType="TINYINT" />
+    <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP" />
+    <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="courseRemind" type="com.comvee.cdms.defender.wechat.model.CourseRemindModel" >
+    <id column="sid" property="sid" jdbcType="BIGINT" />
+    <result column="pid" property="pid" jdbcType="BIGINT" />
+    <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP" />
+    <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="isValid" jdbcType="TINYINT" />
+    <result column="is_open" property="isOpen" jdbcType="TINYINT" />
+    <result column="remind_time" property="remindTime" jdbcType="VARCHAR" />
+    <result column="monday" property="monday" jdbcType="TINYINT" />
+    <result column="tuesday" property="tuesday" jdbcType="TINYINT" />
+    <result column="wednesday" property="wednesday" jdbcType="TINYINT" />
+    <result column="thursday" property="thursday" jdbcType="TINYINT" />
+    <result column="friday" property="friday" jdbcType="TINYINT" />
+    <result column="saturday" property="saturday" jdbcType="TINYINT" />
+    <result column="sunday" property="sunday" jdbcType="TINYINT" />
+    <result column="remind_num" property="remindNum" jdbcType="VARCHAR" />
+    <result column="last_study_date" property="lastStudyDate" jdbcType="VARCHAR" />
+    <result column="courser_remind" property="courserRemind" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="patientChapter" type="com.comvee.cdms.defender.wechat.model.PatientChapterModel" >
+    <id column="sid" property="sid" jdbcType="BIGINT" />
+    <result column="pid" property="pid" jdbcType="BIGINT" />
+    <result column="course_id" property="courseId" jdbcType="BIGINT" />
+    <result column="chapter_id" property="chapterId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="score" property="score" jdbcType="VARCHAR" />
+    <result column="answer_json" property="answerJson" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    sid, pid, course_id, status, is_valid, insert_dt, modify_dt
+  </sql>
+  
+
+  <select id="countNoFinishCourseNum" resultType="java.lang.Long" parameterType="java.lang.String" >
+    select count(1) from tiq_patient_course where pid = #{pid} and status=1
+  </select>
+  
+  <select id="getPatientCourseById" resultMap="patientCourse">
+    select 
+    <include refid="Base_Column_List" />
+    from tiq_patient_course
+    where is_valid=1 and course_id = #{courseId} and pid=#{pid} 
+    <if test="patientCourseId != null and patientCourseId !='' "  >
+    	and sid=#{patientCourseId} 
+    </if>
+    <if test="isPlan != null and isPlan !='' "  >
+    	and is_plan=#{isPlan} 
+    </if>
+    limit 1
+  </select>
+  
+  <insert id="addPatientCourse" parameterType="com.comvee.cdms.defender.wechat.model.PatientCourseModel" >
+    insert into tiq_patient_course (sid, pid, course_id, 
+      status, is_valid, insert_dt, 
+      modify_dt,origin,is_plan,plan_id)
+    values (#{sid}, #{pid}, #{courseId}, 1, 1, now(),now(),#{origin},#{isPlan} ,#{planId})
+  </insert>
+  
+  <select id="loadOptionalCourse" resultType="com.comvee.cdms.defender.model.CourseModel">
+    select 
+    distinct t.sid As sid ,  t.type As type ,  t.course_type As courseType ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,
+    DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid ,  t.name As name ,  t.memo As memo ,t.img As img ,  t.grade As grade ,  t.chapter As chapter ,
+    t.chapter_memo As chapterMemo ,  t.apply_crowd As applyCrowd,  t.apply_crowd_content As applyCrowdContent ,surface_img  surfaceImg,pc.sid as patientCourseId, t.thumbnail
+    from tiq_patient_course pc 
+    left join tiq_course t on pc.course_id=t.sid
+    where  pid=#{pid}
+--     and t.type=1
+    and pc.is_valid=1
+    <if test="status != null and status !='' "  >
+        and pc.status=#{status}
+    </if>
+    <if test="isPlan != null and isPlan !='' "  >
+        and pc.is_plan=#{isPlan}
+    </if>
+    order by pc.insert_dt desc
+  </select>
+  
+  <select id="loadPlanCourse" resultType="com.comvee.cdms.defender.model.CourseModel">
+    select 
+    distinct t.sid As sid ,  t.type As type ,  t.course_type As courseType ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,
+    DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid ,  t.name As name ,  t.memo As memo ,t.img As img ,  t.grade As grade ,  t.chapter As chapter ,
+    t.chapter_memo As chapterMemo ,  t.apply_crowd As applyCrowd,  t.apply_crowd_content As applyCrowdContent ,surface_img  surfaceImg, thumbnail,pc.sid as patientCourseId
+    from tiq_patient_course pc 
+    left join tiq_course t on pc.course_id=t.sid
+    left join t_prescription_knowledge pk on pc.course_id=pk.article_id and pk.is_valid=1
+    where  pid=#{pid} and t.type=1 and pc.is_valid=1
+    <if test="status != null and status !='' "  >
+        and pc.status=#{status}
+    </if>
+    and pc.is_plan=1 and pk.plan_push_dt &lt;=DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s')
+    order by pc.insert_dt desc
+  </select>
+  
+  <select id="loadRequiredCourse" resultType="com.comvee.cdms.defender.model.CourseModel">
+    select 
+    t.sid As sid ,  t.type As type ,  t.course_type As courseType ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,
+    DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid ,  t.name As name ,  t.memo As memo ,t.img As img ,  t.grade As grade ,  t.chapter As chapter ,
+    t.chapter_memo As chapterMemo ,  t.apply_crowd As applyCrowd,  t.apply_crowd_content As applyCrowdContent ,t.surface_img as surfaceImg, t.thumbnail
+    from tiq_course t left join tiq_patient_course pc on t.sid=pc.course_id and pc.pid=#{pid} and pc.is_valid=1
+    where  t.type=2 and (pc.status is null or pc.status=1) 
+    <if test="showStatus !=null">     
+		 AND t.show_status = #{showStatus} 
+	</if> 
+    order by t.insert_dt desc
+  </select>
+  
+  
+  <select id="getCourseRemindByPid" resultMap="courseRemind" >
+    select 
+    sid, pid, is_valid, is_open, remind_time, monday, tuesday, 
+    wednesday, thursday, friday, saturday, sunday,remind_num,last_study_date,courser_remind
+    from tiq_course_remind
+    where pid = #{pid} and is_valid=1 limit 1
+  </select>
+  
+  <insert id="addCourseRemind" parameterType="com.comvee.cdms.defender.wechat.model.CourseRemindModel" >
+    insert into tiq_course_remind
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+        sid,pid,insert_dt,modify_dt,is_valid,is_open,remind_time,
+      <if test="monday != null" >
+        monday,
+      </if>
+      <if test="tuesday != null" >
+        tuesday,
+      </if>
+      <if test="wednesday != null" >
+        wednesday,
+      </if>
+      <if test="thursday != null" >
+        thursday,
+      </if>
+      <if test="friday != null" >
+        friday,
+      </if>
+      <if test="saturday != null" >
+        saturday,
+      </if>
+      <if test="sunday != null" >
+        sunday,
+      </if>
+      <if test="lastStudyDate != null" >
+        last_study_date,
+      </if>
+      <if test="courserRemind != null" >
+        courser_remind,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{sid},#{pid},now(),now(),1,#{isOpen},#{remindTime},
+      <if test="monday != null" >
+        #{monday,jdbcType=TINYINT},
+      </if>
+      <if test="tuesday != null" >
+        #{tuesday,jdbcType=TINYINT},
+      </if>
+      <if test="wednesday != null" >
+        #{wednesday,jdbcType=TINYINT},
+      </if>
+      <if test="thursday != null" >
+        #{thursday,jdbcType=TINYINT},
+      </if>
+      <if test="friday != null" >
+        #{friday,jdbcType=TINYINT},
+      </if>
+      <if test="saturday != null" >
+        #{saturday,jdbcType=TINYINT},
+      </if>
+      <if test="sunday != null" >
+        #{sunday,jdbcType=TINYINT},
+      </if>
+      <if test="lastStudyDate != null" >
+        #{lastStudyDate},
+      </if>
+      <if test="courserRemind != null" >
+        #{courserRemind},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateCourseRemind" parameterType="com.comvee.cdms.defender.wechat.model.CourseRemindModel" >
+    update tiq_course_remind 
+    <set >
+        modify_dt = now(),
+      <if test="isValid != null" >
+        is_valid = #{isValid},
+      </if>
+      <if test="isOpen != null and isOpen !=''" >
+        is_open = #{isOpen},
+      </if>
+      <if test="remindTime != null and remindTime !=''" >
+        remind_time = #{remindTime},
+      </if>
+      <if test="monday != null" >
+        monday = #{monday},
+      </if>
+      <if test="tuesday != null " >
+        tuesday = #{tuesday},
+      </if>
+      <if test="wednesday != null" >
+        wednesday = #{wednesday},
+      </if>
+      <if test="thursday != null" >
+        thursday = #{thursday},
+      </if>
+      <if test="friday != null" >
+        friday = #{friday},
+      </if>
+      <if test="saturday != null " >
+        saturday = #{saturday},
+      </if>
+      <if test="sunday != null " >
+        sunday = #{sunday},
+      </if>
+      <if test="remindNum != null and remindNum !=''" >
+        remind_num = #{remindNum},
+      </if>
+      <if test="lastStudyDate != null and lastStudyDate !=''" >
+        last_study_date = #{lastStudyDate},
+      </if>
+      <if test="studyStatus != null and studyStatus !=''" >
+        study_status = #{studyStatus},
+      </if>
+      <if test="courserRemind != null and courserRemind !=''" >
+        courser_remind = #{courserRemind},
+      </if>
+    </set>
+    where pid = #{pid}
+  </update>
+  
+  
+  
+  
+   <select id="countCourseChapterNum" resultType="java.lang.Long">
+    select count(1) from tiq_patient_chapter where pid = #{pid} and is_valid=1
+    <if test="courseId != null and courseId !='' "  >
+        and course_id=#{courseId}
+    </if>
+    <if test="status != null and status !='' "  >
+        and status=#{status}
+    </if>
+    <if test="patientCourseId != null and patientCourseId !='' "  >
+        and patient_course_id=#{patientCourseId}
+    </if>
+    
+  </select>
+  
+  
+  <select id="getPatiChapter" resultMap="patientChapter" >
+    select 
+    sid, pid, course_id, chapter_id, status, score
+    from tiq_patient_chapter
+    where pid = #{pid} and is_valid=1 and chapter_id=#{chapterId} and patient_course_id=#{patientCourseId}
+  </select>
+  
+  <insert id="addPatientChapter" parameterType="com.comvee.cdms.defender.wechat.model.PatientChapterModel" >
+    insert into tiq_patient_chapter (sid, pid, course_id, patient_course_id,
+      chapter_id, status, score,insert_dt
+      )
+    values (#{sid}, #{pid}, #{courseId}, #{patientCourseId},
+      #{chapterId}, #{status}, #{score},now()
+      )
+  </insert>
+  
+  <insert id="addPatientChapterAnswer"  >
+    insert into tiq_patient_chapter_answer (sid, pid, course_id,chapter_id,is_valid,insert_dt,start_dt,end_dt,answer_json,score,modify_dt,patient_course_id)
+    values (#{sid}, #{pid},#{courseId}, #{chapterId},1,now(),#{startDt},#{endDt},#{answerJson},#{score},now(),#{patientCourseId})
+  </insert>
+  
+  <update id="updatePatientChapter" parameterType="com.comvee.cdms.defender.wechat.model.PatientChapterModel" >
+    update tiq_patient_chapter 
+    <set >
+        modify_dt = now(),
+      <if test="status != null" >
+        status = #{status},
+      </if>
+      <if test="answerJson != null" >
+        answer_json = #{answerJson},
+      </if>
+      <if test="score != null" >
+        score = #{score},
+      </if>
+    </set>
+    where sid = #{sid}
+  </update>
+  
+  <update id="updatePatientCourse" parameterType="com.comvee.cdms.defender.wechat.model.PatientCourseModel" >
+    update tiq_patient_course 
+    <set >
+        modify_dt = now(),
+      <if test="status != null" >
+        status = #{status},
+      </if>
+    </set>
+    where pid = #{pid} and course_id=#{courseId} and sid=#{sid}
+  </update>
+  
+  
+  
+  
+  
+  <select id="selectByPrimaryKey" resultMap="patientCourse" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tiq_patient_course
+    where sid = #{sid,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tiq_patient_course
+    where sid = #{sid,jdbcType=BIGINT}
+  </delete>
+  
+  
+  <insert id="insertSelective" parameterType="com.comvee.cdms.defender.wechat.model.PatientCourseModel" >
+    insert into tiq_patient_course
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sid != null" >
+        sid,
+      </if>
+      <if test="pid != null" >
+        pid,
+      </if>
+      <if test="course_id != null" >
+        course_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="is_valid != null" >
+        is_valid,
+      </if>
+      <if test="insert_dt != null" >
+        insert_dt,
+      </if>
+      <if test="modify_dt != null" >
+        modify_dt,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sid != null" >
+        #{sid,jdbcType=BIGINT},
+      </if>
+      <if test="pid != null" >
+        #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="course_id != null" >
+        #{course_id,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="is_valid != null" >
+        #{is_valid,jdbcType=TINYINT},
+      </if>
+      <if test="insert_dt != null" >
+        #{insert_dt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modify_dt != null" >
+        #{modify_dt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.comvee.cdms.defender.wechat.model.PatientCourseModel" >
+    update tiq_patient_course
+    <set >
+      <if test="pid != null" >
+        pid = #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="courseId != null" >
+        course_id = #{courseId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+        modify_dt = now(),
+    </set>
+    where sid = #{sid,jdbcType=BIGINT}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.comvee.cdms.defender.wechat.model.PatientCourseModel" >
+    update tiq_patient_course
+    set pid = #{pid,jdbcType=BIGINT},
+      course_id = #{course_id,jdbcType=BIGINT},
+      status = #{status,jdbcType=TINYINT},
+      is_valid = #{is_valid,jdbcType=TINYINT},
+      insert_dt = #{insert_dt,jdbcType=TIMESTAMP},
+      modify_dt = now()
+    where sid = #{sid,jdbcType=BIGINT}
+  </update>
+  
+  <select id="loadMemberCourse" resultType="com.comvee.cdms.defender.model.CourseModel">
+    select 
+    DISTINCT t.sid As sid ,  t.type As type ,  t.course_type As courseType ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,
+    DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid ,  t.name As name ,  t.memo As memo ,t.img As img ,  t.grade As grade ,  t.chapter As chapter ,
+    t.chapter_memo As chapterMemo ,  t.apply_crowd As applyCrowd,  t.apply_crowd_content As applyCrowdContent ,t.surface_img  as  surfaceImg
+    , t.thumbnail,pc.sid as patientCourseId ,pc.status ,pc.plan_id planid ,pc.is_plan isPlan
+    from tiq_patient_course pc left join tiq_course t on pc.course_id=t.sid
+    where  pc.is_valid=1 and pid=#{pid} 
+    <if test="status != null and status !='' "  >
+        and pc.status=#{status}
+    </if>
+    <if test="courseType != null and courseType !='' "  >
+        and t.course_type=#{courseType}
+    </if>
+    <if test="type != null"  >
+        and t.type=#{type}
+    </if>
+    <if test="isPlan != null and isPlan !='' "  >
+        and pc.is_plan=#{isPlan}
+    </if>
+    <if test="courseId != null and courseId !='' "  >
+        and pc.course_id=#{courseId}
+    </if>
+    order by pc.insert_dt desc
+  </select>
+  
+  <select id="loadPrescriptionPlansForMember" resultType="java.util.HashMap">
+      SELECT * FROM (
+      SELECT concat(t.sid,'') AS prescriptionId,date_format(t.insert_dt,'%Y-%m-%d') as insertDt,t.insert_dt as sortDt
+          ,1 as knowledgeType,d.doctor_name as doctorName
+      FROM `t_prescription` t
+      JOIN t_doctor d ON t.`doctor_id`=d.`doctor_id`
+      join t_prescription_knowledge q on t.sid = q.prescription_id
+      WHERE t.`member_id`= #{memberId} AND t.`module` LIKE '%5%' and t.is_valid=1 and t.hand_down=1
+      group by t.sid
+      union all
+      SELECT concat(t.foreign_id,'') AS prescriptionId ,date_format(t.insert_dt,'%Y-%m-%d') as insertDt,t.insert_dt as sortDt
+          ,2 as knowledgeType,d.doctor_name as doctorName
+      FROM `t_follow_main` t
+      JOIN t_doctor d ON t.`doctor_id`=d.`doctor_id`
+          join t_prescription_knowledge q on t.foreign_id = q.follow_id
+      WHERE t.`member_id`= #{memberId} AND t.`type`=1 and t.is_valid=1 group by t.foreign_id
+      ) tem
+      ORDER BY tem.sortDt DESC
+  </select>
+  
+  <select id="loadCoursesByPrescriptionId" resultType="com.comvee.cdms.defender.model.CourseModel">
+  	SELECT DISTINCT pk.id AS prescriptionKnowledgeId,pc.`sid` AS patientCourseId, t.sid AS sid ,  t.type AS TYPE ,  t.course_type AS courseType ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') AS insertDt ,
+	    DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') AS modifyDt ,  t.is_valid AS isValid ,  t.name AS NAME ,  t.memo AS memo ,t.img AS img ,  t.grade AS grade ,  t.chapter AS chapter ,
+	    t.chapter_memo AS chapterMemo ,  t.apply_crowd AS applyCrowd,  t.apply_crowd_content AS applyCrowdContent ,t.surface_img  AS  surfaceImg, t.thumbnail,pc.status ,pk.plan_push_dt planPushDt
+	FROM t_prescription_knowledge pk,`tiq_course` t,tiq_patient_course pc
+	WHERE pk.article_id=t.sid AND t.is_valid=1 AND pk.`id`=pc.plan_id AND pc.`is_valid`=1
+	<if test="dataLimit != null and dataLimit == 1">
+        AND pk.plan_push_dt &lt;=DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+    </if>
+	<if test="prescriptionId != null and prescriptionId != ''">
+      AND pk.`prescription_id`=#{prescriptionId}
+    </if>
+    <if test="followId != null and followId != ''">
+      AND pk.`follow_id`=#{followId}
+    </if>
+--     ORDER BY pc.status asc,pk.plan_push_dt asc
+    ORDER BY pk.plan_push_dt asc
+  </select>
+  
+  <select id="listMemberKnowledgeCourseForLearne" resultType="java.util.HashMap">
+    SELECT * FROM (
+      SELECT pk.id,pk.title,pk.knowledge,pk.week,DATE_FORMAT(pk.insert_dt,'%Y-%m-%d %H:%i:%s') AS insert_dt,
+      DATE_FORMAT(pk.modify_dt,'%Y-%m-%d %H:%i:%s') AS modify_dt,pk.member_id,pk.prescription_id prescriptionId,
+      pk.article_id,pk.has_learned,DATE_FORMAT(pk.learn_dt,'%Y-%m-%d %H:%i:%s') AS learn_dt,
+      DATE_FORMAT(pk.plan_push_dt,'%Y-%m-%d %H:%i:%s') AS plan_push_dt,pk.plan_push_order,pk.need_push,
+      c.`memo`,pc.sid as patientCourseId,pk.knowledge_type as knowledgeType
+      FROM `t_prescription` t,`t_prescription_knowledge` pk,`tiq_patient_course` pc,`tiq_course` c
+      WHERE t.`sid`=pk.`prescription_id` AND pk.`id`=pc.`plan_id`  AND pc.`course_id`=c.`sid`
+      AND t.`is_valid`=1 AND pk.`is_valid`=1  AND pc.`is_valid`=1
+      AND t.`module` LIKE '%5%' and t.`schedule` = 3
+      AND pk.`plan_push_dt` &lt;= DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s') AND pk.`has_learned`=0
+      UNION ALL
+      SELECT pk.id,pk.title,pk.knowledge,pk.week,DATE_FORMAT(pk.insert_dt,'%Y-%m-%d %H:%i:%s') AS insert_dt,
+      DATE_FORMAT(pk.modify_dt,'%Y-%m-%d %H:%i:%s') AS modify_dt,pk.member_id,pk.follow_Id prescriptionId,
+      pk.article_id,pk.has_learned,DATE_FORMAT(pk.learn_dt,'%Y-%m-%d %H:%i:%s') AS learn_dt,
+      DATE_FORMAT(pk.plan_push_dt,'%Y-%m-%d %H:%i:%s') AS plan_push_dt,pk.plan_push_order,pk.need_push,
+      c.`memo`,pc.sid as patientCourseId,pk.knowledge_type as knowledgeType
+      FROM `t_follow_main` t,`t_prescription_knowledge` pk,`tiq_patient_course` pc,`tiq_course` c
+      WHERE t.`foreign_id`=pk.`follow_id` AND pk.`id`=pc.`plan_id`  AND pc.`course_id`=c.`sid`
+      AND t.`is_valid`=1 AND pk.`is_valid`=1  AND pc.`is_valid`=1
+      AND t.`type` =1
+      AND pk.`plan_push_dt` &lt;= DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s') AND pk.`has_learned`=0
+    ) tem
+    ORDER BY tem.`insert_dt` ASC
+    </select>
+
+    <select id="countCourseInPlan" resultType="long">
+      select count(t.id) from t_prescription_knowledge t ,tiq_patient_course q
+      where t.is_valid = 1 and q.is_valid = 1 and t.id = q.plan_id
+      and q.is_plan = 1
+      <if test="prescriptionId != null and '' != prescriptionId">
+        and t.prescription_id = #{prescriptionId}
+      </if>
+      <if test="followId != null and '' != followId">
+        and t.follow_id = #{followId}
+      </if>
+      <if test="countType == 1">
+        and t.plan_push_dt &gt;= now()
+      </if>
+      <if test="countType == 2">
+        and q.`status` = 1 and t.plan_push_dt &lt;= now()
+      </if>
+
+    </select>
+
+</mapper>

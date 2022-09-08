@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.records.mapper.DrugsRecordMapper">
+    <resultMap id="baseMap" type="com.comvee.cdms.records.model.po.DrugsRecordPO">
+        <id column="sid" property="sid" jdbcType="BIGINT"/>
+        <result column="member_id" property="memberId" jdbcType="VARCHAR"/>
+        <result column="drug_id" property="drugId" jdbcType="VARCHAR"/>
+        <result column="drug_name" property="drugName" jdbcType="VARCHAR"/>
+        <result column="record_type" property="recordType" jdbcType="TINYINT"/>
+        <result column="drug_type" property="drugType" jdbcType="TINYINT"/>
+        <result column="total" property="total" jdbcType="DOUBLE"/>
+        <result column="unit" property="unit" jdbcType="VARCHAR"/>
+        <result column="record_main_id" property="recordMainId" jdbcType="VARCHAR"/>
+        <result column="record_dt" property="recordDt" jdbcType="VARCHAR"/>
+        <result column="record_time" property="recordTime" jdbcType="TIMESTAMP"/>
+        <result column="operation_type" property="operationType" jdbcType="TINYINT"/>
+        <result column="operation_id" property="operationId" jdbcType="VARCHAR"/>
+        <result column="origin" property="origin" jdbcType="TINYINT"/>
+        <result column="origin_id" property="originId" jdbcType="VARCHAR"/>
+        <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP"/>
+        <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP"/>
+        <result column="valid" property="valid" jdbcType="TINYINT"/>
+        <result column="paramTime" property="paramTime" jdbcType="VARCHAR"/>
+    </resultMap>
+    <!--药品库-->
+    <resultMap id="drugMap" type="com.comvee.cdms.drugs.po.DrugsDepotPO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="drug_name" jdbcType="VARCHAR" property="drugName"/>
+        <result column="dose" jdbcType="VARCHAR" property="dose"/>
+        <result column="unit" jdbcType="VARCHAR" property="unit"/>
+        <result column="type" jdbcType="TINYINT" property="type"/>
+        <result column="initials" jdbcType="VARCHAR" property="initials"/>
+        <result column="pinyin" jdbcType="VARCHAR" property="pinyin"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="drug_usage" jdbcType="VARCHAR" property="drugUsage"/>
+        <result column="side_effect" jdbcType="VARCHAR" property="sideEffect"/>
+        <result column="adverse_reactions" jdbcType="VARCHAR" property="adverseReactions"/>
+        <result column="contraindications" jdbcType="VARCHAR" property="contraindications"/>
+        <result column="precautions" jdbcType="VARCHAR" property="precautions"/>
+        <result column="member_id" jdbcType="BIGINT" property="memberId"/>
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt"/>
+        <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt"/>
+        <result column="is_valid" jdbcType="TINYINT" property="isValid"/>
+        <result column="price" jdbcType="VARCHAR" property="price"/>
+        <result column="belong_type" jdbcType="TINYINT" property="belongType"/>
+        <result column="belong_id" jdbcType="VARCHAR" property="belongId"/>
+    </resultMap>
+    <insert id="addDrugsRecord" parameterType="com.comvee.cdms.records.model.po.DrugsRecordPO">
+        insert into t_drugs_records (sid, member_id, drug_id, drug_name, record_type, drug_type, total, unit,
+                                     record_main_id, record_dt, record_time, operation_type, operation_id, origin,
+                                     origin_id, insert_dt, modify_dt, valid)
+        values (#{sid}, #{memberId}, #{drugId}, #{drugName}, #{recordType}, #{drugType}, #{total}, #{unit},
+                #{recordMainId}, #{recordDt}, #{recordTime}, #{operationType}, #{operationId}, #{origin}, #{originId},
+                now(), now(), 1);
+    </insert>
+    <delete id="deleteDrugsRecord" parameterType="com.comvee.cdms.records.model.dto.DrugsRecordDTO">
+        delete
+        from t_drugs_records
+        where record_main_id = #{recordMainId}
+        <if test="idList != null">
+            and sid not in
+            <foreach collection="idList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </delete>
+    <select id="getDrugsByName" parameterType="String" resultMap="drugMap">
+        select *
+        from t_drugs_depot
+        where 1 = 1
+          and instr(drug_name, #{drugName}) > 0;
+    </select>
+    <select id="getDrugsById" parameterType="String" resultMap="drugMap">
+        select *
+        from t_drugs_records
+        where sid = #{sid}
+    </select>
+    <update id="updateDrugsRecord" parameterType="com.comvee.cdms.records.model.po.DrugsRecordPO">
+        update t_drugs_records
+        set drug_id     = #{drugId},
+            drug_name   = #{drugName},
+            record_type = #{recordType},
+            record_dt   = #{recordDt},
+            record_time = #{recordTime},
+            drug_type   = #{drugType},
+            total       = #{total},
+            unit        = #{unit}
+        where sid = #{sid};
+    </update>
+
+    <select id="listRecentDrugsRecord" parameterType="com.comvee.cdms.records.model.dto.DrugsRecordDTO"
+            resultMap="baseMap">
+        select distinct drug_id, drug_name, drug_type, total, unit
+        from t_drugs_records
+        where 1 = 1
+          and member_id = #{memberId}
+        order by record_time desc
+        limit 6
+    </select>
+    <select id="listDrugsRecord" parameterType="com.comvee.cdms.records.model.dto.DrugsRecordDTO"
+            resultMap="baseMap">
+        select *,  date_format(record_time, '%H:%i') paramTime
+        from t_drugs_records
+        where 1 = 1
+        and member_id = #{memberId}
+        <if test="recordDt != null and recordDt != '' ">
+            and record_dt = #{recordDt}
+        </if>
+        <if test="begin != null and begin != '' ">
+            and record_time >= #{begin}
+        </if>
+        <if test="end != null and end != '' ">
+            and #{end} >= record_time
+        </if>
+        order by record_time
+    </select>
+</mapper>

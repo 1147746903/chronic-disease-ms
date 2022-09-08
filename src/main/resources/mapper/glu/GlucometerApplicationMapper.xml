@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.glu.mapper.GlucometerApplicationMapper">
+
+  <resultMap id="glucometerApplication" type="com.comvee.cdms.glu.model.GlucometerApplication">
+    <id column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="app_name" jdbcType="VARCHAR" property="appName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+  </resultMap>
+
+  <select id="listGlucometerApplication" resultMap="glucometerApplication">
+    select app_id, app_name, remark, valid, insert_dt, update_dt
+    from t_glucometer_application where valid = 1
+  </select>
+</mapper>

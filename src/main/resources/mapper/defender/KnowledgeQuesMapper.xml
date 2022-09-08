@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.TiqKnowledgeQuesMapper">
+    <sql id="KnowledgeQuesColumns">
+         t.sid As sid ,  t.knowledge_id As knowledgeId ,  t.ques_id As quesId ,  t.is_valid As isValid ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt 
+    </sql>
+
+	<!--根据id获取文章课后习题表信息 -->
+	<select id="loadKnowledgeQuesById" resultType="com.comvee.cdms.defender.model.KnowledgeQuesModel">
+		SELECT 
+			<include refid="KnowledgeQuesColumns"/>
+		FROM tiq_knowledge_ques t
+		WHERE t.sid = #{sid} 
+	</select>
+	
+	<!-- 获取文章课后习题分页信息  -->
+	<select id="loadKnowledgeQues" resultType="com.comvee.cdms.defender.model.KnowledgeQuesModel">
+		SELECT 
+			<include refid="KnowledgeQuesColumns"/>
+		FROM tiq_knowledge_ques t
+		where is_valid = 1
+		<if test="knowledgeId!=null and knowledgeId!='' ">     
+        AND t.knowledge_id = #{knowledgeId}  
+        </if>  
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+        AND t.sid = #{sid}  
+        </if>  
+	    <if test="knowledgeId!=null and knowledgeId!='' ">     
+        AND t.knowledge_id = #{knowledgeId}  
+        </if>  
+	    <if test="quesId!=null and quesId!='' ">     
+        AND t.ques_id = #{quesId}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+    <!-- 统计文章课后习题记录数 -->
+	<select id="countKnowledgeQues" resultType="Long">
+		SELECT count( sid )
+		FROM tiq_knowledge_ques t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+         AND t.sid = #{sid}    
+        </if>  
+	    <if test="knowledgeId!=null and knowledgeId!='' ">     
+         AND t.knowledge_id = #{knowledgeId}    
+        </if>  
+	    <if test="quesId!=null and quesId!='' ">     
+         AND t.ques_id = #{quesId}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加文章课后习题记录 -->
+	<insert id="addKnowledgeQues">
+		INSERT INTO tiq_knowledge_ques(
+				
+				    sid,
+				
+				knowledge_id,
+				ques_id,
+				is_valid,
+				modify_dt,
+				insert_dt
+		) VALUES (
+			         #{sid},
+				#{knowledgeId},
+				#{quesId},
+				1,
+				now(),
+				now()
+		)
+	</insert>
+
+    <!-- 修改文章课后习题记录 -->
+	<update id="modifyKnowledgeQues">
+		UPDATE tiq_knowledge_ques 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="sid!=null and sid!='' ">    
+	        sid = #{sid},
+	        </if>
+	        <if test="knowledgeId!=null and knowledgeId!='' ">    
+	        knowledge_id = #{knowledgeId},
+	        </if>
+	        <if test="quesId!=null and quesId!='' ">    
+	        ques_id = #{quesId},
+	        </if>
+	        modify_dt = now(),
+		</trim>
+		WHERE sid = #{sid}
+	</update>
+	
+	<!-- 删除文章课后习题记录  -->
+	<update id="delKnowledgeQues" parameterType="Long">
+		UPDATE tiq_knowledge_ques SET  is_valid = 0 , modify_dt = now()
+		WHERE sid = #{sid} and is_valid = 1
+	</update>
+		<!-- 删除文章课后习题记录  -->
+	<update id="delKnowledgeQuesByKnowledgeId" parameterType="Long">
+		UPDATE tiq_knowledge_ques SET  is_valid = 0 , modify_dt = now()
+		WHERE knowledge_id = #{knowledgeId} and is_valid = 1
+	</update>
+	
+
+</mapper>

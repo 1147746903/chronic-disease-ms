@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.sign.mapper.BmiMapper">
+
+    <resultMap id="bmi" type="com.comvee.cdms.sign.po.BmiPO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="weight" jdbcType="REAL" property="weight" />
+        <result column="height" jdbcType="REAL" property="height" />
+        <result column="bmi" jdbcType="VARCHAR" property="bmi" />
+        <result column="record_dt" jdbcType="TIMESTAMP" property="recordDt" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+        <result column="origin" jdbcType="TINYINT" property="origin" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="operator_type" jdbcType="TINYINT" property="operatorType" />
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    </resultMap>
+
+    <select id="listBmi" parameterType="com.comvee.cdms.sign.dto.ListBmiDTO" resultMap="bmi">
+        select sid, weight, height, bmi, record_dt, insert_dt, member_id, is_valid, origin,
+        update_dt, operator_type, operator_id
+        from t_bmi
+        <where>
+            <if test = "memberId != null and '' != memberId">
+                and member_id = #{memberId}
+            </if>
+            <if test = "startDt != null and '' != startDt">
+                and record_dt &gt; #{startDt}
+            </if>
+            <if test = "endDt != null and '' != endDt">
+                and record_dt &lt; #{endDt}
+            </if>
+        </where>
+        order by record_dt desc
+    </select>
+
+    <select id="getBmi" resultMap="bmi" parameterType="com.comvee.cdms.sign.dto.GetBmiDTO">
+        select sid, weight, height, bmi, record_dt, insert_dt, member_id, is_valid, origin,
+        update_dt, operator_type, operator_id
+        from t_bmi where is_valid = 1
+        <if test="sid != null and '' != sid">
+          and sid = #{sid}
+        </if>
+        <if test="memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test="recordDt != null and '' != recordDt">
+            and record_dt = #{recordDt}
+        </if>
+        limit 1
+    </select>
+
+    <insert id="addBmi" parameterType="com.comvee.cdms.sign.dto.AddBmiMapperDTO">
+        insert into t_bmi (sid, weight, height,
+          bmi, record_dt,
+          member_id, origin,
+          operator_type, operator_id
+          )
+        values (#{sid,jdbcType=BIGINT}, #{weight,jdbcType=REAL}, #{height,jdbcType=REAL},
+          #{bmi,jdbcType=VARCHAR}, #{recordDt,jdbcType=TIMESTAMP},
+          #{memberId,jdbcType=BIGINT},  #{origin,jdbcType=TINYINT},
+          #{operatorType,jdbcType=TINYINT}, #{operatorId,jdbcType=BIGINT}
+          )
+    </insert>
+
+    <select id="listBmiRang" parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO" resultType="java.util.HashMap">
+        <!--visitType类型 1住院 2门诊&居家 -->
+        <if test="visitType==1">
+            SELECT bmi_rang,COUNT(1) AS num FROM
+            (
+            SELECT CASE WHEN a.bmi &lt; 18.5 THEN '0-18.5'
+            WHEN a.bmi &lt; 24 THEN '18.5-24'
+            WHEN a.bmi &lt; 28 THEN '24-28'
+            ELSE '28'
+            END AS bmi_rang
+            FROM (
+            SELECT CONVERT(b.bmi,DECIMAL(10,2)) AS bmi
+            FROM (select m.member_id,m.is_valid from t_member m
+            join t_member_checkin_info mci on mci.member_id = m.member_id and mci.is_valid =1
+            join t_member_in_hospital_log h on m.member_id=h.member_id
+            where h.is_valid=1 and mci.checkin_status = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and h.hospital_id=#{hospitalId}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and (h.in_hospital_date &lt; #{endDt} and (h.out_hospital_date &gt; #{startDt} or h.out_hospital_date is null))
+            </if>
+            <if test="gtEqAge!=null">
+                and DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(m.birthday)), '%Y')+0 &gt;= #{gtEqAge}
+            </if>
+            <if test="sex!=null and sex!=''">
+                and m.sex=#{sex}
+            </if>
+            GROUP BY m.member_id
+            )t join (select bt.* from(
+            select *
+            FROM t_bmi
+            <if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+                where record_dt BETWEEN #{startDt} AND #{endDt}
+            </if>
+            order by record_dt DESC , insert_dt DESC) bt
+            group by bt.member_id) b
+            on t.member_id = b.member_id and b.is_valid=1
+            WHERE t.is_valid=1
+            <if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+                AND b.record_dt BETWEEN #{startDt} AND #{endDt}
+            </if>
+            ) a
+            ) b
+            GROUP BY b.bmi_rang
+        </if>
+        <if test="visitType==2">
+            SELECT bmi_rang,COUNT(1) AS num FROM
+            (
+            SELECT CASE WHEN a.bmi &lt; 18.5 THEN '0-18.5'
+            WHEN a.bmi &lt; 24 THEN '18.5-24'
+            WHEN a.bmi &lt; 28 THEN '24-28'
+            ELSE '28'
+            END AS bmi_rang
+            FROM (
+            SELECT ROUND(t.weight/(t.height/100)/(t.height/100),1) AS bmi
+            FROM (
+            select m.member_id,m.weight,m.height,m.is_valid from t_member m
+            join t_member_join_hospital mjh on m.member_id = mjh.member_id and mjh.valid = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and mjh.hospital_id=#{hospitalId}
+            </if>
+            left join
+            (select member_id,checkin_status,hospital_id from t_member_checkin_info where is_valid = 1) mci
+            on mci.member_id = mjh.member_id
+            where m.is_valid=1
+            and(mci.checkin_status is null or mci.checkin_status != 1)
+            <if test="sex!=null and sex!=''">
+                and m.sex=#{sex}
+            </if>
+            GROUP BY m.member_id
+            )t join (select bt.* from(
+            select *
+            FROM t_bmi
+            <if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+                where record_dt BETWEEN #{startDt} AND #{endDt}
+            </if>
+            order by record_dt DESC , insert_dt DESC) bt
+            group by bt.member_id) b
+            on t.member_id = b.member_id and b.is_valid=1
+            WHERE t.is_valid=1
+            <if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+                AND b.record_dt BETWEEN #{startDt} AND #{endDt}
+            </if>
+            ) a
+            ) b
+            GROUP BY b.bmi_rang
+        </if>
+        <if test="visitType==3">
+            SELECT bmi_rang,COUNT(1) AS num FROM
+                (
+                SELECT CASE WHEN a.bmi &lt; 18.5 THEN '0-18.5'
+                WHEN a.bmi &lt; 24 THEN '18.5-24'
+                WHEN a.bmi &lt; 28 THEN '24-28'
+                ELSE '28'
+                END AS bmi_rang
+                FROM (
+                    select h.bmi from (
+                        select p.bmi,p.member_id from t_bmi p join (
+                            select q.member_id,e.insert_dt from t_member q ,t_research_group w,t_research_group_member e
+                            where q.is_valid = 1 and w.valid = 1 and e.valid = 1
+                            and q.member_id = e.member_id and w.group_id = e.research_group_id
+                            and w.hospital_id = #{hospitalId}
+                            <if test="researchGroupId != null and '' != researchGroupId">
+                                and w.group_id = #{researchGroupId}
+                            </if>
+                            group by q.member_id
+                        ) r where p.member_id = r.member_id and p.is_valid =  1
+                        AND p.record_dt BETWEEN DATE_FORMAT(r.insert_dt,'%Y-%m-%d') AND #{endDt}
+                        order by p.record_dt desc
+                    ) h group by h.member_id
+                ) a
+            ) b
+            GROUP BY b.bmi_rang
+        </if>
+    </select>
+
+    <select id="getNewBmi" resultMap="bmi">
+        select sid, weight, height, bmi, record_dt, insert_dt, member_id, is_valid, origin,
+        update_dt, operator_type, operator_id
+        from t_bmi
+        where  member_id = #{memberId}
+        order by record_dt desc limit 1
+    </select>
+</mapper>

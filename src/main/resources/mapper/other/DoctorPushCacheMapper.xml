@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.other.mapper.DoctorPushCacheMapper">
+
+  <resultMap id="pushCache" type="com.comvee.cdms.other.po.DoctorPushCachePO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+
+    <result column="push_message" jdbcType="VARCHAR" property="pushMessage" />
+    <result column="custom_info" jdbcType="VARCHAR" property="customInfo" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="send_status" jdbcType="TINYINT" property="sendStatus" />
+    <result column="push_type" jdbcType="TINYINT" property="pushType" />
+  </resultMap>
+
+  <insert id="addDoctorPushCache" parameterType="com.comvee.cdms.other.po.DoctorPushCachePO">
+    insert into t_doctor_push_cache (sid, doctor_id,  push_message,
+      custom_info, push_type)
+    values (#{sid,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{pushMessage,jdbcType=VARCHAR},
+      #{customInfo,jdbcType=VARCHAR}, #{pushType,jdbcType=TINYINT})
+  </insert>
+
+
+
+  <select id="listDoctorPushCache" resultMap="pushCache">
+    select sid, doctor_id, push_message, custom_info,
+    insert_dt, update_dt, send_status, push_type
+    from t_doctor_push_cache where send_status = #{sendStatus}
+    order by insert_dt
+  </select>
+
+  <update id="updateDoctorPushCache" parameterType="com.comvee.cdms.other.po.DoctorPushCachePO">
+    update t_doctor_push_cache t
+    set t.send_status = #{sendStatus}
+    where t.sid = #{sid}
+  </update>
+
+  <insert id="addDoctorPushCacheHistory">
+    INSERT INTO `t_doctor_push_cache_history` (`sid`, `doctor_id`, `push_message`
+    , `custom_info`, `insert_dt`, `update_dt`, `send_status`, `push_type`)
+    select t.sid,t.doctor_id,t.push_message,t.custom_info,t.insert_dt,t.update_dt,t.send_status,t.push_type
+    from t_doctor_push_cache t where (t.send_status in (2,3) or t.insert_dt &lt; DATE_SUB(now(),INTERVAL 1 day))
+  </insert>
+
+  <delete id="deleteExpireDoctorPushCache">
+    delete t from t_doctor_push_cache t where (t.send_status in (2,3) or t.insert_dt &lt; DATE_SUB(now(),INTERVAL 1 day))
+  </delete>
+</mapper>

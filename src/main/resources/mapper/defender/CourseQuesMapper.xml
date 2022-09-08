@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.CourseQuesMapper">
+    <sql id="CourseQuesColumns">
+         t.sid As sid ,  t.course_id As courseId ,  t.qid As qid ,  t.is_valid As isValid ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.sort As sort 
+    </sql>
+
+	<!--根据id获取课程题目关联表信息 -->
+	<select id="loadCourseQuesById" resultType="com.comvee.cdms.defender.model.CourseQuesModel">
+		SELECT 
+			<include refid="CourseQuesColumns"/>
+		FROM tiq_course_ques t
+		WHERE t.sid = #{sid} 
+	</select>
+	
+	<!-- 获取课程题目关联分页信息  -->
+	<select id="loadCourseQues" parameterType="Map" resultType="com.comvee.cdms.defender.model.CourseQuesModel">
+		SELECT 
+			<include refid="CourseQuesColumns"/>
+		FROM tiq_course_ques t
+		where is_valid = 1
+		
+		<if test="courseId!=null and courseId!='' ">     
+        AND t.course_id = #{courseId}  
+        </if>
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+        AND t.sid = #{sid}  
+        </if>  
+	    <if test="courseId!=null and courseId!='' ">     
+        AND t.course_id = #{courseId}  
+        </if>  
+	    <if test="qid!=null and qid!='' ">     
+        AND t.qid = #{qid}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+	    <if test="sort!=null and sort!='' ">     
+        AND t.sort = #{sort}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+    <!-- 统计课程题目关联记录数 -->
+	<select id="countCourseQues" parameterType="Map" resultType="Long">
+		SELECT count( sid )
+		FROM tiq_course_ques t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+         AND t.sid = #{sid}    
+        </if>  
+	    <if test="courseId!=null and courseId!='' ">     
+         AND t.course_id = #{courseId}    
+        </if>  
+	    <if test="qid!=null and qid!='' ">     
+         AND t.qid = #{qid}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+	    <if test="sort!=null and sort!='' ">     
+         AND t.sort = #{sort}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加课程题目关联记录 -->
+	<insert id="addCourseQues">
+		INSERT INTO tiq_course_ques(
+				sid,
+				course_id,
+				qid,
+				is_valid,
+				insert_dt,
+				modify_dt,
+				sort
+		) VALUES (
+			         #{sid},
+				#{courseId},
+				#{qid},
+				1,
+				now(),
+				now(),
+				#{sort}
+		)
+	</insert>
+
+    <!-- 修改课程题目关联记录 -->
+	<update id="modifyCourseQues">
+		UPDATE tiq_course_ques 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="sid!=null and sid!='' ">    
+	        sid = #{sid},
+	        </if>
+	        <if test="courseId!=null and courseId!='' ">    
+	        course_id = #{courseId},
+	        </if>
+	        <if test="qid!=null and qid!='' ">    
+	        qid = #{qid},
+	        </if>
+	        modify_dt = now(),
+	        <if test="sort!=null and sort!='' ">    
+	        sort = #{sort},
+	        </if>
+		</trim>
+		WHERE sid = #{sid}
+	</update>
+	
+	<!-- 删除课程题目关联记录  -->
+	<update id="delCourseQues" parameterType="Long">
+		UPDATE tiq_course_ques SET  is_valid = 0 ,modify_dt = now()
+		WHERE sid = #{sid} and is_valid = 1
+	</update>
+	
+	<update id="delCourseQuesByCourseId" parameterType="Long">
+		UPDATE tiq_course_ques SET  is_valid = 0 ,modify_dt = now()
+		WHERE course_id = #{courseId} and is_valid = 1
+	</update>
+
+</mapper>

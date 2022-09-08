@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.CourseMapper">
+	<sql id="CourseColumns">
+         t.sid As sid ,  t.type As type ,  t.course_type As courseType ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,
+         DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid ,  t.name As name ,  t.memo As memo ,t.img As img ,  t.grade As grade ,  t.chapter As chapter ,
+         t.chapter_memo As chapterMemo ,  t.apply_crowd As applyCrowd,  t.apply_crowd_content As applyCrowdContent ,surface_img  surfaceImg, thumbnail,show_status as showStatus ,
+         t.check_status as checkStatus,t.publish_dt as publishDt,t.classify_id as classifyId
+
+    </sql>
+
+	<resultMap id="ListCourseVO" type="com.comvee.cdms.defender.wechat.vo.ListCourseVO">
+		<id column="sid" jdbcType="BIGINT" property="sid" />
+		<result column="img" jdbcType="VARCHAR" property="img" />
+		<result column="surface_img" jdbcType="VARCHAR" property="surfaceImg" />
+		<result column="thumbnail" jdbcType="VARCHAR" property="thumbnail" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="chapter" jdbcType="TINYINT" property="chapter" />
+		<result column="memo" jdbcType="TIMESTAMP" property="memo" />
+		<result column="chapter_memo" jdbcType="TIMESTAMP" property="chapterMemo" />
+		<result column="isLearn" jdbcType="TIMESTAMP" property="isLearn" />
+		<result column="patientCourseId" jdbcType="VARCHAR" property="patientCourseId" />
+	</resultMap>
+
+	<resultMap id="MemberRecommendCoursePO" type="com.comvee.cdms.defender.wechat.po.MemberRecommendCoursePO">
+		<id column="sid" jdbcType="BIGINT" property="sid" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="course_id" jdbcType="BIGINT" property="courseId" />
+		<result column="sort" jdbcType="TINYINT" property="sort" />
+		<result column="is_valid" jdbcType="TINYINT" property="isValid" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+		<result column="reset_dt" jdbcType="TIMESTAMP" property="resetDt" />
+	</resultMap>
+
+
+
+	<!--根据id获取课程表表信息 -->
+	<select id="loadCourseById" resultType="com.comvee.cdms.defender.model.CourseModel">
+		SELECT
+		<include refid="CourseColumns"/>
+		FROM tiq_course t
+		WHERE t.sid = #{sid}
+	</select>
+
+	<!-- 获取课程表分页信息  -->
+	<select id="loadCourse" parameterType="Map" resultType="com.comvee.cdms.defender.model.CourseModel">
+		SELECT
+		<include refid="CourseColumns"/>,tp.status isLearn,d.name as classifyName,tp.plan_id planId
+		FROM tiq_course t
+		left join tiq_patient_course tp on t.sid=tp.course_id and tp.pid=#{pid} and tp.is_valid=1 and tp.is_plan=0
+		left join tiq_dict d on t.classify_id=d.code and d.pcode= #{courseClassify} and d.is_valid=1
+		where t.is_valid = 1
+		<if test="courseType!=null and courseType!='' ">
+			AND t.course_type = #{courseType}
+		</if>
+		<if test="type!=null and type!='' ">
+			AND t.type = #{type}
+		</if>
+		<if test="apply_crowd!=null and apply_crowd!=''">
+			and t.apply_crowd in
+			<foreach collection="apply_crowd" index="index" item="item" open="("
+					 separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="param !=null and param!='' ">
+			AND ( t.name like  CONCAT(CONCAT('%',#{param},'%'))  )
+		</if>
+		<if test="showStatus !=null and showStatus!='' ">
+			AND t.show_status = #{showStatus}
+		</if>
+	</select>
+
+	<select id="loadCourseByClassifyCode" parameterType="Map" resultType="com.comvee.cdms.defender.model.CourseModel">
+		SELECT
+		<include refid="CourseColumns"/>
+		FROM tiq_course t
+		join tiq_course_classify_join cc on t.sid=cc.course_id and cc.classify_id=#{classifyCode} and cc.is_valid=1
+		where t.is_valid = 1
+		order by t.name
+	</select>
+
+	<select id="loadCourseByPid" parameterType="Map" resultType="com.comvee.cdms.defender.model.CourseModel">
+		SELECT
+		<include refid="CourseColumns"/>,tp.status isLearn,tp.sid as patientCourseId
+		FROM tiq_course t left join
+		(select * from (select course_id,status,sid from tiq_patient_course where pid = #{pid} and is_valid = 1
+		having 1 /*keep orderby*/ ORDER BY status desc) tpc group by tpc.course_id) tp on tp.course_id = t.sid
+		<if test="isPlan!=null and isPlan!='' ">
+			and tp.is_plan=#{isPlan}
+		</if>
+
+		where t.is_valid = 1
+		<if test="courseType!=null and courseType!='' ">
+			AND t.course_type = #{courseType}
+		</if>
+		<if test="type!=null and type!='' ">
+			AND t.type = #{type}
+		</if>
+		<if test="showStatus !=null and showStatus!='' ">
+			AND t.show_status = #{showStatus}
+		</if>
+		<if test="apply_crowd!=null and apply_crowd!=''">
+			and t.apply_crowd in
+			<foreach collection="apply_crowd" index="index" item="item" open="("
+					 separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		order by tp.status
+	</select>
+
+	<!-- 统计课程表记录数 -->
+	<select id="countCourse" parameterType="Map" resultType="Long">
+		SELECT count( sid )
+		FROM tiq_course t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">
+         AND t.sid = #{sid}
+        </if>
+	    <if test="type!=null and type!='' ">
+         AND t.type = #{type}
+        </if>
+	    <if test="courseType!=null and courseType!='' ">
+         AND t.course_type = #{courseType}
+        </if>
+	    <if test="insertDt!=null and insertDt!='' ">
+         AND t.insert_dt = #{insertDt}
+        </if>
+	    <if test="modifyDt!=null and modifyDt!='' ">
+         AND t.modify_dt = #{modifyDt}
+        </if>
+	    <if test="isValid!=null and isValid!='' ">
+         AND t.is_valid = #{isValid}
+        </if>
+	    <if test="name!=null and name!='' ">
+         AND t.name = #{name}
+        </if>
+	    <if test="memo!=null and memo!='' ">
+         AND t.memo = #{memo}
+        </if>
+	    <if test="img!=null and img!='' ">
+         AND t.img = #{img}
+        </if>
+	    <if test="grade!=null and grade!='' ">
+         AND t.grade = #{grade}
+        </if>
+	    <if test="chapter!=null and chapter!='' ">
+         AND t.chapter = #{chapter}
+        </if>
+	    <if test="chapterMemo!=null and chapterMemo!='' ">
+         AND t.chapter_memo = #{chapterMemo}
+        </if>
+	    <if test="applyCrowd!=null and applyCrowd!='' ">
+         AND t.apply_crowd = #{applyCrowd}
+        </if>
+		</where>
+		-->
+	</select>
+
+	<!-- 添加课程表记录 -->
+	<insert id="addCourse">
+		INSERT INTO tiq_course(
+				sid,
+				type,
+				course_type,
+				insert_dt,
+				modify_dt,
+				is_valid,
+				name,
+				memo,
+				img,
+				grade,
+				chapter,
+				chapter_memo,
+				apply_crowd,
+				apply_crowd_content,
+				surface_img,
+				thumbnail ,
+				show_status,
+				check_status,
+				classify_id
+		) VALUES (
+			         #{sid},
+				#{type},
+				#{courseType},
+				now(),
+				now(),
+				1,
+				#{name},
+				#{memo},
+				#{img},
+				#{grade},
+				#{chapter},
+				#{chapterMemo},
+				#{applyCrowd},
+				#{applyCrowdContent},
+				#{surfaceImg},
+				#{thumbnail},
+				#{showStatus},
+				0,
+				#{classifyId}
+		)
+	</insert>
+
+	<!-- 修改课程表记录 -->
+	<update id="modifyCourse">
+		UPDATE tiq_course
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="sid!=null and sid!='' ">
+				sid = #{sid},
+			</if>
+			<if test="type!=null and type!='' ">
+				type = #{type},
+			</if>
+			<if test="courseType!=null and courseType!='' ">
+				course_type = #{courseType},
+			</if>
+
+			<if test="name!=null and name!='' ">
+				name = #{name},
+			</if>
+			<if test="memo!=null and memo!='' ">
+				memo = #{memo},
+			</if>
+			<if test="img!=null and img!='' ">
+				img = #{img},
+			</if>
+			<if test="grade!=null and grade!='' ">
+				grade = #{grade},
+			</if>
+			<if test="chapter!=null and chapter!='' ">
+				chapter = #{chapter},
+			</if>
+			<if test="chapterMemo!=null and chapterMemo!='' ">
+				chapter_memo = #{chapterMemo},
+			</if>
+			<if test="applyCrowd!=null and applyCrowd!='' ">
+				apply_crowd = #{applyCrowd},
+			</if>
+			<if test="applyCrowdContent!=null and applyCrowdContent!='' ">
+				apply_crowd_content = #{applyCrowdContent},
+			</if>
+			<if test="surfaceImg!=null and surfaceImg!='' ">
+				surface_img = #{surfaceImg},
+			</if>
+			<if test="thumbnail!=null and thumbnail!='' ">
+				thumbnail = #{thumbnail},
+			</if>
+			<if test="showStatus !=null and showStatus !='' ">
+				show_status = #{showStatus},
+			</if>
+
+			<if test="checkStatus !=null and checkStatus !='' ">
+				check_status = #{checkStatus},
+			</if>
+
+			<if test="publishDt !=null and publishDt !='' ">
+				publish_dt = #{publishDt},
+			</if>
+			<if test="classifyId !=null and classifyId !='' ">
+				classify_id = #{classifyId},
+			</if>
+
+			modify_dt = now(),
+		</trim>
+		WHERE sid = #{sid}
+	</update>
+
+	<!-- 删除课程表记录  -->
+	<update id="delCourse" parameterType="Long">
+		UPDATE tiq_course SET  is_valid = 0
+		WHERE sid = #{sid} and is_valid = 1
+	</update>
+
+
+	<!-- 获取课程推荐规则配置 -->
+	<select id="loadCourseRecommendRule" resultType= "com.comvee.cdms.defender.model.CfgCourseRecommendRuleModel">
+		select t.sid,t.rule,t.outid,t.salience from tiq_cfg_course_recommend_rule t
+		where t.is_valid = 1
+	</select>
+
+	<select id="loadCourseByCourseIds" parameterType="Map" resultType="com.comvee.cdms.defender.model.CourseModel">
+		SELECT
+		<include refid="CourseColumns"/>,case when tp.status is null then 0 else status end isLearn
+		FROM tiq_course t
+		left join tiq_patient_course tp on t.sid=tp.course_id and tp.pid=#{pid} and tp.is_valid=1 and tp.is_plan=1
+		where t.is_valid = 1
+		<if test="coruseIds!=null and coruseIds!=''">
+			and t.sid in
+			<foreach collection="coruseIds" index="index" item="item" open="("
+					 separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="loadPatientRecommend" parameterType="Map" resultType="com.comvee.cdms.defender.model.PatientRecommendModel">
+		select recommends,pid from tiq_patient_recommend where pid=#{pid}
+	</select>
+
+	<select id="listHotCourse"  resultType="com.comvee.cdms.defender.model.CourseModel">
+		select course_id sid from tiq_patient_course where is_plan=1  group by course_id order by count(1) desc
+	</select>
+
+	<insert id="addCourseSearchHistory">
+		INSERT INTO tiq_course_search_history(sid,member_id,keyword,insert_dt,modify_dt,is_valid)
+		VALUES (#{sid},#{memberId},#{keyword},now(),now(),1)
+	</insert>
+	<insert id="addCourseClassify"  parameterType="com.comvee.cdms.defender.model.CourseClassifyModel">
+		INSERT INTO tiq_course_classify_join(classify_id,course_id,is_valid,insert_dt)
+		VALUES (#{classifyId},#{courseId},1,now())
+	</insert>
+	<insert id="batchAddMemberRecommendCourses">
+		INSERT INTO tiq_member_recommend_course (
+		sid,
+		member_id,
+		course_id,
+		sort,
+		is_valid,
+		insert_dt,
+		modify_dt,
+		reset_dt)
+		VALUES
+		<foreach collection="list" item="item" index="index" separator="," >
+			(#{item.sid},
+			#{item.memberId},
+			#{item.courseId},
+			#{item.sort},
+			1,
+			#{item.insertDt},
+			#{item.modifyDt},
+			#{item.resetDt})
+		</foreach>
+	</insert>
+
+	<update id="updateCourseClassify" parameterType="com.comvee.cdms.defender.model.CourseClassifyModel">
+		UPDATE tiq_course_classify_join
+		<set>
+			<if test="classifyId != null and classifyId != ''">
+				classify_id = #{classifyId},
+			</if>
+			<if test="isValid != null and isValid != ''">
+				is_valid = #{isValid},
+			</if>
+		</set>
+		where course_id = #{courseId}
+	</update>
+	<update id="delCourseSearchHistory">
+		UPDATE tiq_course_search_history
+		set is_valid = 0,modify_dt = now()
+		where member_id = #{memberId}
+	</update>
+	<update id="batchDelMemberRecommendCourse">
+		UPDATE tiq_member_recommend_course
+		SET is_valid = 0,modify_dt = now()
+		WHERE sid IN
+		<foreach collection="list" item="item" separator="," open="(" close=")">
+			#{item}
+		</foreach>
+	</update>
+
+	<select id="getCourseClassifyByCourseId" parameterType="java.lang.String" resultType="com.comvee.cdms.defender.model.CourseClassifyModel">
+		SELECT id AS id,classify_id AS classifyId,course_id AS courseId,is_valid AS isValid,insert_dt AS  insertDt
+		FROM tiq_course_classify_join WHERE course_id = #{courseId} limit 1
+	</select>
+
+	<select id="searchCourse" resultMap="ListCourseVO">
+		SELECT sid,img,surface_img,thumbnail,name,chapter,memo,chapter_memo
+		FROM tiq_course
+		where is_valid = 1
+		<choose>
+			<when test="keyword != null and keyword != ''">
+				and (name like concat('%',concat(#{keyword},'%')) or memo like concat('%',concat(#{keyword},'%')))
+				order by length(name) asc,insert_dt desc
+			</when>
+			<otherwise>
+				order by insert_dt desc
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="listCourseById" resultMap="ListCourseVO">
+		SELECT sid,img,surface_img,thumbnail,name,chapter,memo,chapter_memo
+		FROM tiq_course
+		WHERE sid IN
+		<foreach collection="list" item="item" separator="," open="(" close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<select id="searchCourseByName" resultMap="ListCourseVO">
+		SELECT c.sid,c.img,c.surface_img,c.thumbnail,c.name,c.chapter,c.memo,c.chapter_memo,IFNULL(p.status,0) isLearn,p.sid patientCourseId
+		FROM tiq_course c
+		left join (select * from (select course_id,status,sid from tiq_patient_course where pid = #{memberId} and is_valid = 1
+		having 1 /*keep orderby*/ ORDER BY status desc) tpc group by course_id) p on p.course_id = c.sid
+		where c.is_valid = 1
+		<if test="keyword != null and keyword != ''">
+			and c.name like concat('%',concat(#{keyword},'%'))
+		</if>
+		order by length(c.name) asc,c.insert_dt desc
+	</select>
+
+	<select id="searchCourseByMemo" resultMap="ListCourseVO">
+		SELECT c.sid,c.img,c.surface_img,c.thumbnail,c.name,c.chapter,c.memo,c.chapter_memo,IFNULL(p.status,0) isLearn,p.sid patientCourseId
+		FROM tiq_course c
+		left join (select * from (select course_id,status,sid from tiq_patient_course where pid = #{memberId} and is_valid = 1
+		having 1 /*keep orderby*/ ORDER BY status desc) tpc group by course_id) p on p.course_id = c.sid
+		where c.is_valid = 1
+		<if test="keyword != null and keyword != ''">
+			and c.memo like concat('%',concat(#{keyword},'%'))
+		</if>
+		order by length(c.memo) asc,c.insert_dt desc
+	</select>
+
+	<select id="loadCourseSearchHistory" resultType="java.lang.String">
+	SELECT distinct a.keyword
+		FROM (select keyword from tiq_course_search_history
+		WHERE member_id =  #{memberId} and is_valid = 1 order by insert_dt desc) a
+		limit 10
+
+	</select>
+	<select id="loadCourseLimit" resultType="java.lang.String">
+		SELECT sid
+		FROM tiq_course
+		WHERE
+		sid not in (
+		select course_id sid from tiq_patient_course WHERE pid = #{memberId} and is_valid =1
+		union
+		select course_id sid from tiq_member_recommend_course WHERE member_id = #{memberId}
+		)
+		and is_valid =1
+		order by insert_dt desc
+		<if test="limit != null">
+			limit #{limit}
+		</if>
+	</select>
+
+	<select id="listCourseVoByIds" resultMap="ListCourseVO">
+		SELECT c.sid,c.img,c.surface_img,c.thumbnail,c.name,c.chapter,c.memo,c.chapter_memo,
+		IFNULL(p.status,0) isLearn,p.sid patientCourseId
+		FROM tiq_course c left join
+		(select status,sid,course_id from tiq_patient_course where pid = #{memberId} and is_valid =1 ) p
+		on p.course_id = c.sid
+		where c.sid in
+		<foreach collection="list" index="index" item="item" open="("
+				 separator="," close=")">
+			#{item}
+		</foreach>
+		order by field(c.sid,
+		<foreach collection="list" index="index" item="item" separator=",">
+			#{item}
+		</foreach>
+		)
+	</select>
+	<select id="loadMemberRecommendCourses" resultMap="ListCourseVO">
+		SELECT r.course_id sid,c.img,c.surface_img,c.thumbnail,c.name,c.chapter,c.memo,c.chapter_memo,IFNULL(p.status,0) isLearn,p.sid patientCourseId
+		FROM tiq_member_recommend_course r left join tiq_course c on r.course_id = c.sid
+		left join (select * from (select course_id,status,sid from tiq_patient_course where pid = #{memberId}
+		having 1 /*keep orderby*/ ORDER BY status desc) tpc group by course_id) p on p.course_id = r.course_id
+		WHERE r.is_valid = 1 and r.member_id = #{memberId}
+		order by p.status,r.sort
+		limit 10
+	</select>
+	<select id="loadMemberRecommendCoursePOs" resultMap="MemberRecommendCoursePO">
+		SELECT sid,member_id,course_id,sort,is_valid,insert_dt,modify_dt,reset_dt
+		FROM tiq_member_recommend_course
+		WHERE member_id = #{memberId} and is_valid = 1
+		order by sort asc
+		limit 10
+	</select>
+	<select id="loadExistRecommendCourseMembers" resultType="java.lang.String">
+		SELECT member_id
+		FROM tiq_member_recommend_course
+		where is_valid = 1
+		group by member_id
+	</select>
+
+	<select id="listCourseVoByMemberId" resultMap="ListCourseVO">
+		select
+		c.sid,c.img,c.surface_img,c.thumbnail,c.name,c.chapter,c.memo,c.chapter_memo
+		from tiq_member_recommend_course r left join tiq_course c on r.course_id = c.sid
+		where r.member_id = #{memberId} and r.is_valid = 1 and c.is_valid = 1
+		order by r.sort asc
+
+	</select>
+	<select id="loadCourseNew" resultType="java.lang.String">
+        select sid from tiq_course where is_valid = 1 order by insert_dt desc limit 10
+    </select>
+
+	<select id="loadAllCourse" resultType="com.comvee.cdms.defender.model.CourseModel">
+		SELECT
+		<include refid="CourseColumns"/>
+		FROM tiq_course t where is_valid = 1
+	</select>
+
+	<delete id="delCourseClassifyByCourseId" parameterType="java.lang.String">
+		DELETE FROM tiq_course_classify_join WHERE course_id = #{courseId}
+	</delete>
+
+</mapper>

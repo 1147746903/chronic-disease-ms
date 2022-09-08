@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.other.mapper.AreaMapper">
+  <resultMap id="area" type="com.comvee.cdms.other.po.AreaPO">
+    <id column="area_id" jdbcType="BIGINT" property="areaId" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="area_pid" jdbcType="BIGINT" property="areaPid" />
+    <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+    <result column="is_emphasis" jdbcType="BIT" property="isEmphasis" />
+    <result column="rank" jdbcType="BIT" property="rank" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="is_valid" jdbcType="BIT" property="isValid" />
+  </resultMap>
+
+  <select id="listArea" resultMap="area">
+    select area_id, area_name, area_pid, area_code, is_emphasis, `rank`, insert_dt, is_valid
+    from t_area
+    <where>
+      <if test="areaPid != null and '' != areaPid">
+        and area_pid = #{areaPid}
+      </if>
+      <if test="rank != null ">
+        and `rank` = #{rank}
+      </if>
+    </where>
+    order by area_id
+  </select>
+    <select id="listAreaName" resultType="java.lang.String">
+      select area_name
+      from t_area
+      <where>
+        is_valid = 1
+        <if test="areaPid != null and '' != areaPid">
+          and area_pid = #{areaPid}
+        </if>
+        <if test="rank != null ">
+          and `rank` = #{rank}
+        </if>
+      </where>
+      order by area_id
+    </select>
+</mapper>

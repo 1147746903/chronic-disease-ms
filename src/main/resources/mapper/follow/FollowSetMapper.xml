@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.follow.mapper.FollowSetMapper" >
+  <resultMap id="followSet" type="com.comvee.cdms.follow.po.FollowSetPO" >
+    <id column="sid" property="sid" jdbcType="BIGINT" />
+    <result column="set_user" property="setUser" jdbcType="TINYINT" />
+    <result column="follow_type" property="followType" jdbcType="TINYINT" />
+    <result column="pre_code" property="preCode" jdbcType="VARCHAR" />
+    <result column="pre_rule" property="preRule" jdbcType="LONGVARCHAR" />
+    <result column="fir_code" property="firCode" jdbcType="VARCHAR" />
+    <result column="fir_rule" property="firRule" jdbcType="LONGVARCHAR" />
+    <result column="join_code" property="joinCode" jdbcType="VARCHAR" />
+    <result column="join_rule" property="joinRule" jdbcType="LONGVARCHAR" />
+    <result column="member_id" property="memberId" jdbcType="BIGINT" />
+    <result column="doctor_id" property="doctorId" jdbcType="BIGINT" />
+    <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP" />
+    <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="isValid" jdbcType="TINYINT" />
+  </resultMap>
+
+  <resultMap id="followUpSet" type="com.comvee.cdms.follow.po.FollowupSetPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="follow_type" jdbcType="TINYINT" property="followType" />
+    <result column="set_rule" jdbcType="LONGVARCHAR" property="setRule" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+  </resultMap>
+
+  <select id="getFollowSetOne" parameterType="com.comvee.cdms.follow.model.FollowSetDTO" resultMap="followSet">
+    SELECT sid, set_user, follow_type,
+    pre_code, pre_rule,fir_code, fir_rule,
+    join_code, join_rule, member_id, doctor_id,
+    insert_dt, modify_dt, is_valid
+    FROM t_follow_set
+    where is_valid=1
+    <if test="memberId != null and memberId!=''" >
+      and member_id=#{memberId}
+    </if>
+    <if test="doctorId != null and doctorId!=''" >
+      and doctor_id=#{doctorId}
+    </if>
+    <if test="setUser != null and setUser!=''" >
+      and set_user=#{setUser}
+    </if>
+    LIMIT 1
+  </select>
+
+  <select id="listFollowSet" parameterType="com.comvee.cdms.follow.model.FollowSetDTO" resultMap="followSet">
+    SELECT sid, set_user, follow_type,
+    pre_code, pre_rule,fir_code, fir_rule,
+    join_code, join_rule, member_id, doctor_id,
+    insert_dt, modify_dt, is_valid
+    FROM t_follow_set
+    where is_valid=1
+    <if test="memberId != null and memberId!=''" >
+      and member_id=#{memberId}
+    </if>
+    <if test="doctorId != null and doctorId!=''" >
+      and doctor_id=#{doctorId}
+    </if>
+    <if test="setUser != null and setUser!=''" >
+      and set_user=#{setUser}
+    </if>
+  </select>
+
+  <select id="getFollowSetById" resultMap="followSet" >
+    select sid, set_user, follow_type,
+    pre_code, pre_rule,fir_code, fir_rule,
+    join_code, join_rule, member_id, doctor_id,
+    insert_dt, modify_dt, is_valid
+    from t_follow_set
+    where sid=#{sid}
+  </select>
+
+  <insert id="insertFollowSet" parameterType="com.comvee.cdms.follow.po.FollowSetPO" >
+    insert into t_follow_set (sid, set_user, follow_type,
+    pre_code, pre_rule,fir_code, fir_rule,
+    join_code, join_rule, member_id, doctor_id,
+    insert_dt, modify_dt, is_valid
+    )
+    values (#{sid}, #{setUser}, #{followType},
+    #{preCode}, #{preRule}, #{firCode}, #{firRule},
+    #{joinCode}, #{joinRule}, #{memberId}, #{doctorId},
+    now(), now(), 1
+    )
+  </insert>
+
+  <update id="modifyFollowSet" parameterType="com.comvee.cdms.follow.po.FollowSetPO" >
+    update t_follow_set
+    <set>
+      modify_dt = now(),
+      <if test="setUser != null and setUser!=''" >
+        set_user = #{setUser},
+      </if>
+      <if test="followType != null and followType!=''" >
+        follow_type = #{followType},
+      </if>
+      <if test="preCode != null" >
+        pre_code = #{preCode},
+      </if>
+      <if test="preRule != null" >
+        pre_rule = #{preRule},
+      </if>
+      <if test="firCode != null" >
+        fir_code = #{firCode},
+      </if>
+      <if test="firRule != null" >
+        fir_rule = #{firRule},
+      </if>
+      <if test="joinCode != null" >
+        join_code = #{joinCode},
+      </if>
+      <if test="joinRule != null" >
+        join_rule = #{joinRule}
+      </if>
+    </set>
+    where sid = #{sid}
+  </update>
+
+  <!--v4.0.4-->
+  <insert id="insertFollowupSet" parameterType="com.comvee.cdms.follow.po.FollowupSetPO">
+    insert into t_followup_set (sid, follow_type, member_id,doctor_id, is_valid, insert_dt,update_dt, set_rule,hospital_id)
+    values (#{sid,jdbcType=BIGINT}, #{followType,jdbcType=TINYINT}, #{memberId,jdbcType=BIGINT},
+    #{doctorId,jdbcType=BIGINT},1, now(),now(),#{setRule,jdbcType=LONGVARCHAR},#{hospitalId,jdbcType=BIGINT})
+  </insert>
+  <!--v4.0.4-->
+  <update id="modifyFollowupSet" parameterType="com.comvee.cdms.follow.po.FollowupSetPO">
+    update t_followup_set
+    <set>
+      update_dt = now(),
+      <if test="followType != null">
+        follow_type = #{followType,jdbcType=TINYINT},
+      </if>
+      <if test="memberId != null and memberId != ''">
+        member_id = #{memberId,jdbcType=BIGINT},
+      </if>
+      <if test="doctorId != null and doctorId != ''">
+        doctor_id = #{doctorId,jdbcType=BIGINT},
+      </if>
+      <if test="setRule != null">
+        set_rule = #{setRule,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="hospitalId != null and hospitalId != ''">
+        hospital_id = #{hospitalId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where sid = #{sid,jdbcType=BIGINT}
+  </update>
+  <!--v4.0.4-->
+  <select id="getFollowupSet" parameterType="com.comvee.cdms.follow.dto.FollowupSetDTO" resultMap="followUpSet">
+    select sid, follow_type, member_id,doctor_id, is_valid, insert_dt,update_dt, set_rule
+    from t_followup_set where is_valid = 1
+    <if test="memberId != null and memberId != ''">
+      and member_id = #{memberId}
+    </if>
+    <if test="doctorId != null and doctorId != ''">
+      and doctor_id = #{doctorId}
+    </if>
+  </select>
+  <!--v4.0.4-->
+  <select id="listFollowupSet"  resultMap="followUpSet">
+    select sid, follow_type, member_id,doctor_id, is_valid, insert_dt,update_dt, set_rule,hospital_id
+    from t_followup_set where is_valid = 1
+  </select>
+
+</mapper>

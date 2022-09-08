@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.DySensorDoctorMapper">
+    <resultMap id="sensorDoctorMap" type="com.comvee.cdms.dybloodsugar.po.DySensorDoctorPO">
+        <id column="sid" jdbcType="BIGINT" property="sid"/>
+        <result column="hospital_id" jdbcType="VARCHAR" property="hospitalId"/>
+        <result column="doctor_id" jdbcType="VARCHAR" property="doctorId"/>
+        <result column="doctor_name" jdbcType="VARCHAR" property="doctorName"/>
+        <result column="valid" jdbcType="TINYINT" property="valid"/>
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt"/>
+        <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt"/>
+    </resultMap>
+
+    <insert id="addDySensorDoctor" parameterType="com.comvee.cdms.dybloodsugar.po.DySensorDoctorPO">
+        insert into dy_sensor_doctor(sid, hospital_id, valid, insert_dt, modify_dt)
+        values (#{sid}, #{hospitalId}, 1, now(), now())
+    </insert>
+
+    <update id="updateDySensorDoctor" parameterType="com.comvee.cdms.dybloodsugar.po.DySensorDoctorPO">
+        update dy_sensor_doctor
+        set modify_dt = now()
+        <if test=" hospitalId != null and hospitalId != '' ">
+            , hospital_id = #{hospitalId}
+        </if>
+        where sid = #{sid}
+    </update>
+
+    <delete id="deleteDySensorDoctorById" parameterType="String">
+        update dy_sensor_doctor
+        set valid = 0
+        where sid = #{sid}
+    </delete>
+
+    <select id="hasDySensorDoctor" resultType="boolean" parameterType="com.comvee.cdms.dybloodsugar.po.DySensorDoctorPO">
+        select count(sid) > 0
+        from dy_sensor_doctor
+        where hospital_id = #{hospitalId}
+    </select>
+
+    <select id="listDySensorDoctor" resultMap="sensorDoctorMap">
+        select b.sid, b.hospital_id, a.doctor_id, doctor_name, b.valid, b.insert_dt, b.modify_dt
+        from t_doctor a
+                 inner join dy_sensor_doctor b on a.hospital_id = b.hospital_id
+        where 1=1 and b.valid = 1
+    </select>
+</mapper>

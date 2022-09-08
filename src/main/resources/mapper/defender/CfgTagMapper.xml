@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.CfgTagMapper">
+    <sql id="CfgTagColumns">
+         t.sid As sid ,  t.title As title ,  t.type As type ,  t.code As code ,  t.is_valid As isValid ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt 
+    </sql>
+
+	<!--根据id获取标签表信息 -->
+	<select id="loadCfgTagById" resultType="com.comvee.cdms.defender.model.CfgTagModel">
+		SELECT 
+			<include refid="CfgTagColumns"/>
+		FROM tiq_cfg_tag t
+		WHERE t.sid = #{sid} 
+	</select>
+	
+	<!-- 获取标签分页信息  -->
+	<select id="loadCfgTag"  resultType="com.comvee.cdms.defender.model.CfgTagModel">
+		SELECT 
+			<include refid="CfgTagColumns"/>
+		FROM tiq_cfg_tag t
+		
+		
+		where is_valid = 1
+		<if test="param !=null and param!='' ">
+			and t.title like CONCAT(CONCAT('%',#{param},'%'))
+		</if>
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+        AND t.sid = #{sid}  
+        </if>  
+	    <if test="title!=null and title!='' ">     
+        AND t.title = #{title}  
+        </if>  
+	    <if test="type!=null and type!='' ">     
+        AND t.type = #{type}  
+        </if>  
+	    <if test="code!=null and code!='' ">     
+        AND t.code = #{code}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+    <!-- 统计标签记录数 -->
+	<select id="countCfgTag"  resultType="java.lang.Long">
+		SELECT count( sid )
+		FROM tiq_cfg_tag t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+         AND t.sid = #{sid}    
+        </if>  
+	    <if test="title!=null and title!='' ">     
+         AND t.title = #{title}    
+        </if>  
+	    <if test="type!=null and type!='' ">     
+         AND t.type = #{type}    
+        </if>  
+	    <if test="code!=null and code!='' ">     
+         AND t.code = #{code}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加标签记录 -->
+	<insert id="addCfgTag">
+		INSERT INTO tiq_cfg_tag(
+				
+				    sid,
+				
+				title,
+				type,
+				code,
+				is_valid,
+				modify_dt,
+				insert_dt
+		) VALUES (
+			         #{sid},
+				#{title},
+				#{type},
+				#{code},
+				1,
+				now(),
+				now()
+		)
+	</insert>
+
+    <!-- 修改标签记录 -->
+	<update id="modifyCfgTag">
+		UPDATE tiq_cfg_tag 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="sid!=null and sid!='' ">    
+	        sid = #{sid},
+	        </if>
+	        <if test="title!=null and title!='' ">    
+	        title = #{title},
+	        </if>
+	        <if test="type!=null and type!='' ">    
+	        type = #{type},
+	        </if>
+	        <if test="code!=null and code!='' ">    
+	        code = #{code},
+	        </if>
+	        modify_dt = now(),
+		</trim>
+		WHERE sid = #{sid}
+	</update>
+	
+	<!-- 删除标签记录  -->
+	<update id="delCfgTag" parameterType="Long">
+		UPDATE tiq_cfg_tag SET  is_valid = 0 , modify_dt = now()
+		WHERE sid = #{sid} and is_valid = 1
+	</update>
+	
+	
+
+</mapper>

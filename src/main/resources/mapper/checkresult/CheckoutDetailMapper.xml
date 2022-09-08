@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.checkresult.mapper.CheckoutDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.comvee.cdms.checkresult.po.CheckoutDetailPO" >
+    <id column="sid" property="sid" jdbcType="BIGINT" />
+      <result column="member_id" property="memberId" jdbcType="BIGINT" />
+    <result column="checkout_id" property="checkoutId" jdbcType="VARCHAR" />
+    <result column="checkout_code" property="checkoutCode" jdbcType="VARCHAR" />
+    <result column="checkout_name" property="checkoutName" jdbcType="VARCHAR" />
+    <result column="checkout_result" property="checkoutResult" jdbcType="VARCHAR" />
+    <result column="result_unit" property="resultUnit" jdbcType="VARCHAR" />
+    <result column="qualitative_result" property="qualitativeResult" jdbcType="VARCHAR" />
+    <result column="reference_range" property="referenceRange" jdbcType="VARCHAR" />
+    <result column="abnormal_sign" property="abnormalSign" jdbcType="VARCHAR" />
+    <result column="acronym" property="acronym" jdbcType="VARCHAR" />
+    <result column="checkout_result_last" property="checkoutResultLast" jdbcType="VARCHAR" />
+      <result column="checkout_datetime" property="checkoutDatetime" jdbcType="VARCHAR" />
+      <result column="hospital_id" property="hospitalId" />
+      <result column="hospital_name" property="hospitalName" />
+      <result column="is_valid" property="isValid" />
+      <result column="chd" property="chd" />
+      <result column="sex" property="sex" />
+      <result column="record_origin" property="recordOrigin" />
+      <result column="sample_name" property="sampleName" />
+      <result column="department_name" property="departmentName" />
+      <result column="checkout_doctor_name" property="checkoutDoctorName" />
+      <result column="checkout_result_last" property="checkoutResultLastStr" />
+  </resultMap>
+  
+  <!-- 根据checkoutId，获取对象信息 -->
+  <select id="listCheckoutDetail" parameterType="String" resultMap="BaseResultMap">
+  		SELECT
+  		`sid`,`checkout_id`,`checkout_code`,`checkout_name`,`checkout_result`,`result_unit`,
+  		`qualitative_result`,`reference_range`,`abnormal_sign`,`acronym`,checkout_result_last,
+            t.checkout_datetime,t.hospital_id,t.hospital_name,t.is_valid
+		FROM t_checkout_detail t
+		where t.checkout_id = #{checkoutId}
+      <if test="hospitalId!=null and hospitalId!=''">
+          and t.hospital_id=#{hospitalId}
+      </if>
+  </select>
+
+    <select id="listFatByCodeOfStatistics" parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO" resultMap="BaseResultMap">
+        <!--visitType类型 1住院 2门诊&居家 -->
+        <if test="visitType==1">
+            select * from (
+            SELECT
+            t1.chd,t1.sex,t.sid,checkout_id,checkout_code,checkout_name,checkout_result,result_unit,
+            qualitative_result,reference_range,abnormal_sign,acronym,checkout_result_last,
+            t.checkout_datetime,t.hospital_id,t.hospital_name,t.is_valid,t.member_id
+            FROM t_checkout_detail t JOIN (
+            select m.member_id,m.chd,m.sex from t_member m
+            join t_member_checkin_info mci on mci.member_id = m.member_id and mci.is_valid =1
+            join t_member_in_hospital_log h on m.member_id=h.member_id
+            where h.is_valid=1 and mci.checkin_status = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and h.hospital_id=#{hospitalId}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and (h.in_hospital_date &lt; #{endDt} and (h.out_hospital_date &gt; #{startDt} or h.out_hospital_date is null))
+            </if>
+            <if test="diabetesType!=null and diabetesType!=''">
+                and m.diabetes_type = #{diabetesType}
+            </if>
+            <if test="sex!=null and sex!=''">
+                and m.sex=#{sex}
+            </if>
+            GROUP BY m.member_id
+            )t1
+            ON t.member_id = t1.member_id
+            where (t.checkout_code = #{fatCode} or t.checkout_name = #{fatName})
+            <if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+                and t.checkout_datetime BETWEEN #{startDt} and #{endDt}
+            </if>
+            <if test="hospitalId!=null and hospitalId!=''">
+                and (t.hospital_id=#{hospitalId} or t.hospital_id = -1)
+            </if>
+            order by t.checkout_datetime DESC)t
+            GROUP BY t.member_id;
+        </if>
+        <if test="visitType==2">
+            SELECT * from (
+            SELECT
+            t1.chd,t1.sex,t.sid,checkout_id,checkout_code,checkout_name,checkout_result,result_unit,
+            qualitative_result,reference_range,abnormal_sign,acronym,checkout_result_last,
+            t.checkout_datetime,t.hospital_id,t.hospital_name,t.is_valid,t.member_id
+            FROM t_checkout_detail t JOIN (
+            select m.member_id,m.chd,m.sex from t_member m
+            join t_member_join_hospital mjh on m.member_id = mjh.member_id and mjh.valid = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and mjh.hospital_id=#{hospitalId}
+            </if>
+            left join
+            (select member_id,checkin_status,hospital_id from t_member_checkin_info where is_valid = 1) mci
+            on mci.member_id = mjh.member_id
+            where m.is_valid=1
+            and(mci.checkin_status is null or mci.checkin_status != 1)
+            <if test="sex!=null and sex!=''">
+                and m.sex=#{sex}
+            </if>
+            <if test="diabetesType!=null and diabetesType!=''">
+                and m.diabetes_type = #{diabetesType}
+            </if>
+            GROUP BY m.member_id
+            )t1
+            ON t.member_id = t1.member_id
+            where (t.checkout_code = #{fatCode} or t.checkout_name = #{fatCode})
+            <if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+                and t.checkout_datetime BETWEEN #{startDt} and #{endDt}
+            </if>
+            order by t.checkout_datetime DESC)t
+            GROUP BY t.member_id;
+        </if>
+        <if test="visitType==3">
+            SELECT * from (
+                SELECT
+                t1.chd,t1.sex,t.sid,checkout_id,checkout_code,checkout_name,checkout_result,result_unit,
+                qualitative_result,reference_range,abnormal_sign,acronym,checkout_result_last,
+                t.checkout_datetime,t.hospital_id,t.hospital_name,t.is_valid,t.member_id
+                FROM t_checkout_detail t JOIN (
+                    select a1.member_id,a1.chd,a1.sex,a3.insert_dt from t_member a1 ,t_research_group a2,t_research_group_member a3
+                    where a1.is_valid = 1 and a2.valid = 1 and a3.valid = 1
+                    and a1.member_id = a3.member_id and a2.group_id = a3.research_group_id
+                    and a2.hospital_id = #{hospitalId}
+                    <if test="researchGroupId != null and researchGroupId != ''">
+                        and a2.group_id = #{researchGroupId}
+                    </if>
+                    <if test="diabetesType!=null and diabetesType!=''">
+                        and a1.diabetes_type = #{diabetesType}
+                    </if>
+                    group by a1.member_id
+                )t1
+                ON t.member_id = t1.member_id
+                where (t.checkout_code = #{fatCode} or t.checkout_name = #{fatCode})
+                and t.checkout_datetime BETWEEN DATE_FORMAT(t1.insert_dt,'%Y-%m-%d') and #{endDt}
+                order by t.checkout_datetime DESC
+            )t
+            GROUP BY t.member_id
+        </if>
+    </select>
+
+    <select id="listCheckoutDetailByMemberIdOfInHos" parameterType="String" resultMap="BaseResultMap">
+        SELECT
+        t.`sid`,`checkout_id`,t.`checkout_code`,t.`checkout_name`,t.`checkout_result`,t.`result_unit`,
+        t.`qualitative_result`,t.`reference_range`,t.`abnormal_sign`,t.`acronym`,t.checkout_result_last,
+        t.checkout_datetime,t.hospital_id,t.hospital_name,t.is_valid
+        FROM t_checkout_detail t
+         where t.member_id=#{memberId}
+    </select>
+
+    <!--v6.0.0 start-->
+    <select id="listMemberHistoryCheckResult" parameterType="com.comvee.cdms.checkresult.dto.ListCheckResultDTO" resultMap="BaseResultMap">
+  		select * from(SELECT
+  		t.`sid`,t.`checkout_id`,t.`checkout_code`,t.`checkout_name`,t.`checkout_result`,t.`result_unit`,
+        t.`qualitative_result`,t.`reference_range`,t.`abnormal_sign`,t.`acronym`,t.checkout_result_last,
+        ifnull(t.checkout_datetime,t.insert_dt)checkout_datetime,t.hospital_id,t.hospital_name,t.is_valid,
+        c.record_origin
+		FROM t_checkout_detail t join t_checkout c on c.hospital_id=t.hospital_id and c.checkout_id = t.checkout_id
+        and c.member_id=t.member_id
+		where t.is_valid=1 and c.is_valid=1
+		and t.member_id=#{memberId} and t.checkout_code = #{checkoutCode}
+		<if test="checkoutName != null and '' != checkoutName">
+            and t.checkout_name = #{checkoutName}
+        </if>
+        <if test="hospitalId!=null and hospitalId!=''">
+            and (t.hospital_id = #{hospitalId} or t.hospital_id = -1<!--满足旧数据且无法找到医院编号的检验-->)
+        </if>
+        <if test="startDt!=null and startDt !=''">
+            and t.checkout_datetime &gt;= #{startDt}
+        </if>
+        <if test="endDt!=null and endDt !=''">
+            and t.checkout_datetime &lt;= #{endDt}
+        </if>)t
+        where t.checkout_datetime is not null and t.checkout_result is not null
+        and t.checkout_result != ''
+        order by t.checkout_datetime DESC
+    </select>
+
+    <delete id="deleteCheckoutDetailByCheckoutId">
+        delete from t_checkout_detail
+        where checkout_id=#{checkoutId} and hospital_id=#{hospitalId}
+    </delete>
+
+    <select id="listCheckoutDetailGroupByNameByCodeOrNames" resultMap="BaseResultMap">
+        select ifnull(t.`sid`,'--')sid,
+        ifnull(t.`checkout_id`,'--')checkout_id,
+        ifnull(t.`checkout_code`,a.checkout_code)checkout_code,
+        ifnull(t.`checkout_name`,a.show_name)checkout_name,
+        ifnull(t.`checkout_result`,'--')checkout_result,
+        ifnull(t.`result_unit`,a.unit)result_unit,
+        ifnull(t.`qualitative_result`,'--')qualitative_result,
+        ifnull(t.`reference_range`,a.range_str)reference_range,
+        ifnull(t.`abnormal_sign`,'--')abnormal_sign,
+        ifnull(t.`acronym`,'--')acronym,
+        ifnull(t.checkout_result_last,'--')checkout_result_last,
+        ifnull(t.checkout_datetime,'--')checkout_datetime,
+        ifnull(t.hospital_id,'--')hospital_id,
+        ifnull(t.hospital_name,'--')hospital_name,
+        ifnull(t.is_valid,1)is_valid,
+        ifnull(t.record_origin,null)record_origin,
+        ifnull(t.sample_name,'--')sample_name,
+        t.department_name,t.checkout_doctor_name
+        from t_keynote_configure a
+        JOIN t_doctor_keynote b on b.keynote_id=a.keynote_id and a.is_valid=1
+        and b.is_valid=1
+        <if test="keyNoteModel!=null">
+            and b.doctor_id=#{keyNoteModel.doctorId} and b.in_hos=#{keyNoteModel.inHos} and b.hospital_id=#{keyNoteModel.hospitalId}
+            and b.type=#{keyNoteModel.type}
+        </if>
+        left JOIN (SELECT t.`sid`,t.`checkout_id`,t.`checkout_code`,t.`checkout_name`,t.`checkout_result`,t.`result_unit`,
+        t.`qualitative_result`,t.`reference_range`,t.`abnormal_sign`,t.`acronym`,t.checkout_result_last,
+        t.checkout_datetime,t.hospital_id,t.hospital_name,t.is_valid,c.record_origin,c.sample_name,c.department_name,c.checkout_doctor_name
+        FROM t_checkout_detail t
+        join t_checkout c on c.hospital_id=t.hospital_id and c.checkout_id = t.checkout_id
+        and c.member_id=t.member_id
+        where t.is_valid=1 and c.is_valid=1
+        <if test="list!=null and list.size()&gt;0">
+            and (t.checkout_name in
+            <foreach collection="list" separator="," close=")" open="(" item="item" index="index">
+                #{item.displayName}
+            </foreach>
+            OR t.checkout_code in
+            <foreach collection="list" separator="," close=")" open="(" item="item" index="index">
+                #{item.checkoutCode}
+            </foreach>)
+        </if>
+        and t.member_id=#{memberId}
+        <if test="hospitalId!=null and hospitalId!=''">
+            and (t.hospital_id = #{hospitalId} or t.hospital_id = -1<!--满足旧数据且无法找到医院编号的检验-->)
+        </if>
+        <if test="startDt!=null and startDt !=''">
+            and t.checkout_datetime &gt;= #{startDt}
+        </if>
+        <if test="endDt!=null and endDt !=''">
+            and t.checkout_datetime &lt;= #{endDt}
+        </if>
+        order by t.checkout_datetime desc)t
+        on t.checkout_name = a.display_name
+        group by a.display_name
+        order by t.checkout_datetime desc,t.checkout_name desc
+    </select>
+    <!--v6.0.0 end-->
+
+    <select id="getNewestCheckoutDetail" resultMap="BaseResultMap" parameterType="com.comvee.cdms.checkresult.dto.GetNewestCheckoutDetailDTO">
+  		SELECT
+  		t.`sid`,t.`checkout_id`,`checkout_code`,`checkout_name`,`checkout_result`,`result_unit`,
+  		`qualitative_result`,`reference_range`,`abnormal_sign`,`acronym`,checkout_result_last,
+        t.checkout_datetime,t.hospital_id,t.hospital_name,t.is_valid
+        FROM t_checkout_detail t ,t_checkout q where q.sid = t.checkout_id and t.is_valid = 1 and q.is_valid = 1
+        and q.member_id = #{memberId}
+        <if test="checkoutCode != null and '' != checkoutCode">
+          and t.checkout_code = #{checkoutCode}
+        </if>
+		order by t.checkout_datetime desc limit 1
+    </select>
+
+
+    <select id="listCheckoutDetailByNameCode" resultMap="BaseResultMap">
+        select t.`sid`,
+        t.`checkout_id`,
+        t.`checkout_code`,
+        t.`checkout_name`,
+        t.`checkout_result`,
+        t.`result_unit`,
+        t.checkout_datetime
+        from  (SELECT t.`sid`,t.`checkout_id`,t.`checkout_code`,t.`checkout_name`,
+        t.`checkout_result`,t.`result_unit`,t.checkout_datetime
+        FROM t_checkout_detail t
+        join t_checkout c on c.hospital_id=t.hospital_id and c.checkout_id = t.checkout_id
+        and c.member_id=t.member_id
+        where t.is_valid=1 and c.is_valid=1
+        <if test="list!=null and list.size()&gt;0">
+            and (t.checkout_name in
+            <foreach collection="list" separator="," close=")" open="(" item="item" index="index">
+                #{item.displayName}
+            </foreach>
+            OR t.checkout_code in
+            <foreach collection="list" separator="," close=")" open="(" item="item" index="index">
+                #{item.checkoutCode}
+            </foreach>)
+        </if>
+        and t.member_id=#{memberId}
+        <if test="hospitalId!=null and hospitalId!=''">
+            and (t.hospital_id = #{hospitalId} or t.hospital_id = -1<!--满足旧数据且无法找到医院编号的检验-->)
+        </if>
+        <if test="startDt!=null and startDt !=''">
+            and t.checkout_datetime &gt;= #{startDt}
+        </if>
+        <if test="endDt!=null and endDt !=''">
+            and t.checkout_datetime &lt;= #{endDt}
+        </if>
+        order by t.checkout_datetime desc)t
+        group by t.checkout_name
+        order by t.checkout_datetime desc,t.checkout_name desc
+    </select>
+    <select id="loadCheckoutDetailMemberIdList" resultType="java.lang.String">
+        SELECT
+        t.member_id
+        FROM (select a.* from (select cd.sid,cd.member_id,cd.`checkout_id`,cd.`checkout_code`,cd.`checkout_name`,cd.`checkout_result`,cd.`result_unit`,
+        cd.`qualitative_result`,cd.`reference_range`,cd.`abnormal_sign`,cd.`acronym`,cd.checkout_result_last,
+        cd.checkout_datetime,mjh.hospital_id,cd.is_valid
+        from t_checkout_detail cd
+        join t_member_join_hospital mjh on mjh.member_id = cd.member_id
+        where cd.is_valid = 1 and mjh.valid = 1
+        <if test="hospitalId != null and '' != hospitalId">
+            and mjh.hospital_id = #{hospitalId}
+        </if>
+        <if test="checkoutCode != null and '' != checkoutCode">
+            and cd.checkout_code = #{checkoutCode}
+        </if>
+        <if test="checkoutName != null and '' != checkoutName">
+            and cd.checkout_name = #{checkoutName}
+        </if>
+        <if test="memberId != null and '' != memberId">
+            and cd.member_id = #{memberId}
+        </if>
+        <if test="hospitalIdList!=null and hospitalIdList.size()&gt;0">
+            AND mjh.hospital_id IN
+            <foreach collection="hospitalIdList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            and cd.checkout_datetime &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            and cd.checkout_datetime &lt;= #{endDt}
+        </if>
+        <if test = "isPass != null and 'false' == isPass">
+            and (cd.abnormal_sign is null or cd.abnormal_sign = '')
+        </if>
+        having 1
+        order by cd.checkout_datetime desc) a
+        group by a.member_id) t
+    </select>
+
+
+    <select id="listMemberNewestCheckoutDetail" resultMap="BaseResultMap" parameterType="com.comvee.cdms.checkresult.dto.ListMemberNewestCheckoutDetailDTO">
+        select sid, checkout_id, checkout_code, checkout_name, checkout_result, result_unit,
+        qualitative_result, reference_range, abnormal_sign, acronym, checkout_result_last,
+        checkout_datetime, member_id, insert_dt, hospital_id, hospital_name, is_valid from (
+            select sid, checkout_id, checkout_code, checkout_name, checkout_result, result_unit,
+            qualitative_result, reference_range, abnormal_sign, acronym, checkout_result_last,
+            checkout_datetime, member_id, insert_dt, hospital_id, hospital_name, is_valid
+            from t_checkout_detail t where t.is_valid = 1 and t.member_id = #{memberId}
+            <if test="checkoutCodeList != null and checkoutCodeList.size() > 0">
+                and t.checkout_code in
+                <foreach collection="checkoutCodeList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="endCheckoutDt != null and '' != endCheckoutDt">
+                and t.checkout_datetime &lt; #{endCheckoutDt}
+            </if>
+            order by checkout_datetime desc
+        ) q
+    </select>
+
+    <insert id="batchAddOrUpdateCheckoutDetail">
+        insert into t_checkout_detail (sid, checkout_id, checkout_code,
+          checkout_name, checkout_result, result_unit,
+          qualitative_result, reference_range, abnormal_sign,
+          acronym, checkout_result_last, checkout_datetime,
+          member_id, insert_dt, hospital_id,
+          hospital_name)
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.sid,jdbcType=BIGINT}, #{item.checkoutId,jdbcType=VARCHAR}, #{item.checkoutCode,jdbcType=VARCHAR},
+            #{item.checkoutName,jdbcType=VARCHAR}, #{item.checkoutResult,jdbcType=VARCHAR}, #{item.resultUnit,jdbcType=VARCHAR},
+            #{item.qualitativeResult,jdbcType=VARCHAR}, #{item.referenceRange,jdbcType=VARCHAR}, #{item.abnormalSign,jdbcType=VARCHAR},
+            #{item.acronym,jdbcType=VARCHAR}, #{item.checkoutResultLast,jdbcType=VARCHAR}, #{item.checkoutDatetime,jdbcType=TIMESTAMP},
+            #{item.memberId,jdbcType=BIGINT}, now(), #{item.hospitalId,jdbcType=BIGINT},
+            #{item.hospitalName,jdbcType=VARCHAR})
+        </foreach>
+        on duplicate key update
+        checkout_result = values(checkout_result) ,abnormal_sign = values(abnormal_sign) ,checkout_result_last = values(checkout_result_last)
+    </insert>
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.GreenStarPlanItemMapper">
+    <resultMap id="mainPlan" type="com.comvee.cdms.dybloodsugar.po.GreenStarPlanItemPO">
+        <id column="sid" property="sid" jdbcType="BIGINT"/>
+        <result column="daily_plan_id" property="dailyPlanId" jdbcType="BIGINT"/>
+        <result column="plan_type" property="planType" jdbcType="TINYINT"/>
+        <result column="plan_name" property="planName" jdbcType="VARCHAR"/>
+        <result column="data_json" property="dataJson" jdbcType="VARCHAR"/>
+        <result column="has_done" property="hasDone" jdbcType="TINYINT"/>
+        <result column="is_lock" property="isLock" jdbcType="TINYINT"/>
+        <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP"/>
+        <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <insert id="addPlanItem" parameterType="com.comvee.cdms.dybloodsugar.po.GreenStarPlanItemPO">
+        insert into t_green_star_plan_item(sid, daily_plan_id, plan_type, plan_name, data_json, has_done, is_lock, insert_dt, modify_dt)
+        values (#{sid}, #{dailyPlanId}, #{planType}, #{planName}, #{dataJson}, #{hasDone}, #{isLock},
+                now(), now())
+    </insert>
+    <select id="listPlanItem" parameterType="String" resultMap="mainPlan">
+        select *
+        from t_green_star_plan_item
+        where daily_plan_id = #{dailyPlanId}
+        order by plan_type
+    </select>
+    <update id="updatePlanItem" parameterType="com.comvee.cdms.dybloodsugar.po.GreenStarPlanItemPO">
+        update t_green_star_plan_item
+        set modify_dt = now()
+        <if test=" dataJson != null and dataJson != '' ">
+            , data_json = #{dataJson}
+        </if>
+        <if test=" hasDone != null ">
+            , has_done = #{hasDone}
+        </if>
+        <if test=" isLock != null ">
+            , is_lock = #{isLock}
+        </if>
+        where sid = #{sid}
+    </update>
+    <delete id="deletePlanItem" parameterType="String">
+        delete
+        from t_green_star_plan_item
+        where sid = #{sid}
+    </delete>
+    <delete id="deletePlanItemByMainPlanId" parameterType="String">
+        delete
+        from t_green_star_plan_item
+        where daily_plan_id in (select sid from t_green_star_plan where main_plan_id = #{mainPlanId})
+    </delete>
+</mapper>

@@ -1,0 +1,13 @@
+config:
+  -
+    appName: miniProgram
+    appId: wxde1674c500096323
+    secret: 76e8236d0c677a2bf5fa235892e30de5
+  -
+    appName: gongZhongHao
+    appId: wx0626144af82f0757
+    secret: 000
+  -
+    appName: doctorH5MiniProgram
+    appId: wxde1674c500096323
+    secret: 76e8236d0c677a2bf5fa235892e30de5

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.wechat.mapper.DailyQuestionPushMapper">
+
+    <resultMap type="com.comvee.cdms.defender.wechat.po.DailyQuestionPushPO" id="TiqDailyQuestionPushMap">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="memberId" column="member_id" jdbcType="VARCHAR"/>
+        <result property="qid" column="qid" jdbcType="VARCHAR"/>
+        <result property="pushDt" column="push_dt" jdbcType="VARCHAR"/>
+        <result property="isSubmit" column="is_submit" jdbcType="VARCHAR"/>
+        <result property="stage" column="stage" jdbcType="VARCHAR"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap type="com.comvee.cdms.defender.wechat.bo.DailyQuestionBO" id="DailyQuestionBOMap">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="groupCode" column="group_code" jdbcType="VARCHAR"/>
+        <result property="recommendCourse" column="recommend_course" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="answerOptions" column="answer_options" jdbcType="VARCHAR"/>
+        <result property="answerKey" column="answer_key" jdbcType="VARCHAR"/>
+        <result property="analyse" column="analyse" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="twoType" column="two_type" jdbcType="INTEGER"/>
+        <result property="quesType" column="ques_type" jdbcType="INTEGER"/>
+        <result property="quesSign" column="ques_sign" jdbcType="VARCHAR"/>
+        <result property="quesTag" column="ques_tag" jdbcType="VARCHAR"/>
+        <result property="lever" column="lever" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="TIMESTAMP"/>
+        <result property="pushId" column="push_id" jdbcType="VARCHAR"/>
+        <result property="isCorrect" column="is_correct" jdbcType="VARCHAR"/>
+        <result property="stage" column="stage" jdbcType="VARCHAR"/>
+        <result property="isSubmit" column="is_submit" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TiqDailyQuestionPushMap">
+        select
+          sid, member_id, qid, push_dt,is_submit, stage,insert_dt, modify_dt
+        from  tiq_daily_question_push
+        where sid = #{sid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TiqDailyQuestionPushMap">
+        select
+          sid, member_id, qid, push_dt, is_submit, stage,insert_dt, modify_dt
+        from  tiq_daily_question_push
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TiqDailyQuestionPushMap">
+        select
+        sid, member_id, qid, push_dt, is_submit, stage,insert_dt, modify_dt
+        from  tiq_daily_question_push
+        <where>
+            <if test="sid != null and sid != ''">
+                and sid = #{sid}
+            </if>
+            <if test="memberId != null and memberId != ''">
+                and member_id = #{memberId}
+            </if>
+            <if test="qid != null and qid != ''">
+                and qid = #{qid}
+            </if>
+            <if test="pushDt != null and pushDt != ''">
+                and push_dt = #{pushDt}
+            </if>
+            <if test="isSubmit != null">
+                and is_submit = #{isSubmit}
+            </if>
+            <if test="stage != null">
+                and stage = #{stage}
+            </if>
+            <if test="insertDt != null and insertDt != ''">
+                and insert_dt = #{insertDt}
+            </if>
+            <if test="modifyDt != null and modifyDt != ''">
+                and modify_dt = #{modifyDt}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="queryByMemberId" resultMap="DailyQuestionBOMap">
+        select
+          q.sid, q.sort, q.group_code, q.recommend_course, q.title, q.answer_options, q.answer_key,
+          q.analyse, q.type, q.two_type,q.ques_type, q.ques_sign, q.ques_tag, q.lever, q.remark,
+          q.is_valid, q.insert_dt, q.modify_dt,p.sid push_id,p.stage,p.is_submit,r.is_correct
+        from  tiq_daily_question_push p left join tiq_daily_question q on p.qid = q.sid
+        left join
+        (select qid,is_correct from tiq_member_daily_question_record where member_id = #{memberId})
+        r on r.qid = p.qid
+        where p.member_id = #{memberId} and q.is_valid = 1
+        order by p.push_dt desc,p.insert_dt desc
+        limit 1
+    </select>
+    <select id="listByMemberId" resultMap="DailyQuestionBOMap">
+        select
+          q.sid, q.sort, q.group_code, q.recommend_course, q.title, q.answer_options, q.answer_key,
+          q.analyse, q.type, q.two_type,q.ques_type, q.ques_sign, q.ques_tag, q.lever, q.remark,
+          q.is_valid, q.insert_dt, q.modify_dt,p.sid push_id,p.stage
+        from  tiq_daily_question_push p left join tiq_daily_question q on p.qid = q.sid
+        where p.member_id = #{memberId} and q.is_valid = 1
+        order by p.insert_dt desc
+    </select>
+
+    <select id="listByQuesPO" resultMap="DailyQuestionBOMap">
+        select
+          q.sid, q.sort, q.group_code, q.recommend_course, q.title, q.answer_options, q.answer_key,
+          q.analyse, q.type, q.two_type,q.ques_type, q.ques_sign, q.ques_tag, q.lever, q.remark,
+          q.is_valid, q.insert_dt, q.modify_dt,p.sid push_id,p.stage
+        from  tiq_daily_question_push p left join tiq_daily_question q on p.qid = q.sid
+        <where>
+            q.is_valid = 1
+            <if test="sid != null and sid != ''">
+                and q.sid = #{sid}
+            </if>
+            <if test="sort != null">
+                and q.sort = #{sort}
+            </if>
+            <if test="groupCode != null and groupCode != ''">
+                and q.group_code = #{groupCode}
+            </if>
+            <if test="title != null and title != ''">
+                and q.title = #{title}
+            </if>
+            <if test="type != null">
+                and q.type = #{type}
+            </if>
+            <if test="twoType != null">
+                and q.two_type = #{twoType}
+            </if>
+            <if test="quesSign != null and quesSign != ''">
+                and q.ques_sign = #{quesSign}
+            </if>
+            <if test="quesTag != null and quesTag != ''">
+                and q.ques_tag = #{quesTag}
+            </if>
+        </where>
+        order by q.sort asc, p.push_dt desc
+    </select>
+
+    <select id="listAllPushMembers" resultType="java.lang.String">
+      select aa.member_id from(
+      select a.* from(
+      select member_id,is_submit
+      from tiq_daily_question_push
+      order by insert_dt desc) a
+      GROUP BY a.member_id
+      having a.is_submit = 1)aa
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sid" useGeneratedKeys="true">
+        insert into  tiq_daily_question_push(sid,member_id, qid, push_dt, is_submit,stage, insert_dt, modify_dt)
+        values (#{sid},#{memberId}, #{qid}, #{pushDt}, #{isSubmit}, #{stage},now(),now())
+    </insert>
+
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update  tiq_daily_question_push
+        <set>
+            <if test="isSubmit != null">
+                is_submit = #{isSubmit},
+            </if>
+            modify_dt = now()
+        </set>
+        where sid = #{sid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from  tiq_daily_question_push where sid = #{sid}
+    </delete>
+
+</mapper>
+

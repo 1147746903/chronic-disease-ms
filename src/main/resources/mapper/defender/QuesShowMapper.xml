@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.QuesShowMapper">
+    <sql id="QuesShowColumns">
+         t.sid As sid ,  t.qid As qid ,  t.json As json ,  t.memo As memo ,  t.is_valid As isValid ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt 
+    </sql>
+
+	<!--根据id获取题目话术表信息 -->
+	<select id="loadQuesShowById" resultType="com.comvee.cdms.defender.model.QuesShowModel">
+		SELECT 
+			<include refid="QuesShowColumns"/>
+		FROM tiq_ques_show t
+		WHERE t.sid = #{sid} 
+	</select>
+	
+	<!-- 获取题目话术分页信息  -->
+	<select id="loadQuesShow"  resultType="com.comvee.cdms.defender.model.QuesShowModel">
+		SELECT 
+			<include refid="QuesShowColumns"/>
+		FROM tiq_ques_show t
+		where is_valid = 1
+	    <if test="qid!=null and qid!='' ">     
+        AND t.qid = #{qid}  
+        </if> 
+	    order by sid desc 
+		
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+        AND t.sid = #{sid}  
+        </if>  
+	    <if test="qid!=null and qid!='' ">     
+        AND t.qid = #{qid}  
+        </if>  
+	    <if test="json!=null and json!='' ">     
+        AND t.json = #{json}  
+        </if>  
+	    <if test="memo!=null and memo!='' ">     
+        AND t.memo = #{memo}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+    <!-- 统计题目话术记录数 -->
+	<select id="countQuesShow"  resultType="Long">
+		SELECT count( sid )
+		FROM tiq_ques_show t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+         AND t.sid = #{sid}    
+        </if>  
+	    <if test="qid!=null and qid!='' ">     
+         AND t.qid = #{qid}    
+        </if>  
+	    <if test="json!=null and json!='' ">     
+         AND t.json = #{json}    
+        </if>  
+	    <if test="memo!=null and memo!='' ">     
+         AND t.memo = #{memo}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加题目话术记录 -->
+	<insert id="addQuesShow">
+		INSERT INTO tiq_ques_show(
+				
+				    sid,
+				
+				qid,
+				json,
+				memo,
+				is_valid,
+				modify_dt,
+				insert_dt
+		) VALUES (
+			         #{sid},
+				#{qid},
+				#{json},
+				#{memo},
+				1,
+				now(),
+				now()
+		)
+	</insert>
+
+    <!-- 修改题目话术记录 -->
+	<update id="modifyQuesShow">
+		UPDATE tiq_ques_show 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="sid!=null and sid!='' ">    
+	        sid = #{sid},
+	        </if>
+	        <if test="qid!=null and qid!='' ">    
+	        qid = #{qid},
+	        </if>
+	        <if test="json!=null and json!='' ">    
+	        json = #{json},
+	        </if>
+	        <if test="memo!=null and memo!='' ">    
+	        memo = #{memo},
+	        </if>
+	        modify_dt = now(),
+		</trim>
+		WHERE sid = #{sid}
+	</update>
+	
+	<!-- 删除题目话术记录  -->
+	<update id="delQuesShow" parameterType="Long">
+		UPDATE tiq_ques_show SET  is_valid = 0 ,modify_dt = now()
+		WHERE sid = #{sid} and is_valid = 1
+	</update>
+	
+	
+
+</mapper>

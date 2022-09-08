@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.wechat.mapper.ClientBehaviorMapper">
+    <sql id="ClientBehaviorColumns">
+         t.sid as sid,t.agent As agent ,  t.device As device ,  t.url As url ,  t.arg As arg , t.visit_tm As visitTm ,  t.time As time ,  t.page_id As pageId ,  t.simuid As simuid ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid ,  t.referer As referer,t.cookie_id As cookieId 
+    </sql>
+
+	<!--根据id获取页面访问日志表表信息 -->
+	<select id="loadClientBehaviorById" resultType="com.comvee.cdms.defender.wechat.model.ClientBehaviorModel">
+		SELECT 
+			<include refid="ClientBehaviorColumns"/>
+		FROM tiq_client_behavior t
+		WHERE t.page_id = #{pageId} 
+	</select>
+	
+	<select id="loadPreBehavior" parameterType="Map" resultType="com.comvee.cdms.defender.wechat.model.ClientBehaviorModel">
+		SELECT 
+			<include refid="ClientBehaviorColumns"/>
+		FROM tiq_client_behavior t
+		
+		where is_valid = 1 and url = #{url} and simuid =#{simuid} and time = 0 order by insert_dt desc limit 1
+	</select>
+	
+	<select id="loadPreByPageId" parameterType="Map" resultType="com.comvee.cdms.defender.wechat.model.ClientBehaviorModel">
+		SELECT 
+			<include refid="ClientBehaviorColumns"/>
+		FROM tiq_client_behavior t
+		where page_id = #{pageId} 
+	</select>
+	
+	
+	<!-- 获取页面访问日志表分页信息  -->
+	<select id="loadClientBehavior" parameterType="Map" resultType="com.comvee.cdms.defender.wechat.model.ClientBehaviorModel">
+		SELECT 
+			<include refid="ClientBehaviorColumns"/>
+		FROM tiq_client_behavior t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+        AND t.sid = #{sid}  
+        </if>  
+	    <if test="agent!=null and agent!='' ">     
+        AND t.agent = #{agent}  
+        </if>  
+	    <if test="cookieId!=null and cookieId!='' ">     
+        AND t.cookie_id = #{cookieId}  
+        </if>  
+	    <if test="device!=null and device!='' ">     
+        AND t.device = #{device}  
+        </if>  
+	    <if test="url!=null and url!='' ">     
+        AND t.url = #{url}  
+        </if>  
+	    <if test="arg!=null and arg!='' ">     
+        AND t.arg = #{arg}  
+        </if>  
+	    <if test="visitTm!=null and visitTm!='' ">     
+        AND t.visit_tm = #{visitTm}  
+        </if>  
+	    <if test="time!=null and time!='' ">     
+        AND t.time = #{time}  
+        </if>  
+	    <if test="pageId!=null and pageId!='' ">     
+        AND t.page_id = #{pageId}  
+        </if>  
+	    <if test="simuid!=null and simuid!='' ">     
+        AND t.simuid = #{simuid}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="referer!=null and referer!='' ">     
+        AND t.referer = #{referer}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+    <!-- 统计页面访问日志表记录数 -->
+	<select id="countClientBehavior" parameterType="Map" resultType="Long">
+		SELECT count( page_id )
+		FROM tiq_client_behavior t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+         AND t.sid = #{sid}    
+        </if>  
+	    <if test="agent!=null and agent!='' ">     
+         AND t.agent = #{agent}    
+        </if>  
+	    <if test="cookieId!=null and cookieId!='' ">     
+         AND t.cookie_id = #{cookieId}    
+        </if>  
+	    <if test="device!=null and device!='' ">     
+         AND t.device = #{device}    
+        </if>  
+	    <if test="url!=null and url!='' ">     
+         AND t.url = #{url}    
+        </if>  
+	    <if test="arg!=null and arg!='' ">     
+         AND t.arg = #{arg}    
+        </if>  
+	    <if test="visitTm!=null and visitTm!='' ">     
+         AND t.visit_tm = #{visitTm}    
+        </if>  
+	    <if test="time!=null and time!='' ">     
+         AND t.time = #{time}    
+        </if>  
+	    <if test="pageId!=null and pageId!='' ">     
+         AND t.page_id = #{pageId}    
+        </if>  
+	    <if test="simuid!=null and simuid!='' ">     
+         AND t.simuid = #{simuid}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="referer!=null and referer!='' ">     
+         AND t.referer = #{referer}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加页面访问日志表记录 -->
+	<insert id="addClientBehavior">
+		INSERT INTO tiq_client_behavior(
+				sid,
+				agent,
+				device,
+				url,
+				arg,
+				visit_tm,
+				time,
+				page_id,
+				simuid,
+				insert_dt,
+				modify_dt,
+				is_valid,
+				referer,
+				cookie_id
+		) VALUES (
+				#{sid},
+				#{agent},
+				#{device},
+				#{url},
+				#{arg},
+				#{visitTm},
+				0,
+				#{pageId},
+				#{simuid},
+				now(),
+				now(),
+				1,
+				#{referer},
+				#{cookieId}
+		)
+	</insert>
+
+    <!-- 修改页面访问日志表记录 -->
+	<update id="modifyClientBehavior">
+		UPDATE tiq_client_behavior 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="agent!=null and agent!='' ">    
+	        agent = #{agent},
+	        </if>
+	        <if test="device!=null and device!='' ">    
+	        device = #{device},
+	        </if>
+	        <if test="url!=null and url!='' ">    
+	        url = #{url},
+	        </if>
+	        <if test="arg!=null and arg!='' ">    
+	        arg = #{arg},
+	        </if>
+	        <if test="visitTm!=null and visitTm!='' ">    
+	        visit_tm = #{visitTm},
+	        </if>
+	        <if test="time!=null and time!='' ">    
+	        time = #{time},
+	        </if>
+	        <if test="simuid!=null and simuid!='' ">    
+	        simuid = #{simuid},
+	        </if>
+	        <if test="referer!=null and referer!='' ">    
+	        referer = #{referer},
+	        </if>
+		</trim>
+		WHERE sid = #{sid}
+	</update>
+	
+	<!-- 删除页面访问日志表记录  -->
+	<update id="delClientBehavior" parameterType="Long">
+		UPDATE tiq_client_behavior SET  is_valid = 0
+		WHERE page_id = #{pageId}
+	</update>
+	
+	<!-- 获取前一个页面 -->
+	<select id="loadPrePage" parameterType="Map" resultType="com.comvee.cdms.defender.wechat.model.ClientBehaviorModel">
+		SELECT 
+			<include refid="ClientBehaviorColumns"/>
+		FROM tiq_client_behavior t
+		where t.simuid = #{simuid} and t.cookie_id = #{cookieId} order by t.sid desc limit 1
+	</select>
+	
+
+</mapper>

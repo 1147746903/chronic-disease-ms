@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.admin.mapper.AdminMapper">
+
+  <resultMap id="admin" type="com.comvee.cdms.admin.model.po.AdminPO">
+    <id column="admin_id" jdbcType="BIGINT" property="adminId" />
+    <result column="admin_name" jdbcType="VARCHAR" property="adminName" />
+    <result column="account_no" jdbcType="VARCHAR" property="accountNo" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="pwd_salt" jdbcType="VARCHAR" property="pwdSalt" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="last_login_dt" jdbcType="TIMESTAMP" property="lastLoginDt" />
+    <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp" />
+    <result column="account_status" jdbcType="TINYINT" property="accountStatus" />
+    <result column="login_fail_times" jdbcType="INTEGER" property="loginFailTimes" />
+    <result column="last_update_password_dt" jdbcType="TIMESTAMP" property="lastUpdatePasswordDt" />
+    <result column="lock_dt" jdbcType="TIMESTAMP" property="lockDt" />
+  </resultMap>
+
+  <insert id="addAdmin" parameterType="com.comvee.cdms.admin.model.po.AdminPO">
+    insert into t_admin (admin_id, admin_name, account_no, 
+      password, pwd_salt
+      )
+    values (#{adminId,jdbcType=BIGINT}, #{adminName,jdbcType=VARCHAR}, #{accountNo,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{pwdSalt,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateAdmin" parameterType="com.comvee.cdms.admin.model.po.AdminPO">
+    update t_admin
+    <set>
+      <if test="adminName != null and '' != adminName">
+        admin_name = #{adminName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null and '' != password">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginDt != null and '' != lastLoginDt">
+        last_login_dt = #{lastLoginDt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginIp != null and '' != lastLoginIp">
+        last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
+      </if>
+      <if test="accountStatus != null">
+        account_status = #{accountStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="loginFailTimes != null">
+        login_fail_times = #{loginFailTimes},
+      </if>
+      <if test="lastUpdatePasswordDt != null and '' != lastUpdatePasswordDt">
+        last_update_password_dt = #{lastUpdatePasswordDt},
+      </if>
+      <if test="lockDt != null and '' != lockDt">
+        lock_dt = #{lockDt},
+      </if>
+    </set>
+    where admin_id = #{adminId,jdbcType=BIGINT}
+  </update>
+
+  <select id="listAdmin" parameterType="com.comvee.cdms.admin.model.dto.ListAdminDTO" resultMap="admin">
+    select admin_id, admin_name, account_no, password, pwd_salt, insert_dt, update_dt,
+    last_login_dt,last_login_ip, account_status ,login_fail_times ,last_update_password_dt ,lock_dt
+    from t_admin
+    <where>
+      <if test="keyword != null and '' != keyword">
+        and (instr(admin_name, #{keyword}) > 0 or instr(account_no, #{keyword}))
+      </if>
+      <if test="accountStatus != null">
+        and account_status = #{accountStatus}
+      </if>
+    </where>
+    order by insert_dt desc
+  </select>
+
+  <select id="getAdmin" parameterType="java.lang.String" resultMap="admin">
+    select admin_id, admin_name, account_no, password, pwd_salt, insert_dt, update_dt,
+    last_login_dt,last_login_ip, account_status ,login_fail_times ,last_update_password_dt ,lock_dt
+    from t_admin
+    <where>
+      <if test="adminId != null and '' != adminId">
+        and admin_id = #{adminId,jdbcType=BIGINT}
+      </if>
+      <if test="accountNo != null and '' != accountNo">
+        and account_no = #{accountNo,jdbcType=BIGINT}
+      </if>
+    </where>
+
+    limit 1
+  </select>
+</mapper>

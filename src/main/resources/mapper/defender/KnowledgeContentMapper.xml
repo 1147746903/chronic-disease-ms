@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.TiqKnowledgeContentMapper">
+    <sql id="KnowledgeContentColumns">
+         t.sid As sid ,  t.knowledge_id As knowledgeId ,  t.sort As sort ,  t.type As type ,  t.content As content ,  t.is_valid As isValid ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt 
+    </sql>
+
+	<!--根据id获取文章内容正文表信息 -->
+	<select id="loadKnowledgeContentById" resultType="com.comvee.cdms.defender.model.KnowledgeContentModel">
+		SELECT 
+			<include refid="KnowledgeContentColumns"/>
+		FROM tiq_knowledge_content t
+		WHERE t.sid = #{sid} 
+	</select>
+	
+	<!-- 获取文章内容正文分页信息  -->
+	<select id="loadKnowledgeContent" resultType="com.comvee.cdms.defender.model.KnowledgeContentModel">
+		SELECT 
+			<include refid="KnowledgeContentColumns"/>
+		FROM tiq_knowledge_content t
+		
+		
+		where is_valid = 1
+		<if test="knowledgeId!=null and knowledgeId!='' ">     
+        AND t.knowledge_id = #{knowledgeId}  
+        </if> 
+		order by t.sort asc
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+        AND t.sid = #{sid}  
+        </if>  
+	    <if test="knowledgeId!=null and knowledgeId!='' ">     
+        AND t.knowledge_id = #{knowledgeId}  
+        </if>  
+	    <if test="sort!=null and sort!='' ">     
+        AND t.sort = #{sort}  
+        </if>  
+	    <if test="type!=null and type!='' ">     
+        AND t.type = #{type}  
+        </if>  
+	    <if test="content!=null and content!='' ">     
+        AND t.content = #{content}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+    <!-- 统计文章内容正文记录数 -->
+	<select id="countKnowledgeContent" resultType="Long">
+		SELECT count( sid )
+		FROM tiq_knowledge_content t
+		where is_valid = 1
+		<if test="knowledgeId!=null and knowledgeId!='' ">     
+        AND t.knowledge_id = #{knowledgeId}  
+        </if> 
+        order by t.sort asc
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+         AND t.sid = #{sid}    
+        </if>  
+	    <if test="knowledgeId!=null and knowledgeId!='' ">     
+         AND t.knowledge_id = #{knowledgeId}    
+        </if>  
+	    <if test="sort!=null and sort!='' ">     
+         AND t.sort = #{sort}    
+        </if>  
+	    <if test="type!=null and type!='' ">     
+         AND t.type = #{type}    
+        </if>  
+	    <if test="content!=null and content!='' ">     
+         AND t.content = #{content}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加文章内容正文记录 -->
+	<insert id="addKnowledgeContent">
+		INSERT INTO tiq_knowledge_content(
+				
+				    sid,
+				
+				knowledge_id,
+				sort,
+				type,
+				content,
+				is_valid,
+				insert_dt,
+				modify_dt
+		) VALUES (
+			         #{sid},
+				#{knowledgeId},
+				#{sort},
+				#{type},
+				#{content},
+				1,
+				now(),
+				now()
+		)
+	</insert>
+
+    <!-- 修改文章内容正文记录 -->
+	<update id="modifyKnowledgeContent">
+		UPDATE tiq_knowledge_content 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="sid!=null and sid!='' ">    
+	        sid = #{sid},
+	        </if>
+	        <if test="knowledgeId!=null and knowledgeId!='' ">    
+	        knowledge_id = #{knowledgeId},
+	        </if>
+	        <if test="sort!=null and sort!='' ">
+	        sort = #{sort},
+	        </if>
+	        <if test="type!=null and type!='' ">    
+	        type = #{type},
+	        </if>
+	        <if test="content!=null and content!='' ">    
+	        content = #{content},
+	        </if>
+	        modify_dt = now(),
+		</trim>
+		WHERE sid = #{sid}
+	</update>
+	
+	<!-- 删除文章内容正文记录  -->
+	<update id="delKnowledgeContent" parameterType="Long">
+		UPDATE tiq_knowledge_content SET  is_valid = 0 , modify_dt = now()
+		WHERE sid = #{sid} and is_valid = 1
+	</update>
+	
+	
+	    <!-- 统计文章内容正文记录数 -->
+	<select id="maxContentSort" resultType="Integer">
+		SELECT ifnull(max( sort ),0)
+		FROM tiq_knowledge_content t
+		where is_valid = 1
+		<if test="knowledgeId!=null and knowledgeId!='' ">     
+        AND t.knowledge_id = #{knowledgeId}  
+        </if> 
+	</select>
+	
+	<select id="loadKnowledgeContentByKnowledgeId" resultType="com.comvee.cdms.defender.model.KnowledgeContentModel">
+		SELECT <include refid="KnowledgeContentColumns"/>
+		FROM tiq_knowledge_content t
+		WHERE t.knowledge_id=#{knowledgeId} and is_valid=1
+		order by t.sort asc
+	</select>
+
+	<select id="loadKnowledgeContentByType" resultType="com.comvee.cdms.defender.model.KnowledgeContentModel">
+		SELECT
+		<include refid="KnowledgeContentColumns"/>
+		FROM tiq_knowledge_content t
+		where is_valid = 1
+
+		<if test="list != null and list.size() > 0">
+			and t.type  in
+			<foreach collection="list" item="item" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+		</if>
+
+	</select>
+	<!-- 文章内容排序  -->
+	<update id="sortKnowledgeContent" parameterType="java.lang.String">
+		UPDATE tiq_knowledge_content SET  sort = #{sort} , modify_dt = now()
+		WHERE sid = #{sid}
+	</update>
+</mapper>

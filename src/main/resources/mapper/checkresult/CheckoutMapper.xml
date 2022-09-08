@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.checkresult.mapper.CheckoutMapper" >
+  <resultMap id="BaseResultMap" type="com.comvee.cdms.checkresult.po.CheckoutPO" >
+    <id column="sid" property="sid" jdbcType="BIGINT" />
+    <result column="checkout_title" property="checkoutTitle" jdbcType="VARCHAR" />
+    <result column="checkout_id" property="checkoutId" jdbcType="VARCHAR" />
+    <result column="checkout_doctor_id" property="checkoutDoctorId" jdbcType="VARCHAR" />
+    <result column="checkout_doctor_name" property="checkoutDoctorName" jdbcType="VARCHAR" />
+    <result column="sample_code" property="sampleCode" jdbcType="VARCHAR" />
+    <result column="sample_name" property="sampleName" jdbcType="VARCHAR" />
+    <result column="checkout_date" property="checkoutDate" jdbcType="DATE" />
+    <result column="checkout_time" property="checkoutTime" jdbcType="VARCHAR" />
+    <result column="checkout_remark" property="checkoutRemark" jdbcType="VARCHAR" />
+    <result column="checkout_goal" property="checkoutGoal" jdbcType="VARCHAR" />
+    <result column="yz_id" property="yzId" jdbcType="VARCHAR" />
+    <result column="diagnose_result" property="diagnoseResult" jdbcType="VARCHAR" />
+    <result column="diagnose_text" property="diagnoseText" jdbcType="VARCHAR" />
+    <result column="depart_code" property="departCode" jdbcType="VARCHAR" />
+    <result column="member_id" property="memberId" jdbcType="BIGINT" />
+    <result column="visit_no" property="visitNo" jdbcType="VARCHAR" />
+    <result column="report_date" property="reportDate" jdbcType="DATE" />
+    <result column="department_id" property="departmentId" jdbcType="BIGINT" />
+    <result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+    <result column="diagnose_opinion" property="diagnoseOpinion" jdbcType="LONGVARCHAR" />
+    <result column="submit_checkout_date" property="submitCheckoutDate" jdbcType="DATE" />
+	  <result column="is_valid" property="isValid" />
+	  <result column="record_origin" property="recordOrigin"/>
+	  <result column="hospital_id" property="hospitalId"/>
+	  <result column="hospital_name" property="hospitalName"/>
+  </resultMap>
+  
+  <resultMap id="checkoutDetailResultMap" type="com.comvee.cdms.checkresult.po.CheckoutDetailPO" >
+    <id column="sid" property="sid" jdbcType="BIGINT" />
+	  <result column="member_id" property="memberId" jdbcType="BIGINT" />
+    <result column="checkout_id" property="checkoutId" jdbcType="VARCHAR" />
+    <result column="checkout_code" property="checkoutCode" jdbcType="VARCHAR" />
+    <result column="checkout_name" property="checkoutName" jdbcType="VARCHAR" />
+    <result column="checkout_result" property="checkoutResult" jdbcType="VARCHAR" />
+    <result column="result_unit" property="resultUnit" jdbcType="VARCHAR" />
+    <result column="qualitative_result" property="qualitativeResult" jdbcType="VARCHAR" />
+    <result column="reference_range" property="referenceRange" jdbcType="VARCHAR" />
+    <result column="abnormal_sign" property="abnormalSign" jdbcType="VARCHAR" />
+    <result column="acronym" property="acronym" jdbcType="VARCHAR" />
+    <result column="checkout_result_last" property="checkoutResultLast" jdbcType="VARCHAR" />
+    <result column="checkout_datetime" property="checkoutDatetime" jdbcType="VARCHAR" />
+	  <result column="hospital_id" property="hospitalId" />
+	  <result column="hospital_name" property="hospitalName" />
+	  <result column="is_valid" property="isValid" />
+  </resultMap>
+  
+  <!-- 获取检验结果列表 -->
+  <select id="listCheckout" parameterType="String" resultMap="BaseResultMap">
+  		SELECT`sid`,`checkout_title`,`checkout_id`,`checkout_doctor_id`,`checkout_doctor_name`,`sample_code`,`sample_name`,`checkout_date`,
+  		`checkout_time`,`checkout_remark`,`checkout_goal`,`yz_id`,`diagnose_result`,`diagnose_text`,`depart_code`,`member_id`,`visit_no`,department_name,
+  		record_origin,is_valid,hospital_id,hospital_name
+        FROM t_checkout t
+        where t.member_id = #{memberId} and is_valid=1
+        <!--兼容旧版本-->
+        and checkout_title != '生命体征记录' and checkout_title != '胰岛素功能测定记录'
+        and checkout_title != '其他检查' and checkout_title != '实验室检查记录'
+        order by checkout_date desc,checkout_time desc
+  </select>
+  
+ <!--  通过checkout_id，获取对象 -->
+  <select id="getCheckoutByCheckoutId" parameterType="String" resultMap="BaseResultMap">
+  		SELECT `sid`,`checkout_title`,`checkout_id`,`checkout_doctor_id`,`checkout_doctor_name`,`sample_code`,`sample_name`,
+  		`checkout_date`,`checkout_time`,`checkout_remark`,`checkout_goal`, `yz_id`,`diagnose_result`,`diagnose_text`,`depart_code`,
+  		`member_id`,`visit_no`,`report_date`, `department_id`,`department_name`,`diagnose_opinion`,`submit_checkout_date`,
+  		record_origin,is_valid,hospital_id,hospital_name
+		FROM t_checkout t
+        where t.checkout_id = #{checkoutId}
+        <if test="hospitalId!=null and hospitalId!=''">
+			and t.hospital_id = #{hospitalId}
+		</if>
+  </select>
+  
+  <insert id="saveCheckout" parameterType="com.comvee.cdms.checkresult.po.CheckoutPO">
+  		insert into t_checkout (sid, checkout_title, checkout_id, 
+      checkout_doctor_id, checkout_doctor_name, sample_code, 
+      sample_name, checkout_date, checkout_time, 
+      checkout_remark, checkout_goal, yz_id, 
+      diagnose_result, diagnose_text, depart_code, 
+      member_id, visit_no, report_date, 
+      department_id, department_name, submit_checkout_date, 
+      diagnose_opinion,record_origin,hospital_id,hospital_name)
+    values (#{sid,jdbcType=BIGINT}, #{checkoutTitle,jdbcType=VARCHAR}, #{checkoutId,jdbcType=VARCHAR}, 
+      #{checkoutDoctorId,jdbcType=VARCHAR}, #{checkoutDoctorName,jdbcType=VARCHAR}, #{sampleCode,jdbcType=VARCHAR}, 
+      #{sampleName,jdbcType=VARCHAR}, #{checkoutDate,jdbcType=DATE}, #{checkoutTime,jdbcType=VARCHAR}, 
+      #{checkoutRemark,jdbcType=VARCHAR}, #{checkoutGoal,jdbcType=VARCHAR}, #{yzId,jdbcType=VARCHAR}, 
+      #{diagnoseResult,jdbcType=VARCHAR}, #{diagnoseText,jdbcType=VARCHAR}, #{departCode,jdbcType=VARCHAR}, 
+      #{memberId,jdbcType=BIGINT}, #{visitNo,jdbcType=VARCHAR}, #{reportDate,jdbcType=DATE},
+      #{departmentId,jdbcType=BIGINT}, #{departmentName,jdbcType=VARCHAR}, #{submitCheckoutDate,jdbcType=DATE}, 
+      #{diagnoseOpinion,jdbcType=LONGVARCHAR},#{recordOrigin},#{hospitalId},#{hospitalName})
+  </insert>
+  
+  <update id="modifyCheckoutByCheckoutId" parameterType="com.comvee.cdms.checkresult.po.CheckoutPO">
+  		update t_checkout
+	    <set >
+	      <if test="checkoutTitle != null" >
+	        checkout_title = #{checkoutTitle,jdbcType=VARCHAR},
+	      </if>
+	      <if test="checkoutId != null" >
+	        checkout_id = #{checkoutId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="checkoutDoctorId != null" >
+	        checkout_doctor_id = #{checkoutDoctorId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="checkoutDoctorName != null" >
+	        checkout_doctor_name = #{checkoutDoctorName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="sampleCode != null" >
+	        sample_code = #{sampleCode,jdbcType=VARCHAR},
+	      </if>
+	      <if test="sampleName != null" >
+	        sample_name = #{sampleName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="checkoutDate != null" >
+	        checkout_date = #{checkoutDate,jdbcType=DATE},
+	      </if>
+	      <if test="checkoutTime != null" >
+	        checkout_time = #{checkoutTime,jdbcType=VARCHAR},
+	      </if>
+	      <if test="checkoutRemark != null" >
+	        checkout_remark = #{checkoutRemark,jdbcType=VARCHAR},
+	      </if>
+	      <if test="checkoutGoal != null" >
+	        checkout_goal = #{checkoutGoal,jdbcType=VARCHAR},
+	      </if>
+	      <if test="yzId != null" >
+	        yz_id = #{yzId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="diagnoseResult != null" >
+	        diagnose_result = #{diagnoseResult,jdbcType=VARCHAR},
+	      </if>
+	      <if test="diagnoseText != null" >
+	        diagnose_text = #{diagnoseText,jdbcType=VARCHAR},
+	      </if>
+	      <if test="departCode != null" >
+	        depart_code = #{departCode,jdbcType=VARCHAR},
+	      </if>
+	      <if test="memberId != null" >
+	        member_id = #{memberId,jdbcType=BIGINT},
+	      </if>
+	      <if test="visitNo != null" >
+	        visit_no = #{visitNo,jdbcType=VARCHAR},
+	      </if>
+	      <if test="reportDate != null" >
+	        report_date = #{reportDate,jdbcType=DATE},
+	      </if>
+	      <if test="departmentId != null" >
+	        department_id = #{departmentId,jdbcType=BIGINT},
+	      </if>
+	      <if test="departmentName != null" >
+	        department_name = #{departmentName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="submitCheckoutDate != null" >
+	        submit_checkout_date = #{submitCheckoutDate,jdbcType=DATE},
+	      </if>
+	      <if test="diagnoseOpinion != null" >
+	        diagnose_opinion = #{diagnoseOpinion,jdbcType=LONGVARCHAR},
+	      </if>
+			<if test="isValid != null" >
+				is_valid = #{isValid},
+			</if>
+			<if test="hospitalId != null" >
+				hospital_id = #{hospitalId},
+			</if>
+			<if test="hospitalName != null" >
+				hospital_name = #{hospitalName},
+			</if>
+	    </set>
+	    where checkout_id = #{checkoutId} and sid=#{sid} and record_origin = 2
+  </update>
+  
+  <select id="getCheckoutDetailByCheckoutId" parameterType="String" resultMap="checkoutDetailResultMap">
+  		select 
+	    sid, checkout_id, checkout_code, checkout_name, checkout_result, result_unit, qualitative_result, 
+   		reference_range, abnormal_sign, acronym, checkout_result_last,is_valid,hospital_id,hospital_name,
+   		checkout_datetime
+	    from t_checkout_detail
+	    where checkout_id = #{checkoutId} and is_valid=1
+  </select>
+  
+  <insert id="saveCheckoutDetail" parameterType="com.comvee.cdms.checkresult.po.CheckoutDetailPO">
+  		insert into t_checkout_detail (sid, checkout_id, checkout_code, 
+	      checkout_name, checkout_result, result_unit, 
+	      qualitative_result, reference_range, abnormal_sign, 
+	      acronym, checkout_result_last,member_id ,insert_dt,is_valid,hospital_id,hospital_name,checkout_datetime)
+	    values (#{sid,jdbcType=BIGINT}, #{checkoutId,jdbcType=VARCHAR}, #{checkoutCode,jdbcType=VARCHAR}, 
+	      #{checkoutName,jdbcType=VARCHAR}, #{checkoutResult,jdbcType=VARCHAR}, #{resultUnit,jdbcType=VARCHAR}, 
+	      #{qualitativeResult,jdbcType=VARCHAR}, #{referenceRange,jdbcType=VARCHAR}, #{abnormalSign,jdbcType=VARCHAR}, 
+	      #{acronym,jdbcType=VARCHAR}, #{checkoutResultLast,jdbcType=VARCHAR},#{memberId} ,now(),1,#{hospitalId},#{hospitalName},#{checkoutDatetime})
+  </insert>
+
+	<select id="getNewestCheckoutResult" parameterType="map" resultType="String">
+  		SELECT checkout_result FROM t_checkout_detail WHERE is_valid=1
+  		and checkout_datetime is not null
+		<if test="memberId!=null and memberId!=''">
+			and member_id= #{memberId}
+		</if>
+		<if test="checkoutName!=null and checkoutName!=''">
+			AND checkout_name= #{checkoutName}
+		</if>
+		<if test="checkoutCode!=null and checkoutCode!=''">
+			AND checkout_code= #{checkoutCode}
+		</if>
+		<if test="checkoutDatetime!=null and checkoutDatetime!=''">
+			AND checkout_datetime &lt;= #{checkoutDatetime}
+		</if>
+ 		ORDER BY checkout_datetime DESC LIMIT 1
+  	</select>
+
+	<select id="listCheckoutByParams" parameterType="java.util.Map" resultMap="BaseResultMap">
+		SELECT`sid`,`checkout_title`,`checkout_id`,`checkout_doctor_id`,`checkout_doctor_name`,`sample_code`,`sample_name`,`checkout_date`,
+		`checkout_time`,`checkout_remark`,`checkout_goal`,`yz_id`,`diagnose_result`,`diagnose_text`,`depart_code`,`member_id`,`visit_no`,department_name,
+		record_origin,is_valid,hospital_id,hospital_name
+		FROM t_checkout
+		where is_valid=1
+		<if test="memberId!=null and memberId!=''">
+			AND member_id = #{memberId}
+		</if>
+		<if test="startDt!=null and startDt!=''">
+			AND checkout_date &gt;= #{startDt}
+		</if>
+		<if test="endDt!=null and endDt!=''">
+			AND checkout_date &lt;= #{endDt}
+		</if>
+		<if test="hospitalId!=null and hospitalId!=''">
+			AND hospital_id = #{hospitalId}
+		</if>
+		<if test="recordOrigin!=null and recordOrigin!=''">
+			AND record_origin = #{recordOrigin}
+		</if>
+		order by report_date desc
+	</select>
+
+	<select id="listCheckoutDetailByParams" parameterType="java.util.List" resultMap="checkoutDetailResultMap">
+		select
+		d.sid, d.checkout_id, d.checkout_code, d.checkout_name, d.checkout_result, d.result_unit, d.qualitative_result,
+		d.reference_range, d.abnormal_sign, d.acronym, d.checkout_result_last,
+		d.checkout_datetime,d.is_valid,d.hospital_id,d.hospital_name
+		from t_checkout_detail d
+		where d.checkout_id in
+		<foreach collection="checkoutIds" open="(" close=")" item="checkoutId" separator=",">
+			#{checkoutId}
+		</foreach>
+		and d.member_id=#{memberId}
+		<if test="hospitalId!=null and hospitalId!=''">
+			and (d.hospital_id = #{hospitalId} or d.hospital_id=-1<!--满足旧数据且无法找到医院编号的检验-->)
+		</if>
+		and d.is_valid=1
+		order by d.checkout_datetime desc;
+	</select>
+	
+	<select id="getCheckoutNew" parameterType="string" resultMap="BaseResultMap">
+		SELECT`sid`,`checkout_title`,`checkout_id`,`checkout_doctor_id`,`checkout_doctor_name`,`sample_code`,`sample_name`,`checkout_date`,
+  		`checkout_time`,`checkout_remark`,`checkout_goal`,`yz_id`,`diagnose_result`,`diagnose_text`,`depart_code`,`member_id`,`visit_no`,department_name,
+  		record_origin,is_valid
+        FROM t_checkout t
+        where t.member_id = #{memberId} and t.is_valid=1
+        and checkout_date is not null
+        and checkout_time is not null
+        order by report_date desc limit 1
+	</select>
+	
+	<select id="listCheckoutNew" parameterType="string" resultMap="BaseResultMap">
+		SELECT`sid`,`checkout_title`,`checkout_id`,`checkout_doctor_id`,`checkout_doctor_name`,`sample_code`,`sample_name`,`checkout_date`,
+  		`checkout_time`,`checkout_remark`,`checkout_goal`,`yz_id`,`diagnose_result`,`diagnose_text`,`depart_code`,`member_id`,`visit_no`,department_name,
+  		record_origin,is_valid
+        FROM t_checkout t
+        where t.member_id = #{memberId} and t.is_valid=1
+        and t.`checkout_date` &gt; DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+		GROUP BY t.`checkout_title` ORDER BY t.`checkout_date` DESC,t.`checkout_time` DESC
+	</select>
+
+	<select id="listCheckoutNearlySixMonths" parameterType="string" resultMap="BaseResultMap">
+		SELECT`sid`,`checkout_title`,`checkout_id`,`checkout_doctor_id`,`checkout_doctor_name`,`sample_code`,`sample_name`,`checkout_date`,
+		`checkout_time`,`checkout_remark`,`checkout_goal`,`yz_id`,`diagnose_result`,`diagnose_text`,`depart_code`,`member_id`,`visit_no`,department_name,
+		record_origin,is_valid,hospital_id,hospital_name
+		FROM t_checkout t
+		where t.member_id = #{memberId} and t.is_valid=1
+		and t.`checkout_date` &gt;= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+		and (t.hospital_id=#{hospitalId} or t.hospital_id=-1<!--满足旧数据且无法找到医院编号的检验-->)
+		GROUP BY t.`checkout_title` ORDER BY t.`checkout_date` DESC,t.`checkout_time` DESC
+	</select>
+
+    <select id="pagerMemberCheckoutWithNote" resultMap="BaseResultMap">
+		select t.`checkout_id`,t.checkout_title,
+		ifnull(t.sample_name,'---') sample_name,
+		t.record_origin,
+		t.hospital_name,t.checkout_time,
+		t.department_name,t.checkout_doctor_name
+		from t_keynote_configure a
+		JOIN t_doctor_keynote b on b.keynote_id=a.keynote_id and a.is_valid=1
+		and b.is_valid=1
+		<if test="keyNoteModel!=null">
+			and b.doctor_id=#{keyNoteModel.doctorId} and b.in_hos=#{keyNoteModel.inHos} and b.hospital_id=#{keyNoteModel.hospitalId}
+			and b.type=#{keyNoteModel.type}
+		</if>
+		left JOIN (SELECT t.`sid`,t.`checkout_id`,t.`checkout_code`,t.`checkout_name`,
+		t.hospital_id,t.hospital_name,t.is_valid,c.record_origin,c.sample_name,c.department_name,
+		c.checkout_doctor_name,c.checkout_title,c.checkout_time
+		FROM t_checkout_detail t
+		join t_checkout c on c.hospital_id=t.hospital_id and c.checkout_id = t.checkout_id
+		and c.member_id=t.member_id
+		where t.is_valid=1 and c.is_valid=1
+		<if test="list!=null and list.size()&gt;0">
+			and (t.checkout_name in
+			<foreach collection="list" separator="," close=")" open="(" item="item" index="index">
+				#{item.displayName}
+			</foreach>
+			OR t.checkout_code in
+			<foreach collection="list" separator="," close=")" open="(" item="item" index="index">
+				#{item.checkoutCode}
+			</foreach>)
+		</if>
+		and t.member_id=#{memberId}
+		<if test="hospitalId!=null and hospitalId!=''">
+			and (t.hospital_id = #{hospitalId} or t.hospital_id = -1<!--满足旧数据且无法找到医院编号的检验-->)
+		</if>
+		<if test="startDt!=null and startDt !=''">
+			and t.checkout_time &gt;= #{startDt}
+		</if>
+		<if test="endDt!=null and endDt !=''">
+			and t.checkout_time &lt;= #{endDt}
+		</if>
+		order by c.checkout_time desc)t
+		on t.checkout_name = a.display_name
+		where t.sid is not null
+		group by t.checkout_title,t.checkout_time
+		order by t.checkout_time desc
+	</select>
+
+	<insert id="addOrUpdateCheckout" parameterType="com.comvee.cdms.checkresult.po.CheckoutPO">
+  	  insert into t_checkout (sid, checkout_title, checkout_id,
+      checkout_doctor_id, checkout_doctor_name, sample_code,
+      sample_name, checkout_date, checkout_time,
+      checkout_remark, checkout_goal, yz_id,
+      diagnose_result, diagnose_text, depart_code,
+      member_id, visit_no, report_date,
+      department_id, department_name, submit_checkout_date,
+      diagnose_opinion,record_origin,hospital_id,hospital_name ,visit_type)
+    values (#{sid,jdbcType=BIGINT}, #{checkoutTitle,jdbcType=VARCHAR}, #{checkoutId,jdbcType=VARCHAR},
+      #{checkoutDoctorId,jdbcType=VARCHAR}, #{checkoutDoctorName,jdbcType=VARCHAR}, #{sampleCode,jdbcType=VARCHAR},
+      #{sampleName,jdbcType=VARCHAR}, #{checkoutDate,jdbcType=DATE}, #{checkoutTime,jdbcType=VARCHAR},
+      #{checkoutRemark,jdbcType=VARCHAR}, #{checkoutGoal,jdbcType=VARCHAR}, #{yzId,jdbcType=VARCHAR},
+      #{diagnoseResult,jdbcType=VARCHAR}, #{diagnoseText,jdbcType=VARCHAR}, #{departCode,jdbcType=VARCHAR},
+      #{memberId,jdbcType=BIGINT}, #{visitNo,jdbcType=VARCHAR}, #{reportDate,jdbcType=DATE},
+      #{departmentId,jdbcType=BIGINT}, #{departmentName,jdbcType=VARCHAR}, #{submitCheckoutDate,jdbcType=DATE},
+      #{diagnoseOpinion,jdbcType=LONGVARCHAR},#{recordOrigin},#{hospitalId},#{hospitalName} ,#{visitType})
+	  on duplicate key update update_dt = now(),checkout_id = #{checkoutId,jdbcType=VARCHAR}
+  </insert>
+
+</mapper>

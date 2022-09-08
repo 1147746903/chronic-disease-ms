@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dialogue.mapper.DialogueGroupMapper">
+
+  <resultMap id="dialogueGroup" type="com.comvee.cdms.dialogue.po.DialogueGroupPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="sender_id" jdbcType="BIGINT" property="senderId" />
+    <result column="msg_type" jdbcType="TINYINT" property="msgType" />
+    <result column="msg_content" jdbcType="VARCHAR" property="msgContent" />
+    <result column="send_status" jdbcType="TINYINT" property="sendStatus" />
+    <result column="member_id_data" jdbcType="VARCHAR" property="memberIdData" />
+    <result column="member_name_json" jdbcType="VARCHAR" property="memberNameJson" />
+    <result column="people_number" jdbcType="INTEGER" property="peopleNumber" />
+    <result column="data_json" jdbcType="VARCHAR" property="dataJson" />
+  </resultMap>
+
+  <insert id="addDialogueGroup" parameterType="com.comvee.cdms.dialogue.po.DialogueGroupPO">
+    insert into t_dialogue_group (sid, doctor_id, sender_id, msg_type,
+      msg_content, member_id_data,
+      member_name_json, people_number, data_json
+      )
+    values (#{sid,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{senderId,jdbcType=BIGINT}, #{msgType,jdbcType=TINYINT},
+      #{msgContent,jdbcType=VARCHAR}, #{memberIdData,jdbcType=VARCHAR},
+      #{memberNameJson,jdbcType=VARCHAR}, #{peopleNumber,jdbcType=INTEGER}, #{dataJson,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <select id="listDialogueGroup" resultMap="dialogueGroup" parameterType="com.comvee.cdms.dialogue.dto.ListDialogueGroupDTO">
+    select sid, insert_dt, update_dt, doctor_id, sender_id, msg_type, msg_content, send_status,
+    member_id_data, member_name_json, people_number, data_json
+    from t_dialogue_group
+    <where>
+      <if test="sendStatus != null">
+        and send_status = #{sendStatus}
+      </if>
+      <if test="doctorList != null and doctorList.size() > 0">
+        and doctor_id in
+        <foreach collection="doctorList" open="(" close=")" separator="," item="item">
+          #{item}
+        </foreach>
+      </if>
+    </where>
+    order by insert_dt desc
+  </select>
+
+  <update id="updateDialogueGroup" parameterType="com.comvee.cdms.dialogue.dto.UpdateDialogueGroupDTO">
+    update t_dialogue_group t
+    <set>
+      <if test="sendStatus != null">
+        t.send_status = #{sendStatus},
+      </if>
+    </set>
+    where t.sid = #{sid}
+  </update>
+</mapper>

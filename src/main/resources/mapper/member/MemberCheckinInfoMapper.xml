@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.member.mapper.MemberCheckinInfoMapper">
+
+  <resultMap id="memberCheckinInfo" type="com.comvee.cdms.member.po.MemberCheckinInfoPO">
+    <id column="sid" jdbcType="VARCHAR" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="checkin_status" jdbcType="TINYINT" property="checkinStatus" />
+    <result column="department_id" jdbcType="BIGINT" property="departmentId" />
+    <result column="department_name" jdbcType="VARCHAR" property="departmentName" />
+    <result column="room_id" jdbcType="BIGINT" property="roomId" />
+    <result column="room_no" jdbcType="VARCHAR" property="roomNo" />
+    <result column="bed_id" jdbcType="BIGINT" property="bedId" />
+    <result column="bed_no" jdbcType="VARCHAR" property="bedNo" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+    <result column="in_hospital_date" jdbcType="TIMESTAMP" property="inHospitalDate" />
+    <result column="out_hospital_date" jdbcType="TIMESTAMP" property="outHospitalDate" />
+    <result column="hospital_no" jdbcType="VARCHAR" property="hospitalNo" />
+    <result column="patient_card" jdbcType="VARCHAR" property="patientCard" />
+    <result column="pat_patient_id" jdbcType="VARCHAR" property="patPatientId" />
+    <result column="doctor_zg_code" jdbcType="VARCHAR" property="doctorZgCode" />
+    <result column="adm_no" jdbcType="BIGINT" property="admNo" />
+    <result column="main_nurse_desc" jdbcType="VARCHAR" property="mainNurseDesc" />
+    <result column="doctor_zg" jdbcType="VARCHAR" property="doctorZg" />
+    <result column="nur_level" jdbcType="VARCHAR" property="nurLevel" />
+    <result column="eat_model" jdbcType="VARCHAR" property="eatModel" />
+    <result column="charge_class" jdbcType="VARCHAR" property="chargeClass" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+  </resultMap>
+
+  <select id="getMemberCheckinInfoById" parameterType="java.lang.String" resultMap="memberCheckinInfo">
+    select sid, member_id, checkin_status, department_id, department_name, room_id, room_no,
+    bed_id, bed_no, is_valid, insert_dt, modify_dt, in_hospital_date, out_hospital_date, 
+    hospital_no, patient_card, pat_patient_id, doctor_zg_code, adm_no, main_nurse_desc, 
+    doctor_zg, nur_level, eat_model, charge_class, hospital_id
+    from t_member_checkin_info
+    where sid = #{sid,jdbcType=VARCHAR} limit 1
+  </select>
+
+  <select id="getMemberCheckinInfoByMemberId" parameterType="java.lang.String" resultMap="memberCheckinInfo">
+    select sid, member_id, checkin_status, department_id, department_name, room_id, room_no,
+    bed_id, bed_no, is_valid, insert_dt, modify_dt, in_hospital_date, out_hospital_date,
+    hospital_no, patient_card, pat_patient_id, doctor_zg_code, adm_no, main_nurse_desc,
+    doctor_zg, nur_level, eat_model, charge_class, hospital_id
+    from t_member_checkin_info
+    where member_id = #{memberId,jdbcType=VARCHAR}
+    and hospital_id = #{hospitalId,jdbcType=VARCHAR}
+    and is_valid = 1 and checkin_status = 1
+    limit 1
+  </select>
+
+  <select id="getMemberCheckinInfoByDepartmentId" parameterType="java.lang.String" resultMap="memberCheckinInfo">
+    select department_id, department_name
+    from t_member_checkin_info
+    where department_id = #{departmentId,jdbcType=VARCHAR} limit 1
+  </select>
+
+  <select id="findMemberCheckinInfoByHospitalNo" parameterType="java.lang.String" resultMap="memberCheckinInfo">
+    select sid, member_id, checkin_status, department_id, department_name, room_id, room_no,
+    bed_id, bed_no, is_valid, insert_dt, modify_dt, in_hospital_date, out_hospital_date,
+    hospital_no, patient_card, pat_patient_id, doctor_zg_code, adm_no, main_nurse_desc,
+    doctor_zg, nur_level, eat_model, charge_class, hospital_id
+    from t_member_checkin_info
+    where hospital_no = #{hospitalNo,jdbcType=VARCHAR} and hospital_id = #{hospitalId} limit 1
+  </select>
+
+  <update id="updateMemberCheckinInfo" parameterType="com.comvee.cdms.member.po.MemberCheckinInfoPO">
+    update t_member_checkin_info set modify_dt = now()
+    <if test="memberId != null and '' != memberId">
+      ,member_id = #{memberId,jdbcType=BIGINT}
+    </if>
+    <if test="checkinStatus != null">
+      ,checkin_status = #{checkinStatus,jdbcType=TINYINT}
+    </if>
+    <if test="bedNo != null and '' != bedNo">
+      ,bed_no = #{bedNo,jdbcType=VARCHAR}
+    </if>
+    <if test="isValid != null">
+      ,is_valid = #{isValid,jdbcType=TINYINT}
+    </if>
+    <if test="inHospitalDate != null and '' != inHospitalDate">
+      ,in_hospital_date = #{inHospitalDate,jdbcType=TIMESTAMP}
+    </if>
+    <if test="outHospitalDate != null and '' != outHospitalDate">
+      ,out_hospital_date = #{outHospitalDate,jdbcType=TIMESTAMP}
+    </if>
+    <if test="hospitalNo != null and '' != hospitalNo">
+      ,hospital_no = #{hospitalNo,jdbcType=VARCHAR}
+    </if>
+    <if test="patientCard != null and '' != patientCard">
+      ,patient_card = #{patientCard,jdbcType=VARCHAR}
+    </if>
+    <if test="patPatientId != null and '' != patPatientId">
+      ,pat_patient_id = #{patPatientId,jdbcType=VARCHAR}
+    </if>
+    <if test="doctorZgCode != null and '' != doctorZgCode">
+      ,doctor_zg_code = #{doctorZgCode,jdbcType=VARCHAR}
+    </if>
+    <if test="admNo != null and '' != admNo">
+      ,adm_no = #{admNo,jdbcType=BIGINT}
+    </if>
+    <if test="mainNurseDesc != null and '' != mainNurseDesc">
+      ,main_nurse_desc = #{mainNurseDesc,jdbcType=VARCHAR}
+    </if>
+    <if test="doctorZg != null and '' != doctorZg">
+     , doctor_zg = #{doctorZg,jdbcType=VARCHAR}
+    </if>
+    <if test="nurLevel != null and '' != nurLevel">
+      ,nur_level = #{nurLevel,jdbcType=VARCHAR}
+    </if>
+    <if test="eatModel != null and '' != eatModel">
+      ,eat_model = #{eatModel,jdbcType=VARCHAR}
+    </if>
+    where is_valid = 1 and sid = #{sid,jdbcType=VARCHAR}
+  </update>
+
+  <select id="listMemberCheckinInfo" resultMap="memberCheckinInfo">
+    select sid, member_id, checkin_status, department_id, department_name, room_id, room_no,
+    bed_id, bed_no, is_valid, insert_dt, modify_dt, in_hospital_date, out_hospital_date,
+    hospital_no, patient_card, pat_patient_id, doctor_zg_code, adm_no, main_nurse_desc,
+    doctor_zg, nur_level, eat_model, charge_class, hospital_id
+    from t_member_checkin_info where is_valid = 1
+    and department_id = #{departmentId}
+    <if test="checkinStatus != null">
+      and checkin_status = #{checkinStatus}
+    </if>
+    order by bed_no * 1 desc
+  </select>
+
+  <insert id="addMemberCheckinInfo" parameterType="com.comvee.cdms.member.po.MemberCheckinInfoPO">
+    insert into t_member_checkin_info (sid, member_id, checkin_status,
+      department_id, department_name, room_id,
+      room_no, bed_id, bed_no,
+      is_valid, insert_dt, modify_dt,
+      in_hospital_date, out_hospital_date, hospital_no,
+      patient_card, pat_patient_id, doctor_zg_code,
+      adm_no, main_nurse_desc, doctor_zg,
+      nur_level, eat_model, charge_class,
+      hospital_id)
+    values (#{sid,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT}, #{checkinStatus,jdbcType=TINYINT},
+      #{departmentId,jdbcType=BIGINT}, #{departmentName,jdbcType=VARCHAR}, #{roomId,jdbcType=BIGINT},
+      #{roomNo,jdbcType=VARCHAR}, #{bedId,jdbcType=BIGINT}, #{bedNo,jdbcType=VARCHAR},
+      1, now(), now(),
+      #{inHospitalDate,jdbcType=TIMESTAMP}, #{outHospitalDate,jdbcType=TIMESTAMP}, #{hospitalNo,jdbcType=VARCHAR},
+      #{patientCard,jdbcType=VARCHAR}, #{patPatientId,jdbcType=VARCHAR}, #{doctorZgCode,jdbcType=VARCHAR},
+      #{admNo,jdbcType=BIGINT}, #{mainNurseDesc,jdbcType=VARCHAR}, #{doctorZg,jdbcType=VARCHAR},
+      #{nurLevel,jdbcType=VARCHAR}, #{eatModel,jdbcType=VARCHAR}, #{chargeClass,jdbcType=VARCHAR},
+      #{hospitalId,jdbcType=BIGINT})
+  </insert>
+
+  <select id="getMemberCheckinInfoByBedNo" resultMap="memberCheckinInfo">
+    select sid, member_id, checkin_status, department_id, department_name, room_id, room_no,
+    bed_id, bed_no, is_valid, insert_dt, modify_dt, in_hospital_date, out_hospital_date,
+    hospital_no, patient_card, pat_patient_id, doctor_zg_code, adm_no, main_nurse_desc,
+    doctor_zg, nur_level, eat_model, charge_class, hospital_id
+    from t_member_checkin_info where is_valid = 1
+    <if test="departmentId != null and '' != departmentId">
+      and department_id = #{departmentId}
+    </if>
+    <if test="bedNo != null and '' != bedNo">
+      and bed_no = #{bedNo}
+    </if>
+    limit 1
+  </select>
+
+  <select id="getMemberCheckinInfoByMemberId2" parameterType="java.lang.String" resultMap="memberCheckinInfo">
+    select sid, member_id, checkin_status, department_id, department_name, room_id, room_no,
+    bed_id, bed_no, is_valid, insert_dt, modify_dt, in_hospital_date, out_hospital_date,
+    hospital_no, patient_card, pat_patient_id, doctor_zg_code, adm_no, main_nurse_desc,
+    doctor_zg, nur_level, eat_model, charge_class, hospital_id
+    from t_member_checkin_info
+    where member_id = #{memberId,jdbcType=VARCHAR}
+    and hospital_id = #{hospitalId,jdbcType=VARCHAR}
+    and is_valid = 1
+    limit 1
+  </select>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.doctor.mapper.DoctorDepartmentMapper">
+  <resultMap id="doctorDepartmemnt" type="com.comvee.cdms.doctor.po.DoctorDepartmentPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="department_id" jdbcType="BIGINT" property="departmentId" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+    <result column="option_type" jdbcType="TINYINT" property="optionType" />
+  </resultMap>
+
+  <insert id="addDoctorDepartment" parameterType="com.comvee.cdms.doctor.po.DoctorDepartmentPO">
+    insert into t_doctor_department (sid, doctor_id, department_id,
+    is_valid, insert_dt, modify_dt,
+    option_type)
+    values (#{sid,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{departmentId,jdbcType=BIGINT},
+    1, now(), now(),1)
+  </insert>
+
+  <delete id="deleteDoctorDepartmentByDoctorId" parameterType="java.lang.String">
+    delete from t_doctor_department
+    where doctor_id = #{doctorId}
+  </delete>
+
+  <!--v6.0.0 start-->
+  <select id="listDoctorDepartment" parameterType="java.lang.String" resultType="com.comvee.cdms.doctor.vo.DoctorDepartmentVO">
+    SELECT a.sid sid, a.doctor_id doctorId, a.department_id departmentId,a.is_valid isValid,
+    a.insert_dt insertDt, a.modify_dt modifyDt,a.option_type optionType,b.department_name departmentName
+    FROM t_doctor_department a join t_department b on a.department_id = b.department_id
+    where a.is_valid = 1 and a.option_type = 1 and a.doctor_id = #{doctorId}
+  </select>
+
+  <select id="listDoctorDepartHasAccountByHosId" parameterType="java.lang.String" resultType="com.comvee.cdms.department.model.po.DepartmentPO">
+    SELECT de.department_id departmentId,de.department_name departmentName, de.hospital_id hospitalId,
+     de.insert_dt insertDt, de.update_dt updateDt, de.doctor_number doctorNumber
+    FROM t_doctor d  JOIN t_department de ON d.depart_id = de.department_id
+    WHERE de.hospital_id = #{hospitalId} GROUP BY de.department_id
+  </select>
+  <!--v6.0.0 end-->
+
+</mapper>

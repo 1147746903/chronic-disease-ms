@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.GsMemberArchivesMapper">
+    <resultMap id="memberArchives" type="com.comvee.cdms.dybloodsugar.po.GsMemberArchivesPO">
+        <id column="sid" property="sid" jdbcType="BIGINT"/>
+        <result column="member_id" property="memberId" jdbcType="VARCHAR"/>
+        <result column="is_smoke" property="isSmoke" jdbcType="TINYINT"/>
+        <result column="is_drink" property="isDrink" jdbcType="TINYINT"/>
+        <result column="dietary_habit" property="dietaryHabit" jdbcType="TINYINT"/>
+        <result column="exercise_intensity" property="exerciseIntensity" jdbcType="TINYINT"/>
+        <result column="breakfast_time" property="breakfastTime" jdbcType="VARCHAR"/>
+        <result column="lunch_time" property="lunchTime" jdbcType="VARCHAR"/>
+        <result column="dinner_time" property="dinnerTime" jdbcType="VARCHAR"/>
+        <result column="is_valid" property="isValid" jdbcType="TINYINT"/>
+        <result column="agreement" property="agreement" jdbcType="TINYINT"/>
+        <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP"/>
+        <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+
+    <insert id="addMemberArchives" parameterType="com.comvee.cdms.dybloodsugar.po.GsMemberArchivesPO">
+        insert into t_gs_member_archives(sid, member_id, is_smoke, is_drink, dietary_habit, exercise_intensity,
+                                         breakfast_time, lunch_time, dinner_time, is_valid, agreement, modify_dt, insert_dt)
+        values (#{sid}, #{memberId}, #{isSmoke}, #{isDrink}, #{dietaryHabit}, #{exerciseIntensity}, #{breakfastTime},
+                #{lunchTime}, #{dinnerTime}, 1, 0, now(), now())
+    </insert>
+    <update id="updateMemberArchives" parameterType="com.comvee.cdms.dybloodsugar.po.GsMemberArchivesPO">
+        update t_gs_member_archives
+        set modify_dt = now()
+        <if test=" isSmoke != null">
+            , is_smoke = #{isSmoke}
+        </if>
+        <if test=" isDrink != null">
+            , is_drink = #{isDrink}
+        </if>
+        <if test=" dietaryHabit != null">
+            , dietary_habit = #{dietaryHabit}
+        </if>
+        <if test=" exerciseIntensity != null">
+            , exercise_intensity = #{exerciseIntensity}
+        </if>
+        <if test=" breakfastTime != null">
+            , breakfast_time = #{breakfastTime}
+        </if>
+        <if test=" lunchTime != null">
+            , lunch_time = #{lunchTime}
+        </if>
+        <if test=" dinnerTime != null">
+            , dinner_time = #{dinnerTime}
+        </if>
+        <if test=" isValid != null">
+            , is_valid = #{isValid}
+        </if>
+        <if test=" agreement != null">
+            , agreement = #{agreement}
+        </if>
+        where member_id = #{memberId}
+    </update>
+    <select id="hasMemberArchives" parameterType="String" resultType="Boolean">
+        select count(sid) > 0
+        from t_gs_member_archives
+        where member_id = #{memberId}
+    </select>
+    <select id="getMemberArchivesById" parameterType="String" resultMap="memberArchives">
+        select *
+        from t_gs_member_archives
+        where member_id = #{memberId}
+    </select>
+</mapper>

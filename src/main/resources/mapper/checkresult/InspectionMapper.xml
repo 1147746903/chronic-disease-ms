@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.checkresult.mapper.InspectionMapper">
+
+    <resultMap id="inspection" type="com.comvee.cdms.checkresult.po.InspectionPO">
+        <id column="sid" property="sid" jdbcType="BIGINT"/>
+        <result column="inspect_title" property="inspectTitle" jdbcType="VARCHAR"/>
+        <result column="inspect_id" property="inspectId" jdbcType="VARCHAR"/>
+        <result column="inspect_doctor_id" property="inspectDoctorId" jdbcType="VARCHAR"/>
+        <result column="inspect_doctor_name" property="inspectDoctorName" jdbcType="VARCHAR"/>
+        <result column="inspect_dt" property="inspectDt" jdbcType="TIMESTAMP"/>
+        <result column="report_dt" property="reportDt" jdbcType="TIMESTAMP"/>
+        <result column="review_doctor_id" property="reviewDoctorId" jdbcType="VARCHAR"/>
+        <result column="review_doctor_name" property="reviewDoctorName" jdbcType="VARCHAR"/>
+        <result column="inspect_finding" property="inspectFinding" jdbcType="LONGVARCHAR"/>
+        <result column="diagnose_result" property="diagnoseResult" jdbcType="LONGVARCHAR"/>
+        <result column="member_id" property="memberId" jdbcType="BIGINT"/>
+        <result column="visit_no" property="visitNo" jdbcType="VARCHAR"/>
+        <result column="inspect_code" property="inspectCode" jdbcType="VARCHAR"/>
+        <result column="inspect_method" property="inspectMethod" jdbcType="VARCHAR"/>
+        <result column="report_url" property="reportUrl" jdbcType="VARCHAR"/>
+        <result column="inspect_data_json" property="inspectDataJson" jdbcType="VARCHAR"/>
+        <result column="department_id" property="departmentId" jdbcType="BIGINT"/>
+        <result column="department_name" property="departmentName" jdbcType="VARCHAR"/>
+        <result column="hospital_id" property="hospitalId"/>
+        <result column="hospital_name" property="hospitalName"/>
+        <result column="in_hos" property="inHos"/>
+        <result column="origin" property="origin"/>
+        <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP"/>
+        <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP"/>
+        <result column="is_valid" property="isValid"/>
+        <result column="review_status" property="reviewStatus"/>
+    </resultMap>
+
+
+    <insert id="addInspection" parameterType="com.comvee.cdms.checkresult.po.InspectionPO">
+        insert into t_inspection (sid, inspect_title, inspect_id, inspect_doctor_id, inspect_doctor_name,
+                                  inspect_dt, report_dt, review_doctor_id,
+                                  review_doctor_name, inspect_finding, diagnose_result, member_id, visit_no,
+                                  inspect_code,
+                                  inspect_method, inspect_data_json, report_url,
+                                  department_id, department_name, hospital_id, hospital_name, in_hos, origin, insert_dt,
+                                  modify_dt, is_valid ,review_status)
+        values (#{sid,jdbcType=BIGINT}, #{inspectTitle,jdbcType=VARCHAR}, #{inspectId,jdbcType=VARCHAR},
+                #{inspectDoctorId,jdbcType=VARCHAR},
+                #{inspectDoctorName,jdbcType=VARCHAR},
+                #{inspectDt,jdbcType=TIMESTAMP}, #{reportDt,jdbcType=TIMESTAMP},
+                #{reviewDoctorId,jdbcType=VARCHAR}, #{reviewDoctorName,jdbcType=VARCHAR},
+                #{inspectFinding,jdbcType=VARCHAR}, #{diagnoseResult,jdbcType=VARCHAR},
+                #{memberId,jdbcType=BIGINT}, #{visitNo,jdbcType=VARCHAR},
+                #{inspectCode,jdbcType=VARCHAR},
+                #{inspectMethod,jdbcType=VARCHAR},
+                #{inspectDataJson,jdbcType=VARCHAR}, #{reportUrl,jdbcType=VARCHAR}, #{departmentId,jdbcType=VARCHAR},
+                #{departmentName,jdbcType=VARCHAR},
+                #{hospitalId}, #{hospitalName}, #{inHos}, #{origin}, now(), now(), 1 ,#{reviewStatus})
+    </insert>
+
+    <select id="listInspection" parameterType="String" resultMap="inspection">
+    select sid, inspect_title, inspect_id, inspect_doctor_id, inspect_doctor_name, inspect_dt,
+    report_dt, review_doctor_id, review_doctor_name, member_id, visit_no, inspect_code,
+    inspect_method, department_id, department_name, hospital_id, hospital_name, in_hos,
+    origin, insert_dt, modify_dt, is_valid, inspect_finding, diagnose_result, inspect_data_json,
+    report_url ,review_status
+    from t_inspection
+    where t.member_id = #{memberId}
+          and t.inspect_id = t1.inspect_id
+        order by t.inspect_date desc, t.inspect_time desc
+    </select>
+
+    <select id="getInspectionByInspectId"  resultMap="inspection">
+        select sid, inspect_title, inspect_id, inspect_doctor_id, inspect_doctor_name, inspect_dt,
+        report_dt, review_doctor_id, review_doctor_name, member_id, visit_no, inspect_code,
+        inspect_method, department_id, department_name, hospital_id, hospital_name, in_hos,
+        origin, insert_dt, modify_dt, is_valid, inspect_finding, diagnose_result, inspect_data_json,
+        report_url ,review_status
+        from t_inspection
+        where inspect_id = #{inspectId} and is_valid = 1
+        limit 1
+    </select>
+
+    <update id="modifyInspection" parameterType="com.comvee.cdms.checkresult.po.InspectionPO">
+        update t_inspection
+        <set>
+            modify_dt = now(),
+            <if test="inspectTitle != null">
+                inspect_title = #{inspectTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="inspectId != null">
+                inspect_id = #{inspectId,jdbcType=VARCHAR},
+            </if>
+            <if test="inspectDoctorId != null">
+                inspect_doctor_id = #{inspectDoctorId,jdbcType=VARCHAR},
+            </if>
+            <if test="inspectDoctorName != null">
+                inspect_doctor_name = #{inspectDoctorName,jdbcType=VARCHAR},
+            </if>
+            <if test="inspectDt != null">
+                inspect_dt = #{inspectDt,jdbcType=DATE},
+            </if>
+            <if test="reportDt != null">
+                report_dt = #{reportDt,jdbcType=DATE},
+            </if>
+            <if test="reviewDoctorId != null">
+                review_doctor_id = #{reviewDoctorId,jdbcType=VARCHAR},
+            </if>
+            <if test="reviewDoctorName != null">
+                review_doctor_name = #{reviewDoctorName,jdbcType=VARCHAR},
+            </if>
+            <if test="inspectFinding != null">
+                inspect_finding = #{inspectFinding,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="diagnoseResult != null">
+                diagnose_result = #{diagnoseResult,jdbcType=VARCHAR},
+            </if>
+            <if test="memberId != null">
+                member_id = #{memberId,jdbcType=BIGINT},
+            </if>
+            <if test=" visitNo != null">
+                visit_no = #{visitNo,jdbcType=VARCHAR},
+            </if>
+            <if test="inspectCode != null">
+                inspect_code = #{inspectCode,jdbcType=VARCHAR},
+            </if>
+            <if test=" inspectMethod != null">
+                inspect_method = #{inspectMethod,jdbcType=VARCHAR},
+            </if>
+            <if test=" inspectDataJson != null">
+                inspect_data_json = #{inspectDataJson,jdbcType=VARCHAR},
+            </if>
+            <if test=" reportUrl != null">
+                report_url = #{reportUrl,jdbcType=VARCHAR},
+            </if>
+            <if test=" departmentId != null">
+                department_id = #{departmentId,jdbcType=VARCHAR},
+            </if>
+            <if test="departmentName != null">
+                department_name = #{departmentName,jdbcType=VARCHAR},
+            </if>
+            <if test="hospitalId != null">
+                hospital_id = #{hospitalId},
+            </if>
+            <if test="hospitalName != null">
+                hospital_name = #{hospitalName,jdbcType=VARCHAR},
+            </if>
+            <if test="inHos != null">
+                in_hos = #{inHos},
+            </if>
+            <if test="origin != null">
+                origin = #{origin},
+            </if>
+        </set>
+        where inspect_id = #{inspectId}
+    </update>
+
+
+    <select id="listInspectionByParams" parameterType="java.util.Map" resultMap="inspection">
+        select * from(
+        SELECT *
+        FROM t_inspection t where is_valid=1
+        <if test="memberId!=null and memberId!=''">
+            and t.member_id = #{memberId}
+        </if>
+        <if test="startDt!=null and startDt!=''">
+            and t.inspect_date &gt;= #{startDt}
+        </if>
+        <if test="endDt!=null and endDt!=''">
+            and t.inspect_date &lt;= #{endDt}
+        </if>
+        <if test="hospitalId!=null and hospitalId!=''">
+            and (t.hospital_id = #{hospitalId} or t.hospital_id ='-1')
+        </if>
+        <if test="inspectCode!=null and inspectCode!=''">
+            and t.inspect_code = #{inspectCode}
+        </if>
+        ORDER BY t.insert_dt DESC)t
+        <if test="groupbyTitle!=null and groupbyTitle">
+            GROUP by t.inspect_title
+        </if>
+    </select>
+
+    <select id="getInspection" resultMap="inspection" parameterType="com.comvee.cdms.checkresult.dto.GetInspectionDTO">
+        select sid, inspect_title, inspect_id, inspect_doctor_id, inspect_doctor_name, inspect_dt,
+        report_dt, review_doctor_id, review_doctor_name, member_id, visit_no, inspect_code,
+        inspect_method, department_id, department_name, hospital_id, hospital_name, in_hos,
+        origin, insert_dt, modify_dt, is_valid, inspect_finding, diagnose_result, inspect_data_json,
+        report_url
+        from t_inspection
+        where is_valid = 1
+        <if test="sid != null and '' != sid">
+            and sid = #{sid}
+        </if>
+        <if test="memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test="inspectionCode != null and '' != inspectionCode">
+            and inspect_code = #{inspectionCode}
+        </if>
+        <if test="reportDt != null and '' != reportDt">
+            and report_dt = #{reportDt}
+        </if>
+        limit 1
+    </select>
+</mapper>

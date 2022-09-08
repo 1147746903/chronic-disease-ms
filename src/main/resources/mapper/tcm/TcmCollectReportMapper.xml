@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.tcm.mapper.TcmCollectReportMapper">
+    <resultMap id="baseMap" type="com.comvee.cdms.tcm.model.po.TcmCollectReportPO">
+        <id column="sid" jdbcType="BIGINT" property="sid"/>
+        <result column="task_id" jdbcType="VARCHAR" property="taskId"/>
+        <result column="health_status" jdbcType="VARCHAR" property="healthStatus"/>
+        <result column="coming_disease" jdbcType="VARCHAR" property="comingDisease"/>
+        <result column="figure_desc" jdbcType="VARCHAR" property="figureDesc"/>
+        <result column="feature_desc" jdbcType="VARCHAR" property="featureDesc"/>
+        <result column="health_json" jdbcType="VARCHAR" property="healthJson"/>
+        <result column="element_json" jdbcType="VARCHAR" property="elementJson"/>
+        <result column="constitution_desc" jdbcType="VARCHAR" property="constitutionDesc"/>
+        <result column="disease_risk" jdbcType="VARCHAR" property="diseaseRisk"/>
+        <result column="birth_fortune_json" jdbcType="VARCHAR" property="birthFortuneJson"/>
+        <result column="cur_fortune_json" jdbcType="VARCHAR" property="curFortuneJson"/>
+        <result column="tea_nurse" jdbcType="VARCHAR" property="teaNurse"/>
+        <result column="drink_nurse" jdbcType="VARCHAR" property="drinkNurse"/>
+        <result column="music_nurse" jdbcType="VARCHAR" property="musicNurse"/>
+        <result column="porridge_nurse" jdbcType="VARCHAR" property="porridgeNurse"/>
+        <result column="diet_nurse" jdbcType="VARCHAR" property="dietNurse"/>
+        <result column="sport_nurse" jdbcType="VARCHAR" property="sportNurse"/>
+        <result column="valid" jdbcType="TINYINT" property="valid"/>
+        <result column="insert_dt" jdbcType="VARCHAR" property="insertDt"/>
+        <result column="modify_dt" jdbcType="VARCHAR" property="modifyDt"/>
+    </resultMap>
+
+    <insert id="addTcmCollectReport" parameterType="com.comvee.cdms.tcm.model.po.TcmCollectReportPO">
+        insert into t_tcm_collect_report(sid, task_id, health_status, coming_disease, figure_desc, feature_desc, health_json,
+                                         element_json, constitution_desc, disease_risk, birth_fortune_json,
+                                         cur_fortune_json, tea_nurse, drink_nurse, music_nurse,
+                                         porridge_nurse, diet_nurse, sport_nurse, valid, insert_dt, modify_dt)
+        values (#{sid}, #{taskId}, #{healthStatus}, #{comingDisease}, #{figureDesc}, #{featureDesc}, #{healthJson},
+                #{elementJson}, #{constitutionDesc}, #{diseaseRisk}, #{birthFortuneJson},
+                #{curFortuneJson}, #{teaNurse},  #{drinkNurse}, #{musicNurse}, #{porridgeNurse}, #{dietNurse}, #{sportNurse}, 1, now(), now())
+    </insert>
+    <select id="getTcmCollectReport" parameterType="String" resultMap="baseMap">
+        select *
+        from t_tcm_collect_report
+        where task_id = #{taskId}
+    </select>
+</mapper>

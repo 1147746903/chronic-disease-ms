@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dialogue.mapper.DoctorReplyTextMapper">
+    <resultMap id="replyText" type="com.comvee.cdms.dialogue.po.ReplyTextPO">
+        <id column="sid" property="sid"/>
+        <result column="text_content" property="textContent"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="text_type" property="textType"/>
+        <result column="doctor_id" property="doctorId"/>
+        <result column="hospital_id" property="hospitalId"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="insert_dt" property="insertDt"/>
+        <result column="update_dt" property="updateDt"/>
+        <result column="is_valid" property="isValid"/>
+    </resultMap>
+<!--
+    <select id="listReplyText" parameterType="java.lang.String" resultMap="replyText">
+        select sid,text_content,creator_id,text_type,doctor_id,hospital_id,department_id,insert_dt,update_dt,is_valid
+        from t_doctor_reply_text where is_valid = 1 and (text_type=1 and hospital_id=#{hospitalId})or (text_type=2 and department_id=#{departmentId})
+        or (text_type=3 and doctor_id=#{doctorId}) or text_type = 4 order by FIELD(text_type,3,4,2,1),update_dt desc
+    </select>-->
+
+    <select id="listReplyText" parameterType="com.comvee.cdms.dialogue.dto.ListReplyTextDTO" resultMap="replyText">
+        select sid,text_content,creator_id,text_type,doctor_id,hospital_id,department_id,insert_dt,update_dt,is_valid
+        from t_doctor_reply_text where is_valid = 1
+        <if test="null != textType">
+            and text_type = #{textType}
+        </if>
+        <if test="null !=  doctorId and '' != doctorId">
+            and doctor_id = #{doctorId}
+        </if>
+        <if test="null != departmentId and '' != departmentId">
+            and department_id = #{departmentId}
+        </if>
+        <if test="null != hospitalId and '' != hospitalId">
+            and hospital_id = #{hospitalId}
+        </if>
+        order by insert_dt desc
+    </select>
+    
+    <insert id="addReplyText" parameterType="com.comvee.cdms.dialogue.po.ReplyTextPO">
+        insert into t_doctor_reply_text (sid,text_content,creator_id,text_type,doctor_id,hospital_id,department_id,insert_dt,update_dt,is_valid)
+        values(#{sid},#{textContent},#{creatorId},#{textType},#{doctorId},#{hospitalId},#{departmentId},now(),now(),1)
+    </insert>
+
+    <update id="modifyReplyText" parameterType="com.comvee.cdms.dialogue.po.ReplyTextPO">
+        update t_doctor_reply_text
+        <set>
+            update_dt = now(),
+            <if test="null != textContent and '' != textContent">
+                text_content = #{textContent},
+            </if>
+            <if test="null != textType">
+                text_type = #{textType},
+            </if>
+        </set>
+        where sid = #{sid}
+    </update>
+
+    <update id="delReplayText" parameterType="java.lang.String">
+        update t_doctor_reply_text set is_valid=0 where sid = #{sid}
+    </update>
+
+    <select id="getReplyTextById" parameterType="java.lang.String" resultMap="replyText">
+        select sid,text_content,creator_id,text_type,doctor_id,hospital_id,department_id,insert_dt,update_dt,is_valid
+        from t_doctor_reply_text where sid = #{sid} and is_valid=1
+    </select>
+</mapper>

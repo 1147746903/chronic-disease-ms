@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.remind.mapper.MemberRemindMapper">
+
+    <resultMap id="remind" type="com.comvee.cdms.remind.po.MemberRemindPO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="remind_type" jdbcType="TINYINT" property="remindType" />
+        <result column="send_timestamp" jdbcType="BIGINT" property="sendTimestamp" />
+        <result column="data_json_str" jdbcType="VARCHAR" property="dataJsonStr" />
+        <result column="foreign_id" jdbcType="BIGINT" property="foreignId" />
+        <result column="update_timestamp" jdbcType="BIGINT" property="updateTimestamp" />
+    </resultMap>
+
+    <resultMap id="remindLatest" type="com.comvee.cdms.remind.po.MemberRemindLatestPO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="remind_message" jdbcType="VARCHAR" property="remindMessage" />
+        <result column="un_read_num" jdbcType="INTEGER" property="unReadNum" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="time_stamp" jdbcType="BIGINT" property="timeStamp" />
+    </resultMap>
+
+    <select id="getMemberRemindLatest" resultMap="remindLatest">
+        select sid, member_id, remind_message, un_read_num, insert_dt, update_dt, time_stamp
+        from t_member_remind_latest
+        where member_id = #{memberId,jdbcType=BIGINT} limit 1
+    </select>
+
+    <insert id="addMemberRemindLatest" parameterType="com.comvee.cdms.remind.po.MemberRemindLatestPO">
+        insert into t_member_remind_latest (sid, member_id, remind_message,
+          un_read_num, insert_dt, update_dt,
+          time_stamp)
+        values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{remindMessage,jdbcType=VARCHAR},
+          #{unReadNum,jdbcType=INTEGER}, now(), now(),
+          #{timeStamp,jdbcType=BIGINT})
+    </insert>
+
+    <update id="updateMemberRemindLatest" parameterType="com.comvee.cdms.remind.dto.UpdateMemberRemindLatestDTO">
+        update t_member_remind_latest
+        <set>
+            <if test="remindMessage != null and '' != remindMessage">
+                remind_message = #{remindMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="unReadNum != null">
+                un_read_num = un_read_num + #{unReadNum,jdbcType=INTEGER},
+            </if>
+            <if test="resetUnReadNum != null">
+                un_read_num =  #{resetUnReadNum,jdbcType=INTEGER},
+            </if>
+            <if test="timeStamp != null">
+                time_stamp = #{timeStamp,jdbcType=BIGINT}
+            </if>
+        </set>
+        where member_id = #{memberId,jdbcType=BIGINT}
+    </update>
+
+    <select id="listMemberRemind" resultMap="remind" parameterType="com.comvee.cdms.remind.dto.ListMemberRemindMapperDTO">
+        select sid, member_id, insert_dt, update_dt, remind_type, send_timestamp, data_json_str,
+        foreign_id, update_timestamp
+        from t_member_remind
+        <where>
+            <if test="memberId != null and '' != memberId">
+                and member_id = #{memberId}
+            </if>
+            <if test="refreshTimestamp != null and '' != refreshTimestamp">
+                and update_timestamp &gt; send_timestamp
+            </if>
+            <if test="remindTypeList != null and remindTypeList.size > 0">
+                and remind_type in
+                <foreach collection="remindTypeList" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        order by send_timestamp desc
+    </select>
+
+    <insert id="addMemberRemind" parameterType="com.comvee.cdms.remind.po.MemberRemindPO">
+        insert into t_member_remind (sid, member_id,remind_type, send_timestamp,
+          data_json_str, foreign_id, update_timestamp
+          )
+        values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{remindType,jdbcType=TINYINT}, #{sendTimestamp,jdbcType=BIGINT},
+          #{dataJsonStr,jdbcType=VARCHAR}, #{foreignId,jdbcType=BIGINT}, #{updateTimestamp,jdbcType=BIGINT}
+          )
+    </insert>
+</mapper>

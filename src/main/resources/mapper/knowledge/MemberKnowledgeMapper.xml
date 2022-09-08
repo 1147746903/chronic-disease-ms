@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.knowledge.mapper.MemberKnowledgeServiceMapper" >
+
+    <resultMap id="prescription" type="com.comvee.cdms.prescription.po.PrescriptionPO" >
+        <id column="sid" property="sid" />
+        <result column="member_id" property="memberId" />
+        <result column="insert_dt" property="insertDt" />
+        <result column="doctor_id" property="doctorId" />
+        <result column="schedule" property="schedule" />
+        <result column="module" property="module" />
+        <result column="edu_cycle" property="eduCycle" />
+        <result column="eoh_type" property="eohType" />
+        <result column="hand_down" property="handDown" />
+    </resultMap>
+
+    <resultMap id="knowledgePlan" type="com.comvee.cdms.knowledge.po.PrescriptionKnowledgePlanPO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+        <result column="plan_push_dt" jdbcType="DATE" property="planPushDt" />
+        <result column="prescription_id" jdbcType="BIGINT" property="prescriptionId" />
+        <result column="send_status" jdbcType="TINYINT" property="sendStatus" />
+        <result column="week" jdbcType="TINYINT" property="week" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    </resultMap>
+
+    <select id="listMemberKnowledge" parameterType="map" resultType="com.comvee.cdms.knowledge.po.EohKnowledgePO">
+
+        select t.id,DATE_FORMAT(t.plan_push_dt,'%Y-%m-%d %T') AS planPushDt,t.plan_push_order AS planPushOrder,
+        t.member_id as memberId,t.prescription_id as prescriptId,t.title,t.knowledge,t.article_id as articleId,
+        e.doctor_id AS leaderId, e.doctor_id doctorId
+        from t_prescription_knowledge t
+        left join t_prescription e on e.sid = t.prescription_id
+        where t.is_valid=1 and t.need_push = 1
+        <if test="day != null">
+        		and t.plan_push_dt BETWEEN DATE_FORMAT(NOW(), '%T-%m-%d') AND DATE_ADD(NOW(), INTERVAL #{day} DAY)
+        </if>
+        <if test="notExistInPlan != null and notExistInPlan">
+        and not EXISTS (select 1 from t_prescription_knowledge_plan p WHERE t.id = p.eoh_member_knowledge_id)
+        </if>
+        order by t.prescription_id,t.week,t.plan_push_order
+
+
+    </select>
+
+    <insert id="batchAddKnowledgePlan">
+        <foreach collection="list" item="item" index="index">
+            insert into t_prescription_knowledge_plan (sid, member_id, doctor_id,
+            plan_push_dt, prescription_id,  week
+            )
+            values (#{item.sid,jdbcType=BIGINT}, #{item.memberId,jdbcType=BIGINT}, #{item.doctorId,jdbcType=BIGINT},
+            #{item.planPushDt,jdbcType=DATE}, #{item.prescriptionId,jdbcType=BIGINT},#{item.week,jdbcType=TINYINT}
+            );
+        </foreach>
+    </insert>
+
+    <select id="listMemberKnowledgePlan" parameterType="map" resultMap="knowledgePlan">
+        select sid, member_id, doctor_id, plan_push_dt, prescription_id, send_status, week,
+        insert_dt, update_dt
+        from t_prescription_knowledge_plan
+        where plan_push_dt BETWEEN #{startDate} and #{endDate} and send_status = 0
+    </select>
+
+    <update id="modifyEohKnowledgePlan">
+        update t_prescription_knowledge_plan
+        set
+        send_status = 1
+        where sid = #{sid,jdbcType=BIGINT}
+    </update>
+    
+    <update id="modifyEohKnowledgeHasLearned">
+        update t_prescription_knowledge
+        set
+        has_learned = 1,modify_dt=now()
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="listMemberLatestPrescription" resultMap="prescription">
+        select q.sid,q.`schedule`,q.edu_cycle,q.eoh_type,q.member_id,q.doctor_id,q.insert_dt from t_prescription q ,(
+        select t.sid from t_prescription t  where  t.is_valid = 1 and t.module like '%5%'
+        and t.insert_dt BETWEEN #{startTime} and #{endTime} order by t.insert_dt desc
+        ) w where q.sid = w.sid group by q.member_id
+
+    </select>
+
+    <delete id="clearMemberKnowledgePlan">
+            delete from t_prescription_knowledge_plan
+           where member_id = #{memberId}
+    </delete>
+</mapper>

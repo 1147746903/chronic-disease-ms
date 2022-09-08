@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.complication.mapper.ScreeningStatsMapper">
+
+    <resultMap id="assessResultDetail" type="com.comvee.cdms.complication.model.po.AssessDetailStatsPO">
+        <result property="assessValue" column="assess_value"/>
+        <result property="count" column="count"/>
+    </resultMap>
+
+    <resultMap id="screeningStats" type="com.comvee.cdms.complication.model.po.ScreeningStatsPO">
+        <id column="sid" jdbcType="VARCHAR" property="sid" />
+        <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+        <result column="item_code" jdbcType="VARCHAR" property="itemCode" />
+        <result column="item_value" jdbcType="VARCHAR" property="itemValue" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="valid" jdbcType="TINYINT" property="valid" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    </resultMap>
+
+    <resultMap id="screeningStatsDetail" type="com.comvee.cdms.complication.model.po.ScreeningStatsDetailPO">
+        <result property="itemValue" column="item_value"/>
+        <result property="count" column="count"/>
+    </resultMap>
+
+    <select id="countScreeningPeople" resultType="long">
+        select count(*) from (
+	      select t.id_card from t_screening_report t where t.screening_type = #{screeningType} and t.valid = 1 and doctor_id=#{doctorId} group by t.id_card
+	    ) q
+    </select>
+
+    <select id="countPatient" resultType="long" parameterType="com.comvee.cdms.complication.model.dto.CountPatientParam">
+        select count(t.member_id) from t_member t ,t_doctor_member q
+        where t.is_valid = 1 and q.is_valid = 1 and t.member_id = q.member_id and q.doctor_id = #{doctorId}
+        <if test="sex != null">
+            and t.sex = #{sex}
+        </if>
+        <if test="birthdayMax != null and '' != birthdayMax">
+            and t.birthday &lt;= #{birthdayMax}
+        </if>
+        <if test="birthdayMin != null and '' != birthdayMin">
+            and t.birthday &gt; #{birthdayMin}
+        </if>
+    </select>
+
+    <select id="screeningStats" resultType="long" parameterType="com.comvee.cdms.complication.model.dto.ScreeningStatsParam">
+        select count(*) from (
+            select t.id_card from t_screening_list t where valid = 1 and doctor_id = #{doctorId}
+            <if test="allGood == true">
+               and t.abi_status = 1 and  t.vpt_status = 1
+            </if>
+            <if test="vptBad == true">
+                and  t.vpt_status = 2 and (t.abi_status = 0 or t.abi_status = 1)
+            </if>
+            <if test="abiBad == true">
+                and  t.abi_status = 2 and (t.vpt_status = 0 or t.vpt_status = 1)
+            </if>
+            <if test="allBad == true">
+                and t.abi_status = 2 and  t.vpt_status = 2
+            </if>
+            <if test="hasBad == true">
+                and (t.abi_status = 2 or  t.vpt_status = 2)
+            </if>
+            group by t.id_card
+        ) q
+    </select>
+
+    <select id="countAssessResult" resultType="long">
+        select count(t.sid) from t_foot_result t where t.assess_code = #{assessCode} and valid = 1 and doctor_id = #{doctorId}
+    </select>
+
+    <insert id="addScreeningStats" parameterType="com.comvee.cdms.complication.model.po.ScreeningStatsPO">
+        insert into t_screening_stats (sid, id_card, item_code,
+          item_value, insert_dt, update_dt,
+          valid, member_id, doctor_id
+          )
+        values (#{sid,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, #{itemCode,jdbcType=VARCHAR},
+          #{itemValue,jdbcType=VARCHAR}, #{insertDt,jdbcType=TIMESTAMP}, #{updateDt,jdbcType=TIMESTAMP},
+          #{valid,jdbcType=TINYINT}, #{memberId,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}
+          )
+    </insert>
+
+    <select id="countAssessResultDetail" resultMap="assessResultDetail">
+        select t.assess_value ,count(t.sid) count from t_foot_result t
+        where t.assess_code = #{assessCode} and valid = 1 and t.doctor_id = #{doctorId} group by t.assess_value
+    </select>
+
+    <select id="getScreeningStats" resultMap="screeningStats">
+        select sid, id_card, item_code, item_value, insert_dt, update_dt, valid, member_id,
+        doctor_id
+        from t_screening_stats
+        where valid = 1 and member_id = #{memberId} and doctor_id = #{doctorId} and item_code = #{itemCode} limit 1
+    </select>
+
+    <select id="countScreeningStatsDetail" resultMap="screeningStatsDetail">
+        select t.item_value ,count(t.sid) count from t_screening_stats t
+        where t.item_code = #{itemCode} and t.doctor_id = #{doctorId} and valid = 1 group by t.item_value
+    </select>
+
+    <select id="countScreeningStats" resultType="long">
+        select count(*) from t_screening_stats t where t.valid = 1
+        <if test="itemCode != null and '' != itemCode">
+            and t.item_code = #{itemCode}
+        </if>
+        <if test="itemValue != null and '' != itemValue">
+            and t.item_value = #{itemValue}
+        </if>
+        <if test="doctorId != null and '' != doctorId">
+            and t.doctor_id = #{doctorId}
+        </if>
+    </select>
+
+    <update id="updateScreeningStats" parameterType="com.comvee.cdms.complication.model.po.ScreeningStatsPO">
+        update t_screening_stats set update_dt = now()
+        <if test="itemValue != null and '' != itemValue">
+            ,item_value = #{itemValue,jdbcType=VARCHAR}
+        </if>
+        <if test="valid != null">
+            ,valid = #{valid,jdbcType=INTEGER}
+        </if>
+        where sid = #{sid,jdbcType=VARCHAR}
+    </update>
+
+    <update id="deleteScreeningStats">
+        update t_screening_stats set update_dt = now() ,valid = 0 where member_id = #{memberId} and doctor_id  = #{doctorId} and valid = 1
+    </update>
+
+    <select id="countPatientForHos" resultType="long" parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO">
+        <!--visitType类型 1住院 2门诊&居家 -->
+        <if test="visitType==1">
+            select count(1) from (
+            select m.* from t_member m
+            join t_screening_data d
+            on m.member_id=d.member_id
+            join t_member_checkin_info mci on mci.member_id = m.member_id and mci.is_valid =1
+            join t_member_in_hospital_log h on m.member_id=h.member_id
+            where h.is_valid=1 and mci.checkin_status = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and h.hospital_id=#{hospitalId}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and (h.in_hospital_date &lt; #{endDt} and (h.out_hospital_date &gt; #{startDt} or h.out_hospital_date is null))
+                AND d.screening_dt between #{startDt} and #{endDt}
+            </if>
+            <if test="sex != null">
+                and m.sex = #{sex}
+            </if>
+            <if test="birthdayMax != null and '' != birthdayMax">
+                and m.birthday &lt;= #{birthdayMax}
+            </if>
+            <if test="birthdayMin != null and '' != birthdayMin">
+                and m.birthday &gt; #{birthdayMin}
+            </if>
+            group by m.member_id
+            )cnt
+        </if>
+        <if test="visitType==2">
+            select count(1) from (
+            select m.member_id from t_member m
+            join t_screening_data da on m.member_id=da.member_id
+            join t_member_join_hospital mjh on m.member_id = mjh.member_id and mjh.valid = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and mjh.hospital_id=#{hospitalId}
+            </if>
+            left join
+            (select member_id,checkin_status,hospital_id from t_member_checkin_info where is_valid = 1) mci
+            on mci.member_id = mjh.member_id
+            where m.is_valid=1
+            and(mci.checkin_status is null or mci.checkin_status != 1)
+            <if test="sex!=null and sex!=''">
+                and m.sex=#{sex}
+            </if>
+            <if test="birthdayMax != null and '' != birthdayMax">
+                and m.birthday &lt;= #{birthdayMax}
+            </if>
+            <if test="birthdayMin != null and '' != birthdayMin">
+                and m.birthday &gt; #{birthdayMin}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and da.screening_dt between #{startDt} and #{endDt}
+
+            </if>
+            group by m.member_id
+            )cnt
+        </if>
+        <if test="visitType==3">
+            select count(1) from (
+                select q.member_id from t_member q ,t_research_group w,t_research_group_member e,t_screening_data r
+                where q.is_valid = 1 and w.valid = 1 and e.valid = 1 and r.valid = 1
+                and q.member_id = e.member_id and w.group_id = e.research_group_id and r.member_id = q.member_id
+                and w.hospital_id = #{hospitalId}
+                <if test="researchGroupId != null and '' != researchGroupId">
+                    and w.group_id = #{researchGroupId}
+                </if>
+                <if test="sex!=null and sex!=''">
+                    and q.sex=#{sex}
+                </if>
+                <if test="birthdayMax != null and '' != birthdayMax">
+                    and q.birthday &lt;= #{birthdayMax}
+                </if>
+                <if test="birthdayMin != null and '' != birthdayMin">
+                    and q.birthday &gt; #{birthdayMin}
+                </if>
+                and r.screening_dt between DATE_FORMAT(e.insert_dt,'%Y-%m-%d') and #{endDt}
+                group by q.member_id
+            )cnt
+        </if>
+    </select>
+
+    <select id="countScreeningStatsForHos" resultType="long">
+        <!--visitType类型 1住院 2门诊&居家 -->
+        <if test="dto.visitType==1">
+            select count(1) from (
+            select m.member_id from t_screening_stats m
+            join t_member_checkin_info mci on mci.member_id = m.member_id and mci.is_valid =1
+            join t_member_in_hospital_log h on m.member_id=h.member_id
+            where h.is_valid=1 and mci.checkin_status = 1
+            <if test="dto.hospitalId!=null and dto.hospitalId!=''">
+                and h.hospital_id=#{dto.hospitalId}
+            </if>
+            <if test="dto.startDt!=null and dto.startDt!='' and dto.endDt != null and dto.endDt!=''">
+                and (h.in_hospital_date &lt; #{dto.endDt} and (h.out_hospital_date &gt; #{dto.startDt} or h.out_hospital_date is null))
+            </if>
+            <if test="itemCode != null and '' != itemCode">
+                and m.item_code = #{itemCode}
+            </if>
+            <if test="itemValue != null and '' != itemValue">
+                and m.item_value = #{itemValue}
+            </if>
+            )cnt
+        </if>
+        <if test="dto.visitType==2">
+            select count(1) from (
+            select m.member_id from t_screening_stats m
+            join t_member_join_hospital mjh on m.member_id = mjh.member_id and mjh.valid = 1
+            <if test="dto.hospitalId!=null and dto.hospitalId!=''">
+                and mjh.hospital_id=#{dto.hospitalId}
+            </if>
+            left join
+            (select member_id,checkin_status,hospital_id from t_member_checkin_info where is_valid = 1) mci
+            on mci.member_id = mjh.member_id
+            where m.valid=1
+            and(mci.checkin_status is null or mci.checkin_status != 1)
+
+            <if test="itemCode != null and '' != itemCode">
+                and m.item_code = #{itemCode}
+            </if>
+            <if test="itemValue != null and '' != itemValue">
+                and m.item_value = #{itemValue}
+            </if>
+            )cnt
+        </if>
+        <if test="dto.visitType==3">
+            select count(1) from (
+                select q.member_id from t_member q ,t_research_group w,t_research_group_member e,t_screening_stats r
+                where q.is_valid = 1 and w.valid = 1 and e.valid = 1 and r.valid = 1
+                and q.member_id = e.member_id and w.group_id = e.research_group_id and r.member_id = q.member_id
+                and w.hospital_id = #{dto.hospitalId}
+                <if test="dto.researchGroupId != null and '' != dto.researchGroupId">
+                    and w.group_id = #{dto.researchGroupId}
+                </if>
+                and r.insert_dt between DATE_FORMAT(e.insert_dt,'%Y-%m-%d') and #{dto.endDt}
+                <if test="itemCode != null and '' != itemCode">
+                    and r.item_code = #{itemCode}
+                </if>
+                <if test="itemValue != null and '' != itemValue">
+                    and r.item_value = #{itemValue}
+                </if>
+                group by q.member_id
+            )cnt
+        </if>
+    </select>
+
+    <select id="countScreeningStatsDetailForHos" resultMap="screeningStatsDetail">
+        <!--visitType类型 1住院 2门诊&居家 -->
+        <if test="dto.visitType==1">
+            select cnt.item_value ,count(cnt.sid) from (
+            select m.* from t_screening_stats m
+            join t_member_checkin_info mci on mci.member_id = m.member_id and mci.is_valid =1
+            join t_member_in_hospital_log h on m.member_id=h.member_id
+            where h.is_valid=1 and mci.checkin_status = 1
+            <if test="dto.hospitalId!=null and dto.hospitalId!=''">
+                and h.hospital_id=#{dto.hospitalId}
+            </if>
+            <if test="dto.startDt!=null and dto.startDt!='' and dto.endDt != null and dto.endDt!=''">
+                and (h.in_hospital_date &lt; #{dto.endDt} and (h.out_hospital_date &gt; #{dto.startDt} or h.out_hospital_date is null))
+            </if>
+            <if test="itemCode != null and '' != itemCode">
+                and m.item_code = #{itemCode}
+            </if>
+            )cnt
+            group by cnt.item_value
+        </if>
+        <if test="dto.visitType==2">
+            select cnt.item_value ,count(cnt.sid) from (
+            select m.* from t_screening_stats m
+            join t_member_join_hospital mjh on m.member_id = mjh.member_id and mjh.valid = 1
+            <if test="dto.hospitalId!=null and dto.hospitalId!=''">
+                and mjh.hospital_id=#{dto.hospitalId}
+            </if>
+            left join
+            (select member_id,checkin_status,hospital_id from t_member_checkin_info where is_valid = 1) mci
+            on mci.member_id = mjh.member_id
+            where m.valid=1
+            and(mci.checkin_status is null or mci.checkin_status != 1)
+            <if test="dto.startDt != null and ''!=dto.startDt">
+                and m.insert_dt &lt; #{dto.startDt}
+            </if>
+            <if test="itemCode != null and '' != itemCode">
+                and m.item_code = #{itemCode}
+            </if>
+            )cnt
+            group by cnt.item_value
+        </if>
+        <if test="dto.visitType==3">
+            select cnt.item_value ,count(cnt.sid) from (
+                select r.* from t_member q ,t_research_group w,t_research_group_member e,t_screening_stats r
+                where q.is_valid = 1 and w.valid = 1 and e.valid = 1 and r.valid = 1
+                and q.member_id = e.member_id and w.group_id = e.research_group_id and r.member_id = q.member_id
+                and w.hospital_id = #{dto.hospitalId}
+                <if test="dto.researchGroupId != null and '' != dto.researchGroupId">
+                    and w.group_id = #{dto.researchGroupId}
+                </if>
+                and r.insert_dt between DATE_FORMAT(e.insert_dt,'%Y-%m-%d') and #{dto.endDt}
+                <if test="itemCode != null and '' != itemCode">
+                    and r.item_code = #{itemCode}
+                </if>
+                group by q.member_id
+            )cnt
+            group by cnt.item_value
+        </if>
+    </select>
+</mapper>

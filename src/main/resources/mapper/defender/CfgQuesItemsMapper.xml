@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.CfgQuesItemsMapper">
+    <sql id="CfgQuesItemsColumns">
+         t.sid As sid ,  t.qid As qid ,  t.seq As seq ,  t.value As value ,  t.con As con ,  t.help As help ,  t.type As type ,  t.max_rule As maxRule ,  t.min_rule As minRule ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid ,  t.motions As motions 
+    </sql>
+
+	<!--根据id获取题目选项表信息 -->
+	<select id="loadCfgQuesItemsById" resultType="com.comvee.cdms.defender.model.CfgQuesItemsModel">
+		SELECT 
+			<include refid="CfgQuesItemsColumns"/>
+		FROM tiq_cfg_ques_items t
+		WHERE t.sid = #{sid} 
+	</select>
+	
+	<!-- 获取题目选项分页信息  -->
+	<select id="loadCfgQuesItems" resultType="com.comvee.cdms.defender.model.CfgQuesItemsModel">
+		SELECT 
+			<include refid="CfgQuesItemsColumns"/>
+		FROM tiq_cfg_ques_items t
+		
+		where is_valid = 1
+		<if test="qid!=null and qid!='' ">     
+        AND t.qid = #{qid}  
+        </if>  
+	    
+	     order by qid desc,seq asc 
+		
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+        AND t.sid = #{sid}  
+        </if>  
+	    <if test="qid!=null and qid!='' ">     
+        AND t.qid = #{qid}  
+        </if>  
+	    <if test="seq!=null and seq!='' ">     
+        AND t.seq = #{seq}  
+        </if>  
+	    <if test="value!=null and value!='' ">     
+        AND t.value = #{value}  
+        </if>  
+	    <if test="con!=null and con!='' ">     
+        AND t.con = #{con}  
+        </if>  
+	    <if test="help!=null and help!='' ">     
+        AND t.help = #{help}  
+        </if>  
+	    <if test="type!=null and type!='' ">     
+        AND t.type = #{type}  
+        </if>  
+	    <if test="maxRule!=null and maxRule!='' ">     
+        AND t.max_rule = #{maxRule}  
+        </if>  
+	    <if test="minRule!=null and minRule!='' ">     
+        AND t.min_rule = #{minRule}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="motions!=null and motions!='' ">     
+        AND t.motions = #{motions}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+    <!-- 统计题目选项记录数 -->
+	<select id="countCfgQuesItems" resultType="Long">
+		SELECT count( sid )
+		FROM tiq_cfg_ques_items t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+         AND t.sid = #{sid}    
+        </if>  
+	    <if test="qid!=null and qid!='' ">     
+         AND t.qid = #{qid}    
+        </if>  
+	    <if test="seq!=null and seq!='' ">     
+         AND t.seq = #{seq}    
+        </if>  
+	    <if test="value!=null and value!='' ">     
+         AND t.value = #{value}    
+        </if>  
+	    <if test="con!=null and con!='' ">     
+         AND t.con = #{con}    
+        </if>  
+	    <if test="help!=null and help!='' ">     
+         AND t.help = #{help}    
+        </if>  
+	    <if test="type!=null and type!='' ">     
+         AND t.type = #{type}    
+        </if>  
+	    <if test="maxRule!=null and maxRule!='' ">     
+         AND t.max_rule = #{maxRule}    
+        </if>  
+	    <if test="minRule!=null and minRule!='' ">     
+         AND t.min_rule = #{minRule}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="motions!=null and motions!='' ">     
+         AND t.motions = #{motions}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加题目选项记录 -->
+	<insert id="addCfgQuesItems">
+		INSERT INTO tiq_cfg_ques_items(
+				
+				    sid,
+				
+				qid,
+				seq,
+				value,
+				con,
+				help,
+				type,
+				max_rule,
+				min_rule,
+				insert_dt,
+				modify_dt,
+				is_valid,
+				motions
+		) VALUES (
+			         #{sid},
+				#{qid},
+				#{seq},
+				#{value},
+				#{con},
+				#{help},
+				#{type},
+				#{maxRule},
+				#{minRule},
+				now(),
+				now(),
+				1,
+				#{motions}
+		)
+	</insert>
+
+    <!-- 修改题目选项记录 -->
+	<update id="modifyCfgQuesItems">
+		UPDATE tiq_cfg_ques_items 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="sid!=null and sid!='' ">    
+	        sid = #{sid},
+	        </if>
+	        <if test="qid!=null and qid!='' ">    
+	        qid = #{qid},
+	        </if>
+	        <if test="seq!=null and seq!='' ">    
+	        seq = #{seq},
+	        </if>
+	        <if test="value!=null and value!='' ">    
+	        value = #{value},
+	        </if>
+	        <if test="con!=null and con!='' ">    
+	        con = #{con},
+	        </if>
+	        <if test="help!=null and help!='' ">    
+	        help = #{help},
+	        </if>
+	        <if test="type!=null and type!='' ">    
+	        type = #{type},
+	        </if>
+	        <if test="maxRule!=null and maxRule!='' ">    
+	        max_rule = #{maxRule},
+	        </if>
+	        <if test="minRule!=null and minRule!='' ">    
+	        min_rule = #{minRule},
+	        </if>
+	        <if test="motions!=null and motions!='' ">    
+	        motions = #{motions},
+	        </if>
+	        modify_dt = now(),
+		</trim>
+		WHERE sid = #{sid}
+	</update>
+	
+	<!-- 删除题目选项记录  -->
+	<update id="delCfgQuesItems" parameterType="Long">
+		UPDATE tiq_cfg_ques_items SET  is_valid = 0 , modify_dt = now()
+		WHERE sid = #{sid} and is_valid = 1
+	</update>
+	
+	
+
+</mapper>

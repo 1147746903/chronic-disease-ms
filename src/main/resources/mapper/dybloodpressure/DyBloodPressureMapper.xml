@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodpressure.mapper.DyBloodPressureMapper">
+
+    <resultMap type="com.comvee.cdms.dybloodpressure.po.DyBloodPressurePO"
+               id="DyBloodPressurePO">
+        <result property="sid" column="sid" jdbcType="INTEGER"/>
+        <result property="dbp" column="dbp" jdbcType="VARCHAR"/>
+        <result property="sbp" column="sbp" jdbcType="VARCHAR"/>
+        <result property="map" column="map" jdbcType="VARCHAR"/>
+        <result property="memberId" column="member_id" jdbcType="INTEGER"/>
+        <result property="machineNo" column="machine_no" jdbcType="VARCHAR"/>
+        <result property="machineModel" column="machine_model" jdbcType="VARCHAR"/>
+        <result property="startType" column="start_type" jdbcType="VARCHAR"/>
+        <result property="recordTime" column="record_time" jdbcType="TIMESTAMP"/>
+        <result property="heartRate" column="heart_rate" jdbcType="VARCHAR"/>
+        <result property="machineType" column="machine_type" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="VARCHAR"/>
+        <result property="insertDt" column="insert_dt" jdbcType="TIMESTAMP"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap type="com.comvee.cdms.dybloodpressure.vo.ListDayDyBloodPressureVO"
+               id="ListDayDyBloodPressureVO">
+        <result property="sid" column="sid" jdbcType="INTEGER"/>
+        <result property="dbp" column="dbp" jdbcType="VARCHAR"/>
+        <result property="sbp" column="sbp" jdbcType="VARCHAR"/>
+        <result property="map" column="map" jdbcType="VARCHAR"/>
+        <result property="recordTime" column="record_time" jdbcType="TIMESTAMP"/>
+        <result property="heartRate" column="heart_rate" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="VARCHAR"/>
+        <result property="machineNo" column="machine_no" jdbcType="VARCHAR"/>
+        <result property="timeType" column="time_type" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap type="com.comvee.cdms.dybloodpressure.bo.DyBloodPressureDataBO"
+               id="DyBloodPressureDataBO">
+        <result property="sid" column="sid" jdbcType="INTEGER"/>
+        <result property="memberId" column="member_id" jdbcType="INTEGER"/>
+        <result property="dbp" column="dbp" jdbcType="VARCHAR"/>
+        <result property="sbp" column="sbp" jdbcType="VARCHAR"/>
+        <result property="map" column="map" jdbcType="VARCHAR"/>
+        <result property="heartRate" column="heart_rate" jdbcType="VARCHAR"/>
+        <result property="recordTime" column="record_time" jdbcType="TIMESTAMP"/>
+        <result property="machineType" column="machine_type" jdbcType="VARCHAR"/>
+        <result property="timeType" column="time_type" jdbcType="VARCHAR"/>
+        <result property="dbpDayLevel" column="dbp_day_level" jdbcType="VARCHAR"/>
+        <result property="sbpDayLevel" column="sbp_day_level" jdbcType="VARCHAR"/>
+        <result property="dbpSleepLevel" column="dbp_sleep_level" jdbcType="VARCHAR"/>
+        <result property="sbpSleepLevel" column="sbp_sleep_level" jdbcType="VARCHAR"/>
+        <result property="dbpAfterBedLevel" column="dbp_after_bed_level" jdbcType="VARCHAR"/>
+        <result property="sbpAfterBedLevel" column="sbp_after_bed_level" jdbcType="VARCHAR"/>
+        <result property="dbp24hLevel" column="dbp_24h_level" jdbcType="VARCHAR"/>
+        <result property="sbp24hLevel" column="sbp_24h_level" jdbcType="VARCHAR"/>
+        <result property="startDt" column="start_dt" jdbcType="TIMESTAMP"/>
+        <result property="endDt" column="end_dt" jdbcType="TIMESTAMP"/>
+        <result property="isValid" column="is_valid" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="DyBloodPressurePO">
+        select
+          sid, dbp, sbp,map, member_id, machine_no, machine_model, start_type, record_time, heart_rate, machine_type, remark, is_valid, insert_dt, modify_dt
+        from t_dynamic_blood_pressure
+        where sid = #{sid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="DyBloodPressurePO">
+        select
+          sid, dbp, sbp,map, member_id, machine_no, machine_model, start_type, record_time, heart_rate, machine_type, remark, is_valid, insert_dt, modify_dt
+        from it_dynamic_blood_pressure
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="DyBloodPressurePO">
+        select
+        sid, dbp, sbp, map,member_id, machine_no, machine_model, start_type, record_time, heart_rate, machine_type,remark, is_valid, insert_dt, modify_dt
+        from t_dynamic_blood_pressure
+        <where>
+            <if test="sid != null">
+                and sid = #{sid}
+            </if>
+            <if test="dbp != null and dbp != ''">
+                and dbp = #{dbp}
+            </if>
+            <if test="sbp != null and sbp != ''">
+                and sbp = #{sbp}
+            </if>
+            <if test="map != null and map != ''">
+                and map = #{map}
+            </if>
+            <if test="memberId != null">
+                and member_id = #{memberId}
+            </if>
+            <if test="machineNo != null and machineNo != ''">
+                and machine_no = #{machineNo}
+            </if>
+            <if test="machineModel != null and machineModel != ''">
+                and machine_model = #{machineModel}
+            </if>
+            <if test="startType != null">
+                and start_type = #{startType}
+            </if>
+            <if test="recordTime != null">
+                and record_time = #{recordTime}
+            </if>
+            <if test="heartRate != null and heartRate != ''">
+                and heart_rate = #{heartRate}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="isValid != null">
+                and is_valid = #{isValid}
+            </if>
+            <if test="insertDt != null">
+                and insert_dt = #{insertDt}
+            </if>
+            <if test="modifyDt != null">
+                and modify_dt = #{modifyDt}
+            </if>
+        </where>
+    </select>
+    <select id="listDyBloodPressureByMemberDay" resultMap="DyBloodPressureDataBO">
+        select
+        t.sid,t.member_id, t.dbp, t.sbp,t.map,t.heart_rate, t.record_time, t.machine_type,
+        d.time_type,d.dbp_day_level, d.sbp_day_level, d.dbp_sleep_level, d.sbp_sleep_level, d.dbp_after_bed_level,
+        d.sbp_after_bed_level, d.dbp_24h_level, d.sbp_24h_level,d.start_dt,d.end_dt,t.is_valid
+        from t_dynamic_blood_pressure t inner join t_dynamic_bp_detail d ON t.sid = d.foreign_id
+        where  t.member_id = #{memberId,jdbcType=BIGINT}
+        <if test="isValid!=null">
+            and t.is_valid = #{isValid}
+        </if>
+        <if test="startDt!=null and startDt!=''">
+            and d.start_dt = #{startDt}
+        </if>
+        <if test="endDt!=null and endDt!=''">
+            and d.end_dt = #{endDt}
+        </if>
+        <if test="typeList != null and typeList.size() > 0">
+            and d.time_type in
+            <foreach collection="typeList" item="type" index="index" open="(" close=")" separator=",">
+                #{type}
+            </foreach>
+        </if>
+        order by t.record_time asc
+    </select>
+
+    <select id="listDyBloodPressureVO" resultMap="ListDayDyBloodPressureVO">
+        select
+        t.sid, t.dbp, t.sbp,t.map,t.record_time, t.heart_rate, t.is_valid,t.machine_no,d.time_type
+        from t_dynamic_blood_pressure t left join t_dynamic_bp_detail d on t.sid = d.foreign_id
+        <where>
+            <if test = "memberId != null and '' != memberId">
+                and t.member_id = #{memberId}
+            </if>
+            <if test = "isValid != null">
+                and t.is_valid = #{isValid}
+            </if>
+            <if test="startDt!=null and startDt!=''">
+                and d.start_dt = #{startDt}
+            </if>
+            <if test="endDt!=null and endDt!=''">
+                and d.end_dt = #{endDt}
+            </if>
+        </where>
+        order by t.record_time asc
+    </select>
+    <select id="queryOne" resultMap="DyBloodPressurePO">
+        select
+        t.sid, t.dbp, t.sbp, t.map,t.member_id, t.machine_no, t.machine_model, t.start_type, t.record_time, t.heart_rate,
+        t.machine_type,t.remark, t.is_valid, t.insert_dt, t.modify_dt
+        from t_dynamic_blood_pressure t left join t_dynamic_bp_detail d
+        on t.sid= d.foreign_id
+        <where>
+            <if test="memberId != null and memberId != ''">
+                and t.member_id = #{memberId}
+            </if>
+            <if test="startDt != null and startDt != ''" >
+                and d.start_dt = #{startDt}
+            </if>
+            <if test="endDt != null and endDt != ''" >
+                and d.end_dt = #{endDt}
+            </if>
+            <if test="isValid != null">
+                and t.is_valid = #{isValid}
+            </if>
+        </where>
+        order by t.record_time desc
+        limit 1
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sid" useGeneratedKeys="true">
+        insert into t_dynamic_blood_pressure(sid,dbp, sbp,map, member_id, machine_no, machine_model, start_type, record_time, heart_rate,machine_type, remark, is_valid, insert_dt, modify_dt)
+        values (#{sid},#{dbp}, #{sbp},#{map}, #{memberId}, #{machineNo}, #{machineModel}, #{startType}, #{recordTime}, #{heartRate}, #{machineType},  #{remark}, #{isValid}, now(), now())
+        on duplicate key update
+        modify_dt = now()
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update t_dynamic_blood_pressure
+        <set>
+            <if test="dbp != null and dbp != ''">
+                dbp = #{dbp},
+            </if>
+            <if test="sbp != null and sbp != ''">
+                sbp = #{sbp},
+            </if>
+            <if test="map != null and map != ''">
+                map = #{map},
+            </if>
+            <if test="memberId != null">
+                member_id = #{memberId},
+            </if>
+            <if test="machineNo != null and machineNo != ''">
+                machine_no = #{machineNo},
+            </if>
+            <if test="machineModel != null and machineModel != ''">
+                machine_model = #{machineModel},
+            </if>
+            <if test="startType != null">
+                start_type = #{startType},
+            </if>
+            <if test="recordTime != null">
+                record_time = #{recordTime},
+            </if>
+            <if test="heartRate != null and heartRate != ''">
+                heart_rate = #{heartRate},
+            </if>
+            <if test="machineType != null ">
+                machine_type = #{machineType},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid},
+            </if>
+            <if test="insertDt != null">
+                insert_dt = #{insertDt},
+            </if>
+            <if test="modifyDt != null">
+                modify_dt = #{modifyDt},
+            </if>
+        </set>
+        where sid = #{sid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from t_dynamic_blood_pressure where sid = #{sid}
+    </delete>
+
+</mapper>
+

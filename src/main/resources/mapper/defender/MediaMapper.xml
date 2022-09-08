@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.MediaMapper">
+    <sql id="MediaColumns">
+         t.sid As sid ,  t.url As url ,  t.memo As memo ,  t.type As type ,  t.name As name ,  t.is_valid As isValid ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt 
+    </sql>
+
+	<!--根据id获取媒体资源表信息 -->
+	<select id="loadMediaById" resultType="com.comvee.cdms.defender.model.MediaModel">
+		SELECT 
+			<include refid="MediaColumns"/>
+		FROM tiq_media t
+		WHERE t.sid = #{sid} 
+	</select>
+	
+	<!-- 获取媒体资源分页信息  -->
+	<select id="loadMedia" parameterType="Map" resultType="com.comvee.cdms.defender.model.MediaModel">
+		SELECT 
+			<include refid="MediaColumns"/>
+		FROM tiq_media t
+		
+		
+		where is_valid = 1
+		
+		<if test="param !=null and param !='' ">     
+         AND name LIKE CONCAT(CONCAT('%',#{param},'%'))
+        </if>  
+        <if test="type!=null">     
+        AND t.type = #{type}  
+        </if>
+		
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+        AND t.sid = #{sid}  
+        </if>  
+	    <if test="url!=null and url!='' ">     
+        AND t.url = #{url}  
+        </if>  
+	    <if test="memo!=null and memo!='' ">     
+        AND t.memo = #{memo}  
+        </if>  
+	    <if test="type!=null and type!='' ">     
+        AND t.type = #{type}  
+        </if>  
+	    <if test="name!=null and name!='' ">     
+        AND t.name = #{name}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+    <!-- 统计媒体资源记录数 -->
+	<select id="countMedia" parameterType="Map" resultType="Long">
+		SELECT count( sid )
+		FROM tiq_media t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+         AND t.sid = #{sid}    
+        </if>  
+	    <if test="url!=null and url!='' ">     
+         AND t.url = #{url}    
+        </if>  
+	    <if test="memo!=null and memo!='' ">     
+         AND t.memo = #{memo}    
+        </if>  
+	    <if test="type!=null and type!='' ">     
+         AND t.type = #{type}    
+        </if>  
+	    <if test="name!=null and name!='' ">     
+         AND t.name = #{name}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加媒体资源记录 -->
+	<insert id="addMedia">
+		INSERT INTO tiq_media(
+				
+				    sid,
+				
+				url,
+				memo,
+				type,
+				name,
+				is_valid,
+				modify_dt,
+				insert_dt
+		) VALUES (
+			         #{sid},
+				#{url},
+				#{memo},
+				#{type},
+				#{name},
+				1,
+				now(),
+				now()
+		)
+	</insert>
+
+    <!-- 修改媒体资源记录 -->
+	<update id="modifyMedia">
+		UPDATE tiq_media 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="sid!=null and sid!='' ">    
+	        sid = #{sid},
+	        </if>
+	        <if test="url!=null and url!='' ">    
+	        url = #{url},
+	        </if>
+	        <if test="memo!=null and memo!='' ">    
+	        memo = #{memo},
+	        </if>
+	        <if test="type!=null and type!='' ">    
+	        type = #{type},
+	        </if>
+	        <if test="name!=null and name!='' ">    
+	        name = #{name},
+	        </if>
+	        modify_dt = now(),
+		</trim>
+		WHERE sid = #{sid}
+	</update>
+	
+	<!-- 删除媒体资源记录  -->
+	<update id="delMedia" parameterType="Long">
+		UPDATE tiq_media SET  is_valid = 0 , modify_dt = now()
+		WHERE sid = #{sid} and is_valid = 1
+	</update>
+	
+	
+
+</mapper>

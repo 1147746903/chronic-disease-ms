@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.shiro.mapper.ShiroSessionMapper">
+
+  <resultMap id="session" type="com.comvee.cdms.shiro.model.ShiroSessionPO">
+    <id column="session_id" jdbcType="VARCHAR" property="sessionId" />
+    <result column="start_time_stamp" jdbcType="TIMESTAMP" property="startTimeStamp" />
+    <result column="last_access_time" jdbcType="TIMESTAMP" property="lastAccessTime" />
+    <result column="timeout" jdbcType="BIGINT" property="timeout" />
+    <result column="host" jdbcType="VARCHAR" property="host" />
+    <result column="session_object" jdbcType="VARCHAR" property="sessionObject" />
+  </resultMap>
+
+  <sql id="select">
+    select session_id, start_time_stamp, last_access_time, timeout, host, session_object
+    from t_session
+  </sql>
+
+  <select id="getShiroSession" resultMap="session">
+    <include refid="select"/>
+    where session_id = #{sessionId} limit 1
+  </select>
+
+  <insert id="addShiroSession" parameterType="com.comvee.cdms.shiro.model.ShiroSessionPO">
+    insert into t_session (session_id, start_time_stamp, last_access_time,
+      timeout, host, session_object
+      )
+    values (#{sessionId,jdbcType=VARCHAR}, #{startTimeStamp,jdbcType=TIMESTAMP}, #{lastAccessTime,jdbcType=TIMESTAMP},
+      #{timeout,jdbcType=BIGINT}, #{host,jdbcType=VARCHAR}, #{sessionObject,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateShiroSession" parameterType="com.comvee.cdms.shiro.model.ShiroSessionPO">
+    update t_session
+    <set>
+      <if test="startTimeStamp != null and '' != startTimeStamp">
+        start_time_stamp = #{startTimeStamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastAccessTime != null and '' != lastAccessTime">
+        last_access_time = #{lastAccessTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeout != null">
+        timeout = #{timeout,jdbcType=BIGINT},
+      </if>
+      <if test="host != null and '' != host">
+        host = #{host,jdbcType=VARCHAR},
+      </if>
+      <if test="sessionObject != null and '' != sessionObject">
+        session_object = #{sessionObject,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where session_id = #{sessionId,jdbcType=VARCHAR}
+  </update>
+
+  <delete id="deleteShiroSession">
+    delete from t_session
+    where session_id = #{sessionId,jdbcType=VARCHAR}
+  </delete>
+
+  <select id="listTimeoutSession" resultMap="session">
+    <include refid="select"/>
+    where last_access_time &lt; DATE_SUB(now(),INTERVAL (timeout / 1000) SECOND)
+    and timeout > 0
+    limit 50
+  </select>
+</mapper>

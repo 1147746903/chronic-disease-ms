@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.drugs.mapper.DrugStatisticsMapper">
+    <select id="getPatientStatisticsForDrugClass" resultType="map" parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO">
+        select ifnull(sum(one_drug_mem_count),0) c1
+        ,ifnull(sum(two_drug_mem_count),0) c2,ifnull(sum(thi_drug_mem_count),0) c3
+        ,ifnull(sum(fou_drug_mem_count),0) c4,ifnull(sum(oth_drug_mem_count),0) c5
+        ,ifnull(sum(one_drug2_mem_count)/sum(one_drug_mem_count),0) r11
+        ,ifnull(sum(two_drug2_mem_count)/sum(two_drug_mem_count),0) r22
+        ,ifnull(sum(thi_drug2_mem_count)/sum(thi_drug_mem_count),0) r33
+        ,ifnull(sum(fou_drug2_mem_count)/sum(fou_drug_mem_count),0) r44
+        ,ifnull(sum(oth_drug2_mem_count)/sum(oth_drug_mem_count),0) r55
+        ,ifnull(sum(one_drug_mem_count)/sum(drug_mem_count),0) r1
+        ,ifnull(sum(two_drug_mem_count)/sum(drug_mem_count),0) r2
+        ,ifnull(sum(thi_drug_mem_count)/sum(drug_mem_count),0) r3
+        ,ifnull(sum(fou_drug_mem_count)/sum(drug_mem_count),0) r4
+        ,ifnull(sum(oth_drug_mem_count)/sum(drug_mem_count),0) r5
+        ,ifnull(sum(one_insulin_mem_count),0)p1
+        ,ifnull(sum(two_insulin_mem_count),0)p2
+        ,ifnull(sum(insulin_one_drug_mem_count),0)p3
+        ,ifnull(sum(insulin_two_drug_mem_count),0)p4
+        ,ifnull(sum(insulin_thi_drug_mem_count),0)p5
+        ,ifnull(sum(oth_insulin_mem_count),0)p6
+        ,ifnull(sum(one_insulin_mem_count)/sum(insulin_mem_count),0) pr1
+        ,ifnull(sum(two_insulin_mem_count)/sum(insulin_mem_count),0) pr2
+        ,ifnull(sum(insulin_one_drug_mem_count)/sum(insulin_mem_count),0) pr3
+        ,ifnull(sum(insulin_two_drug_mem_count)/sum(insulin_mem_count),0) pr4
+        ,ifnull(sum(insulin_thi_drug_mem_count)/sum(insulin_mem_count),0) pr5
+        ,ifnull(sum(oth_insulin_mem_count)/sum(insulin_mem_count),0) pr6
+        from t_statistics_drug_info t
+        where t.is_valid=1
+        <if test="visitType!=null and visitType!=''">
+            and t.visit_type=#{visitType}
+        </if>
+        <if test="hospitalId!=null and hospitalId!=''">
+            and t.hospital_id=#{hospitalId}
+        </if>
+        <if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+            and t.date BETWEEN DATE_FORMAT(#{startDt},'%Y-%m-%d') and DATE_FORMAT(#{endDt},'%Y-%m-%d')
+        </if>
+    </select>
+</mapper>

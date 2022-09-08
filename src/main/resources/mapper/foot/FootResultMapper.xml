@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.foot.mapper.FootResultMapper">
+
+    <resultMap id="footResult" type="com.comvee.cdms.foot.po.FootResultPO">
+        <id column="sid" jdbcType="VARCHAR" property="sid" />
+        <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+        <result column="assess_code" jdbcType="VARCHAR" property="assessCode" />
+        <result column="assess_value" jdbcType="VARCHAR" property="assessValue" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    </resultMap>
+
+    <insert id="addFootResult" parameterType="com.comvee.cdms.foot.po.FootResultPO">
+        replace into t_foot_result (sid, id_card, assess_code,
+          assess_value, insert_dt, update_dt,
+          doctor_id, member_id)
+        values (#{sid,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, #{assessCode,jdbcType=VARCHAR},
+          #{assessValue,jdbcType=VARCHAR}, #{insertDt,jdbcType=TIMESTAMP}, #{updateDt,jdbcType=TIMESTAMP},
+          #{doctorId,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT})
+    </insert>
+
+    <update id="deleteMemberFootResult">
+        update t_foot_result t set t.valid = 0,t.update_dt = now()
+        where t.valid = 1 and t.member_id = #{memberId} and t.doctor_id = #{doctorId}
+    </update>
+
+    <select id="getFootResult" resultMap="footResult">
+        select sid, id_card, assess_code, assess_value, insert_dt, update_dt, doctor_id,
+        member_id
+        from t_foot_result
+        where member_id = #{memberId} and doctor_id = #{doctorId} and assess_code = #{assessCode} and valid = 1 limit 1
+    </select>
+
+    <update id="updateFootResult" parameterType="com.comvee.cdms.foot.po.FootResultPO">
+        update t_foot_result set update_dt = now()
+        <if test="assessValue != null and '' != assessValue">
+            ,assess_value = #{assessValue,jdbcType=VARCHAR}
+        </if>
+        where sid = #{sid,jdbcType=VARCHAR}
+    </update>
+</mapper>

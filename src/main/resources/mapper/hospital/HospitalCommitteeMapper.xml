@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.hospital.mapper.HospitalCommitteeMapper">
+
+    <resultMap type="com.comvee.cdms.hospital.model.po.HospitalCommitteePO" id="HospitalCommitteeMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="committeeName" column="committee_name" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="VARCHAR"/>
+        <result property="orgId" column="org_id" jdbcType="VARCHAR"/>
+        <result property="hospitalId" column="hospital_id" jdbcType="VARCHAR"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="updateDt" column="update_dt" jdbcType="VARCHAR"/>
+        <result property="valid" column="valid" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 基本字段 -->
+    <sql id="Base_Column_List">
+        id, committee_name, sort, org_id, hospital_id, insert_dt, update_dt, valid
+    </sql>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="getListByModel" resultMap="HospitalCommitteeMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_hospital_committee
+        <where>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="committeeName != null and committeeName != ''">
+                and committee_name = #{committeeName}
+            </if>
+            <if test="sort != null and sort != ''">
+                and sort = #{sort}
+            </if>
+            <if test="orgId != null and orgId != ''">
+                and org_id = #{orgId}
+            </if>
+            <if test="hospitalId != null and hospitalId != ''">
+                and hospital_id = #{hospitalId}
+            </if>
+            <if test="insertDt != null and insertDt != ''">
+                and insert_dt = #{insertDt}
+            </if>
+            <if test="updateDt != null and updateDt != ''">
+                and update_dt = #{updateDt}
+            </if>
+            <if test="valid != null">
+                and valid = #{valid}
+            </if>
+        </where>
+        order by sort
+    </select>
+
+    <!--查询单个-->
+    <select id="getOneById" resultMap="HospitalCommitteeMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_hospital_committee
+        where id = #{id}
+    </select>
+
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into t_hospital_committee(id, committee_name, sort, org_id, hospital_id, insert_dt, update_dt, valid)
+        values (#{id}, #{committeeName}, #{sort}, #{orgId}, #{hospitalId}, #{insertDt}, #{updateDt}, #{valid})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into t_hospital_committee(id, committee_name, sort, org_id, hospital_id, insert_dt, update_dt, valid)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id}, #{item.committeeName}, #{item.sort}, #{item.orgId}, #{item.hospitalId}, #{item.insertDt},
+            #{item.updateDt}, #{item.valid})
+        </foreach>
+    </insert>
+
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update t_hospital_committee
+        <set>
+            <if test="committeeName != null and committeeName != ''">
+                committee_name = #{committeeName},
+            </if>
+            <if test="sort != null and sort != ''">
+                sort = #{sort},
+            </if>
+            <if test="orgId != null and orgId != ''">
+                org_id = #{orgId},
+            </if>
+            <if test="hospitalId != null and hospitalId != ''">
+                hospital_id = #{hospitalId},
+            </if>
+            <if test="insertDt != null and insertDt != ''">
+                insert_dt = #{insertDt},
+            </if>
+            <if test="updateDt != null and updateDt != ''">
+                update_dt = #{updateDt},
+            </if>
+            <if test="valid != null">
+                valid = #{valid},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from t_hospital_committee where id = #{id}
+    </delete>
+
+
+</mapper>
+
+

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.DyBloodSugarRemarkMapper">
+
+  <resultMap id="remark" type="com.comvee.cdms.dybloodsugar.po.DyBloodSugarRemarkPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="bid" jdbcType="BIGINT" property="bid" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="modify_dt" jdbcType="VARCHAR" property="modifyDt" />
+    <result column="insert_dt" jdbcType="VARCHAR" property="insertDt" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+    <result column="operator_id"  property="operatorId" />
+    <result column="origin"  property="origin" />
+  </resultMap>
+
+  <update id="updateBloodSugarRemarkById" parameterType="java.lang.String">
+    update dy_yp_blood_sugar_remark  set content = #{content,jdbcType=LONGVARCHAR},modify_dt = now()
+    where sid = #{sid}
+  </update>
+
+  <update id="deleteyBloodSugarRemarkById" parameterType="java.lang.String">
+    update dy_yp_blood_sugar_remark t set t.modify_dt = now() ,t.is_valid = 0 where sid = #{sid}
+  </update>
+
+  <select id="getBloodSugarRemarkById" resultMap="remark">
+    select * from dy_yp_blood_sugar_remark where sid = #{sid} and is_valid=1
+  </select>
+
+  <insert id="addDyBloodSugarRemark" parameterType="com.comvee.cdms.dybloodsugar.po.DyBloodSugarRemarkPO">
+    insert into dy_yp_blood_sugar_remark (sid, bid, is_valid,
+    modify_dt, insert_dt, content ,operator_id ,origin
+    )
+    values (#{sid,jdbcType=BIGINT}, #{bid,jdbcType=BIGINT}, 1,
+    now(), now(), #{content,jdbcType=LONGVARCHAR} ,#{operatorId} ,#{origin}
+    )
+  </insert>
+
+  <select id="listDyBloodSugarRemarkByBid" resultMap="remark">
+    select sid, bid, is_valid, modify_dt, insert_dt, content,operator_id ,origin
+    from dy_yp_blood_sugar_remark t where is_valid = 1 and bid = #{bid}
+  </select>
+
+  <select id="listDyBloodSugarRemarkByBidList" resultMap="remark">
+    select sid, bid, is_valid, modify_dt, insert_dt, content,operator_id ,origin
+    from dy_yp_blood_sugar_remark t where is_valid = 1
+    <if test="origin != null">
+      and t.origin = #{origin}
+    </if>
+    and bid in
+    <foreach collection="bidList" item="item" open="(" close=")" separator=",">
+      #{item}
+    </foreach>
+    order by t.insert_dt desc
+  </select>
+</mapper>

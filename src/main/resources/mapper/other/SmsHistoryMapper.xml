@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.other.mapper.SmsHistoryMapper">
+
+  <insert id="addSmsHistory" parameterType="map">
+      INSERT INTO t_sms_history ( `mobile_phone`,`content`,`ip`,`response_text`)
+      values(#{map.mobilePhone} ,#{map.content} ,#{map.ip} ,#{map.responseText})
+  </insert>
+</mapper>

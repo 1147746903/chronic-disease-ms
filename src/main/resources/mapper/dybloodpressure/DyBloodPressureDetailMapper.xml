@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodpressure.mapper.DyBloodPressureDetailMapper">
+
+    <resultMap type="com.comvee.cdms.dybloodpressure.po.DyBloodPressureDetailPO" id="DyBloodPressureDetailPO">
+        <result property="sid" column="sid" jdbcType="INTEGER"/>
+        <result property="foreignId" column="foreign_id" jdbcType="INTEGER"/>
+        <result property="memberId" column="member_id" jdbcType="INTEGER"/>
+        <result property="timeType" column="time_type" jdbcType="VARCHAR"/>
+        <result property="dbpDayLevel" column="dbp_day_level" jdbcType="VARCHAR"/>
+        <result property="sbpDayLevel" column="sbp_day_level" jdbcType="VARCHAR"/>
+        <result property="dbpSleepLevel" column="dbp_sleep_level" jdbcType="VARCHAR"/>
+        <result property="sbpSleepLevel" column="sbp_sleep_level" jdbcType="VARCHAR"/>
+        <result property="dbpAfterBedLevel" column="dbp_after_bed_level" jdbcType="VARCHAR"/>
+        <result property="sbpAfterBedLevel" column="sbp_after_bed_level" jdbcType="VARCHAR"/>
+        <result property="dbp24hLevel" column="dbp_24h_level" jdbcType="VARCHAR"/>
+        <result property="sbp24hLevel" column="sbp_24h_level" jdbcType="VARCHAR"/>
+        <result property="startDt" column="start_dt" jdbcType="TIMESTAMP"/>
+        <result property="endDt" column="end_dt" jdbcType="TIMESTAMP"/>
+        <result property="isValid" column="is_valid" jdbcType="VARCHAR"/>
+        <result property="insertDt" column="insert_dt" jdbcType="TIMESTAMP"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="DyBloodPressureDetailPO">
+        select
+        sid, foreign_id, member_id,time_type,dbp_day_level, sbp_day_level, dbp_sleep_level, sbp_sleep_level, dbp_after_bed_level,
+        sbp_after_bed_level, dbp_24h_level, sbp_24h_level, start_dt,end_dt,is_valid, insert_dt, modify_dt
+        from  t_dynamic_bp_detail
+        where sid = #{sid}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="DyBloodPressureDetailPO">
+        select
+        sid, foreign_id,member_id, time_type,dbp_day_level, sbp_day_level, dbp_sleep_level, sbp_sleep_level, dbp_after_bed_level,
+        sbp_after_bed_level, dbp_24h_level, sbp_24h_level, start_dt,end_dt,is_valid, insert_dt, modify_dt
+        from  t_dynamic_bp_detail
+        <where>
+            <if test="sid != null">
+                and sid = #{sid}
+            </if>
+            <if test="foreignId != null">
+                and foreign_id = #{foreignId}
+            </if>
+            <if test="memberId != null">
+                and member_id = #{memberId}
+            </if>
+            <if test="timeType != null">
+                and time_type = #{time_type}
+            </if>
+            <if test="dbpDayLevel != null">
+                and dbp_day_level = #{dbpDayLevel}
+            </if>
+            <if test="sbpDayLevel != null">
+                and sbp_day_level = #{sbpDayLevel}
+            </if>
+            <if test="dbpSleepLevel != null">
+                and dbp_sleep_level = #{dbpSleepLevel}
+            </if>
+            <if test="sbpSleepLevel != null">
+                and sbp_sleep_level = #{sbpSleepLevel}
+            </if>
+            <if test="dbpAfterBedLevel != null">
+                and dbp_after_bed_level = #{dbpAfterBedLevel}
+            </if>
+            <if test="sbpAfterBedLevel != null">
+                and sbp_after_bed_level = #{sbpAfterBedLevel}
+            </if>
+            <if test="dbp24hLevel != null">
+                and dbp_24h_level = #{dbp24hLevel}
+            </if>
+            <if test="sbp24hLevel != null">
+                and sbp_24h_level = #{sbp24hLevel}
+            </if>
+            <if test="startDt != null and startDt != ''" >
+                and start_dt = #{startDt}
+            </if>
+            <if test="endDt != null and endDt != ''" >
+                and end_dt = #{endDt}
+            </if>
+            <if test="isValid != null">
+                and is_valid = #{isValid}
+            </if>
+            <if test="insertDt != null">
+                and insert_dt = #{insertDt}
+            </if>
+            <if test="modifyDt != null">
+                and modify_dt = #{modifyDt}
+            </if>
+        </where>
+        order by insert_dt desc
+    </select>
+    <select id="queryDateList" resultMap="DyBloodPressureDetailPO">
+        select
+        d.start_dt,d.end_dt
+        from  t_dynamic_bp_detail d left join t_dynamic_blood_pressure t on d.foreign_id = t.sid
+        <where>
+            t.member_id = #{memberId}
+            <if test="startDt != null and '' != startDt">
+                and d.start_dt &gt;= #{startDt}
+            </if>
+            <if test="endDt != null and '' != endDt">
+                and d.end_dt &lt;= #{endDt}
+            </if>
+        </where>
+        group by d.start_dt,d.end_dt
+        ORDER BY d.start_dt desc
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sid" useGeneratedKeys="true">
+        insert into  t_dynamic_bp_detail(sid,foreign_id,member_id,time_type, dbp_day_level, sbp_day_level,
+        dbp_sleep_level, sbp_sleep_level, dbp_after_bed_level, sbp_after_bed_level, dbp_24h_level, sbp_24h_level,
+        start_dt,end_dt,is_valid, insert_dt, modify_dt)
+        values (#{sid},#{foreignId},#{memberId},#{timeType}, #{dbpDayLevel}, #{sbpDayLevel}, #{dbpSleepLevel}, #{sbpSleepLevel}, #{dbpAfterBedLevel},
+        #{sbpAfterBedLevel}, #{dbp24hLevel}, #{sbp24hLevel}, #{startDt},#{endDt},1, now(), now())
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update  t_dynamic_bp_detail
+        <set>
+            <if test="foreignId != null">
+                foreign_id = #{foreignId},
+            </if>
+            <if test="timeType != null">
+                time_type = #{timeType},
+            </if>
+            <if test="dbpDayLevel != null">
+                dbp_day_level = #{dbpDayLevel},
+            </if>
+            <if test="sbpDayLevel != null">
+                sbp_day_level = #{sbpDayLevel},
+            </if>
+            <if test="dbpSleepLevel != null">
+                dbp_sleep_level = #{dbpSleepLevel},
+            </if>
+            <if test="sbpSleepLevel != null">
+                sbp_sleep_level = #{sbpSleepLevel},
+            </if>
+            <if test="dbpAfterBedLevel != null">
+                dbp_after_bed_level = #{dbpAfterBedLevel},
+            </if>
+            <if test="sbpAfterBedLevel != null">
+                sbp_after_bed_level = #{sbpAfterBedLevel},
+            </if>
+            <if test="dbp24hLevel != null">
+                dbp_24h_level = #{dbp24hLevel},
+            </if>
+            <if test="sbp24hLevel != null">
+                sbp_24h_level = #{sbp24hLevel},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid},
+            </if>
+            <if test="insertDt != null">
+                insert_dt = #{insertDt},
+            </if>
+            <if test="modifyDt != null">
+                modify_dt = #{modifyDt},
+            </if>
+        </set>
+        <where>
+        <if test="sid != null and sid != ''" >
+            and sid = #{sid}
+        </if>
+        <if test="foreignId != null and sid != 'foreignId'" >
+            and foreign_id = #{foreignId}
+        </if>
+        </where>
+    </update>
+
+
+    <update id="updateBatch"  parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update t_dynamic_bp_detail
+            <set>
+                time_type=#{item.timeType},dbp_day_level= #{item.dbpDayLevel},sbp_day_level=#{item.sbpDayLevel},
+                dbp_sleep_level = #{item.dbpSleepLevel},sbp_sleep_level= #{item.sbpSleepLevel},
+                dbp_after_bed_level = #{item.dbpAfterBedLevel},sbp_after_bed_level = #{item.sbpAfterBedLevel},
+                dbp_24h_level = #{item.dbp24hLevel},sbp_24h_level= #{item.sbp24hLevel}
+            </set>
+            where foreign_id = #{item.foreignId}
+        </foreach>
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from  t_dynamic_bp_detail where sid = #{sid}
+    </delete>
+
+</mapper>
+

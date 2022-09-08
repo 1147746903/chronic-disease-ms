@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.bloodmonitor.mapper.MemberMonitorPlanDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.comvee.cdms.bloodmonitor.po.MemberMonitorPlanDetailPO" >
+    <id column="sid" property="sid" jdbcType="BIGINT" />
+    <result column="date_code" property="dateCode" jdbcType="VARCHAR" />
+    <result column="monitor_time" property="monitorTime" jdbcType="VARCHAR" />
+    <result column="member_id" property="memberId" jdbcType="BIGINT" />
+    <result column="plan_type" property="planType" jdbcType="TINYINT" />
+    <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP" />
+    <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP" />
+    <result column="eoh_type" property="eohType"/>
+    <result column="illness_type" property="illnessType"/>
+  </resultMap>
+  
+  <!-- 删除监测方案详细（物理删除） -->
+  <delete id="deleteMonitorPlanDetail">
+	    DELETE FROM t_member_monitor_plan_detail WHERE member_id= #{memberId} and illness_type = #{illnessType}
+  </delete>
+  
+  <!--  保存监测方案详细 -->
+  <insert id="saveMonitorPlanDetail" parameterType="com.comvee.cdms.bloodmonitor.po.MemberMonitorPlanDetailPO">
+  		insert into t_member_monitor_plan_detail
+		(	sid,date_code,  monitor_time,  member_id, plan_type, insert_dt, modify_dt ,eoh_type ,illness_type
+		) values
+		(
+			#{sid}, #{dateCode}, #{monitorTime}, #{memberId}, #{planType},  now(),  now() ,#{eohType} ,#{illnessType}
+		)
+  </insert>
+
+    <select id="listMemberMonitorPlanDetail" resultMap="BaseResultMap" parameterType="com.comvee.cdms.bloodmonitor.dto.MemberMonitorPlanDetailDTO">
+        select t.date_code,t.insert_dt,t.member_id,t.modify_dt,t.monitor_time,t.plan_type,t.sid,t.eoh_type ,t.illness_type
+        from t_member_monitor_plan_detail t
+        <where>
+            <if test="dateCode != null and '' != dateCode">
+                and t.date_code = #{dateCode}
+            </if>
+            <if test="memberId != null and '' != memberId">
+                and t.member_id = #{memberId}
+            </if>
+            <if test="planType != null">
+                and t.plan_type = #{planType}
+            </if>
+            <if test="illnessType != null">
+                and t.illness_type = #{illnessType}
+            </if>
+            <if test="eohType != null">
+                and t.eoh_type = #{eohType}
+            </if>
+        </where>
+    </select>
+</mapper>

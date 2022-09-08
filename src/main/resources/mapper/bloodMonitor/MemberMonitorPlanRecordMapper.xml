@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.bloodmonitor.mapper.MemberMonitorPlanRecordMapper" >
+
+    <resultMap id="BaseResultMap" type="com.comvee.cdms.bloodmonitor.po.MemberMonitorPlanRecordPO" >
+        <id column="plan_id" property="planId" jdbcType="BIGINT" />
+        <result column="monitor_plan_type" property="monitorPlanType" jdbcType="VARCHAR" />
+        <result column="start_monitor_dt" property="startMonitorDt" jdbcType="VARCHAR" />
+        <result column="end_monitor_dt" property="endMonitorDt" jdbcType="VARCHAR" />
+        <result column="doctor_id" property="doctorId" jdbcType="BIGINT" />
+        <result column="member_id" property="memberId" jdbcType="BIGINT" />
+        <result column="hospital_id" property="hospitalId" jdbcType="BIGINT" />
+        <result column="operation_type" property="operationType" jdbcType="TINYINT" />
+        <result column="state" property="state" jdbcType="TINYINT" />
+        <result column="inset_dt" property="insertDt" jdbcType="TIMESTAMP"/>
+        <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP"/>
+        <result column="is_valid" property="isValid" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <!-- 保存医嘱 -->
+    <insert id="insertMemberMonitorPlanRecord" parameterType="com.comvee.cdms.bloodmonitor.po.MemberMonitorPlanRecordPO">
+          INSERT INTO `t_member_monitor_record` (
+            `plan_id`, `monitor_plan_type`, `start_monitor_dt`, `end_monitor_dt`, `doctor_id`
+            , `member_id`, hospital_id,operation_type,state,inset_dt ,modify_dt ,is_valid)
+          VALUES
+            (#{planId}, #{monitorPlanType}, #{startMonitorDt}, #{endMonitorDt}
+              , #{doctorId},#{memberId},#{hospitalId},#{operationType} ,#{state} ,now(), now(),1)
+    </insert>
+
+    <delete id="deleteMonitorRecord" parameterType="java.lang.String">
+        UPDATE t_member_monitor_record
+        set
+        modify_dt = now(),
+        state = 3
+        WHERE plan_id = #{sid}
+    </delete>
+    <update id="modifyMonitorRecord" parameterType="com.comvee.cdms.bloodmonitor.po.MemberMonitorPlanRecordPO">
+        UPDATE t_member_monitor_record
+        set
+        modify_dt = now(),
+        state = 3
+        WHERE sid = #{planId}
+    </update>
+
+    <select id="listMonitorRecord" resultMap="BaseResultMap">
+        SELECT `plan_id`, `monitor_plan_type`, `start_monitor_dt`, `end_monitor_dt`, `doctor_id`
+        , `member_id`, hospital_id, operation_type,state,inset_dt ,modify_dt ,is_valid
+        FROM `t_member_monitor_record`  WHERE `is_valid`=1
+        <if test="memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test="doctorId != null and '' != doctorId">
+            and doctor_id = #{doctorId}
+        </if>
+        and hospital_id = #{hospitalId}
+        order by FIELD(in_progress,2,1,0)
+    </select>
+    <!--获取监测方案的记录-->
+    <select id="listMonitorPlan" resultMap="BaseResultMap">
+        SELECT `plan_id`, `monitor_plan_type`, `start_monitor_dt`, `end_monitor_dt`, `doctor_id`
+        , `member_id`, hospital_id, operation_type,state,inset_dt ,modify_dt ,is_valid
+        FROM `t_member_monitor_record`  WHERE `is_valid`=1
+        and plan_type != 1
+    </select>
+
+    <select id="listMonitorPlanByMemberAndHospital" resultMap="BaseResultMap">
+        SELECT `plan_id`, `monitor_plan_type`, `start_monitor_dt`, `end_monitor_dt`, `doctor_id`
+        , `member_id`, hospital_id, operation_type,state,inset_dt ,modify_dt ,is_valid
+        FROM `t_member_monitor_record`  WHERE `is_valid`=1
+        <if test="memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        and hospital_id = #{hospitalId}
+        and plan_type != 1
+    </select>
+    <!--获取管理处方监测方案的记录-->
+    <select id="listManageMonitorPlan" resultMap="BaseResultMap">
+        SELECT `plan_id`, `monitor_plan_type`, `start_monitor_dt`, `end_monitor_dt`, `doctor_id`
+        , `member_id`, hospital_id, operation_type,state,inset_dt ,modify_dt ,is_valid
+        FROM `t_member_monitor_record`  WHERE `is_valid`=1
+        <if test="memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        and hospital_id = #{hospitalId}
+        and plan_type = 1
+    </select>
+
+
+    <select id="findMemberMonitorPlanRecordByMonitorPlan" resultMap="BaseResultMap">
+        select `plan_id`, `monitor_plan_type`, `start_monitor_dt`, `end_monitor_dt`, `doctor_id`
+            , `member_id`, hospital_id, operation_type,state,inset_dt ,modify_dt ,is_valid
+        from t_member_monitor_record where member_id = #{memberId} and hospital_id = #{hospitalId} and operation_type = 1 and state = 2
+    </select>
+
+
+
+
+</mapper>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.follow.mapper.FollowCustomMapper" >
+
+
+  <resultMap id="followCustom" type="com.comvee.cdms.follow.po.FollowCustomPO">
+    <id column="follow_id" jdbcType="BIGINT" property="followId" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="question_str" jdbcType="VARCHAR" property="questionStr" />
+    <result column="follow_name" jdbcType="VARCHAR" property="followName" />
+    <result column="fill_person" jdbcType="TINYINT" property="fillPerson" />
+    <result column="follow_status" jdbcType="TINYINT" property="followStatus" />
+    <result column="fill_dt" jdbcType="TIMESTAMP" property="fillDt" />
+    <result column="finish_person" jdbcType="TINYINT" property="finishPerson" />
+    <result column="data_json" jdbcType="LONGVARCHAR" property="dataJson" />
+    <result column="custom_question_data" jdbcType="LONGVARCHAR" property="customQuestionData" />
+  </resultMap>
+
+  <!--自定义随访模板-->
+  <resultMap id="followCustomFormwork" type="com.comvee.cdms.follow.po.FollowCustomFormworkPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="follow_name" jdbcType="VARCHAR" property="followName" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+    <result column="question_str" jdbcType="VARCHAR" property="questionStr" />
+    <result column="custom_question_data" jdbcType="LONGVARCHAR" property="customQuestionData" />
+  </resultMap>
+
+  <insert id="addFollowCustom" parameterType="com.comvee.cdms.follow.po.FollowCustomPO">
+    insert into t_follow_custom (follow_id, member_id, doctor_id,
+    creator_id, question_str, follow_name, fill_person, data_json ,custom_question_data)
+    values (#{followId,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT},
+    #{creatorId,jdbcType=BIGINT},  #{questionStr,jdbcType=VARCHAR}, #{followName,jdbcType=VARCHAR}
+    , #{fillPerson,jdbcType=TINYINT},#{dataJson,jdbcType=LONGVARCHAR} ,#{customQuestionData})
+  </insert>
+
+  <update id="updateFollowCustom" parameterType="com.comvee.cdms.follow.po.FollowCustomPO">
+    update t_follow_custom
+    <set>
+      <if test="followName != null and '' != followName">
+        follow_name = #{followName,jdbcType=VARCHAR},
+      </if>
+      <if test="followStatus != null">
+        follow_status = #{followStatus,jdbcType=TINYINT},
+      </if>
+      <if test="fillDt != null and '' != fillDt">
+        fill_dt = #{fillDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishPerson != null">
+        finish_person = #{finishPerson,jdbcType=TINYINT},
+      </if>
+      <if test="dataJson != null and '' != dataJson">
+        data_json = #{dataJson,jdbcType=LONGVARCHAR}
+      </if>
+    </set>
+    where follow_id = #{followId,jdbcType=BIGINT}
+  </update>
+
+  <select id="getFollowCustomById" parameterType="java.lang.String" resultMap="followCustom">
+    select follow_id, member_id, doctor_id, creator_id, insert_dt, update_dt, question_str,
+    follow_name, fill_person, follow_status, fill_dt, finish_person, data_json ,custom_question_data
+    from t_follow_custom
+    where follow_id = #{followId,jdbcType=BIGINT} limit 1
+  </select>
+
+  <delete id="deleteFollowCustom" parameterType="java.lang.String">
+    delete from t_follow_custom
+    where follow_id = #{followId,jdbcType=BIGINT}
+  </delete>
+
+  <select id="listFollowCustom" resultMap="followCustom" parameterType="com.comvee.cdms.follow.dto.ListFollowCustomDTO">
+    select follow_id, member_id, doctor_id, creator_id, insert_dt, update_dt, question_str,
+    follow_name, fill_person, follow_status, fill_dt, finish_person, data_json ,custom_question_data
+    from t_follow_custom
+    <where>
+      <if test="memberId != null and '' != memberId">
+          and member_id = #{memberId}
+      </if>
+      <if test="doctorId != null and '' != doctorId">
+        and doctor_id = #{doctorId}
+      </if>
+      <if test="followStatus != null">
+        and follow_status = #{followStatus}
+      </if>
+    </where>
+    order by insert_dt desc
+  </select>
+
+
+  <select id="listFollowCustomFormwork" resultMap="followCustomFormwork">
+    select sid, follow_name, doctor_id, creator_id, insert_dt, update_dt, valid, question_str,
+    custom_question_data
+    from t_follow_custom_formwork
+    where valid = 1 and doctor_id = #{doctorId}
+    <if test="keyword != null and '' != keyword">
+      and instr(follow_name ,#{keyword}) > 0
+    </if>
+  </select>
+
+  <insert id="addFollowCustomFormwork" parameterType="com.comvee.cdms.follow.po.FollowCustomFormworkPO">
+    insert into t_follow_custom_formwork (sid, follow_name, doctor_id,
+      creator_id, question_str, custom_question_data
+      )
+    values (#{sid,jdbcType=BIGINT}, #{followName,jdbcType=VARCHAR}, #{doctorId,jdbcType=BIGINT},
+      #{creatorId,jdbcType=BIGINT},  #{questionStr,jdbcType=VARCHAR}, #{customQuestionData,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+
+  <update id="updateFollowCustomFormwork" parameterType="com.comvee.cdms.follow.po.FollowCustomFormworkPO">
+    update t_follow_custom_formwork
+    <set>
+      <if test="followName != null and '' != followName">
+        follow_name = #{followName,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        valid = #{valid,jdbcType=TINYINT},
+      </if>
+      <if test="questionStr != null and '' != questionStr">
+        question_str = #{questionStr,jdbcType=VARCHAR},
+      </if>
+      <if test="customQuestionData != null and '' != customQuestionData">
+        custom_question_data = #{customQuestionData,jdbcType=LONGVARCHAR}
+      </if>
+    </set>
+    where sid = #{sid,jdbcType=BIGINT}
+  </update>
+
+  <update id="batchDeleteFollowCustomFormwork">
+      update t_follow_custom_formwork set valid = 0
+      <where>
+        <if test="idList != null and idList.size() > 0">
+            and sid in
+            <foreach collection="idList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="doctorId != null and '' !=doctorId">
+            and doctor_id = #{doctorId}
+        </if>
+      </where>
+  </update>
+</mapper>

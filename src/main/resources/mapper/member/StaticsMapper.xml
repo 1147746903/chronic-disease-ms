@@ -1,0 +1,992 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.statistics.mapper.StaticsMapper">
+
+    <resultMap type="com.comvee.cdms.statistics.po.MemberExceptionRecordPO" id="TMemberExceptionRecordMap">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="memberId" column="member_id" jdbcType="VARCHAR"/>
+        <result property="hospitalId" column="hospital_id" jdbcType="VARCHAR"/>
+        <result property="dataJson" column="data_json" jdbcType="VARCHAR"/>
+        <result property="recordDt" column="record_dt" jdbcType="VARCHAR"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap type="com.comvee.cdms.statistics.vo.ListMemberExceptionVO" id="ListMemberExceptionVO">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="memberId" column="member_id" jdbcType="VARCHAR"/>
+        <result property="memberName" column="member_name" jdbcType="VARCHAR"/>
+        <result property="mobilePhone" column="mobile_phone" jdbcType="VARCHAR"/>
+        <result property="sugarLevel" column="sugarLevel" jdbcType="VARCHAR"/>
+        <result property="pressureLevel" column="pressureLevel" jdbcType="VARCHAR"/>
+        <result property="pressureLayer" column="pressureLayer" jdbcType="VARCHAR"/>
+        <result property="dataJson" column="data_json" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap type="com.comvee.cdms.statistics.bo.MemberExceptionBaseBO" id="MemberExceptionBaseBO">
+        <result property="memberId" column="member_id" jdbcType="VARCHAR"/>
+        <result property="itemCode" column="itemCode" jdbcType="VARCHAR"/>
+        <result property="itemValue" column="itemValue" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+
+    <resultMap type="com.comvee.cdms.statistics.vo.ListScreenStaticsVO" id="ListScreenStatics">
+        <result property="memberId" column="member_id" jdbcType="VARCHAR"/>
+        <result property="memberName" column="member_name" jdbcType="VARCHAR"/>
+        <result property="age" column="age" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="diabetesType" column="diabetesType" jdbcType="VARCHAR"/>
+        <result property="committeeName" column="committee_name" jdbcType="VARCHAR"/>
+        <result property="sugarValue" column="sugarValue" jdbcType="VARCHAR"/>
+        <result property="currentDiabetesLevel" column="currentDiabetesLevel" jdbcType="VARCHAR"/>
+        <result property="suggestDiabetesLevel" column="suggestDiabetesLevel" jdbcType="VARCHAR"/>
+        <result property="currentHypLevel" column="currentHypLevel" jdbcType="VARCHAR"/>
+        <result property="suggestHypLevel" column="suggestHypLevel" jdbcType="VARCHAR"/>
+        <result property="currentHypLayer" column="currentHypLayer" jdbcType="VARCHAR"/>
+        <result property="suggestHypLayer" column="suggestHypLayer" jdbcType="VARCHAR"/>
+        <result property="sugarValueLevel" column="param_level" jdbcType="VARCHAR"/>
+        <result property="sbpValueLevel" column="sbp_level" jdbcType="VARCHAR"/>
+        <result property="dbpValueLevel" column="dbp_level" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TMemberExceptionRecordMap">
+        select
+        sid, member_id,hospital_id,data_json, record_dt,
+        insert_dt, modify_dt, is_valid
+        from t_member_exception_record
+        where sid = #{sid}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TMemberExceptionRecordMap">
+        select
+        sid, member_id, hospital_id,data_json, record_dt,
+        insert_dt, modify_dt, is_valid
+        from t_member_exception_record
+        <where>
+            <if test="sid != null and sid != ''">
+                and sid = #{sid}
+            </if>
+            <if test="memberId != null and memberId != ''">
+                and member_id = #{memberId}
+            </if>
+            <if test="hospitalId != null and hospitalId != ''">
+                and hospital_id = #{hospitalId}
+            </if>
+            <if test="dataJson != null and dataJson != ''">
+                and data_json = #{dataJson}
+            </if>
+            <if test="recordDt != null and recordDt != ''">
+                and record_dt = #{recordDt}
+            </if>
+            <if test="insertDt != null and insertDt != ''">
+                and insert_dt = #{insertDt}
+            </if>
+            <if test="modifyDt != null and modifyDt != ''">
+                and modify_dt = #{modifyDt}
+            </if>
+            <if test="isValid != null">
+                and is_valid = #{isValid}
+            </if>
+        </where>
+        group by member_id
+    </select>
+
+    <select id="loadExceptionItemCodeByHospital" resultType="java.lang.String">
+         select
+        item_code
+        from t_hospital_exception_item
+        where hospital_id = #{hospitalId} and is_valid = 1
+        order by sort
+    </select>
+    <select id="loadMemberExceptionRecordList" resultMap="ListMemberExceptionVO">
+        select a.sid,a.member_id,a.member_name,a.mobile_phone,a.data_json
+        from (
+        select er.sid,er.member_id,er.is_valid,er.record_dt,er.hospital_id,er.modify_dt,
+        m.member_name,m.mobile_phone,er.data_json
+        from t_member_exception_record er
+        join t_member m on er.member_id = m.member_id
+        join t_member_join_hospital mjh on mjh.hospital_id = er.hospital_id and mjh.valid = 1
+        )a
+        where a.is_valid =1
+        and a.record_dt = #{recordDt} and a.hospital_id = #{hospitalId}
+        group by a.sid
+        order by a.modify_dt desc
+    </select>
+
+    <select id="loadExceptionItemCodeByMemberId" resultType="java.lang.String">
+        select
+        item_code
+        from t_hospital_exception_item he join t_member_join_hospital tm on tm.hospital_id = he.hospital_id
+        where tm.member_id = #{memberId} and tm.valid = 1 and he.is_valid = 1
+        order by he.sort asc
+    </select>
+    <select id="getHospitalByMemberId" resultType="java.lang.String">
+        select jh.hospital_id from t_member_join_hospital jh
+        where
+        jh.valid = 1
+        and jh.member_id = #{memberId}
+    </select>
+    <select id="loadInHospitalMembersNum" resultType="java.lang.Long">
+      select ifnull(count(1),0) from (
+      select t.member_id
+      from t_member_join_hospital h join t_member t
+      on t.member_id = h.member_id
+      where t.is_valid = 1 and h.valid = 1
+        <if test="date != null and date != ''">
+            and DATE_FORMAT(h.in_date,"%Y-%m-%d") = #{date}
+        </if>
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+      group by t.member_id ) a
+    </select>
+    <select id="loadDoScreenMembersNum" resultType="java.lang.Long">
+       select ifnull(count(1),0) num from (
+       select r.member_id
+       from t_screening_report r
+       left join t_screening_list sl on sl.screening_id = r.screening_id
+       where r.valid =1
+        <if test="date != null and date != ''">
+            and DATE_FORMAT(r.report_dt,"%Y-%m-%d") = #{date}
+        </if>
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and sl.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+       group by r.member_id) a
+    </select>
+    <select id="loadDoSugarMembersNum" resultType="java.lang.Long">
+      select ifnull(count(1),0) from (
+      select s.member_id from t_blood_sugar s join t_member_join_hospital h
+      on s.member_id = h.member_id
+      where s.is_valid =1 and h.valid =1 and DATE_FORMAT(s.record_dt,"%Y-%m-%d") = #{date}
+      and s.record_type =1
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+	  group by s.member_id) a
+    </select>
+    <select id="loadDoHa1cMembersNum" resultType="java.lang.Long">
+      select ifnull(count(1),0) from (
+      select s.member_id from
+      t_hba1c s join t_member_join_hospital h
+      on s.member_id = h.member_id
+      where s.valid =1 and h.valid =1 and DATE_FORMAT(s.record_dt,"%Y-%m-%d") = #{date}
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+      group by s.member_id) a
+    </select>
+    <select id="loadDoBloodPressureMembersNum" resultType="java.lang.Long">
+      select ifnull(count(1),0) from (
+      select s.member_id from
+      t_blood_pressure s join t_member_join_hospital h
+      on s.member_id = h.member_id
+      where s.is_valid =1 and h.valid =1 and DATE_FORMAT(s.record_time,"%Y-%m-%d") = #{date}
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+      group by s.member_id) a
+    </select>
+    <select id="loadSugarLevelMembersNum" resultType="java.lang.Long">
+      select ifnull(count(1),0) from (
+      select s.member_id from t_member_level s join t_member_join_hospital h
+      on s.member_id = h.member_id
+      where s.is_valid =1 and h.valid =1 and s.level_type = 2 and s.confirm = 0
+      and DATE_FORMAT(s.insert_dt,"%Y-%m-%d") = #{date}
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+      group by s.member_id) a
+    </select>
+    <select id="loadPressureLevelLayerMembersNum" resultType="java.lang.Long">
+      select ifnull(count(1),0) from (
+      select s.member_id from t_member_level s join t_member_join_hospital h
+      on s.member_id = h.member_id
+      where s.is_valid =1 and h.valid =1 and s.level_type = 1 and s.confirm = 0
+      and DATE_FORMAT(s.insert_dt,"%Y-%m-%d") = #{date}
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+      group by s.member_id) a
+    </select>
+    <select id="loadAllMemberException" resultMap="MemberExceptionBaseBO">
+    select h.member_id,u.itemValue,u.itemCode
+    from
+    (select jh.member_id from t_member_join_hospital jh  where jh.valid = 1 ) h
+    INNER JOIN (
+            SELECT t1.member_id,ROUND(t1.param_value,1) itemValue,'sugar' itemCode,t1.record_dt
+            FROM t_blood_sugar t1
+            LEFT JOIN t_blood_sugar t2
+            ON (t1.member_id = t2.member_id AND t1.record_dt &lt; t2.record_dt)
+            WHERE t1.is_valid = 1 and t1.param_level != 3
+            and t1.record_dt &gt;= #{startDt} and t1.record_dt &lt;= #{endDt}
+            and t2.member_id IS NULL 
+    UNION ALL
+            SELECT t1.member_id,ROUND(t1.record_value,1) itemValue,'hba1c' itemCode,t1.record_dt
+            FROM t_hba1c t1
+            LEFT JOIN t_hba1c t2
+            ON (t1.member_id = t2.member_id AND t1.record_dt &lt; t2.record_dt)
+            WHERE t1.valid = 1 and t1.record_level != 3
+            and t1.record_dt &gt;= #{startDt} and t1.record_dt &lt;= #{endDt}
+            and t2.member_id IS NULL
+    UNION ALL
+            select
+            t1.member_id,
+            CONCAT(t1.sbp,'/',t1.dbp) itemValue,
+            'pressure' itemCode,t1.record_time record_dt
+            FROM t_blood_pressure t1
+            LEFT JOIN t_blood_pressure t2
+            ON (t1.member_id = t2.member_id AND t1.record_time &lt; t2.record_time)
+            WHERE t1.is_valid = 1 and (t1.sbp_level != 3 or t1.dbp_level!=3)
+            and t1.record_time &gt;= #{startDt} and t1.record_time &lt;= #{endDt}
+            and t2.member_id IS NULL
+    UNION ALL
+            select t1.member_id,
+                    'true' itemValue,
+            case when t1.screening_type = 1 then 'abi_screen'
+                    when t1.screening_type = 2 then 'vpt_screen'
+                    when t1.screening_type = 3 then 'eye_screen' end as itemCode,t1.report_dt record_dt
+            FROM t_screening_report t1
+            LEFT JOIN t_screening_report t2
+            ON (t1.member_id = t2.member_id AND t1.report_dt &lt; t2.report_dt)
+            WHERE t1.valid = 1 and t1.result_status = 2
+            and t1.report_dt &gt;= #{startDt} and t1.report_dt &lt;= #{endDt}
+            and t2.member_id IS NULL
+    )
+    u on u.member_id = h.member_id
+    ORDER BY u.record_dt desc
+    </select>
+    <select id="loadDayPrescriptionNum" resultType="java.lang.Long">
+        select ifnull(count(1),0) from (
+        select member_id from t_prescription
+        where is_valid =1 and hand_down = 1
+       and DATE_FORMAT(insert_dt,"%Y-%m-%d") = #{date}
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+        group by member_id ) a
+    </select>
+
+    <select id="loadDayFollowNum" resultType="java.lang.Long">
+        select ifnull(count(1),0) from (
+        select f.member_id
+        from t_follow_main f
+        where f.is_valid =1
+        and DATE_FORMAT(f.insert_dt,"%Y-%m-%d") = #{date}
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and f.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+        group by f.member_id ) a
+    </select>
+    <select id="loadHospitalMemberNum" resultType="java.lang.Long">
+        select ifnull(count(distinct(member_id)),0)
+        from t_member_join_hospital
+        where valid =1
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+    </select>
+    <select id="loadHospitalDiabNum" resultType="java.lang.Long">
+        select ifnull(count(1),0) from (
+        select h.member_id
+        from t_member_join_hospital h join t_member m on h.member_id = m.member_id
+        where h.valid =1 and m.is_diabetes = 1
+        <if test="date != null and date != ''">
+            and DATE_FORMAT(m.diabetes_date,"%Y-%m-%d") = #{date}
+        </if>
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+         group by h.member_id ) a
+
+    </select>
+    <select id="loadHospitalHypNum" resultType="java.lang.Long">
+        select ifnull(count(1),0) from (
+        select h.member_id
+        from t_member_join_hospital h join t_member m on h.member_id = m.member_id
+        where h.valid =1 and m.essential_hyp = 1
+        <if test="date != null and date != ''">
+            and DATE_FORMAT(m.hyp_date,"%Y-%m-%d") = #{date}
+        </if>
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+        group by h.member_id ) a
+    </select>
+    <select id="loadDoSugarMembersNumByCommitteeId" resultType="java.lang.Long">
+        select count(1) num from (
+        select s.member_id from t_blood_sugar s inner join t_member m
+        on s.member_id = m.member_id
+        where s.is_valid =1  and DATE_FORMAT(s.record_dt,"%Y") = #{checkYear}
+        and s.record_type =1
+        and m.committee_id = #{committeeId}
+        group by s.member_id) a
+    </select>
+    <select id="loadDoBloodPressureMembersNumByCommitteeId" resultType="java.lang.Long">
+        select count(1) from (
+        select s.member_id from
+        t_blood_pressure s inner join t_member m
+        on s.member_id = m.member_id
+        where s.is_valid =1 and DATE_FORMAT(s.record_time,"%Y") = #{checkYear}
+        and m.committee_id = #{committeeId}
+        group by s.member_id) a
+    </select>
+    <select id="loadInHospitalMembersNumByCommitteeId" resultType="java.lang.Long">
+        select count(1) from (
+        select t.member_id
+        from t_member t inner join t_member_join_hospital h
+        on t.member_id = h.member_id
+        where t.is_valid = 1 and h.valid = 1
+        <if test="committeeId != null and committeeId != ''">
+            and t.committee_id = #{committeeId}
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and h.hospital_id = #{hospitalId}
+            <if test="committeeId == null or '' == committeeId">
+                and (t.committee_id = '' or t.committee_id is null)
+            </if>
+        </if>
+        <if test="checkYear != null and checkYear != ''">
+            and DATE_FORMAT(t.insert_dt,"%Y") = #{checkYear}
+        </if>
+        group by t.member_id ) a
+    </select>
+    <select id="countMemberInspectionByCommitteeId" resultType="java.lang.Long">
+        select ifnull(count(distinct tr.member_id),0)
+        from t_member_physical_examination_record tr inner join t_member m
+        on tr.member_id = m.member_id
+        <where>
+            tr.valid = 1
+            <if test = "checkYear != null and '' != checkYear">
+                and tr.check_year = #{checkYear}
+            </if>
+            <if test="committeeId != null and '' != committeeId">
+                and m.committee_id = #{committeeId}
+            </if>
+            <if test="hospitalId != null and '' != hospitalId">
+                and tr.hospital_id = #{hospitalId}
+                <if test="committeeId == null or '' == committeeId">
+                    and (m.committee_id = '' or m.committee_id is null)
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <select id="loadMemberExceptionNum" resultType="java.lang.Long">
+        select ifnull(count(distinct(er.member_id)),0)
+        from t_member_exception_record  er
+        join t_member_join_hospital mjh on mjh.hospital_id = er.hospital_id
+        where er.is_valid =1 and mjh.valid = 1
+        <if test = "recordDt != null and '' != recordDt">
+            and er.record_dt = #{recordDt}
+        </if>
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and er.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+    </select>
+    <select id="getMemberJoinHospitalList" resultMap="ListScreenStatics">
+
+        select t.member_name,t.sex,t.birthday,case
+        when t.is_diabetes = 1 and t.essential_hyp = 1 then '高血压-糖尿病'
+        when t.is_diabetes = 1 then '糖尿病' when t.essential_hyp = 1 then '高血压' else '无' end diabetesType,
+        t.committee_name
+        from t_member_join_hospital h join t_member t
+        on t.member_id = h.member_id
+        where t.is_valid = 1 and h.valid = 1
+        <if test="date != null and date != ''">
+            and DATE_FORMAT(h.in_date,"%Y-%m-%d") = #{date}
+        </if>
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="getMemberBloodSugarList" resultMap="ListScreenStatics">
+        select t.member_name,t.sex,t.birthday,case
+        when t.is_diabetes = 1 and t.essential_hyp = 1 then '高血压-糖尿病'
+        when t.is_diabetes = 1 then '糖尿病' when t.essential_hyp = 1 then '高血压' else '无' end diabetesType,
+        ts.param_value sugarValue,ts.param_level
+        from t_member_join_hospital h
+        join t_member t on t.member_id = h.member_id
+        join
+        (select member_id,param_value,record_dt,param_level from
+        (select member_id,param_value,record_dt,param_level from t_blood_sugar
+        where is_valid = 1
+        having 1
+        /*keep orderby*/
+        order by record_dt desc ) a group by member_id)
+        ts on ts.member_id = h.member_id
+        where t.is_valid = 1 and h.valid = 1
+        <if test="date != null and date != ''">
+            and DATE_FORMAT(ts.record_dt,"%Y-%m-%d") = #{date}
+        </if>
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+    </select>
+    <select id="getMemberBloodPressureList" resultMap="ListScreenStatics">
+        select t.member_name,t.sex,t.birthday,case
+        when t.is_diabetes = 1 and t.essential_hyp = 1 then '高血压-糖尿病'
+        when t.is_diabetes = 1 then '糖尿病' when t.essential_hyp = 1 then '高血压' else '无' end diabetesType,
+        tp.pressureValue,tp.sbp_level,tp.dbp_level
+        from t_member_join_hospital h
+        join t_member t on t.member_id = h.member_id
+        join
+        (select member_id,CONCAT(sbp,'/',dbp) pressureValue,record_time,sbp_level,dbp_level from
+        (select member_id,dbp,sbp,record_time,sbp_level,dbp_level from t_blood_pressure
+        where is_valid = 1
+        having 1
+        /*keep orderby*/
+        order by record_time desc ) a group by member_id)
+        tp on tp.member_id = h.member_id
+        where t.is_valid = 1 and h.valid = 1
+        <if test="date != null and date != ''">
+            and DATE_FORMAT(tp.record_time,"%Y-%m-%d") = #{date}
+        </if>
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+        group by h.member_id
+    </select>
+
+    <select id="getMemberDiabetesLevelList" resultMap="ListScreenStatics">
+        select s.member_id,s.member_name,s.sex,s.age
+        from t_member_level s join t_member_join_hospital h
+        on s.member_id = h.member_id
+        where s.is_valid =1 and h.valid =1 and s.level_type = 2 and s.confirm = 0
+        and DATE_FORMAT(s.insert_dt,"%Y-%m-%d") = #{date}
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+        group by s.member_id
+    </select>
+
+    <select id="getMemberHypLevelList" resultMap="ListScreenStatics">
+        select s.member_id,s.member_name,s.sex,s.age
+        from t_member_level s join t_member_join_hospital h
+        on s.member_id = h.member_id
+        where s.is_valid =1 and h.valid =1 and s.level_type = 1 and s.confirm = 0
+        and DATE_FORMAT(s.insert_dt,"%Y-%m-%d") = #{date}
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and h.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+        group by s.member_id
+
+    </select>
+    <select id="countMemberJoinVisit" resultType="java.lang.Long">
+        select ifnull(count(distinct mv.member_id),0)
+        from t_member_visit mv
+        join t_member_join_hospital mjh on mjh.member_id = mv.member_id
+        <where>
+        mjh.valid = 1
+            <if test = "date != null and '' != date">
+                and DATE_FORMAT(mv.visit_date,"%Y-%m-%d") = #{date}
+            </if>
+            <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+                and mjh.hospital_id in
+                <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                    #{hospitalId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="countMemberJoinOutVisit" resultType="java.lang.Long">
+        select ifnull(count(distinct mv.member_id),0)
+        from t_member_visit mv
+        join t_member_join_hospital mjh on mjh.member_id = mv.member_id
+        <where>
+        mjh.valid = 1
+            <if test="hospitalId != null and '' != hospitalId">
+                and mjh.hospital_id = #{hospitalId} and mv.hospital_id != #{hospitalId}
+            </if>
+            <if test = "date != null and '' != date">
+                and mv.visit_date =  DATE_FORMAT(#{date},"%Y-%m-%d")
+            </if>
+        </where>
+    </select>
+
+    <select id="loadFollowNumByCommitteeId" resultType="java.lang.Long">
+        select ifnull(count(1),0) from (
+        select f.member_id
+        from t_follow_main f
+        join t_member tm on f.member_id = tm.member_id
+        join t_member_join_hospital mjh on mjh.member_id = f.member_id
+        where f.is_valid =1 and f.status = 1 and mjh.valid =1
+        <if test = "startDt != null and '' != startDt">
+            AND f.fill_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            AND f.fill_dt &lt;= #{endDt}
+        </if>
+        <if test = "type != null">
+            AND f.type = #{type}
+        </if>
+        <if test="committeeId != null and '' != committeeId">
+            and tm.committee_id = #{committeeId}
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and mjh.hospital_id = #{hospitalId}
+            <if test="committeeId == null or '' == committeeId">
+                and (tm.committee_id = '' or tm.committee_id is null)
+            </if>
+        </if>
+        group by f.member_id ) a
+    </select>
+    <select id="getStandardFollowMemberCount" resultType="java.lang.Long">
+        select ifnull(count(1),0) from(
+        (select fm.member_id from
+        t_follow_main fm join t_member_join_hospital mjh
+        on fm.member_id = mjh.member_id
+        <where>
+            fm.is_valid = 1 and fm.status = 1 and mjh.valid = 1 and fm.type in(7,11)
+            <if test="firstStartDt != null and '' != firstStartDt">
+                and fm.fill_dt &gt;= #{firstStartDt}
+            </if>
+            <if test="firstEndDt != null and '' != firstEndDt">
+                and fm.fill_dt &lt;= #{firstEndDt}
+            </if>
+            <if test="hospitalId != null and hospitalId != '' ">
+                and mjh.hospital_id = #{hospitalId}
+            </if>
+        </where>
+        group by fm.member_id ) a
+        <if test = "quarter gt 1">
+            join
+            (select fm.member_id from
+            t_follow_main fm left join t_member_join_hospital mjh
+            on fm.member_id = mjh.member_id
+            <where>
+                fm.is_valid = 1 and fm.status = 1 and mjh.valid = 1 and fm.type in(7,11)
+                <if test="secondStartDt != null and '' != secondStartDt">
+                    and fm.fill_dt &gt;= #{secondStartDt}
+                </if>
+                <if test="secondEndDt != null and '' != secondEndDt">
+                    and fm.fill_dt &lt;= #{secondEndDt}
+                </if>
+                <if test="hospitalId != null and hospitalId != '' ">
+                    and mjh.hospital_id = #{hospitalId}
+                </if>
+            </where>
+            group by fm.member_id ) b on a.member_id = b.member_id
+        </if>
+        <if test = "quarter gt 2">
+            join
+            (select fm.member_id from
+            t_follow_main fm left join t_member_join_hospital mjh
+            on fm.member_id = mjh.member_id
+            <where>
+                fm.is_valid = 1 and fm.status = 1 and mjh.valid = 1 and fm.type in(7,11)
+                <if test="thirdStartDt != null and '' != thirdStartDt">
+                    and fm.fill_dt &gt;= #{thirdStartDt}
+                </if>
+                <if test="thirdEndDt != null and '' != thirdEndDt">
+                    and fm.fill_dt &lt;= #{thirdEndDt}
+                </if>
+                <if test="hospitalId != null and hospitalId != '' ">
+                    and mjh.hospital_id = #{hospitalId}
+                </if>
+            </where>
+            group by fm.member_id ) c on a.member_id = c.member_id
+        </if>
+        <if test = "quarter gt 3">
+            inner join
+            (select fm.member_id from
+            t_follow_main fm left join t_member_join_hospital mjh
+            on fm.member_id = mjh.member_id
+            <where>
+                fm.is_valid = 1 and fm.status = 1 and mjh.valid = 1 and fm.type in(7,11)
+                <if test="fourthStartDt != null and '' != fourthStartDt">
+                    and fm.fill_dt &gt;= #{fourthStartDt}
+                </if>
+                <if test="fourthEndDt != null and '' != fourthEndDt">
+                    and fm.fill_dt &lt;= #{fourthEndDt}
+                </if>
+                <if test="hospitalId != null and hospitalId != '' ">
+                    and mjh.hospital_id = #{hospitalId}
+                </if>
+            </where>
+            group by fm.member_id ) d on a.member_id = d.member_id
+        </if>
+        )
+    </select>
+
+    <select id="getYearFollowCountHospitalId" resultType="java.lang.Long">
+        select count(1) from
+        (
+        select fm.member_id,count(1) num
+        from
+        t_follow_main fm join t_member_join_hospital mjh on mjh.member_id =fm.member_id
+        where
+        DATE_FORMAT(fill_dt,"%Y") = #{year} and type in(7,11) and fm.status = 1
+        and mjh.hospital_id = #{hospitalId}
+        GROUP BY fm.member_id
+        <if test="num != null and num != '' ">
+            <choose>
+                <when test="num == 5">
+                    having num  &gt;= #{num}
+                </when>
+                <otherwise>
+                    having num  = #{num}
+                </otherwise>
+            </choose>
+        </if>
+        ) a
+    </select>
+
+    <select id="getYearFollowCountCommitedId" resultType="java.lang.Long">
+        select count(1) from
+        (
+        select fm.member_id,count(1) num
+        from
+        t_follow_main fm join t_member tm on tm.member_id = fm.member_id
+        where
+        DATE_FORMAT(fill_dt,"%Y") = #{year} and fm.status = 1
+        <if test="committeeId != null and '' != committeeId">
+            and tm.committee_id = #{committeeId}
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and fm.hospital_id = #{hospitalId}
+            <if test="committeeId == null or '' == committeeId">
+                and (tm.committee_id = '' or tm.committee_id is null)
+            </if>
+        </if>
+        <if test = "type != null">
+            AND fm.type = #{type}
+        </if>
+        GROUP BY (member_id)
+        <if test="num != null and num != '' ">
+            <choose>
+                <when test="num == 5">
+                    having num  &gt;= #{num}
+                </when>
+                <otherwise>
+                    having num  = #{num}
+                </otherwise>
+            </choose>
+        </if>
+        ) a
+    </select>
+    <select id="getYearFollowTotalCountCommitedId" resultType="java.lang.Long">
+        select count(1) num from
+         (
+         select sid
+        from
+        t_follow_main fm join t_member tm on tm.member_id = fm.member_id
+        where
+        DATE_FORMAT(fill_dt,"%Y") = #{year} and tm.committee_id = #{committeeId}
+        and fm.type = #{type} and fm.status = 1
+        group by sid) a
+
+    </select>
+
+    <select id="loadDoSugarMembersNumByHospitalId" resultType="java.lang.Long">
+        select ifnull(count(1),0) from (
+        select s.member_id from t_blood_sugar s join t_member_join_hospital h
+        on s.member_id = h.member_id
+        join t_member tm on tm.member_id = h.member_id
+        where s.is_valid =1 and h.valid =1
+        and s.record_type =1
+        <if test = "startDt != null and '' != startDt">
+            and s.record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            and s.record_dt &lt;= #{endDt}
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and h.hospital_id = #{hospitalId}
+            <if test="committeeId == null or '' == committeeId">
+                and (tm.committee_id = '' or tm.committee_id is null)
+            </if>
+        </if>
+        <if test="committeeId != null and '' != committeeId">
+            and tm.committee_id = #{committeeId}
+        </if>
+        group by s.member_id) a
+    </select>
+    <select id="loadDoBloodPressureMembersNumByHospitalId" resultType="java.lang.Long">
+        select ifnull(count(1),0) from (
+        select s.member_id from
+        t_blood_pressure s join t_member_join_hospital h
+        on s.member_id = h.member_id
+        join t_member tm on tm.member_id = h.member_id
+        where s.is_valid =1 and h.valid =1
+        <if test = "startDt != null and '' != startDt">
+            and s.record_time &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            and s.record_time &lt;= #{endDt}
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and h.hospital_id = #{hospitalId}
+            <if test="committeeId == null or '' == committeeId">
+                and (tm.committee_id = '' or tm.committee_id is null)
+            </if>
+        </if>
+        <if test="committeeId != null and '' != committeeId">
+            and tm.committee_id = #{committeeId}
+        </if>
+        group by s.member_id) a
+    </select>
+    <select id="loadFollowNumByHospitalId" resultType="java.lang.Long">
+        select ifnull(count(1),0) from (
+        select f.member_id
+        from t_follow_main f
+        join t_member_join_hospital mjh on f.member_id = mjh.member_id
+        where f.is_valid =1 and mjh.valid = 1 and f.status = 1
+        and mjh.hospital_id = #{hospitalId}
+        <if test = "startDt != null and '' != startDt">
+            AND f.fill_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            AND f.fill_dt &lt;= #{endDt}
+        </if>
+        <if test = "type != null">
+            AND f.type = #{type}
+        </if>
+        group by f.member_id ) a
+    </select>
+    <select id="getStandardManageMemberCount" resultType="java.lang.Long">
+        select ifnull(count(1),0) from(
+        (select fm.member_id from
+        t_follow_main fm join t_member_join_hospital mjh
+        on fm.member_id = mjh.member_id
+        <where>
+            fm.is_valid = 1 and fm.status = 1 and mjh.valid = 1 and fm.type in(7,11)
+            <if test="firstStartDt != null and '' != firstStartDt">
+                and fm.fill_dt &gt;= #{firstStartDt}
+            </if>
+            <if test="firstEndDt != null and '' != firstEndDt">
+                and fm.fill_dt &lt;= #{firstEndDt}
+            </if>
+            <if test="hospitalId != null and hospitalId != '' ">
+                and mjh.hospital_id = #{hospitalId}
+            </if>
+        </where>
+        group by fm.member_id ) a
+
+            join
+            (select fm.member_id from
+            t_follow_main fm left join t_member_join_hospital mjh
+            on fm.member_id = mjh.member_id
+            <where>
+                fm.is_valid = 1 and fm.status = 1 and mjh.valid = 1 and fm.type in(7,11)
+                <if test="secondStartDt != null and '' != secondStartDt">
+                    and fm.fill_dt &gt;= #{secondStartDt}
+                </if>
+                <if test="secondEndDt != null and '' != secondEndDt">
+                    and fm.fill_dt &lt;= #{secondEndDt}
+                </if>
+                <if test="hospitalId != null and hospitalId != '' ">
+                    and mjh.hospital_id = #{hospitalId}
+                </if>
+            </where>
+            group by fm.member_id ) b on a.member_id = b.member_id
+
+
+            join
+            (select fm.member_id from
+            t_follow_main fm left join t_member_join_hospital mjh
+            on fm.member_id = mjh.member_id
+            <where>
+                fm.is_valid = 1 and fm.status = 1 and mjh.valid = 1 and fm.type in(7,11)
+                <if test="thirdStartDt != null and '' != thirdStartDt">
+                    and fm.fill_dt &gt;= #{thirdStartDt}
+                </if>
+                <if test="thirdEndDt != null and '' != thirdEndDt">
+                    and fm.fill_dt &lt;= #{thirdEndDt}
+                </if>
+                <if test="hospitalId != null and hospitalId != '' ">
+                    and mjh.hospital_id = #{hospitalId}
+                </if>
+            </where>
+            group by fm.member_id ) c on a.member_id = c.member_id
+
+             join
+            (select fm.member_id from
+            t_follow_main fm left join t_member_join_hospital mjh
+            on fm.member_id = mjh.member_id
+            <where>
+                fm.is_valid = 1 and fm.status = 1 and mjh.valid = 1 and fm.type in(7,11)
+                <if test="fourthStartDt != null and '' != fourthStartDt">
+                    and fm.fill_dt &gt;= #{fourthStartDt}
+                </if>
+                <if test="fourthEndDt != null and '' != fourthEndDt">
+                    and fm.fill_dt &lt;= #{fourthEndDt}
+                </if>
+                <if test="hospitalId != null and hospitalId != '' ">
+                    and mjh.hospital_id = #{hospitalId}
+                </if>
+            </where>
+            group by fm.member_id ) d on a.member_id = d.member_id
+
+            join
+        (select er.member_id from
+        t_member_physical_examination_record er  join t_member_join_hospital mjh
+        on er.member_id = mjh.member_id
+        <where>
+            er.valid = 1 and mjh.valid = 1
+            <if test="fourthStartDt != null and '' != fourthStartDt">
+                and er.check_year = #{year}
+            </if>
+            <if test="hospitalId != null and hospitalId != '' ">
+                and mjh.hospital_id = #{hospitalId}
+            </if>
+        </where>
+        group by er.member_id ) e on a.member_id = e.member_id
+        )
+    </select>
+    <select id="loadDoSugarMembersBadNum" resultType="java.lang.Long">
+        select ifnull(count(1),0) from (
+        select s.member_id from t_blood_sugar s join t_member_join_hospital h
+        on s.member_id = h.member_id
+        where s.is_valid =1 and h.valid =1 and DATE_FORMAT(s.record_dt,"%Y-%m-%d") = #{date}
+        and s.record_type =1 and s.param_level !=3
+        and h.hospital_id = #{hospitalId}
+        group by s.member_id) a
+    </select>
+    <select id="loadDoBloodPressureMembersBadNum" resultType="java.lang.Long">
+        select ifnull(count(1),0) from (
+        select s.member_id from
+        t_blood_pressure s join t_member_join_hospital h
+        on s.member_id = h.member_id
+        where s.is_valid =1 and h.valid =1 and  (s.sbp_level!=3 or s.dbp_level != 3)
+        and DATE_FORMAT(s.record_time,"%Y-%m-%d") = #{date}
+        and h.hospital_id = #{hospitalId}
+        group by s.member_id) a
+    </select>
+    <select id="loadUnConfirmLevelMemberNum" resultType="java.lang.Long">
+    select ifnull(count(1),0)
+    from (select a.member_id
+    from t_member_level a
+    join t_member_join_hospital mjh on a.member_id = mjh.member_id
+    where a.is_valid = 1 and mjh.valid = 1 and confirm = 0
+    and mjh.hospital_id = #{hospitalId}
+    and a.level_type = #{levelType} group by a.member_id) b
+    </select>
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sid" useGeneratedKeys="true">
+        insert into t_member_exception_record(sid,member_id,hospital_id,
+       data_json,record_dt, insert_dt, modify_dt, is_valid)
+        values (#{sid},#{memberId},#{hospitalId}, #{dataJson},
+        #{recordDt}, now(), now(), 1)
+        on duplicate key update
+        modify_dt = now(), data_json = values(data_json)
+    </insert>
+
+    <insert id="insertBatch" keyProperty="sid" useGeneratedKeys="true">
+        insert into t_member_exception_record(sid,member_id, hospital_id,
+        data_json,record_dt, insert_dt, modify_dt, is_valid)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.sid},#{entity.memberId}, #{entity.hospitalId},
+           #{entity.dataJson},#{dataJson}, #{entity.recordDt}, #{entity.insertDt},
+            #{entity.modifyDt}, 1)
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="sid" useGeneratedKeys="true">
+        insert into t_member_exception_record(sid,member_id, hospital_id,
+      data_json,record_dt, insert_dt, modify_dt, is_valid)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.sid},#{entity.memberId},  #{entity.hospitalId},
+            #{entity.dataJson},#{entity.recordDt}, #{entity.insertDt},
+            #{entity.modifyDt}, 1)
+        </foreach>
+        on duplicate key update
+        member_id = values(member_id) ,
+        hospital_id = values(hospital_id) ,
+        data_json = values(dataJson) , record_dt = values(record_dt) , insert_dt = values(insert_dt) , modify_dt =
+        values(modify_dt) , is_valid = values(is_valid)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update t_member_exception_record
+        <set>
+            <if test="memberId != null and memberId != ''">
+                member_id = #{memberId},
+            </if>
+            <if test="hospitalId != null and hospitalId != ''">
+                hospital_id = #{hospitalId},
+            </if>
+            <if test="dataJson != null and dataJson != ''">
+                data_json = #{dataJson},
+            </if>
+            <if test="recordDt != null and recordDt != ''">
+                record_dt = #{recordDt},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid},
+            </if>
+            modify_dt = now()
+        </set>
+        where sid = #{sid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from t_member_exception_record where sid = #{sid}
+    </delete>
+
+</mapper>
+

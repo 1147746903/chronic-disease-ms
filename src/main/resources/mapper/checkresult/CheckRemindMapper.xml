@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.checkresult.mapper.CheckRemindMapper">
+
+    <resultMap id="checkRemind" type="com.comvee.cdms.checkresult.po.CheckRemindPO">
+        <id column="sid" jdbcType="VARCHAR" property="sid" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="check_item" jdbcType="VARCHAR" property="checkItem" />
+        <result column="review_dt" jdbcType="DATE" property="reviewDt" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="valid" jdbcType="TINYINT" property="valid" />
+        <result column="is_ignore" jdbcType="TINYINT" property="isIgnore" />
+        <result column="finish_status" jdbcType="TINYINT" property="finishStatus" />
+        <result column="check_data" jdbcType="LONGVARCHAR" property="checkData" />
+    </resultMap>
+
+    <resultMap id="checkRemindVO" type="com.comvee.cdms.checkresult.vo.CheckRemindVO">
+        <id column="sid" jdbcType="VARCHAR" property="sid" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="check_item" jdbcType="VARCHAR" property="checkItem" />
+        <result column="review_dt" jdbcType="DATE" property="reviewDt" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="valid" jdbcType="TINYINT" property="valid" />
+        <result column="is_ignore" jdbcType="TINYINT" property="isIgnore" />
+        <result column="finish_status" jdbcType="TINYINT" property="finishStatus" />
+        <result column="check_data" jdbcType="LONGVARCHAR" property="checkData" />
+        <result column="member_name" jdbcType="VARCHAR" property="memberName" />
+    </resultMap>
+
+    <insert id="addCheckRemind" parameterType="com.comvee.cdms.checkresult.po.CheckRemindPO">
+       insert into t_check_remind (sid, member_id, check_item,
+          review_dt, finish_status,check_data)
+       values (#{sid,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT}, #{checkItem,jdbcType=VARCHAR},
+          #{reviewDt,jdbcType=DATE}, #{finishStatus,jdbcType=TINYINT} ,#{checkData,jdbcType=LONGVARCHAR})
+    </insert>
+
+    <update id="updateCheckRemind" parameterType="com.comvee.cdms.checkresult.po.CheckRemindPO">
+        update t_check_remind
+        set update_dt = now()
+        <if test="checkData != null and '' != checkData">
+            ,check_data = #{checkData,jdbcType=VARCHAR}
+        </if>
+        <if test="reviewDt != null and '' != reviewDt">
+            ,review_dt = #{reviewDt,jdbcType=VARCHAR}
+        </if>
+        <if test="isIgnore != null">
+            ,is_ignore = #{isIgnore}
+        </if>
+        <if test="finishStatus != null">
+            ,finish_status = #{finishStatus}
+        </if>
+        where sid = #{sid,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getMemberCheckRemind" resultMap="checkRemind" parameterType="com.comvee.cdms.checkresult.dto.GetMemberCheckRemindDTO">
+        select sid, member_id, check_item, review_dt, insert_dt, update_dt, valid, is_ignore,
+        finish_status, check_data
+        from t_check_remind
+        where valid = 1
+        <if test = "sid != null and '' != sid">
+          and sid = #{sid}
+        </if>
+        <if test = "memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test = "checkItem != null and '' != checkItem">
+            and check_item = #{checkItem}
+        </if>
+        limit 1
+    </select>
+
+    <select id="listDoctorCheckRemind" resultMap="checkRemindVO">
+
+        select r.sid, r.check_item, r.review_dt, r.insert_dt,
+        r.update_dt, r.valid , r.member_id, r.check_data,r.is_ignore,m.member_name
+        from t_check_remind r left join t_member_join_hospital h
+        on r.member_id = h.member_id
+        left join t_member m on m.member_id = r.member_id
+        where r.valid = 1 and r.is_ignore = 0 and h.valid = 1
+        <if test="startDt != null and startDt != ''">
+            and r.review_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and endDt != ''">
+            and r.review_dt &lt;= #{endDt}
+        </if>
+        <if test="hospitalId!=null and hospitalId!=''">
+            and h.hospital_id = #{hospitalId}
+        </if>
+        order by r.insert_dt DESC
+    </select>
+
+    <select id="listNeedCheckRemindMember" resultType="string">
+      select t.member_id from t_check_remind t where t.valid = 1 and t.review_dt = #{reviewDt} group by t.member_id
+    </select>
+
+    <select id="listMemberCheckRemind" resultMap="checkRemind" parameterType="com.comvee.cdms.checkresult.dto.ListMemberCheckRemindDTO">
+        select sid, member_id, check_item, review_dt, insert_dt, update_dt, valid, is_ignore,
+        finish_status, check_data
+        from t_check_remind
+        where valid = 1 and member_id = #{memberId}
+        <if test="reviewDt != null and '' != reviewDt">
+          and review_dt = #{reviewDt}
+        </if>
+    </select>
+</mapper>

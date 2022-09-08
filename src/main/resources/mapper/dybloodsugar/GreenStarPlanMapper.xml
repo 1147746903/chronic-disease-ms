@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.GreenStarPlanMapper">
+    <resultMap id="greenStarPlan" type="com.comvee.cdms.dybloodsugar.po.GreenStarPlanPO">
+        <id column="sid" property="sid" jdbcType="BIGINT"/>
+        <result column="main_plan_id" property="mainPlanId" jdbcType="VARCHAR"/>
+        <result column="plan_date" property="planDate" jdbcType="VARCHAR"/>
+        <result column="date_index" property="dateIndex" jdbcType="TINYINT"/>
+        <result column="has_done" property="hasDone" jdbcType="TINYINT"/>
+        <result column="is_lock" property="isLock" jdbcType="TINYINT"/>
+        <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP"/>
+        <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="addPlan" parameterType="com.comvee.cdms.dybloodsugar.po.GreenStarPlanPO">
+        insert into t_green_star_plan(sid, main_plan_id, plan_date, date_index, has_done, is_lock)
+        values (#{sid,jdbcType=BIGINT}, #{mainPlanId},
+                #{planDate,jdbcType=VARCHAR},#{dateIndex,jdbcType=TINYINT},
+                #{hasDone,jdbcType=TINYINT}, #{isLock,jdbcType=TINYINT})
+    </insert>
+
+    <update id="updatePlan" parameterType="com.comvee.cdms.dybloodsugar.po.GreenStarPlanPO">
+        update t_green_star_plan
+        set modify_dt = now()
+        <if test="isLock != null">
+            , is_lock = #{isLock,jdbcType=TINYINT}
+        </if>
+        , has_done        = #{hasDone,jdbcType=TINYINT}
+        where sid = #{sid,jdbcType=BIGINT}
+    </update>
+    <update id="unLockPlanById" parameterType="String">
+        update t_green_star_plan
+        set is_lock = 0
+        where 1=1
+        and sid = #{sid}
+    </update>
+
+    <update id="unLockPlanByMainPlan" parameterType="com.comvee.cdms.dybloodsugar.po.GreenStarPlanPO">
+        update t_green_star_plan
+        set is_lock = 0
+        where 1=1
+          and main_plan_id = #{mainPlanId}
+          and date_index = #{dateIndex,jdbcType=TINYINT}
+    </update>
+    <select id="getPlanById" parameterType="String"
+            resultMap="greenStarPlan">
+        select *
+        from t_green_star_plan
+        where 1=1
+        and sid = #{sid}
+    </select>
+
+
+    <select id="getPlan" parameterType="com.comvee.cdms.dybloodsugar.dto.GetGreenStarPlanDTO"
+            resultMap="greenStarPlan">
+        select *
+        from t_green_star_plan
+        where 1=1
+          and main_plan_id = #{mainPlanId}
+          and date_index = #{dateIndex,jdbcType=TINYINT}
+    </select>
+
+    <select id="listPlan" parameterType="String"
+            resultMap="greenStarPlan">
+        select sid, main_plan_id, plan_date, date_index, has_done, is_lock, insert_dt, modify_dt
+        from t_green_star_plan
+        where 1 = 1
+          and main_plan_id = #{mainPlanId}
+        order by date_index
+    </select>
+    <delete id="deletePlanByMainPlanId"  parameterType="String">
+        delete
+        from t_green_star_plan
+        where main_plan_id = #{mainPlanId}
+    </delete>
+</mapper>

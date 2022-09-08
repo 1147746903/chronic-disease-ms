@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.follow.mapper.FollowupCareMapper">
+
+  <resultMap id="followupCare" type="com.comvee.cdms.follow.po.FollowupCarePO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="care_content" jdbcType="VARCHAR" property="careContent" />
+    <result column="send_date" jdbcType="DATE" property="sendDate" />
+    <result column="send_status" jdbcType="TINYINT" property="sendStatus" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+    <result column="sender_info" jdbcType="VARCHAR" property="senderInfo" />
+    <result column="receive_type" jdbcType="TINYINT" property="receiveType" />
+  </resultMap>
+
+  <insert id="addFollowupCare" parameterType="com.comvee.cdms.follow.po.FollowupCarePO">
+    insert into t_followup_care (sid, member_id, doctor_id,
+    care_content, send_date, send_status,
+    sender_info, receive_type)
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT},
+    #{careContent,jdbcType=VARCHAR}, #{sendDate,jdbcType=DATE}, #{sendStatus,jdbcType=TINYINT},
+    #{senderInfo,jdbcType=VARCHAR}, #{receiveType,jdbcType=TINYINT})
+  </insert>
+
+  <update id="updateFollowupCare" parameterType="com.comvee.cdms.follow.po.FollowupCarePO">
+    update t_followup_care
+    <set>
+      <if test="careContent != null and '' != careContent">
+        care_content = #{careContent,jdbcType=VARCHAR},
+      </if>
+      <if test="sendDate != null and '' != sendDate">
+        send_date = #{sendDate,jdbcType=DATE},
+      </if>
+      <if test="sendStatus != null">
+        send_status = #{sendStatus,jdbcType=TINYINT},
+      </if>
+      <if test="valid != null">
+        valid = #{valid,jdbcType=TINYINT},
+      </if>
+      <if test="senderInfo != null and '' != senderInfo">
+        sender_info = #{senderInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveType != null">
+        receive_type = #{receiveType,jdbcType=TINYINT},
+      </if>
+    </set>
+    where sid = #{sid,jdbcType=BIGINT}
+  </update>
+
+  <select id="listMemberFollowupCare" resultMap="followupCare">
+    select sid, member_id, doctor_id, care_content, send_date, send_status, insert_dt,
+    update_dt, valid, sender_info, receive_type
+    from t_followup_care where valid = 1
+    <if test="memberId != null and '' != memberId">
+        and member_id in (-1 , #{memberId})
+    </if>
+    <if test="doctorId != null and '' != doctorId">
+        and doctor_id = #{doctorId}
+    </if>
+    order by insert_dt desc
+  </select>
+
+  <select id="listToBeSendFollowupCare" resultMap="followupCare">
+    select sid, member_id, doctor_id, care_content, send_date, send_status, insert_dt,
+    update_dt, valid, sender_info, receive_type
+    from t_followup_care where valid = 1 and send_date = date_format(now(),'%Y-%m-%d') and send_status = 0 order by insert_dt
+  </select>
+
+  <select id="getFollowupCareById" resultMap="followupCare">
+    select sid, member_id, doctor_id, care_content, send_date, send_status, insert_dt,
+    update_dt, valid, sender_info, receive_type
+    from t_followup_care where valid = 1 and sid = #{sid}
+  </select>
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.DyRecordSettingMapper">
+  <resultMap id="SettingRecord" type="com.comvee.cdms.dybloodsugar.po.DyRecordSettingPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="sensor_no" jdbcType="BIGINT" property="sensorNo" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+    <result column="breakfast_dt" jdbcType="VARCHAR" property="breakfastDt" />
+    <result column="lunch_dt" jdbcType="VARCHAR" property="lunchDt" />
+    <result column="dinner_dt" jdbcType="VARCHAR" property="dinnerDt" />
+    <result column="sleep_dt" jdbcType="VARCHAR" property="sleepDt" />
+    <result column="blood_sugar_min" jdbcType="DOUBLE" property="bloodSugarMin" />
+    <result column="blood_sugar_max" jdbcType="DOUBLE" property="bloodSugarMax" />
+    <result column="blood_sugar_min_after" jdbcType="DOUBLE" property="bloodSugarMinAfter" />
+    <result column="blood_sugar_max_after" jdbcType="DOUBLE" property="bloodSugarMaxAfter" />
+    <result column="blood_sugar_norm" jdbcType="INTEGER" property="bloodSugarNorm" />
+    <result column="blood_sugar_norm_than" jdbcType="INTEGER" property="bloodSugarNormThan" />
+    <result column="blood_sugar_norm_less" jdbcType="INTEGER" property="bloodSugarNormLess" />
+    <result column="blood_time_ratio_max" jdbcType="DOUBLE" property="bloodTimeRatioMax" />
+    <result column="blood_time_ratio_min" jdbcType="DOUBLE" property="bloodTimeRatioMin" />
+    <result column="blood_sugar_norm_ratio_max" jdbcType="INTEGER" property="bloodSugarNormRatioMax" />
+    <result column="blood_sugar_norm_ratio_min" jdbcType="INTEGER" property="bloodSugarNormRatioMin" />
+    <result column="median_target" jdbcType="DOUBLE" property="medianTarget" />
+    <result column="glucose_min" jdbcType="VARCHAR" property="glucoseMin" />
+    <result column="hbA1c_max" jdbcType="DOUBLE" property="hbA1cMax" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+  </resultMap>
+
+  <insert id="insertSettingRecord" parameterType="com.comvee.cdms.dybloodsugar.po.DyRecordSettingPO">
+   insert into dy_setting_record
+    (sid,sensor_no,insert_dt,modify_dt,breakfast_dt,lunch_dt,dinner_dt,sleep_dt,blood_sugar_min
+    ,blood_sugar_max,blood_sugar_norm,blood_sugar_norm_than,blood_sugar_norm_less,blood_time_ratio_max
+    ,blood_time_ratio_min,is_valid,blood_sugar_min_after,blood_sugar_max_after,blood_sugar_norm_ratio_max
+    ,blood_sugar_norm_ratio_min,median_target,glucose_min,hbA1c_max)values (#{sid,jdbcType=VARCHAR},#{sensorNo,jdbcType=VARCHAR},now(),now(),
+    #{breakfastDt,jdbcType=VARCHAR},#{lunchDt,jdbcType=VARCHAR},#{dinnerDt,jdbcType=VARCHAR},
+    #{sleepDt,jdbcType=VARCHAR},#{bloodSugarMin,jdbcType=VARCHAR},#{bloodSugarMax,jdbcType=VARCHAR},
+    #{bloodSugarNorm,jdbcType=INTEGER},#{bloodSugarNormThan,jdbcType=INTEGER},#{bloodSugarNormLess,jdbcType=INTEGER},
+    #{bloodTimeRatioMax,jdbcType=VARCHAR},#{bloodTimeRatioMin,jdbcType=VARCHAR},1, #{bloodSugarMinAfter,jdbcType=DOUBLE}, #{bloodSugarMaxAfter,jdbcType=DOUBLE},
+    #{bloodSugarNormRatioMax,jdbcType=INTEGER}, #{bloodSugarNormRatioMin,jdbcType=INTEGER},
+    #{medianTarget,jdbcType=DOUBLE}, #{glucoseMin,jdbcType=VARCHAR}, #{hbA1cMax,jdbcType=DOUBLE})
+  </insert>
+
+    <select id="getlastSystemSettingByMemberId" resultMap="SettingRecord">
+        select sensor_no from dy_setting_record where sensor_no = #{sensorNo}
+    </select>
+    <select id="getSettingBySensorNo" resultMap="SettingRecord">
+        select sid,sensor_no,insert_dt,modify_dt,breakfast_dt,lunch_dt,dinner_dt,sleep_dt,blood_sugar_min
+        ,blood_sugar_max,blood_sugar_norm,blood_sugar_norm_than,blood_sugar_norm_less,blood_time_ratio_max
+        ,blood_time_ratio_min,is_valid,blood_sugar_min_after,blood_sugar_max_after,blood_sugar_norm_ratio_max
+        ,blood_sugar_norm_ratio_min,median_target,glucose_min,hbA1c_max from dy_setting_record where sensor_no = #{sensorNo}
+    </select>
+    <select id="getSettingValues" resultMap="SettingRecord">
+        select sid,sensor_no,insert_dt,modify_dt,breakfast_dt,lunch_dt,dinner_dt,sleep_dt,blood_sugar_min
+        ,blood_sugar_max,blood_sugar_norm,blood_sugar_norm_than,blood_sugar_norm_less,blood_time_ratio_max
+        ,blood_time_ratio_min,is_valid,blood_sugar_min_after,blood_sugar_max_after,blood_sugar_norm_ratio_max
+        ,blood_sugar_norm_ratio_min,median_target,glucose_min,hbA1c_max from dy_setting_record where sensor_no = #{sensorNo} order by insert_dt limit 1
+    </select>
+</mapper>

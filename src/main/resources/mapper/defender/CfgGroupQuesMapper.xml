@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.CfgGroupQuesMapper">
+    <sql id="CfgGroupQuesColumns">
+         t.tid As tid ,  t.qid As qid ,  t.group_id As groupId ,  t.is_valid As isValid ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  t.sort As sort 
+    </sql>
+
+	<!--根据id获取场景题目配置表信息 -->
+	<select id="loadCfgGroupQuesById" resultType="com.comvee.cdms.defender.model.CfgGroupQuesModel">
+		SELECT 
+			<include refid="CfgGroupQuesColumns"/>
+		FROM tiq_cfg_group_ques t
+		WHERE t.tid = #{tid} 
+	</select>
+	
+	<!-- 获取场景题目配置分页信息  -->
+	<select id="loadCfgGroupQues" resultType="com.comvee.cdms.defender.model.CfgGroupQuesModel">
+		SELECT 
+			<include refid="CfgGroupQuesColumns"/> , q.title,q.code
+		FROM tiq_cfg_group_ques t,tiq_cfg_ques q
+		WHERE  t.is_valid = 1 AND t.qid = q.qid
+		AND t.group_id = #{gid}
+	    order by t.sort asc
+		
+		
+		<!--
+		<where>
+	    <if test="tid!=null and tid!='' ">     
+        AND t.tid = #{tid}  
+        </if>  
+	    <if test="qid!=null and qid!='' ">     
+        AND t.qid = #{qid}  
+        </if>  
+	    <if test="groupId!=null and groupId!='' ">     
+        AND t.group_id = #{groupId}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+	    <if test="sort!=null and sort!='' ">     
+        AND t.sort = #{sort}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+	<select id="loadGroupQuesMaxSort" resultType="Long">
+ 		select max(sort) from tiq_cfg_group_ques t where t.group_id = #{groupId} and is_valid = 1 
+ 	</select>
+
+    <!-- 统计场景题目配置记录数 -->
+	<select id="countCfgGroupQues" parameterType="Map" resultType="Long">
+		SELECT count( tid )
+		FROM tiq_cfg_group_ques t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="tid!=null and tid!='' ">     
+         AND t.tid = #{tid}    
+        </if>  
+	    <if test="qid!=null and qid!='' ">     
+         AND t.qid = #{qid}    
+        </if>  
+	    <if test="groupId!=null and groupId!='' ">     
+         AND t.group_id = #{groupId}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+	    <if test="sort!=null and sort!='' ">     
+         AND t.sort = #{sort}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加场景题目配置记录 -->
+	<insert id="addCfgGroupQues">
+		INSERT INTO tiq_cfg_group_ques(
+				
+				    tid,
+				
+				qid,
+				group_id,
+				is_valid,
+				modify_dt,
+				insert_dt,
+				sort
+		) VALUES (
+			         #{tid},
+				#{qid},
+				#{groupId},
+				1,
+				now(),
+				now(),
+				#{sort}
+		)
+	</insert>
+
+    <!-- 修改场景题目配置记录 -->
+	<update id="modifyCfgGroupQues">
+		UPDATE tiq_cfg_group_ques 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="tid!=null and tid!='' ">    
+	        tid = #{tid},
+	        </if>
+	        <if test="qid!=null and qid!='' ">    
+	        qid = #{qid},
+	        </if>
+	        <if test="groupId!=null and groupId!='' ">    
+	        group_id = #{groupId},
+	        </if>
+	        modify_dt = now(),
+	        <if test="sort!=null and sort!='' ">    
+	        sort = #{sort},
+	        </if>
+		</trim>
+		WHERE tid = #{tid}
+	</update>
+	
+	<!-- 删除场景题目配置记录  -->
+	<update id="delCfgGroupQues" parameterType="Long">
+		UPDATE tiq_cfg_group_ques SET  is_valid = 0 , modify_dt = now()
+		WHERE tid = #{tid} and is_valid = 1
+	</update>
+	
+	<update id="sortCfgGroupQues">
+		UPDATE tiq_cfg_group_ques t SET t.modify_dt = SYSDATE(),t.sort = #{sort} , modify_dt = now()
+   		WHERE group_id = #{groupId} and qid = #{qid} 
+	</update>
+	  
+
+
+
+
+<!-- 获取场景题目配置分页信息  -->
+	<select id="loadGroupQuesByQid" resultType="com.comvee.cdms.defender.model.CfgGroupQuesModel">
+		SELECT 
+			<include refid="CfgGroupQuesColumns"/> , q.title
+		FROM tiq_cfg_group_ques t,tiq_cfg_ques q
+		WHERE  t.is_valid = 1 AND t.qid = q.qid
+		AND t.group_id = #{gid} and t.qid = #{qid}
+	</select>
+
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.defender.mapper.PatientCourseFilesAnswerMapper" >
+  <resultMap id="BaseResultMap" type="com.comvee.cdms.defender.model.PatientCourseFilesAnswerModel" >
+    <id column="sid" property="sid" jdbcType="BIGINT" />
+    <result column="pid" property="pid" jdbcType="BIGINT" />
+    <result column="qid" property="qid" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="value" property="value" jdbcType="VARCHAR" />
+    <result column="insert_dt" property="insertDt" jdbcType="VARCHAR" />
+    <result column="is_valid" property="isValid" jdbcType="TINYINT" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    sid, pid, qid, title, value, insert_dt, is_valid
+  </sql>
+  
+  <select id="getPatientCourseFilesAnswer" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from tiq_patient_course_files_answer
+    where is_valid=1
+    <if test="pid!=null and pid!=''">
+    	and pid = #{pid}
+    </if> 
+    <if test="qid!=null and qid!=''">
+    	and qid = #{qid}
+    </if> 
+  </select>
+  
+  <insert id="addPatientCourseFilesAnswer" parameterType="com.comvee.cdms.defender.model.PatientCourseFilesAnswerModel" >
+    insert into tiq_patient_course_files_answer (sid, pid, qid, title, 
+      value, insert_dt, is_valid
+      )
+    values (#{sid}, #{pid}, #{qid}, #{title}, 
+      #{value}, now(), 1
+      )
+  </insert>
+  
+</mapper>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.tcm.mapper.TcmCollectDataMapper">
+    <resultMap id="baseMap" type="com.comvee.cdms.tcm.model.po.TcmCollectDataPO">
+        <id column="sid" jdbcType="BIGINT" property="sid"/>
+        <result column="task_id" jdbcType="VARCHAR" property="taskId"/>
+        <result column="member_id" jdbcType="VARCHAR" property="memberId"/>
+        <result column="member_name" jdbcType="VARCHAR" property="memberName"/>
+        <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone"/>
+        <result column="sex" jdbcType="TINYINT" property="sex"/>
+        <result column="birthday" jdbcType="VARCHAR" property="birthday"/>
+        <result column="id_card" jdbcType="VARCHAR" property="idCard"/>
+        <result column="visit_no" jdbcType="VARCHAR" property="visitNo"/>
+        <result column="marital_status" jdbcType="TINYINT" property="maritalStatus"/>
+        <result column="profession" jdbcType="VARCHAR" property="profession"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="medical_history" jdbcType="VARCHAR" property="medicalHistory"/>
+        <result column="constitution" jdbcType="TINYINT" property="constitution"/>
+        <result column="height" jdbcType="VARCHAR" property="height"/>
+        <result column="weight" jdbcType="VARCHAR" property="weight"/>
+        <result column="bmi" jdbcType="VARCHAR" property="bmi"/>
+        <result column="bmi_measure_dt" jdbcType="VARCHAR" property="bmiMeasureDt"/>
+        <result column="feature" jdbcType="TINYINT" property="feature"/>
+        <result column="complexion" jdbcType="TINYINT" property="complexion"/>
+        <result column="tongue_body" jdbcType="TINYINT" property="tongueBody"/>
+        <result column="tongue_color" jdbcType="TINYINT" property="tongueColor"/>
+        <result column="tongue_fur" jdbcType="TINYINT" property="tongueFur"/>
+        <result column="coating_color" jdbcType="TINYINT" property="coatingColor"/>
+        <result column="tongue_condition" jdbcType="TINYINT" property="tongueCondition"/>
+        <result column="feature_image" jdbcType="VARCHAR" property="featureImage"/>
+        <result column="tongue_image" jdbcType="VARCHAR" property="tongueImage"/>
+        <result column="left_pulse_image" jdbcType="VARCHAR" property="leftPulseImage"/>
+        <result column="right_pulse_image" jdbcType="VARCHAR" property="rightPulseImage"/>
+        <result column="questionnaire_json" jdbcType="VARCHAR" property="questionnaireJson"/>
+        <result column="current_step" jdbcType="TINYINT" property="currentStep"/>
+        <result column="insert_dt" jdbcType="VARCHAR" property="insertDt"/>
+        <result column="update_dt" jdbcType="VARCHAR" property="updateDt"/>
+        <result column="valid" jdbcType="TINYINT" property="valid"/>
+    </resultMap>
+    <insert id="addTcmCollectData" parameterType="com.comvee.cdms.tcm.model.po.TcmCollectDataPO">
+        insert into t_tcm_collect_data(sid, task_id, member_id, member_name, mobile_phone, sex, birthday, id_card,
+                                       visit_no, marital_status, profession, address, medical_history, constitution,
+                                       height, weight, bmi, bmi_measure_dt, feature, complexion, tongue_body,
+                                       tongue_color, tongue_fur, coating_color, tongue_condition, feature_image, tongue_image, left_pulse_image,
+                                       right_pulse_image, questionnaire_json, current_step, insert_dt, update_dt, valid)
+        values (#{sid}, #{taskId}, #{memberId}, #{memberName}, #{mobilePhone}, #{sex}, #{birthday}, #{idCard}, #{visitNo},
+                #{maritalStatus}, #{profession}, #{address}, #{medicalHistory}, #{constitution}, #{height}, #{weight}, #{bmi}, #{bmiMeasureDt}, #{feature},
+                #{complexion}, #{tongueBody}, #{tongueColor}, #{tongueFur}, #{coatingColor}, #{tongueCondition}, #{featureImage}, #{tongueImage},
+                #{leftPulseImage}, #{rightPulseImage}, #{questionnaireJson}, #{currentStep}, now(), now(), 1)
+    </insert>
+    <update id="updateTcmCollectData" parameterType="com.comvee.cdms.tcm.model.po.TcmCollectDataPO">
+        update t_tcm_collect_data
+        set update_dt = now()
+        <if test=" memberId != null">
+            , member_id = #{memberId}
+        </if>
+        <if test=" height != null">
+            , height = #{height}
+        </if>
+        <if test=" weight != null">
+            , weight = #{weight}
+        </if>
+        <if test=" bmi != null">
+            , bmi = #{bmi}
+        </if>
+        <if test=" bmiMeasureDt != null">
+            , bmi_measure_dt = #{bmiMeasureDt}
+        </if>
+        <if test=" medicalHistory != null">
+            , medical_history = #{medicalHistory}
+        </if>
+        <if test=" constitution != null">
+            , constitution = #{constitution}
+        </if>
+        <if test=" feature != null">
+            , feature = #{feature}
+        </if>
+        <if test=" complexion != null">
+            , complexion = #{complexion}
+        </if>
+        <if test=" tongueBody != null">
+            , tongue_body = #{tongueBody}
+        </if>
+        <if test=" tongueColor != null">
+            , tongue_color = #{tongueColor}
+        </if>
+        <if test=" tongueFur != null">
+            , tongue_fur = #{tongueFur}
+        </if>
+          <if test=" coatingColor != null ">
+              , coating_color = #{coatingColor}
+          </if>
+        <if test=" tongueCondition != null">
+            , tongue_condition = #{tongueCondition}
+        </if>
+        <if test=" featureImage != null">
+            , feature_image = #{featureImage}
+        </if>
+        <if test=" tongueImage != null">
+            , tongue_image = #{tongueImage}
+        </if>
+        <if test=" leftPulseImage != null">
+            , left_pulse_image = #{leftPulseImage}
+        </if>
+        <if test=" rightPulseImage != null">
+            , right_pulse_image = #{rightPulseImage}
+        </if>
+        <if test=" questionnaireJson != null">
+            , questionnaire_json = #{questionnaireJson}
+        </if>
+        <if test=" currentStep != null">
+            , current_step = #{currentStep}
+        </if>
+        where sid = #{sid}
+    </update>
+    <select id="getTcmCollectDataByTaskId" parameterType="String" resultMap="baseMap">
+        select *
+        from t_tcm_collect_data
+        where valid =1 and task_id = #{taskId}
+    </select>
+
+    <select id="getLastTcmCollectData" parameterType="String" resultMap="baseMap">
+        select *
+        from t_tcm_collect_data
+        where valid = 1
+          and task_id = (select sid
+                        from t_tcm_collect_task
+                        where valid = 1
+                          and task_type = 3
+                            and member_id = #{memberId}
+                        order by finish_dt desc
+            limit 1)
+    </select>
+</mapper>

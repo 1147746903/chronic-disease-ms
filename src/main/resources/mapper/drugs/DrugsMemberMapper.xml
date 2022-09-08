@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.drugs.mapper.DrugsMemberMapper">
+
+    <!--药品库-->
+    <resultMap id="drugsDepot" type="com.comvee.cdms.drugs.po.DrugsDepotPO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="drug_name" jdbcType="VARCHAR" property="drugName" />
+        <result column="dose" jdbcType="VARCHAR" property="dose" />
+        <result column="unit" jdbcType="VARCHAR" property="unit" />
+        <result column="type" jdbcType="TINYINT" property="type" />
+        <result column="initials" jdbcType="VARCHAR" property="initials" />
+        <result column="pinyin" jdbcType="VARCHAR" property="pinyin" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="drug_usage" jdbcType="VARCHAR" property="drugUsage" />
+        <result column="side_effect" jdbcType="VARCHAR" property="sideEffect" />
+        <result column="adverse_reactions" jdbcType="VARCHAR" property="adverseReactions" />
+        <result column="contraindications" jdbcType="VARCHAR" property="contraindications" />
+        <result column="precautions" jdbcType="VARCHAR" property="precautions" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+        <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+        <result column="price" jdbcType="VARCHAR" property="price" />
+        <result column="belong_type" jdbcType="TINYINT" property="belongType" />
+        <result column="belong_id" jdbcType="VARCHAR" property="belongId" />
+    </resultMap>
+
+
+    <select id="listDrugsDepot" parameterType="com.comvee.cdms.drugs.dto.ListDrugsDepotDTO" resultMap="drugsDepot">
+        select id, drug_name, dose, unit, type, initials, pinyin, description,
+        drug_usage, side_effect, adverse_reactions, contraindications,
+        precautions, member_id, insert_dt, modify_dt, is_valid,price,belong_type,belong_id
+        from t_drugs_depot
+        <where>
+            <!--<if test = "memberId != null and '' != memberId">
+                and member_id = #{memberId}
+            </if>-->
+            <if test = "type != null and '' != type">
+                and type = #{type}
+            </if>
+            <if test="drugName!=null and drugName!=''">
+                and drug_name like concat('%',concat(#{drugName},'%'))
+            </if>
+            <if test="belongType!=null">
+                and belong_type = #{belongType}
+            </if>
+            <if test = "belongId != null and '' != belongId">
+                and belong_id = #{belongId}
+            </if>
+        </where>
+        order by insert_dt asc
+    </select>
+
+    <select id="getDrugsDepot" resultMap="drugsDepot">
+        select id, drug_name, dose, unit, type, initials, pinyin, description,
+        drug_usage, side_effect, adverse_reactions, contraindications,
+        precautions, member_id, insert_dt, modify_dt, is_valid,price,belong_type,belong_id
+        from t_drugs_depot
+        where id = #{id}
+    </select>
+
+    <insert id="addDrugsDepot" parameterType="com.comvee.cdms.drugs.po.DrugsDepotPO">
+        insert into t_drugs_depot (id, drug_name, dose, unit, type, initials, pinyin, description,
+        drug_usage, side_effect, adverse_reactions, contraindications,
+        precautions, member_id, insert_dt, modify_dt, is_valid,price,belong_type,belong_id
+        )
+        values (#{id}, #{drugName},#{dose}, #{unit},#{type}, #{initials},#{pinyin}, #{description},
+        #{drugUsage}, #{sideEffect},#{adverseReactions}, #{contraindications},
+        #{precautions}, #{memberId},now(), now(),1,#{price},#{belongType},#{belongId}
+        )
+    </insert>
+
+    <select id="getDrugsDepotByParam" resultMap="drugsDepot" parameterType="com.comvee.cdms.drugs.dto.DrugsDTO">
+        select id, drug_name, dose, unit, type, initials, pinyin, description,
+        drug_usage, side_effect, adverse_reactions, contraindications,
+        precautions, member_id, insert_dt, modify_dt, is_valid,price,belong_type,belong_id
+        from t_drugs_depot where is_valid = 1
+        <if test="drugName != null and drugName != ''">
+            and drug_name = #{drugName}
+        </if>
+        <if test="type != null">
+            and type = #{type}
+        </if>
+        <if test="belongType != null">
+            and belong_type = #{belongType}
+        </if>
+        <if test="belongId != null and belongId != ''">
+            and belong_id = #{belongId}
+        </if>
+    </select>
+
+</mapper>

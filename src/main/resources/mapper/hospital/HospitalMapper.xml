@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.hospital.mapper.HospitalMapper">
+
+  <resultMap id="hospital" type="com.comvee.cdms.hospital.model.po.HospitalPO">
+    <id column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName" />
+    <result column="hospital_type" jdbcType="TINYINT" property="hospitalType" />
+    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+    <result column="hospital_nature" jdbcType="TINYINT" property="hospitalNature" />
+    <result column="nature_name" jdbcType="VARCHAR" property="natureName" />
+    <result column="province_id" jdbcType="BIGINT" property="provinceId" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="city_id" jdbcType="BIGINT" property="cityId" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="area_id" jdbcType="BIGINT" property="areaId" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="people_number" jdbcType="INTEGER" property="peopleNumber" />
+    <result column="level" jdbcType="TINYINT" property="level"/>
+  </resultMap>
+
+  <resultMap id="rankData" type="com.comvee.cdms.statistics.vo.CommitteeRankVO">
+    <result column="joinMemberNum" jdbcType="BIGINT" property="joinMemberNum" />
+    <result column="sugarMemberNum" jdbcType="BIGINT" property="sugarMemberNum" />
+    <result column="pressureMemberNum" jdbcType="VARCHAR" property="pressureMemberNum" />
+  </resultMap>
+
+  <delete id="deleteHospital" parameterType="java.lang.String">
+    delete from t_hospital
+    where hospital_id = #{hospitalId,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="addHospital" parameterType="com.comvee.cdms.hospital.model.po.HospitalPO">
+    insert into t_hospital (hospital_id, hospital_name, hospital_type,
+      type_name, hospital_nature, nature_name,
+      province_id, province_name, city_id,
+      city_name, area_id, area_name,level
+      )
+    values (#{hospitalId,jdbcType=BIGINT}, #{hospitalName,jdbcType=VARCHAR}, #{hospitalType,jdbcType=TINYINT},
+      #{typeName,jdbcType=VARCHAR}, #{hospitalNature,jdbcType=TINYINT}, #{natureName,jdbcType=VARCHAR},
+      #{provinceId,jdbcType=BIGINT}, #{provinceName,jdbcType=VARCHAR}, #{cityId,jdbcType=BIGINT},
+      #{cityName,jdbcType=VARCHAR}, #{areaId,jdbcType=BIGINT}, #{areaName,jdbcType=VARCHAR},#{level,jdbcType=TINYINT}
+      )
+  </insert>
+
+  <update id="updateHospital" parameterType="com.comvee.cdms.hospital.model.dto.UpdateHospitalDTO">
+    update t_hospital
+    <set>
+      <!-- area_id = #{areaId,jdbcType=BIGINT},-->
+      <if test="hospitalName != null and '' != hospitalName">
+        hospital_name = #{hospitalName,jdbcType=VARCHAR},
+      </if>
+      <if test="hospitalType != null">
+        hospital_type = #{hospitalType,jdbcType=TINYINT},
+      </if>
+      <if test="typeName != null and '' != typeName">
+        type_name = #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="hospitalNature != null">
+        hospital_nature = #{hospitalNature,jdbcType=TINYINT},
+      </if>
+      <if test="natureName != null and '' != natureName">
+        nature_name = #{natureName,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null">
+        province_id = #{provinceId,jdbcType=BIGINT},
+      </if>
+      <if test="provinceName != null and '' != provinceName">
+        province_name = #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null">
+        city_id = #{cityId,jdbcType=BIGINT},
+      </if>
+      <if test="cityName != null and '' != cityName">
+        city_name = #{cityName,jdbcType=VARCHAR},
+      </if>
+     <if test="areaId != null">
+        area_id = #{areaId,jdbcType=BIGINT},
+      </if>
+      <if test="areaName != null and '' != areaName">
+        area_name = #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="peopleNumberIncr != null">
+        people_number = people_number + #{peopleNumberIncr},
+      </if>
+      <if test="level != null">
+        level =  #{level}
+      </if>
+    </set>
+
+    where hospital_id = #{hospitalId,jdbcType=BIGINT}
+  </update>
+
+  <select id="getHospital" parameterType="java.lang.String" resultMap="hospital">
+    select hospital_id, hospital_name, hospital_type, type_name, hospital_nature, nature_name,
+    province_id, province_name, city_id, city_name, area_id, area_name, insert_dt, update_dt,
+    people_number,level
+    from t_hospital
+    where hospital_id = #{hospitalId,jdbcType=BIGINT} limit 1
+  </select>
+
+  <select id="listHospital" resultMap="hospital" parameterType="com.comvee.cdms.hospital.model.dto.ListHospitalDTO">
+    select hospital_id, hospital_name, hospital_type, type_name, hospital_nature, nature_name,
+    province_id, province_name, city_id, city_name, area_id, area_name, insert_dt, update_dt,
+    people_number,level
+    from t_hospital
+    <where>
+      <if test="keyword != null and '' != keyword">
+        and instr(hospital_name, #{keyword}) > 0
+      </if>
+      <if test="areaId != null and '' != areaId">
+        and area_id = #{areaId}
+      </if>
+      <if test="level != null">
+       and level &lt;= #{level}
+      </if>
+    </where>
+    order by insert_dt desc
+  </select>
+  <select id="listHospitalByProvinceAndCity" parameterType="java.lang.String" resultMap="hospital">
+    select hospital_id,hospital_name,hospital_type,type_name,hospital_nature,nature_name,province_id,
+  province_name,city_id,city_name,area_id,area_name,insert_dt,update_dt,people_number,level
+  from t_hospital
+  <where>
+    <if test="provinceId != null and ''!=provinceId">
+      and province_id = #{provinceId}
+    </if>
+    <if test="cityId != null and ''!=cityId">
+       and city_id = #{cityId}
+    </if>
+  </where>
+  </select>
+
+  <select id="getCheckinInfoByMid" resultType="com.comvee.cdms.hospital.model.po.CheckinInfoPO">
+    SELECT sid, member_id memberId, checkin_status checkinStatus, department_id departmentId, department_name departmentName,
+    room_id roomId, room_no roomNo, bed_id bedId, bed_no bedNo, is_valid isValid, insert_dt insertDt, modify_dt modifyId,
+    in_hospital_date inHospitalDate, out_hospital_date outHospitalDate, hospital_no hospitalNo, patient_card patientCard,
+    pat_patient_id patPatientId, doctor_zg_code doctorZgCode, adm_no admNo, main_nurse_desc mainNurseDesc,
+    doctor_zg doctorZg, nur_level nurLevel, eat_model eatModel, charge_class chargeClass,hospital_id hospitalId
+    FROM t_member_checkin_info
+    WHERE is_valid=1 and checkin_status = 1 and member_id=#{memberId}
+    <if test="hospitalId != null and '' != hospitalId" >
+      and hospital_id = #{hospitalId}
+    </if>
+    limit 1
+  </select>
+
+  <update id="updateCheckinInfo">
+    update t_member_checkin_info
+    set modify_dt=now()
+    <if test="item.outHospitalDate!=null and item.outHospitalDate!=''">
+      ,out_hospital_date=#{item.outHospitalDate}
+    </if>
+    <if test="item.outHospitalDate==null or item.outHospitalDate==''">
+      ,out_hospital_date = NULL
+    </if>
+    <if test="item.checkinStatus!=null and item.checkinStatus!=''">
+      ,checkin_status=#{item.checkinStatus}
+    </if>
+    <if test="item.departmentId!=null and item.departmentId!=''">
+      ,department_id=#{item.departmentId}
+    </if>
+    <if test="item.departmentName!=null and item.departmentName!=''">
+      ,department_name=#{item.departmentName}
+    </if>
+    <if test="item.roomNo!=null and item.roomNo!=''">
+      ,room_no=#{item.roomNo}
+    </if>
+    <if test="item.bedId!=null and item.bedId!=''">
+      ,bed_id=#{item.bedId}
+    </if>
+    <if test="item.bedNo!=null and item.bedNo!=''">
+      ,bed_no=#{item.bedNo}
+    </if>
+    <if test="item.inHospitalDate!=null and item.inHospitalDate!=''">
+      ,in_hospital_date=#{item.inHospitalDate}
+    </if>
+    <if test="item.outHospitalDate!=null and item.outHospitalDate!=''">
+      ,out_hospital_date=#{item.outHospitalDate}
+    </if>
+    <if test="item.hospitalNo!=null and item.hospitalNo!=''">
+      ,hospital_no=#{item.hospitalNo}
+    </if>
+    <if test="item.patientCard!=null and item.patientCard!=''">
+      ,patient_card=#{item.patientCard}
+    </if>
+    <if test="item.doctorZgCode!=null and item.doctorZgCode!=''">
+      ,doctor_zg_code=#{item.doctorZgCode}
+    </if>
+    <if test="item.mainNurseDesc!=null and item.mainNurseDesc!=''">
+      ,main_nurse_desc=#{item.mainNurseDesc}
+    </if>
+    <if test="item.doctorZg!=null and item.doctorZg!=''">
+      ,doctor_zg=#{item.doctorZg}
+    </if>
+    <if test="item.nurLevel!=null and item.nurLevel!=''">
+      ,nur_level=#{item.nurLevel}
+    </if>
+    <if test="item.eatModel!=null and item.eatModel!=''">
+      ,eat_model=#{item.eatModel}
+    </if>
+    <if test="item.chargeClass!=null and item.chargeClass!=''">
+      ,charge_class=#{item.chargeClass}
+    </if>
+    where sid =#{item.sid}
+  </update>
+
+  <resultMap id = "inHospitalLog" type="com.comvee.cdms.hospital.model.po.InHospitalLogPO">
+    <id column="sid" property="sid" jdbcType="BIGINT"/>
+    <result column="member_id" property="memberId" jdbcType="BIGINT"/>
+    <result column="member_name" property="memberName" jdbcType="VARCHAR"/>
+    <result column="in_hospital_date" property="inHospitalDate"/>
+    <result column="out_hospital_date" property="outHospitalDate"/>
+    <result column="department_name" property="departmentName" jdbcType="VARCHAR"/>
+    <result column="department_id" property="departmentId" jdbcType="BIGINT"/>
+    <result column="bed_no" property="bedNo" jdbcType="INTEGER"/>
+    <result column="has_return_visit" property="hasReturnVisit" jdbcType="INTEGER"/>
+    <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP"/>
+    <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP"/>
+    <result column="is_valid" property="isValid" jdbcType="INTEGER"/>
+    <result column="sex" property="sex" jdbcType="INTEGER"/>
+    <result column="card_no" property="cardNo" jdbcType="VARCHAR"/>
+    <result column="in_hospital_card_no" property="inHospitalCardNo" jdbcType="VARCHAR"/>
+    <result column="in_hospital_day" property="inHospitalDay" jdbcType="INTEGER"/>
+    <result column="matters_needing_attent" property="mattersNeedingAttent" jdbcType="VARCHAR"/>
+    <result column="in_status" property="inStatus" jdbcType="INTEGER"/>
+    <result column="pat_patient_id" property="patPatientId" jdbcType="VARCHAR"/>
+    <result column="doctor_zg_code" property="doctorZgCode" jdbcType="VARCHAR"/>
+    <result column="adm_no" property="admNo" jdbcType="BIGINT"/>
+    <result column="main_nurse_desc" property="mainNurseDesc" jdbcType="VARCHAR"/>
+    <result column="doctor_zg" property="doctorZg" jdbcType="VARCHAR"/>
+    <result column="nur_level" property="nurLevel" jdbcType="VARCHAR"/>
+    <result column="eat_model" property="eatModel" jdbcType="VARCHAR"/>
+    <result column="charge_class" property="chargeClass" jdbcType="VARCHAR"/>
+    <result column="hospital_no" property="hospitalNo" jdbcType="BIGINT"/>
+    <result column="initial_diagnosis" property="initialDiagnosis"/>
+    <result column="mobile_phone" property="mobilePhone"/>
+    <result column="is_notification" property="isNotification"/>
+    <result column="hospital_id" property="hospitalId"/>
+  </resultMap>
+
+  <select id="getMemberInHospitalLogBOByMid" parameterType="string" resultMap="inHospitalLog">
+    SELECT t.sid, t.member_id, t.member_name, t.in_hospital_date, t.out_hospital_date, t.department_name, t.department_id, t.bed_no,
+    t.has_return_visit, t.insert_dt, t.modify_dt, t.is_valid, t.sex, t.card_no, t.in_hospital_card_no, t.in_hospital_day,
+    t.matters_needing_attent, t.in_status, t.pat_patient_id, t.doctor_zg_code, t.adm_no, t.main_nurse_desc, t.doctor_zg,
+    t.nur_level, eat_model, t.charge_class, t.hospital_no,t.initial_diagnosis, t.treatment_situation,
+    t.out_hospital_advice_json,t.is_notification  FROM t_member_in_hospital_log t
+    where t.is_valid=1 and in_status=1
+    and t.member_id=#{memberId} limit 1
+  </select>
+
+  <select id="listMemberInHospitalLogByMid" parameterType="string" resultMap="inHospitalLog">
+    SELECT t.sid, t.member_id, t.member_name, t.in_hospital_date, t.out_hospital_date, t.department_name, t.department_id, t.bed_no,
+    t.has_return_visit, t.insert_dt, t.modify_dt, t.is_valid, t.sex, t.card_no, t.in_hospital_card_no, t.in_hospital_day,
+    t.matters_needing_attent, t.in_status, t.pat_patient_id, t.doctor_zg_code, t.adm_no, t.main_nurse_desc, t.doctor_zg,
+    t.nur_level, eat_model, t.charge_class, t.hospital_no,t.initial_diagnosis, t.treatment_situation,
+    t.out_hospital_advice_json,t.is_notification  FROM t_member_in_hospital_log t
+    where t.is_valid=1
+    and t.member_id=#{memberId}
+    ORDER BY t.in_hospital_date desc
+  </select>
+
+  <insert id="addInHospitalLog">
+    insert into t_member_in_hospital_log (sid, member_id, member_name, in_hospital_date,
+    out_hospital_date, department_name, department_id, bed_no, has_return_visit, insert_dt,
+    modify_dt, is_valid, sex, card_no, in_hospital_card_no, in_hospital_day, matters_needing_attent,
+    in_status, pat_patient_id, doctor_zg_code, adm_no, main_nurse_desc, doctor_zg, nur_level, eat_model,
+    charge_class, hospital_no, initial_diagnosis, treatment_situation, out_hospital_advice_json,is_notification,hospital_id)
+    values (#{item.sid,jdbcType=BIGINT}, #{item.memberId,jdbcType=BIGINT}, #{item.memberName,jdbcType=VARCHAR},
+    #{item.inHospitalDate}, #{item.outHospitalDate}, #{item.departmentName,jdbcType=VARCHAR},
+    #{item.departmentId,jdbcType=BIGINT}, #{item.bedNo,jdbcType=INTEGER}, #{item.hasReturnVisit,jdbcType=INTEGER},
+    now(),now(), 1,
+    #{item.sex,jdbcType=INTEGER}, #{item.cardNo,jdbcType=VARCHAR}, #{item.inHospitalCardNo,jdbcType=VARCHAR},
+    #{item.inHospitalDay,jdbcType=INTEGER}, #{item.mattersNeedingAttent,jdbcType=VARCHAR}, #{item.inStatus,jdbcType=INTEGER},
+    #{item.patPatientId,jdbcType=VARCHAR}, #{item.doctorZgCode,jdbcType=VARCHAR}, #{item.admNo,jdbcType=BIGINT},
+    #{item.mainNurseDesc,jdbcType=VARCHAR}, #{item.doctorZg,jdbcType=VARCHAR}, #{item.nurLevel,jdbcType=VARCHAR},
+    #{item.eatModel,jdbcType=VARCHAR}, #{item.chargeClass,jdbcType=VARCHAR}, #{item.hospitalNo,jdbcType=BIGINT},
+    #{item.initialDiagnosis,jdbcType=LONGVARCHAR}, #{item.treatmentSituation,jdbcType=LONGVARCHAR},
+    #{item.outHospitalAdviceJson,jdbcType=LONGVARCHAR},0,#{item.hospitalId});
+  </insert>
+
+  <update id="updateInHospitalLog">
+    UPDATE t_member_in_hospital_log
+    <set>
+      modify_dt=now()
+      <if test="item.memberId != null">,member_id = #{item.memberId,jdbcType=BIGINT}</if>
+      <if test="item.memberName != null">,member_name = #{item.memberName,jdbcType=VARCHAR}</if>
+      <if test="item.inHospitalDate != null">
+        ,in_hospital_date = #{item.inHospitalDate}
+      </if>
+      <if test="item.outHospitalDate != null">
+        ,out_hospital_date = #{item.outHospitalDate}
+      </if>
+      <if test="item.departmentName != null">
+        ,department_name = #{item.departmentName,jdbcType=VARCHAR}
+      </if>
+      <if test="item.departmentId != null">,department_id = #{item.departmentId,jdbcType=BIGINT}</if>
+      <if test="item.bedNo != null">,bed_no = #{item.bedNo,jdbcType=INTEGER}</if>
+      <if test="item.hasReturnVisit != null">
+        ,has_return_visit = #{item.hasReturnVisit,jdbcType=INTEGER}
+      </if>
+      <if test="item.isValid != null">,is_valid = #{item.isValid,jdbcType=INTEGER}</if>
+      <if test="item.sex != null">,sex = #{item.sex,jdbcType=INTEGER}</if>
+      <if test="item.cardNo != null">,card_no = #{item.cardNo,jdbcType=VARCHAR}</if>
+      <if test="item.inHospitalCardNo != null">
+        ,in_hospital_card_no = #{item.inHospitalCardNo,jdbcType=VARCHAR}
+      </if>
+      <if test="item.inHospitalDay != null">
+        ,in_hospital_day = #{item.inHospitalDay,jdbcType=INTEGER}
+      </if>
+      <if test="item.mattersNeedingAttent != null">
+        ,matters_needing_attent = #{item.mattersNeedingAttent,jdbcType=VARCHAR}
+      </if>
+      <if test="item.inStatus != null">,in_status = #{item.inStatus,jdbcType=INTEGER}</if>
+      <if test="item.patPatientId != null">,pat_patient_id = #{item.patPatientId,jdbcType=VARCHAR}</if>
+      <if test="item.doctorZgCode != null">,doctor_zg_code = #{item.doctorZgCode,jdbcType=VARCHAR}</if>
+      <if test="item.admNo != null">,adm_no = #{item.admNo,jdbcType=BIGINT}</if>
+      <if test="item.mainNurseDesc != null">
+        ,main_nurse_desc = #{item.mainNurseDesc,jdbcType=VARCHAR}
+      </if>
+      <if test="item.doctorZg != null">,doctor_zg = #{item.doctorZg,jdbcType=VARCHAR}</if>
+      <if test="item.nurLevel != null">,nur_level = #{item.nurLevel,jdbcType=VARCHAR}</if>
+      <if test="item.eatModel != null">,eat_model = #{item.eatModel,jdbcType=VARCHAR}</if>
+      <if test="item.chargeClass != null">,charge_class = #{item.chargeClass,jdbcType=VARCHAR}</if>
+      <if test="item.hospitalNo != null">,hospital_no = #{item.hospitalNo,jdbcType=BIGINT}</if>
+      <if test="item.initialDiagnosis != null">
+        ,initial_diagnosis = #{item.initialDiagnosis,jdbcType=LONGVARCHAR}
+      </if>
+      <if test="item.treatmentSituation != null">
+        ,treatment_situation = #{item.treatmentSituation,jdbcType=LONGVARCHAR}
+      </if>
+      <if test="item.outHospitalAdviceJson != null">
+        ,out_hospital_advice_json = #{item.outHospitalAdviceJson,jdbcType=LONGVARCHAR}
+      </if>
+      <if test="item.isNotification!=null">
+        ,is_notification = #{item.isNotification}
+      </if>
+      <if test="item.hospitalId!=null">
+        ,hospital_id = #{item.hospitalId}
+      </if>
+    </set>
+    WHERE sid = #{item.sid};
+  </update>
+
+  <resultMap id="hosOptionMap" type="com.comvee.cdms.hospital.model.po.HosOptionPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="explain" jdbcType="VARCHAR" property="explain" />
+    <result column="option_json" jdbcType="LONGVARCHAR" property="optionJson" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="pjo_type" jdbcType="TINYINT" property="pjoType" />
+  </resultMap>
+
+  <select id="getHosOption" resultMap="hosOptionMap" parameterType="com.comvee.cdms.hospital.model.dto.HosOptionDTO">
+    select sid,hospital_id,doctor_id,`explain`,option_json,is_valid,insert_dt,modify_dt,pjo_type from t_hos_option
+    where is_valid=1 and hospital_id=#{hospitalId} and pjo_type = #{pjoType}
+    <if test="doctorId!=null and doctorId!=''">
+      and doctor_id=#{doctorId}
+    </if>
+    <if test="sid!=null and sid!=''">
+      and sid=#{sid}
+    </if>
+  </select>
+
+  <select id="listCheckinInfoOfV" resultType="com.comvee.cdms.hospital.model.po.CheckinInfoPO">
+    SELECT sid, ci.member_id memberId, checkin_status checkinStatus, department_id departmentId,
+    department_name departmentName,
+    room_id roomId, room_no roomNo, bed_id bedId, bed_no bedNo, ci.is_valid isValid, ci.insert_dt insertDt,
+    ci.modify_dt modifyId,
+    in_hospital_date inHospitalDate, out_hospital_date outHospitalDate, ci.hospital_no hospitalNo,
+    patient_card patientCard,
+    pat_patient_id patPatientId, doctor_zg_code doctorZgCode, adm_no admNo, main_nurse_desc mainNurseDesc,
+    doctor_zg doctorZg, nur_level nurLevel, eat_model eatModel, charge_class chargeClass,hospital_id hospitalId FROM t_member_checkin_info ci
+    JOIN t_member m ON m.member_id = ci.member_id AND ci.is_valid = 1
+    WHERE ci.hospital_id = #{hospitalId} AND ci.is_valid = 1 and ci.checkin_status=1
+    <if test="unDepartName!=null and unDepartName!=''">
+      AND ci.department_id NOT IN (
+      SELECT dd.department_id FROM t_department dd
+      WHERE dd.is_valid = 1 AND dd.department_name = #{unDepartName}
+      )
+    </if>
+  </select>
+	<select id="listInHospitalByDoctorId" resultType="com.comvee.cdms.hospital.model.po.InHospitalLogPO">
+        SELECT t.member_id as memberId FROM t_member_in_hospital_log t
+		join t_doctor_department q
+        on t.department_id = q.department_id and q.is_valid = 1 and q.doctor_id = #{doctorId}
+        <where>
+        	t.is_valid = 1
+	        <if test="refreshTime != null and '' != refreshTime">
+	            and t.modify_dt >= #{refreshTime}
+	        </if>
+          <if test="inStatus != null">
+            and t.in_status = #{inStatus}
+          </if>
+        </where>
+    </select>
+
+  <select id="getHospitalByHospitalId" resultMap="hospital">
+    select hospital_id, hospital_name from t_hospital where hospital_id = #{hospitalId}
+  </select>
+    <select id="getHospitalIdsByAreaId" resultType="java.lang.String">
+      select hospital_id from t_hospital where area_id = #{areaId}
+    </select>
+
+</mapper>

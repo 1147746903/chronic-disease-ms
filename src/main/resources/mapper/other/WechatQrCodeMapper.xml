@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.other.mapper.WechatQrCodeMapper">
+
+	<resultMap id="wechatQrCode" type="com.comvee.cdms.other.po.WechatQrcodePO">
+		<id column="sid" jdbcType="BIGINT" property="sid" />
+		<result column="scene_value" jdbcType="VARCHAR" property="sceneValue" />
+		<result column="qr_type" jdbcType="TINYINT" property="qrType" />
+		<result column="expire_seconds" jdbcType="INTEGER" property="expireSeconds" />
+		<result column="action_name" jdbcType="VARCHAR" property="actionName" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+		<result column="business_type" jdbcType="TINYINT" property="businessType" />
+		<result column="foreign_id" jdbcType="VARCHAR" property="foreignId" />
+		<result column="invalid_dt" jdbcType="TIMESTAMP" property="invalidDt" />
+		<result column="data_json" jdbcType="VARCHAR" property="dataJson" />
+		<result column="data_url" jdbcType="VARCHAR" property="dataUrl" />
+		<result column="qrcode_url" jdbcType="VARCHAR" property="qrcodeUrl" />
+		<result column="description" jdbcType="VARCHAR" property="description" />
+		<result column="origin" jdbcType="TINYINT" property="origin" />
+	</resultMap>
+
+	<insert id="addWechatQrCode" parameterType="com.comvee.cdms.other.po.WechatQrcodePO">
+		insert into t_wechat_qrcode (sid, scene_value, qr_type,
+		expire_seconds, action_name, business_type, foreign_id,
+		invalid_dt, data_json, data_url,
+		qrcode_url, description, origin)
+		values (#{sid,jdbcType=BIGINT}, #{sceneValue,jdbcType=VARCHAR}, #{qrType,jdbcType=TINYINT},
+		#{expireSeconds,jdbcType=INTEGER}, #{actionName,jdbcType=VARCHAR},  #{businessType,jdbcType=TINYINT}, #{foreignId,jdbcType=VARCHAR},
+		#{invalidDt,jdbcType=TIMESTAMP}, #{dataJson,jdbcType=VARCHAR}, #{dataUrl,jdbcType=VARCHAR},
+		#{qrcodeUrl,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{origin,jdbcType=TINYINT})
+	</insert>
+
+	<select id="getWechatQrCode" parameterType="com.comvee.cdms.other.dto.GetWechatQrCodeDTO" resultMap="wechatQrCode">
+		select sid, scene_value, qr_type, expire_seconds, action_name, insert_dt, update_dt,
+		business_type, foreign_id, invalid_dt, data_json, data_url, qrcode_url, description, origin
+		from t_wechat_qrcode
+		<where>
+			<if test="sceneValue != null and '' != sceneValue">
+				and scene_value = #{sceneValue}
+			</if>
+			<if test="businessType != null">
+				and business_type = #{businessType}
+			</if>
+			<if test="foreignId != null and '' != foreignId">
+				and foreign_id = #{foreignId}
+			</if>
+			<if test="origin != null">
+				and origin = #{origin}
+			</if>
+			<if test="sid != null and '' != sid">
+				and sid = #{sid}
+			</if>
+		</where>
+		limit 1
+	</select>
+
+	<select id="getUnexpiredWechatQrCode" parameterType="com.comvee.cdms.other.dto.GetWechatQrCodeDTO" resultMap="wechatQrCode">
+		select sid, scene_value, qr_type, expire_seconds, action_name, insert_dt, update_dt,
+		business_type, foreign_id, invalid_dt, data_json, data_url, qrcode_url, description, origin
+		from t_wechat_qrcode
+		where qr_type = 2 and date_add(insert_dt, INTERVAL expire_seconds second) > now()
+		<if test="businessType != null">
+			and business_type = #{businessType}
+		</if>
+		<if test="foreignId != null and '' != foreignId">
+			and foreign_id = #{foreignId}
+		</if>
+		<if test="origin != null">
+			and origin = #{origin}
+		</if>
+		<if test="sid != null and '' != sid">
+			and sid = #{sid}
+		</if>
+		limit 1
+	</select>
+</mapper>

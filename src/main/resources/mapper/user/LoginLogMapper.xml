@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.user.mapper.LoginLogMapper">
+
+  <resultMap id="loginLog" type="com.comvee.cdms.user.po.LoginLogPO">
+    <id column="log_id" jdbcType="BIGINT" property="logId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_type" jdbcType="TINYINT" property="userType" />
+    <result column="login_dt" jdbcType="TIMESTAMP" property="loginDt" />
+    <result column="login_ip" jdbcType="VARCHAR" property="loginIp" />
+    <result column="login_result" jdbcType="TINYINT" property="loginResult" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+  </resultMap>
+
+  <insert id="addLoginLog" parameterType="com.comvee.cdms.user.po.LoginLogPO">
+    insert into t_login_log (log_id , user_name, user_type,
+      login_dt, login_ip, login_result)
+    values (#{logId} , #{userName,jdbcType=VARCHAR}, #{userType,jdbcType=TINYINT},
+      now(), #{loginIp,jdbcType=VARCHAR}, #{loginResult,jdbcType=TINYINT})
+  </insert>
+
+</mapper>

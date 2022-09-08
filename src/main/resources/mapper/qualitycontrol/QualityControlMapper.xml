@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.qualitycontrol.mapper.QualityControlMapper">
+
+  <resultMap id="qualityControlVO" type="com.comvee.cdms.qualitycontrol.model.vo.QualityControlVO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="measure_value" jdbcType="VARCHAR" property="measureValue" />
+    <result column="measure_dt" jdbcType="TIMESTAMP" property="measureDt" />
+    <result column="measure_result" jdbcType="TINYINT" property="measureResult" />
+    <result column="paper_batch_no" jdbcType="VARCHAR" property="paperBatchNo" />
+    <result column="liquid_batch_no" jdbcType="VARCHAR" property="liquidBatchNo" />
+    <result column="level_code" jdbcType="TINYINT" property="levelCode" />
+    <result column="level_name" jdbcType="VARCHAR" property="levelName" />
+    <result column="range_min" jdbcType="VARCHAR" property="rangeMin" />
+    <result column="range_max" jdbcType="VARCHAR" property="rangeMax" />
+    <result column="machine_sn" jdbcType="VARCHAR" property="machineSn" />
+    <result column="machine_id" jdbcType="BIGINT" property="machineId" />
+    <result column="machine_status" jdbcType="TINYINT" property="machineStatus" />
+  </resultMap>
+
+  <insert id="addQualityControl" parameterType="com.comvee.cdms.qualitycontrol.model.po.QualityControlPO">
+    insert into t_quality_control (sid, measure_value, measure_dt,
+      measure_result, paper_batch_no, liquid_batch_no, 
+      level_code, level_name, range_min, 
+      range_max, machine_sn, machine_id, 
+      operator_id, hospital_id)
+    values (#{sid,jdbcType=BIGINT}, #{measureValue,jdbcType=VARCHAR}, #{measureDt,jdbcType=TIMESTAMP}, 
+      #{measureResult,jdbcType=TINYINT}, #{paperBatchNo,jdbcType=VARCHAR}, #{liquidBatchNo,jdbcType=VARCHAR}, 
+      #{levelCode,jdbcType=TINYINT}, #{levelName,jdbcType=VARCHAR}, #{rangeMin,jdbcType=VARCHAR}, 
+      #{rangeMax,jdbcType=VARCHAR}, #{machineSn,jdbcType=VARCHAR}, #{machineId,jdbcType=BIGINT}, 
+      #{operatorId,jdbcType=BIGINT}, #{hospitalId,jdbcType=BIGINT})
+  </insert>
+
+  <select id="listQualityControl" resultMap="qualityControlVO" parameterType="com.comvee.cdms.qualitycontrol.model.param.ListQualityControlParam">
+    select t.sid, t.measure_value, t.measure_dt, t.measure_result, t.paper_batch_no, t.liquid_batch_no,
+    t.level_code, t.level_name, t.range_min, t.range_max, t.machine_sn, t.machine_id
+    ,ifnull(q.machine_status ,0) machine_status
+    from t_quality_control t left join t_machine q on q.is_valid = 1 and q.machine_id = t.machine_id
+    where t.valid = 1
+    <if test="hospitalId != null and '' != hospitalId">
+      and t.hospital_id = #{hospitalId}
+    </if>
+    <if test="levelCode != null">
+      and t.level_code = #{levelCode}
+    </if>
+    <if test="endDt != null and '' != endDt">
+      and t.measure_dt &lt;= #{endDt}
+    </if>
+    <if test="startDt != null and '' != startDt">
+      and t.measure_dt &gt;= #{startDt}
+    </if>
+    <if test="measureResult != null">
+      and t.measure_result = #{measureResult}
+    </if>
+    <if test="paperBatchNo != null and '' != paperBatchNo">
+      and t.paper_batch_no = #{paperBatchNo}
+    </if>
+    order by t.measure_dt desc
+  </select>
+</mapper>

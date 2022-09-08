@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.GreenStarRememberMapper">
+    <resultMap id="remember" type="com.comvee.cdms.dybloodsugar.po.GreenStarRememberPO">
+        <id column="sid" property="sid" jdbcType="BIGINT"/>
+        <result column="member_id" property="memberId" jdbcType="VARCHAR"/>
+        <result column="remember_type" property="rememberType" jdbcType="TINYINT"/>
+        <result column="time_type" property="timeType" jdbcType="TINYINT"/>
+        <result column="remember_time" property="rememberTime" jdbcType="VARCHAR"/>
+        <result column="remember_date" property="rememberDate" jdbcType="VARCHAR"/>
+        <result column="remember_data" property="rememberData" jdbcType="VARCHAR"/>
+        <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP"/>
+        <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="addRemember" parameterType="com.comvee.cdms.dybloodsugar.po.GreenStarRememberPO">
+        insert into t_green_plan_remember(sid, member_id, remember_type, remember_data, time_type, remember_time,
+                                          remember_date, insert_dt, modify_dt)
+        values (#{sid}, #{memberId}, #{rememberType}, #{rememberData}, #{timeType}, #{rememberTime}, #{rememberDate},
+                now(), now())
+    </insert>
+
+    <insert id="updateRemember" parameterType="com.comvee.cdms.dybloodsugar.po.GreenStarRememberPO">
+        update t_green_plan_remember
+        set modify_dt = now()
+        <if test="rememberTime != null">
+            , remember_time = #{rememberTime}
+        </if>
+        <if test="rememberData != null">
+            , remember_data = #{rememberData}
+        </if>
+        <if test=" timeType != null ">
+            , time_type = #{timeType}
+        </if>
+        where sid = #{sid}
+    </insert>
+    <delete id="removeRemember" parameterType="String">
+        delete
+        from t_green_plan_remember
+        where sid = #{sid}
+    </delete>
+    <select id="hasRemember" resultType="boolean"
+            parameterType="com.comvee.cdms.dybloodsugar.dto.GreenStarRememberDTO">
+        select count(sid) > 0
+        from t_green_plan_remember
+        where member_id = #{memberId}
+          and remember_date = #{rememberDate}
+        <if test="rememberType != null">
+            and remember_type = #{rememberType}
+        </if>
+        <if test="timeType != null">
+            and time_type = #{timeType}
+        </if>
+    </select>
+    <select id="listRemember" parameterType="com.comvee.cdms.dybloodsugar.dto.GreenStarRememberDTO"
+            resultMap="remember">
+        select *
+        from t_green_plan_remember
+        where member_id = #{memberId}
+        and remember_date = #{rememberDate}
+        <if test="rememberType != null">
+            and remember_type = #{rememberType}
+        </if>
+        <if test="timeType != null">
+            and time_type = #{timeType}
+        </if>
+        order by remember_date, remember_time
+    </select>
+    <select id="listRememberDate" parameterType="com.comvee.cdms.dybloodsugar.dto.GreenStarRememberDTO" resultType="String">
+        select distinct remember_date
+        from t_green_plan_remember
+        where member_id = #{memberId}
+        and remember_date between #{begin} and #{end}
+    </select>
+    <select id="getRememberTime" parameterType="com.comvee.cdms.dybloodsugar.dto.GreenStarRememberDTO" resultType="String">
+        select remember_time
+        from t_green_plan_remember
+        where member_id = #{memberId}
+          and remember_date = #{rememberDate}
+          and time_type = #{timeType}
+        and time_type in (1,2,3)
+    </select>
+    <select id="listHistoryRemember" parameterType="com.comvee.cdms.dybloodsugar.dto.GreenStarRememberDTO" resultType="String">
+        select distinct remember_data
+        from t_green_plan_remember
+        where 1=1
+        <if test="rememberType != null">
+            and remember_type = #{rememberType}
+        </if>
+        <if test="timeType != null">
+            and time_type = #{timeType}
+        </if>
+        order by insert_dt
+        limit  5
+    </select>
+</mapper>

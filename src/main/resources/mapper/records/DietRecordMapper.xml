@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.records.mapper.DietRecordMapper">
+    <resultMap id="baseMap" type="com.comvee.cdms.records.model.po.DietRecordPO">
+        <id column="sid" property="sid" jdbcType="BIGINT"/>
+        <result column="member_id" property="memberId" jdbcType="VARCHAR"/>
+        <result column="food_id" property="foodId" jdbcType="VARCHAR"/>
+        <result column="food_name" property="foodName" jdbcType="VARCHAR"/>
+        <result column="food_type" property="foodType" jdbcType="TINYINT"/>
+        <result column="total" property="total" jdbcType="DOUBLE"/>
+        <result column="unit" property="unit" jdbcType="VARCHAR"/>
+        <result column="heat" property="heat" jdbcType="DOUBLE"/>
+        <result column="food_pic" property="foodPic" jdbcType="VARCHAR"/>
+        <result column="record_main_id" property="recordMainId" jdbcType="VARCHAR"/>
+        <result column="record_dt" property="recordDt" jdbcType="VARCHAR"/>
+        <result column="record_time" property="recordTime" jdbcType="TIMESTAMP"/>
+        <result column="operation_type" property="operationType" jdbcType="TINYINT"/>
+        <result column="operation_id" property="operationId" jdbcType="VARCHAR"/>
+        <result column="time_type" property="timeType" jdbcType="TINYINT"/>
+        <result column="origin" property="origin" jdbcType="TINYINT"/>
+        <result column="origin_id" property="originId" jdbcType="VARCHAR"/>
+        <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP"/>
+        <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP"/>
+        <result column="valid" property="valid" jdbcType="TINYINT"/>
+        <result column="paramTime" property="paramTime" jdbcType="VARCHAR"/>
+    </resultMap>
+    <insert id="addDietRecord" parameterType="com.comvee.cdms.records.model.po.DietRecordPO">
+        insert into t_diet_records (sid, member_id, food_id, food_name, food_type, total, unit, heat, food_pic,
+                                    record_main_id, record_dt, record_time, operation_type, operation_id, time_type,
+                                    origin, origin_id, insert_dt, modify_dt, valid)
+        values (#{sid}, #{memberId}, #{foodId}, #{foodName}, #{foodType}, #{total}, #{unit}, #{heat}, #{foodPic},
+                #{recordMainId}, #{recordDt}, #{recordTime}, #{operationType}, #{operationId}, #{timeType}, #{origin},
+                #{originId}, now(), now(), 1);
+    </insert>
+    <update id="modifyDietRecord" parameterType="com.comvee.cdms.records.model.po.DietRecordPO">
+        update t_diet_records
+        set food_id = #{foodId},
+        food_name = #{foodName},
+        food_type = #{foodType},
+        total = #{total},
+        unit = #{unit},
+        heat = #{heat},
+        food_pic = #{foodPic},
+        record_dt = #{recordDt},
+        record_time = #{recordTime},
+        operation_type = #{operationType},
+        operation_id = #{operationId},
+        time_type = #{timeType},
+        origin = #{origin},
+        origin_id = #{originId},
+        <if test="valid != null">
+            valid = #{valid},
+        </if>
+        modify_dt = now()
+        where sid = #{sid}
+    </update>
+    <select id="getDietRecordById" parameterType="String" resultMap="baseMap">
+        select *
+        from t_diet_records
+        where sid = #{sid};
+    </select>
+    <select id="getFoodById" parameterType="string"
+            resultType="com.comvee.cdms.dybloodsugar.po.DyRememberFoodPO">
+        select *
+        from t_food_item
+        where  id = #{sid}
+    </select>
+    <select id="listDietRecord" parameterType="com.comvee.cdms.records.model.dto.DietRecordDTO"
+            resultMap="baseMap">
+        select *, date_format(record_time, '%H:%i') paramTime
+        from t_diet_records
+        where 1=1 and valid = 1
+        and member_id = #{memberId}
+        <if test=" recordDt != null and recordDt != '' ">
+            and record_dt = #{recordDt}
+        </if>
+        <if test=" operationType != null ">
+            and operation_type = #{operationType}
+        </if>
+        <if test=" operationId != null and operationId != '' ">
+            and operation_id = #{operationId}
+        </if>
+        <if test=" timeType != null ">
+            and time_type = #{timeType}
+        </if>
+        <if test=" origin != null ">
+            and origin = #{origin}
+        </if>
+        <if test=" originId != null and originId != '' ">
+            and origin_id = #{originId}
+        </if>
+        <if test=" begin != null and begin != '' ">
+            and record_time >= #{begin}
+        </if>
+        <if test=" end != null and end != '' ">
+            and #{end} >= record_time
+        </if>
+        <if test="timeTypeList != null and timeTypeList.size() > 0">
+            and time_type in
+            <foreach collection="timeTypeList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <delete id="deleteDietRecord" parameterType="com.comvee.cdms.records.model.dto.DietRecordDTO">
+        delete
+        from t_diet_records
+        where 1 = 1
+        and record_main_id = #{recordMainId}
+        <if test="idList != null">
+            and sid not in
+            <foreach collection="idList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </delete>
+    <select id="getMainId" resultType="String" parameterType="com.comvee.cdms.records.model.dto.DietRecordDTO">
+        select record_main_id
+        from t_diet_records
+        where member_id = #{memberId}
+          and record_dt = #{recordDt}
+          and time_type = #{timeType}
+          and time_type in (1, 2, 3)
+        order by record_time desc limit 1
+    </select>
+    <select id="getEatingTime" parameterType="com.comvee.cdms.records.model.dto.DietRecordDTO"
+            resultType="String">
+        select date_format(record_time, '%H:%i')
+        from t_diet_records
+        where member_id = #{memberId}
+          and record_dt = #{recordDt}
+          and time_type = #{timeType}
+          and time_type in (1, 2, 3)
+        order by record_time desc limit 1
+    </select>
+    <select id="listRecordDt" parameterType="com.comvee.cdms.records.model.dto.DietRecordDTO"
+            resultType="String">
+        select distinct record_dt
+        from (
+        select record_dt
+        from t_diet_records
+        where member_id = #{memberId}
+        <if test=" begin != null and begin != '' ">
+            and record_time >= #{begin}
+        </if>
+        <if test=" end != null and end != '' ">
+            and #{end} >= record_time
+        </if>
+        union
+        select record_dt
+        from t_diet_records
+        where member_id = #{memberId}
+        <if test=" begin != null and begin != '' ">
+            and record_time >= #{begin}
+        </if>
+        <if test=" end != null and end != '' ">
+            and #{end} >= record_time
+        </if>
+        ) a
+    </select>
+</mapper>

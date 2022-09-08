@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.wechat.mapper.MemberBarrierMapper">
+
+    <resultMap type="com.comvee.cdms.defender.wechat.po.MemberBarrierPO" id="TiqMemberBarrierMap">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="memberId" column="member_id" jdbcType="VARCHAR"/>
+        <result property="barrierType" column="barrier_type" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="score" column="score" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TiqMemberBarrierMap">
+        select
+          sid, member_id, barrier_type, status, sort, score, is_valid, insert_dt, modify_dt
+        from  tiq_member_barrier
+        where sid = #{sid}
+    </select>
+
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TiqMemberBarrierMap">
+        select
+        sid, member_id, barrier_type, status, sort, score, is_valid, insert_dt, modify_dt
+        from  tiq_member_barrier
+        <where>
+            <if test="sid != null and sid != ''">
+                and sid = #{sid}
+            </if>
+            <if test="memberId != null and memberId != ''">
+                and member_id = #{memberId}
+            </if>
+            <if test="barrierType != null">
+                and barrier_type = #{barrierType}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="sort != null">
+                and sort = #{sort}
+            </if>
+            <if test="score != null and score != ''">
+                and score = #{score}
+            </if>
+            <if test="isValid != null">
+                and is_valid = #{isValid}
+            </if>
+            <if test="insertDt != null and insertDt != ''">
+                and insert_dt = #{insertDt}
+            </if>
+            <if test="modifyDt != null">
+                and modify_dt = #{modifyDt}
+            </if>
+        </where>
+        order by sort asc
+    </select>
+    <select id="queryResult" resultType="com.comvee.cdms.defender.wechat.vo.BarrierResultVO">
+		select a.sid,a.member_id,a.score,
+(select count(sid) from  tiq_barrier_ques where barrier_id = #{sid} and batch_id = #{batchId} and is_correct = 1) as correctNum,
+(select count(sid) from  tiq_barrier_ques where barrier_id = #{sid} and batch_id = #{batchId} and (is_correct = 0 or is_correct is null)) as wrongNum
+from
+(select sid,member_id,score from tiq_member_barrier where sid = #{sid}) a
+    </select>
+    <select id="queryScoreExcludeSelfWithSort" resultType="java.lang.Integer">
+        select score from tiq_member_barrier where  sort = #{sort}
+        and (status = 2 or status = 4) and is_valid = 1 and member_id != #{memberId}
+        order by score asc
+    </select>
+
+    <select id="loadAllBarrCourse" resultType="java.lang.String">
+        select distinct course_id from tiq_barrier_course_ques_cfg where is_valid = 1
+    </select>
+    <select id="queryIdDescLimit" resultType="java.lang.String">
+        select sid from tiq_member_barrier where member_id = #{memberId}
+        order by sort desc
+        limit ${limit}
+    </select>
+    <select id="countBarrPersonNumBySort" resultType="java.lang.Integer">
+         select count(sid) from tiq_member_barrier where is_valid = 1 and sort = #{sort}
+        and score is not null
+
+    </select>
+    <select id="countBarrPersonOverScoreNum" resultType="java.lang.Integer">
+        select count(sid) from tiq_member_barrier where is_valid = 1 and sort = #{sort}
+        and score &gt; #{score}
+    </select>
+
+    <select id="countBarrPersonUnderScoreNum" resultType="java.lang.Integer">
+        select count(sid) from tiq_member_barrier where is_valid = 1 and sort = #{sort}
+        and score &lt; #{score}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sid" useGeneratedKeys="true">
+        insert into  tiq_member_barrier(sid,member_id, barrier_type, status, sort, is_valid, insert_dt, modify_dt)
+        values (#{sid},#{memberId}, #{barrierType}, #{status}, #{sort}, 1, now(),now())
+    </insert>
+
+
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update  tiq_member_barrier
+        <set>
+            <if test="memberId != null and memberId != ''">
+                member_id = #{memberId},
+            </if>
+            <if test="barrierType != null">
+                barrier_type = #{barrierType},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
+            <if test="score != null and score != ''">
+                score = #{score},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid},
+            </if>
+             modify_dt = now()
+        </set>
+        <where>
+            <if test="sid != null and sid != ''">
+                sid = #{sid}
+            </if>
+            <if test="memberId != null and memberId != ''">
+                AND member_id = #{memberId}
+            </if>
+            <if test="sort != null">
+                AND sort = #{sort}
+            </if>
+        </where>
+
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from  tiq_member_barrier where sid = #{sid};
+    </delete>
+
+</mapper>
+

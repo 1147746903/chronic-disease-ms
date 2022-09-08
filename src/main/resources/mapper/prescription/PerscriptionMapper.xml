@@ -1,0 +1,1301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.prescription.mapper.PrescriptionMapper">
+
+    <resultMap id="prescription" type="com.comvee.cdms.prescription.po.PrescriptionPO" >
+        <id column="sid" property="sid" />
+        <result column="member_id" property="memberId" />
+        <result column="insert_dt" property="insertDt" />
+        <result column="modify_dt" property="modifyDt" />
+        <result column="is_valid" property="isValid" />
+        <result column="doctor_id" property="doctorId" />
+        <result column="team_id" property="teamId" />
+        <result column="schedule" property="schedule" />
+        <result column="module" property="module" />
+        <result column="edu_cycle" property="eduCycle" />
+        <result column="eoh_type" property="eohType" />
+        <result column="hand_down" property="handDown" />
+        <result column="version" property="version" />
+        <result column="member_info_json" property="memberInfoJson"></result>
+        <result column="hospital_id" property="hospitalId"></result>
+    </resultMap>
+
+    <resultMap id="prescriptionDetail" type="com.comvee.cdms.prescription.po.PrescriptionDetailPO" >
+        <id column="sid" property="sid" />
+        <result column="prescription_id" property="prescriptionId" />
+        <result column="save_state" property="saveState" />
+        <result column="type" property="type" />
+        <result column="detail_json" property="detailJson" />
+        <result column="member_id" property="memberId" />
+        <result column="insert_dt" property="insertDt" />
+        <result column="modify_dt" property="modifyDt" />
+        <result column="is_valid" property="isValid" />
+    </resultMap>
+
+    <resultMap id="prescriptionLog" type="com.comvee.cdms.prescription.po.PrescriptionLogPO" >
+        <id column="sid" property="sid" />
+        <result column="prescription_id" property="prescriptionId" />
+        <result column="insert_dt" property="insertDt" />
+        <result column="modify_dt" property="modifyDt" />
+        <result column="is_valid" property="isValid" />
+        <result column="operat_type" property="operatType" />
+        <result column="doctor_id" property="doctorId" />
+        <result column="schedule" property="schedule" />
+    </resultMap>
+
+    <resultMap id="prescriptionKnowledge" type="com.comvee.cdms.prescription.po.PrescriptionKnowledgePO" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="knowledge" property="knowledge" jdbcType="VARCHAR" />
+        <result column="week" property="week" jdbcType="INTEGER" />
+        <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP" />
+        <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP" />
+        <result column="is_valid" property="isValid" jdbcType="TINYINT" />
+        <result column="member_id" property="memberId" jdbcType="BIGINT" />
+        <result column="prescription_id" property="prescriptionId" jdbcType="BIGINT" />
+        <result column="article_id" property="articleId" jdbcType="BIGINT" />
+        <result column="has_learned" property="hasLearned" jdbcType="TINYINT" />
+        <result column="learn_dt" property="learnDt" jdbcType="TIMESTAMP" />
+        <result column="plan_push_dt" property="planPushDt" jdbcType="TIMESTAMP" />
+        <result column="plan_push_order" property="planPushOrder" jdbcType="INTEGER" />
+        <result column="need_push" property="needPush" jdbcType="TINYINT" />
+        <result column="follow_id" property="followId" jdbcType="BIGINT" />
+        <result column="knowledge_type" property="knowledgeType" jdbcType="TINYINT" />
+    </resultMap>
+
+    <resultMap id="monthPrescription" type="com.comvee.cdms.prescription.po.CountMonthPrescriptionPO">
+        <result column="month" property="month"/>
+        <result column="count" property="count"/>
+    </resultMap>
+
+    <resultMap id="memberPrescription" type="com.comvee.cdms.prescription.po.MemberPrescriptionPO" >
+        <id column="sid" property="sid" />
+        <result column="member_id" property="memberId" />
+        <result column="insert_dt" property="insertDt" />
+        <result column="modify_dt" property="modifyDt" />
+        <result column="is_valid" property="isValid" />
+        <result column="doctor_id" property="doctorId" />
+        <result column="schedule" property="schedule" />
+        <result column="module" property="module" />
+        <result column="edu_cycle" property="eduCycle" />
+        <result column="eoh_type" property="eohType" />
+        <result column="hand_down" property="handDown" />
+        <result column="hand_down" property="handDown" />
+        <result column="hand_down" property="handDown" />
+        <result column="doctor_name" property="doctorName" />
+        <result column="sex" property="doctorSex" />
+    </resultMap>
+
+    <insert id="insertPrescription"  parameterType="com.comvee.cdms.prescription.po.PrescriptionPO">
+        INSERT INTO t_prescription(sid,member_id,insert_dt,modify_dt,is_valid,
+        doctor_id,team_id,schedule,module,edu_cycle,eoh_type,hand_down,version,member_info_json,hospital_id)
+        VALUES (#{sid},#{memberId},now(),now(),1,#{doctorId},#{teamId},1,#{module},
+        #{eduCycle},#{eohType},0,#{version},#{memberInfoJson},#{hospitalId})
+    </insert>
+
+    <insert id="insertPrescriptionDetail" parameterType="com.comvee.cdms.prescription.po.PrescriptionDetailPO">
+        INSERT INTO t_prescription_detail(sid,prescription_id,save_state,type,detail_json,member_id,insert_dt,modify_dt,is_valid)
+        VALUES (#{sid},#{prescriptionId},0,#{type},#{detailJson},#{memberId},now(),now(),1)
+    </insert>
+
+    <insert id="batchInsertPrescriptionDetail" parameterType="com.comvee.cdms.prescription.po.PrescriptionDetailPO">
+        <foreach collection="list" item="item" index="index">
+            INSERT INTO t_prescription_detail(sid,prescription_id,save_state,type,detail_json,member_id,insert_dt,modify_dt,is_valid)
+            VALUES (#{item.sid},#{item.prescriptionId},0,#{item.type},#{item.detailJson},#{item.memberId},now(),now(),1);
+        </foreach>
+    </insert>
+
+    <insert id="insertPrescriptionLog" parameterType="com.comvee.cdms.prescription.po.PrescriptionLogPO">
+        INSERT INTO t_prescription_log(sid,prescription_id,insert_dt,modify_dt,is_valid,operat_type,doctor_id,schedule)
+        VALUES (#{sid},#{prescriptionId},now(),now(),1,#{operatType},#{doctorId},#{schedule})
+    </insert>
+
+    <delete id="deletePrescription" parameterType="com.comvee.cdms.prescription.dto.DelPrescriptionDTO">
+        DELETE FROM t_prescription
+        <where>
+            is_valid = 1
+            <if test="sid!=null and sid!=''">
+                AND sid = #{sid}
+            </if>
+            <if test="memberId!=null and memberId!=''">
+                AND member_id = #{memberId}
+            </if>
+            <if test="doctorId!=null and doctorId!=''">
+                AND doctor_id = #{doctorId}
+            </if>
+            <if test="hospitalId!=null and hospitalId!=''">
+                AND hospital_id = #{hospitalId}
+            </if>
+            <if test="sidList!=null and sidList.size()&gt;0">
+                AND sid IN
+                <foreach collection="sidList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deletePrescriptionDetail" parameterType="com.comvee.cdms.prescription.dto.DelPrescriptionDetailDTO">
+        DELETE FROM t_prescription_detail
+        <where>
+            is_valid = 1
+            <if test="sid!=null and sid!=''">
+                AND sid = #{sid}
+            </if>
+            <if test="memberId!=null and memberId!=''">
+                AND member_id = #{memberId}
+            </if>
+            <if test="prescriptionId!=null and prescriptionId!=''">
+                AND prescription_id = #{prescriptionId}
+            </if>
+            <if test="sidList!=null and sidList.size()&gt;0">
+                AND sid IN
+                <foreach collection="sidList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="prescriptionIdList!=null and prescriptionIdList.size()&gt;0">
+                AND prescription_id IN
+                <foreach collection="prescriptionIdList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deletePrescriptionLog" parameterType="com.comvee.cdms.prescription.dto.DelPrescriptionLogDTO">
+        DELETE FROM t_prescription_log
+        <where>
+            is_valid = 1
+            <if test="sid!=null and sid!=''">
+                AND sid = #{sid}
+            </if>
+            <if test="doctorId!=null and doctorId!=''">
+                AND doctor_id = #{doctorId}
+            </if>
+            <if test="prescriptionId!=null and prescriptionId!=''">
+                AND prescription_id = #{prescriptionId}
+            </if>
+            <if test="sidList!=null and sidList.size()&gt;0">
+                AND sid IN
+                <foreach collection="sidList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="doctorIdList!=null and doctorIdList.size()&gt;0">
+                AND doctor_id IN
+                <foreach collection="doctorIdList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="prescriptionIdList!=null and prescriptionIdList.size()&gt;0">
+                AND prescription_id IN
+                <foreach collection="prescriptionIdList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <update id="modifyPrescription" parameterType="com.comvee.cdms.prescription.po.PrescriptionPO">
+        UPDATE t_prescription
+        <set>
+            <if test="true">
+                modify_dt = now(),
+            </if>
+            <if test="isValid!=null">
+                is_valid = #{isValid},
+            </if>
+            <if test="schedule!=null">
+                schedule = #{schedule},
+            </if>
+            <if test="eduCycle!=null">
+                edu_cycle = #{eduCycle},
+            </if>
+            <if test="handDown!=null">
+                hand_down = #{handDown},
+            </if>
+            <if test="null != doctorId and '' != doctorId">
+                doctor_id = #{doctorId},
+            </if>
+            <if test="null != memberInfoJson and '' != memberInfoJson">
+                member_info_json = #{memberInfoJson}
+            </if>
+        </set>
+        WHERE sid = #{sid}
+    </update>
+
+    <update id="modifyPrescriptionDetail" parameterType="com.comvee.cdms.prescription.po.PrescriptionDetailPO">
+        UPDATE t_prescription_detail
+        <set>
+            <if test="true">
+                modify_dt = now(),
+            </if>
+            <if test="isValid!=null">
+                is_valid = #{isValid},
+            </if>
+            <if test="saveState!=null">
+                save_state = #{saveState},
+            </if>
+            <if test="detailJson!=null and detailJson!=''">
+                detail_json = #{detailJson},
+            </if>
+        </set>
+        WHERE prescription_id = #{prescriptionId} and type = #{type}
+    </update>
+
+    <select id="listPrescriptionByParam" resultMap="prescription" parameterType="com.comvee.cdms.prescription.dto.GetPrescriptionDTO">
+        SELECT sid,member_id,insert_dt,modify_dt,is_valid,
+        doctor_id,team_id,schedule,module,edu_cycle,eoh_type,hand_down,version
+        FROM t_prescription
+        <where>
+            is_valid = 1
+            <if test="sid!=null and sid!=''">
+                AND sid = #{sid}
+            </if>
+            <if test="memberId!=null and memberId!=''">
+                AND member_id = #{memberId}
+            </if>
+            <if test="memberName!=null and memberName!=''">
+                and member_info_json like concat('%',concat(#{memberName},'%'))
+            </if>
+            <if test="doctorId!=null and doctorId!=''">
+                AND doctor_id = #{doctorId}
+            </if>
+            <if test="teamId!=null and teamId!=''">
+                AND team_id = #{teamId}
+            </if>
+            <if test="hospitalId!=null and hospitalId!=''">
+                AND hospital_id = #{hospitalId}
+            </if>
+            <if test="schedule!=null">
+                AND schedule = #{schedule}
+            </if>
+            <if test="handDown!=null">
+                AND hand_down = #{handDown}
+            </if>
+            <if test="complete!=null">
+                <if test="complete">
+                    AND schedule = 3
+                </if>
+                <if test="!complete">
+                    AND schedule != 3
+                </if>
+            </if>
+            <if test="memberIdList!=null and memberIdList.size()&gt;0">
+                AND member_id IN
+                <foreach collection="memberIdList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="sidList!=null and sidList.size()&gt;0">
+                AND sid IN
+                <foreach collection="sidList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="doctorIdList!=null and doctorIdList.size()&gt;0">
+                AND team_id IN
+                <foreach collection="doctorIdList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="hospitalIdList!=null and hospitalIdList.size()&gt;0">
+                AND hospital_id IN
+                <foreach collection="hospitalIdList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="eohType != null">
+                and eoh_type = #{eohType}
+            </if>
+            <if test="operatorId != null and '' != operatorId">
+                and doctor_id = #{operatorId}
+            </if>
+            <if test="startDt != null and '' != startDt">
+                and insert_dt &gt;= #{startDt}
+            </if>
+            <if test="endDt != null and '' != endDt">
+                and insert_dt &lt;= #{endDt}
+            </if>
+        </where>
+        ORDER BY insert_dt DESC
+    </select>
+
+    <select id="getPrescriptionByParam" resultMap="prescription" parameterType="com.comvee.cdms.prescription.dto.GetPrescriptionDTO">
+        SELECT sid,member_id, DATE_FORMAT(insert_dt,'%Y-%m-%d %T') insert_dt,modify_dt,is_valid,
+        doctor_id,schedule,module,edu_cycle,eoh_type,hand_down,version,member_info_json,team_id
+        FROM t_prescription
+        <where>
+            is_valid = 1
+            <if test="sid!=null and sid!=''">
+                AND sid = #{sid}
+            </if>
+            <if test="memberId!=null and memberId!=''">
+                AND member_id = #{memberId}
+            </if>
+            <if test="doctorId!=null and doctorId!=''">
+                AND doctor_id = #{doctorId}
+            </if>
+            <if test="teamId!=null and teamId!=''">
+                AND team_id = #{teamId}
+            </if>
+            <if test="hospitalId!=null and hospitalId!=''">
+                AND hospital_id = #{hospitalId}
+            </if>
+            <if test="schedule!=null">
+                AND schedule = #{schedule}
+            </if>
+            <if test="handDown!=null">
+                AND hand_down = #{handDown}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="getPrescriptionByParamByMemberIdAndInsertDt" resultMap="prescription" parameterType="com.comvee.cdms.prescription.dto.GetPrescriptionDTO">
+        SELECT sid,member_id, insert_dt,modify_dt,is_valid,
+        doctor_id,schedule,module,edu_cycle,eoh_type,hand_down,version,member_info_json,team_id
+        FROM t_prescription
+        <where>
+            is_valid = 1
+            <if test="memberId!=null and memberId!=''">
+                AND member_id = #{memberId}
+            </if>
+            <if test="modifyDt !=null and modifyDt!='' ">
+                AND ( modify_dt like  CONCAT(CONCAT('%',#{modifyDt},'%'))  )
+            </if>
+            ORDER BY modify_dt desc limit 1
+        </where>
+    </select>
+
+    <select id="listPrescriptionDetailByParam" resultMap="prescriptionDetail" parameterType="com.comvee.cdms.prescription.dto.GetPrescriptionDetailDTO">
+        SELECT sid,prescription_id,save_state,type,detail_json,member_id,insert_dt,modify_dt,is_valid
+        FROM t_prescription_detail
+        <where>
+            is_valid = 1
+            <if test="sid!=null and sid!=''">
+                AND sid = #{sid}
+            </if>
+            <if test="memberId!=null and memberId!=''">
+                AND member_id = #{memberId}
+            </if>
+            <if test="prescriptionId!=null and prescriptionId!=''">
+                AND prescription_id = #{prescriptionId}
+            </if>
+            <if test="type!=null">
+                AND type = #{type}
+            </if>
+            <if test="saveState!=null">
+                AND save_state = #{saveState}
+            </if>
+            <if test="sidList!=null and sidList.size()&gt;0">
+                AND sid IN
+                <foreach collection="sidList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY insert_dt DESC
+    </select>
+
+    <select id="getPrescriptionDetailByParam" resultMap="prescriptionDetail" parameterType="com.comvee.cdms.prescription.dto.GetPrescriptionDetailDTO">
+        SELECT sid,prescription_id,save_state,type,detail_json,member_id,insert_dt,modify_dt,is_valid
+        FROM t_prescription_detail
+        <where>
+            is_valid = 1
+            <if test="sid!=null and sid!=''">
+                AND sid = #{sid}
+            </if>
+            <if test="memberId!=null and memberId!=''">
+                AND member_id = #{memberId}
+            </if>
+            <if test="prescriptionId!=null and prescriptionId!=''">
+                AND prescription_id = #{prescriptionId}
+            </if>
+            <if test="type!=null">
+                AND type = #{type}
+            </if>
+            <if test="saveState!=null">
+                AND save_state = #{saveState}
+            </if>
+        </where>
+        Limit 1
+    </select>
+
+    <select id="listPrescriptionLogByParam" resultMap="prescriptionLog" parameterType="com.comvee.cdms.prescription.dto.GetPrescriptionLogDTO">
+        SELECT sid,prescription_id,insert_dt,modify_dt,is_valid,operat_type,doctor_id,schedule
+        FROM t_prescription_log
+        <where>
+            is_valid = 1
+            <if test="sid!=null and sid!=''">
+                AND sid = #{sid}
+            </if>
+            <if test="doctorId!=null and doctorId!=''">
+                AND doctor_id = #{doctorId}
+            </if>
+            <if test="prescriptionId!=null and prescriptionId!=''">
+                AND prescription_id = #{prescriptionId}
+            </if>
+            <if test="sidList!=null and sidList.size()&gt;0">
+                AND sid IN
+                <foreach collection="sidList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="doctorIdList!=null and doctorIdList.size()&gt;0">
+                AND doctor_id IN
+                <foreach collection="doctorIdList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="prescriptionIdList!=null and prescriptionIdList.size()&gt;0">
+                AND prescription_id IN
+                <foreach collection="prescriptionIdList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY insert_dt DESC
+    </select>
+
+    <select id="getPrescriptionLogByParam" resultMap="prescriptionLog" parameterType="com.comvee.cdms.prescription.dto.GetPrescriptionLogDTO">
+        SELECT sid,prescription_id,insert_dt,modify_dt,is_valid,operat_type,doctor_id,schedule
+        FROM t_prescription_log
+        <where>
+            is_valid = 1
+            <if test="sid!=null and sid!=''">
+                AND sid = #{sid}
+            </if>
+            <if test="doctorId!=null and doctorId!=''">
+                AND doctor_id = #{doctorId}
+            </if>
+            <if test="prescriptionId!=null and prescriptionId!=''">
+                AND prescription_id = #{prescriptionId}
+            </if>
+        </where>
+    </select>
+    
+    <select id="loadEohSugarmonitorByItem" parameterType="com.comvee.cdms.prescription.dto.GetPrescriptionSugarmonitorDTO" resultType="com.comvee.cdms.prescription.vo.PrescriptionSugarmonitorVO">
+  		select sid,scheme_name schemeName,guid_desc guidDesc,is_tolevel istoLevel,monitor_scheme monitorScheme,is_valid isValid,
+  		DATE_FORMAT(insert_dt,'%Y-%m-%d %H:%i:%s') as insertDt,DATE_FORMAT(modify_dt,'%Y-%m-%d %H:%i:%s') as modifyDt,  
+		monitor_suggestions monitorSuggestions,treatment,pre_select preSelect,eoh_type eohType
+  		from t_sugar_monitor_template
+  		where is_valid = 1 and monitor_type = 1
+  		<if test="isTolevel != null">
+  			and is_tolevel = #{isTolevel}
+  		</if>
+  		<if test="schemeName != null">
+  			and scheme_name like concat('%',concat(#{schemeName},'%'))
+  		</if>
+  		<if test="treatment != null">
+  			and treatment = #{treatment}
+  		</if>
+        <if test="eohType != null">
+            and eoh_type = #{eohType}
+        </if>
+  		limit 0,1
+    </select>
+
+    <delete id="deletePrescriptionKnowledgeByPrescriptId" parameterType="string">
+        DELETE FROM t_prescription_knowledge WHERE prescription_id = #{prescriptionId}
+    </delete>
+
+    <insert id="batchInsertPrescriptionKnowledge" parameterType="com.comvee.cdms.prescription.po.PrescriptionKnowledgePO">
+        <if test="null != list and list.size > 0" >
+            <foreach collection="list" item="item" separator=";">
+                insert into t_prescription_knowledge (id, title, knowledge,week, insert_dt, modify_dt,is_valid,
+                member_id, prescription_id,article_id, has_learned, learn_dt,plan_push_dt, plan_push_order, need_push,
+                follow_id,knowledge_type)
+                values (#{item.id}, #{item.title}, #{item.knowledge},#{item.week}, now(), now(),1,
+                #{item.memberId}, #{item.prescriptionId}, #{item.articleId}, 0, #{item.learnDt},#{item.planPushDt}, -1,1,
+                #{item.followId},#{item.knowledgeType})
+            </foreach>
+        </if>
+    </insert>
+
+    <select id="loadNutritionCateringList" parameterType="com.comvee.cdms.prescription.dto.GetNutritionCateringDTO"
+            resultType="com.comvee.cdms.prescription.po.NutritionCateringPO">
+        SELECT
+        t1.sid AS recipesCaloricId ,
+        t2.id AS nutritionCateringId ,
+        t1.meals_model mealsModel,
+        t1.recipe_name recipeName,
+        t1.calories_level caloriesLevel ,
+        t1.food_num foodNum ,
+        t1.cereal_num cerealNum ,
+        t1.meat_num meatNum ,
+        t1.vegetables_num vegetablesNum ,
+        t1.grease_num greaseNum ,
+        t1.fruits_num fruitsNum ,
+        t1.soymilk_num soymilkNum ,
+        t1.egg_num eggNum,
+        t1.beans_num beansNum,
+        t2.breakfast_food_json breakfastFoodJson,
+        t2.breakfast_food_add_json breakfastFoodAddJson,
+        t2.lunch_food_json lunchFoodJson,
+        t2.lunch_food_add_json lunchFoodAddJson,
+        t2.dinner_food_json dinnerFoodJson,
+        t2.dinner_food_add_json dinnerFoodAddJson,
+        t2.version,
+        t1.ingredient_stat ingredientStat
+        FROM
+        t_prescription_recipes_caloric t1 ,
+        t_prescription_recipes_caloric_catering t2
+        WHERE t1.sid = t2.recipes_caloric_relation_id
+        <if test="calHigh != null and calHigh != '' and calLow != null and calLow != '' ">
+            AND t1.calories_level BETWEEN #{calLow} AND #{calHigh}
+        </if>
+        <if test="nid!=null">
+            AND t2.id = #{nid}
+        </if>
+        <if test="eohType!=null">
+            AND t1.eoh_type = #{eohType}
+        </if>
+        <if test="mealsModel!=null and mealsModel!=''">
+            AND   t1.meals_model = #{mealsModel}
+        </if>
+        <choose>
+            <when test="caloricType != '' and caloricType != null">
+
+            </when>
+            <otherwise>
+                and (t1.caloric_type !='' or t1.caloric_type!=2)
+            </otherwise>
+        </choose>
+        <if test="doctorIdList!=null and doctorIdList.size > 0">
+            and t1.doctor_id in
+            <foreach collection="doctorIdList" index="index" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        ORDER BY caloric_type desc ,calories_level asc
+    </select>
+
+
+    <select id="getEohIngredientsItemById" parameterType="String" resultType="com.comvee.cdms.prescription.bo.FoodItemBO">
+        select id,name,change_delta changeDelta,spell,heat,gram,picture,
+        insert_dt insertDt,modify_dt modifyDt,ingredients_type ingredientsType,unit
+        FROM t_ingredients_item t WHERE t.is_valid = 1 and t.id = #{id}
+    </select>
+
+    <select id="getEohFoodItemById" parameterType="java.lang.String" resultType="com.comvee.cdms.prescription.bo.FoodItemBO">
+        select id,name,change_delta changeDelta,spell,heat,gram,picture,insert_dt insertDt,modify_dt modifyDt,
+        ingredients_type ingredientsType,unit,carbohydrates,totalfats,protein,na
+        FROM t_food_item t WHERE t.is_valid = 1
+        and id=#{id}
+    </select>
+    
+    <select id="getEohFoodItemByIds" resultType="com.comvee.cdms.prescription.bo.FoodItemBO">
+        select id,name,change_delta changeDelta,spell,heat,gram,picture,insert_dt insertDt,modify_dt modifyDt,
+        ingredients_type ingredientsType,unit,carbohydrates,totalfats,protein
+        FROM t_food_item t WHERE t.is_valid = 1
+        and id in 
+        <foreach collection="ids" index="index" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="listEohIngredientsItemByIds" resultType="com.comvee.cdms.prescription.bo.FoodItemBO">
+        select
+        id,name,change_delta changeDelta,spell,heat,gram,picture,insert_dt insertDt,modify_dt modifyDt,ingredients_type ingredientsType,unit
+        FROM t_ingredients_item t WHERE t.is_valid = 1 and t.id in
+        <foreach collection="ids" index="index" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        order by t.weight desc,t.gram desc
+    </select>
+
+    <select id="getHandDownCount" parameterType="string" resultType="int">
+        select count(*) from t_prescription
+        where is_valid=1 and hand_down=1
+        <if test="doctorId!=null">
+            and doctor_id = #{doctorId}
+        </if>
+    </select>
+
+    <select id="listPrescriptionKnowledge" parameterType="string" resultMap="prescriptionKnowledge">
+        select id, title, knowledge, week, insert_dt, modify_dt, is_valid, member_id, prescription_id,
+        article_id, has_learned, learn_dt, plan_push_dt, plan_push_order, need_push,follow_id,knowledge_type
+        from t_prescription_knowledge
+        where prescription_id = #{prescriptionId}
+--         order by plan_push_dt,plan_push_order
+        order by plan_push_dt
+    </select>
+
+    <!-- 新版食材库20180524-->
+    <select id="listFoodItem" parameterType="com.comvee.cdms.prescription.dto.GetFoodItemDTO" resultType="com.comvee.cdms.prescription.bo.FoodItemBO">
+        select id,name,change_delta changeDelta,spell,heat,gram,picture,insert_dt insertDt,modify_dt modifyDt,ingredients_type ingredientsType,unit,
+        carbohydrates,totalfats,protein
+        FROM t_food_item t WHERE t.is_valid = 1
+        <if test="type != null and type != ''">
+            AND t.ingredients_type in ( #{type} )
+        </if>
+        <if test="param != null and param != ''">
+            AND (t.name LIKE concat('%',concat(#{param},'%')) or t.spell LIKE concat('%',concat(#{param},'%')))
+        </if>
+        <if test="isUse == 1">
+            AND t.is_use = 1
+        </if>
+    </select>
+
+    <select id="listIngredientsItem" parameterType="com.comvee.cdms.prescription.dto.GetFoodItemDTO" resultType="com.comvee.cdms.prescription.bo.FoodItemBO">
+        select id,name,change_delta changeDelta,spell,heat,gram,picture,insert_dt insertDt,modify_dt modifyDt,ingredients_type ingredientsType,unit
+        FROM t_ingredients_item t WHERE t.is_valid = 1
+        <if test="type != null and type != ''">
+            AND t.ingredients_type in ( #{type} )
+        </if>
+        <if test="param != null and param != ''">
+            AND (t.name LIKE concat('%',concat(#{param},'%')) or t.spell LIKE concat('%',concat(#{param},'%')))
+        </if>
+    </select>
+
+    <select id="listNewTypeFoodClass" resultType="com.comvee.cdms.prescription.bo.FoodItemBO">
+        select one_name name,one_type ingredientsType
+        FROM t_food_item t WHERE t.is_valid = 1
+        GROUP BY one_type
+        order by one_type DESC
+    </select>
+
+    <select id="listOldTypeFoodClass" resultType="com.comvee.cdms.prescription.bo.FoodItemBO">
+        SELECT
+	    CASE
+        WHEN ingredients_type = '1001001' THEN
+		    '谷薯类'
+	    WHEN ingredients_type = '1001002' THEN
+		    '豆类'
+	    WHEN ingredients_type = '1001003' THEN
+		    '蔬菜类'
+	    WHEN ingredients_type = '1001004' THEN
+		    '水果类'
+	    WHEN ingredients_type = '1001007' THEN
+		    '肉蛋类'
+	    WHEN ingredients_type = '1001012' THEN
+		    '浆乳类'
+	    WHEN ingredients_type = '1001013' THEN
+		    '油脂类（烹饪油）'
+	    WHEN ingredients_type = '1001014' THEN
+		    '油脂类（坚果类）'
+	    END NAME ,
+ 	    ingredients_type ingredientsType
+	    FROM
+		    t_ingredients_item t
+	    WHERE
+		    t.is_valid = 1
+	    GROUP BY
+		    ingredients_type
+	    ORDER BY
+		    ingredients_type DESC;
+    </select>
+
+    <!--添加/更新 食谱-->
+    <select id="getNCateringsByMD5" parameterType="java.lang.String" resultType="com.comvee.cdms.prescription.po.NutritionCateringPO">
+        SELECT id AS nutritionCateringId,version,breakfast_food_json breakfastFoodJson,
+        breakfast_food_add_json breakfastFoodAddJson,lunch_food_json lunchFoodJson,lunch_food_add_json lunchFoodAddJson,
+        dinner_food_json dinnerFoodJson,dinner_food_add_json dinnerFoodAddJson
+        FROM t_prescription_recipes_caloric_catering
+        WHERE md5 = #{md5}
+    </select>
+
+    <select id="getRecipesCaloricByMD5"  resultType="com.comvee.cdms.prescription.po.NutritionCateringPO">
+  		SELECT  sid AS recipesCaloricId,calories_level caloriesLevel,food_num foodNum,cereal_num cerealNum,
+        fruits_num fruitsNum,meat_num meatNum,
+        soymilk_num soymilkNum,grease_num greaseNum,egg_num eggNum,beans_num beansNum,
+        vegetables_num vegetablesNum,doctor_id doctorId,eoh_type eohType ,ingredient_stat ingredientStat
+        FROM t_prescription_recipes_caloric
+		WHERE md5 = #{md5} and eoh_type = #{eohType}
+    </select>
+
+    <insert id="saveRecipesCaloricRelation" parameterType="map">
+  		INSERT INTO
+		t_prescription_recipes_caloric(sid,meals_model,recipe_name,calories_level,food_num,cereal_num,
+		fruits_num,meat_num,soymilk_num,grease_num,vegetables_num,egg_num,beans_num,md5,doctor_id,eoh_type ,ingredient_stat,caloric_type)
+		VALUES(#{sid},#{mealsModel},#{recipeName},#{caloriesLevel},#{foodNum},#{cerealNum},#{fruitsNum},#{meatNum},
+		#{soymilkNum},#{greaseNum},#{vegetablesNum},#{eggNum},#{beansNum},#{md5},#{doctorId},#{eohType} ,#{ingredientStat},#{caloricType})
+    </insert>
+
+    <insert id="saveNutritionCatering" parameterType="map">
+        insert into t_prescription_recipes_caloric_catering(id, recipes_caloric_relation_id , version , md5 , doctor_id ,
+        breakfast_food_json , breakfast_food_add_json , lunch_food_json , lunch_food_add_json ,
+        dinner_food_json , dinner_food_add_json)
+        values(#{id},#{recipesCaloricRelationId},#{version},#{md5},#{doctorId},
+        #{breakfastFoodJson},#{breakfastFoodAddJson},#{lunchFoodJson},#{lunchFoodAddJson},#{dinnerFoodJson},#{dinnerFoodAddJson})
+    </insert>
+    <!--添加/更新 食谱end-->
+
+    <select id="countPrescription" resultType="long" parameterType = "com.comvee.cdms.prescription.dto.CountPrescriptionDTO">
+        select count(*) from t_prescription t
+        where t.is_valid = 1
+        <if test="doctorIdList!=null and doctorIdList.size()&gt;0">
+            AND doctor_id IN
+            <foreach collection="doctorIdList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test = "doctorId != null">
+            and t.`doctor_id` = #{doctorId}
+        </if>
+        <if test = "schedule != null">
+            and t.`schedule` = #{schedule}
+        </if>
+    </select>
+
+    <select id="countMonthPrescription" resultMap="monthPrescription" parameterType="com.comvee.cdms.prescription.dto.CountMonthPrescriptionDTO">
+        select DATE_FORMAT(t.insert_dt,'%m') month , count(t.sid) count from t_prescription t
+        where t.is_valid = 1 and DATE_FORMAT(t.insert_dt,'%Y') = #{year} and t.schedule = 3
+        and t.doctor_id = #{doctorId}
+        group by DATE_FORMAT(t.insert_dt, '%Y-%m')
+    </select>
+
+    <select id="listMemberPrescription" parameterType="com.comvee.cdms.prescription.dto.ListMemberPrescriptionDTO" resultMap="memberPrescription">
+        select t.doctor_id,t.edu_cycle,t.eoh_type,t.hand_down,t.insert_dt
+        ,t.member_id,t.modify_dt,t.module,t.`schedule`,t.sid
+        ,q.doctor_name,q.sex from t_prescription t , t_doctor q
+        where t.is_valid = 1 and t.doctor_id = q.doctor_id
+        <if test="memberId != null and '' != memberId">
+            and t.member_id = #{memberId}
+        </if>
+        <if test="schedule != null">
+            and t.`schedule` = #{schedule}
+        </if>
+        <if test="handDown != null">
+            and t.hand_down = #{handDown}
+        </if>
+        <if test="moduleString != null and '' != moduleString">
+            and instr(t.module, #{moduleString}) > 0
+        </if>
+        order by t.insert_dt desc
+    </select>
+
+    <select id="loadEohKnowledgeById" resultMap="prescriptionKnowledge">
+        select k.title ,k.has_learned ,DATE_FORMAT(k.plan_push_dt,"%y-%m-%d") plan_push_dt
+        ,k.article_id
+        from t_prescription_knowledge k
+        where k.id = #{sid} and k.is_valid = 1 limit 1
+    </select>
+    
+    <!-- gwx -->
+    <select id="countPrescriptionForMember" resultType="long" parameterType = "string">
+        select count(*) from t_prescription t
+        where t.is_valid = 1 and t.schedule = 3
+        <if test = "memberId != null and '' != memberId">
+            and t.member_id = #{memberId}
+        </if>
+    </select>
+
+    <select id="countNewPrescription" resultType="long" parameterType = "com.comvee.cdms.statistics.dto.SynthesizeDataDTO">
+        select count(*) from t_prescription p,t_doctor d
+        where p.doctor_id = d.doctor_id and p.is_valid = 1
+        <if test="prescriptionStatus != null and ''!=prescriptionStatus">
+            and p.schedule = #{prescriptionStatus}
+        </if>
+        <if test="memberId != null and ''!=memberId">
+            and p.member_id = #{memberId}
+        </if>
+        <if test="doctorId != null and ''!=doctorId">
+            and p.doctor_id = #{doctorId}
+        </if>
+        <if test="hospitalId != null and ''!=hospitalId">
+            and p.hospital_id = #{hospitalId}
+        </if>
+        <if test="departmentId != null and ''!=departmentId">
+            and d.depart_id = #{departmentId}
+        </if>
+        <if test="startDt != null and ''!=startDt">
+            and p.modify_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and ''!=endDt">
+            and p.modify_dt &lt;= #{endDt}
+        </if>
+    </select>
+
+    <select id="getEarlyMemberPrescription" parameterType="com.comvee.cdms.statistics.dto.SynthesizeDataDTO" resultType="com.comvee.cdms.prescription.po.PrescriptionPO">
+        select a.sid sid,a.member_id memberId,DATE_FORMAT(a.insert_dt,'%Y-%m-%d')insertDt,
+        DATE_FORMAT(a.modify_dt,'%Y-%m-%d')modifyDt,a.doctor_id doctorId,a.is_valid isValid,
+        a.team_id teamId,a.schedule schedule,a.module module,a.edu_cycle eduCycle,a.eoh_type eohType,
+        a.hand_down handDown,a.version version,a.hospital_id hospitalId,a.member_info_json memberInfoJson
+        from t_prescription a,t_doctor b where a.doctor_id = b.doctor_id and a.is_valid=1
+        <if test="memberId != null and ''!=memberId">
+            and a.member_id = #{memberId}
+        </if>
+        <if test="doctorId != null and ''!=doctorId">
+            and b.doctor_id = #{doctorId}
+        </if>
+        <if test="hospitalId != null and ''!=hospitalId">
+            and b.hospital_id = #{hospitalId}
+        </if>
+        <if test="departmentId != null and ''!=departmentId">
+            and b.depart_id = #{departmentId}
+        </if>
+        <if test="startDt != null and ''!=startDt">
+            and a.modify_dt >= #{startDt}
+        </if>
+        <if test="endDt != null and ''!=endDt">
+            and a.modify_dt &lt;= #{endDt}
+        </if>
+        order by a.insert_dt asc
+    </select>
+
+    <select id="getPrescriptionDetail" parameterType="com.comvee.cdms.member.dto.MemberDataDTO" resultMap="prescriptionDetail">
+        select b.sid,prescription_id,b.save_state,b.type,b.detail_json,b.member_id,
+        b.insert_dt,b.modify_dt,b.is_valid from t_prescription a,t_prescription_detail b,t_doctor c
+        where a.sid = b.prescription_id and a.doctor_id = c.doctor_id and b.is_valid=1 and b.save_state = 1 and b.type = 3
+        <if test="memberId != null and ''!=memberId">
+            and b.member_id = #{memberId}
+        </if>
+        <if test="doctorId != null and ''!=doctorId">
+            and a.doctor_id = #{doctorId}
+        </if>
+        <if test="hospitalId != null and ''!=hospitalId">
+            and a.hospital_id = #{hospitalId}
+        </if>
+        <if test="departmentId != null and ''!=departmentId">
+            and c.depart_id = #{departmentId}
+        </if>
+        order by modify_dt desc
+    </select>
+
+    <update id="updateEohKnowledgeLearn">
+        update t_prescription_knowledge t set t.learn_dt = now() ,has_learned = 1 where id = #{sid}
+    </update>
+
+    <select id="listPrescriptionOfStatistics" parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO" resultMap="prescription">
+        <!--visitType类型 1住院 2门诊&居家 -->
+        <if test="visitType==1">
+            select p.* from t_member m
+            join t_prescription p
+            on p.member_id=m.member_id
+            <if test="hospitalId!=null and hospitalId!=''">
+                and p.hospital_id=#{hospitalId}
+            </if>
+            join t_member_in_hospital_log h
+            on p.member_id=h.member_id
+            where h.is_valid=1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and h.hospital_id=#{hospitalId}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and (h.out_hospital_date between #{startDt} and #{endDt}
+                or in_status=1)
+                and p.insert_dt between #{startDt} and #{endDt}
+            </if>
+        </if>
+        <if test="visitType==2">
+            select p.* from t_member m
+            join t_prescription p
+            on p.member_id=m.member_id
+            <if test="hospitalId!=null and hospitalId!=''">
+                and p.hospital_id=#{hospitalId}
+            </if>
+            join t_doctor_member dm on m.member_id = dm.member_id
+            and p.team_id=dm.doctor_id
+            join t_doctor d on dm.doctor_id=d.doctor_id
+            <if test="hospitalId!=null and hospitalId!=''">
+                and d.hospital_id=#{hospitalId}
+            </if>
+            LEFT JOIN (select * from t_member_visit
+            where visit_date BETWEEN DATE_FORMAT(date_add(#{endDt}, interval -7 day),'%Y-%m-%d 00:00:00')
+            and DATE_FORMAT(#{endDt},'%Y-%m-%d %H:%i:%s') group by member_id) v
+            ON m.member_id = v.member_id and d.depart_id = v.depart_code
+            and v.hospital_id=d.hospital_id
+            where (dm.is_valid=1 and m.is_valid=1 and p.`schedule`=3
+            <if test="doctorIdList!=null and doctorIdList.size&gt;0">
+                and dm.doctor_id in
+                <foreach collection="doctorIdList" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="sex!=null and sex!=''">
+                and m.sex=#{sex}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and p.insert_dt between #{startDt} and #{endDt}
+            </if>)
+            OR (v.sid IS NOT NULL
+            <if test="sex!=null and sex!=''">
+                and m.sex=#{sex}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and p.insert_dt between #{startDt} and #{endDt}
+            </if> and m.is_valid=1 and p.`schedule`=3)
+        </if>
+    </select>
+
+    <select id="countMonthPrescriptionForHos" resultMap="monthPrescription" parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO">
+        <!--visitType类型 1住院 2门诊&居家 -->
+        <if test="visitType==1">
+            select DATE_FORMAT(p.insert_dt,'%Y-%m') yearMonth , count(p.sid) count from t_member m
+            join t_prescription p
+            on p.member_id=m.member_id
+            <if test="hospitalId!=null and hospitalId!=''">
+                and p.hospital_id=#{hospitalId}
+            </if>
+            join t_member_in_hospital_log h
+            on m.member_id=h.member_id
+            where h.is_valid=1 and p.`schedule`=3
+            <if test="hospitalId!=null and hospitalId!=''">
+                and h.hospital_id=#{hospitalId}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and (h.out_hospital_date between #{startDt} and #{endDt}
+                or in_status=1)
+                and p.insert_dt between #{startDt} and #{endDt}
+            </if>
+            <!--and DATE_FORMAT(p.insert_dt,'%Y') = #{year}-->
+            group by DATE_FORMAT(p.insert_dt, '%Y-%m')
+        </if>
+        <if test="visitType==2">
+            select DATE_FORMAT(p.insert_dt,'%Y-%m') yearMonth , count(p.sid) count from t_member m
+            join t_prescription p
+            on p.member_id=m.member_id
+            <if test="hospitalId!=null and hospitalId!=''">
+                and p.hospital_id=#{hospitalId}
+            </if>
+            join t_doctor_member dm on m.member_id = dm.member_id
+            and p.team_id=dm.doctor_id
+            join t_doctor d on dm.doctor_id=d.doctor_id
+            <if test="hospitalId!=null and hospitalId!=''">
+                and d.hospital_id=#{hospitalId}
+            </if>
+            LEFT JOIN (select * from t_member_visit
+            where visit_date BETWEEN DATE_FORMAT(date_add(#{endDt}, interval -7 day),'%Y-%m-%d 00:00:00')
+            and DATE_FORMAT(#{endDt},'%Y-%m-%d %H:%i:%s') group by member_id) v
+            ON m.member_id = v.member_id and d.depart_id = v.depart_code
+            and v.hospital_id=d.hospital_id
+            where (dm.is_valid=1 and m.is_valid=1 and p.`schedule`=3
+            <if test="doctorIdList!=null and doctorIdList.size&gt;0">
+                and dm.doctor_id in
+                <foreach collection="doctorIdList" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="sex!=null and sex!=''">
+                and m.sex=#{sex}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and p.insert_dt between #{startDt} and #{endDt}
+            </if>
+            <!--and DATE_FORMAT(p.insert_dt,'%Y') = #{year}-->)
+            OR (v.sid IS NOT NULL
+            <if test="sex!=null and sex!=''">
+                and m.sex=#{sex}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and p.insert_dt between #{startDt} and #{endDt}
+            </if>
+            <!--and DATE_FORMAT(p.insert_dt,'%Y') = #{year}-->
+            and m.is_valid=1 and p.`schedule`=3)
+            group by DATE_FORMAT(p.insert_dt, '%Y-%m')
+        </if>
+    </select>
+
+    <select id="countPrescriptionForHos" resultType="long" parameterType = "com.comvee.cdms.statistics.dto.GetStatisticsDTO">
+        <!--visitType类型 1住院 2门诊&居家 -->
+        <if test="visitType==1">
+            select count(1) from t_prescription t
+            join t_member_in_hospital_log h
+            on t.member_id=h.member_id
+            where h.is_valid=1
+            <if test="departIdList!=null and departIdList.size()&gt;0">
+                and h.department_id in
+                <foreach collection="departIdList" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="hospitalId!=null and hospitalId!=''">
+                and h.hospital_id=#{hospitalId}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and t.insert_dt between #{startDt} and #{endDt}
+                and (h.out_hospital_date between #{startDt} and #{endDt}
+                or in_status=1)
+            </if>
+            <if test = "schedule != null">
+                and t.`schedule` = #{schedule}
+            </if>
+        </if>
+        <if test="visitType==2">
+            select count(1) from t_prescription t
+            join t_doctor_member dm on t.member_id = dm.member_id
+            and t.team_id=dm.doctor_id
+            join t_doctor d on dm.doctor_id=d.doctor_id
+            <if test="hospitalId!=null and hospitalId!=''">
+                and d.hospital_id=#{hospitalId}
+            </if>
+            LEFT JOIN (select * from t_member_visit
+            where visit_date BETWEEN DATE_FORMAT(date_add(#{endDt}, interval -7 day),'%Y-%m-%d 00:00:00')
+            and DATE_FORMAT(#{endDt},'%Y-%m-%d %H:%i:%s') group by member_id) v
+            ON t.member_id = v.member_id and d.depart_id = v.depart_code
+            and v.hospital_id=d.hospital_id
+            where (dm.is_valid=1 and t.is_valid=1
+            <if test="doctorIdList!=null and doctorIdList.size&gt;0">
+                and dm.doctor_id in
+                <foreach collection="doctorIdList" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and t.insert_dt between #{startDt} and #{endDt}
+            </if>
+            <if test = "schedule != null">
+                and t.`schedule` = #{schedule}
+            </if>)
+            OR (v.sid IS NOT NULL
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and t.insert_dt between #{startDt} and #{endDt}
+            </if>
+            <if test = "schedule != null">
+                and t.`schedule` = #{schedule}
+            </if>
+            and t.is_valid=1)
+        </if>
+    </select>
+
+    <select id="getNewPrescriptionDetailByType" parameterType="com.comvee.cdms.prescription.dto.GetPrescriptionDetailDTO" resultMap="prescriptionDetail">
+        SELECT b.sid,b.prescription_id,b.save_state,b.type,b.detail_json,b.member_id,b.insert_dt,b.modify_dt,b.is_valid FROM t_prescription a ,t_prescription_detail b
+        WHERE a.sid = b.prescription_id and a.schedule = 3
+        <if test="memberId != null and memberId != ''">
+            and a.member_id = #{memberId}
+        </if>
+        <if test="hospitalId != null and hospitalId != ''">
+            and a.hospital_id = #{hospitalId}
+        </if>
+        <if test="eohType != null">
+            and a.eoh_type = #{eohType}
+        </if>
+        <if test="type != null">
+            and b.type = #{type}
+        </if>
+        order by a.modify_dt desc
+        limit 1
+    </select>
+
+    <!--4.2.1 start-->
+    <delete id="deleteFollowKnowledgeByFollowId" parameterType="string">
+        DELETE FROM t_prescription_knowledge WHERE follow_id = #{followId}
+    </delete>
+
+    <select id="listFollowKnowledge" parameterType="string" resultMap="prescriptionKnowledge">
+        select id, title, knowledge, week, insert_dt, modify_dt, is_valid, member_id, prescription_id,
+        article_id, has_learned, learn_dt, plan_push_dt, plan_push_order, need_push,follow_id,knowledge_type
+        from t_prescription_knowledge
+        where follow_id = #{followId}
+        order by week,plan_push_order
+    </select>
+    
+    <select id="listPrescriptionSendKnowledge" parameterType="java.lang.String" resultMap="prescriptionKnowledge">
+         select a.id, a.title, a.knowledge, a.week, a.insert_dt, a.modify_dt, a.is_valid, a.member_id, a.prescription_id,
+        a.article_id, a.has_learned, a.learn_dt, a.plan_push_dt, a.plan_push_order, a.need_push,a.follow_id,a.knowledge_type
+        from t_prescription_knowledge a,t_prescription b
+        where a.prescription_id = b.sid and a.is_valid = 1 and b.is_valid = 1 and b.schedule = 3
+        <if test="memberId != null and memberId != ''">
+            and a.member_id = #{memberId}
+        </if>
+        <if test="eohType != null">
+            <if test="eohType == 1">
+                and b.eoh_type != 2
+            </if>
+            <if test="eohType == 2">
+                and b.eoh_type = 2
+            </if>
+        </if>
+        order by a.insert_dt desc limit 1
+    </select>
+
+    <select id="listFollowSendKnowledge" parameterType="java.lang.String" resultMap="prescriptionKnowledge">
+        select a.id, a.title, a.knowledge, a.week, a.insert_dt, a.modify_dt, a.is_valid, a.member_id, a.prescription_id,
+        a.article_id, a.has_learned, a.learn_dt, a.plan_push_dt, a.plan_push_order, a.need_push,a.follow_id,a.knowledge_type
+        from t_prescription_knowledge a,t_follow_main b
+        where a.follow_id = b.foreign_id and a.is_valid = 1 and b.is_valid = 1 and b.status = 1
+        <if test="memberId != null and memberId != ''">
+            and a.member_id = #{memberId}
+        </if>
+        <if test="eohType != null">
+            <if test="eohType == 1">
+                and b.type = 1
+            </if>
+            <if test="eohType == 2">
+                and b.type = 10
+            </if>
+        </if>
+        order by a.insert_dt desc limit 1
+    </select>
+
+
+    <select id="getPrescriptionDetailBySid" resultMap="prescriptionDetail">
+        select sid,prescription_id,save_state,type,detail_json,member_id,insert_dt,modify_dt,is_valid
+        from t_prescription_detail where sid = #{sid}
+    </select>
+    <select id="getPrescriptionById" resultMap="prescription">
+        select * from t_prescription where sid =#{prescriptionId}
+    </select>
+    <!--4.2.1 end-->
+
+    <!-- 6.7.0 start -->
+    <select id="listCustomRecipetemplates" parameterType="map" resultType="com.comvee.cdms.prescription.po.NutritionCateringPO">
+        SELECT
+        t1.sid AS recipesCaloricId ,
+        t2.id AS nutritionCateringId ,
+        t1.meals_model mealsModel,
+        t1.recipe_name recipeName,
+        t1.calories_level caloriesLevel ,
+        t1.food_num foodNum ,
+        t1.cereal_num cerealNum ,
+        t1.meat_num meatNum ,
+        t1.vegetables_num vegetablesNum ,
+        t1.grease_num greaseNum ,
+        t1.fruits_num fruitsNum ,
+        t1.soymilk_num soymilkNum ,
+        t1.egg_num eggNum,
+        t1.beans_num beansNum,
+        t2.breakfast_food_json breakfastFoodJson,
+        t2.breakfast_food_add_json breakfastFoodAddJson,
+        t2.lunch_food_json lunchFoodJson,
+        t2.lunch_food_add_json lunchFoodAddJson,
+        t2.dinner_food_json dinnerFoodJson,
+        t2.dinner_food_add_json dinnerFoodAddJson,
+        t1.eoh_type eohType
+        FROM
+        t_prescription_recipes_caloric t1 ,
+        t_prescription_recipes_caloric_catering t2
+        WHERE t1.sid = t2.recipes_caloric_relation_id
+        and t2.doctor_id = #{doctorId} and t1.caloric_type = 1
+        <if test="id!=null and id!=''">
+            AND t2.id = #{id}
+        </if>
+        <if test="mealsModel == null and mealsModel==''">
+            AND (t1.meals_model = 0 or t1.meals_model = '')
+        </if>
+        <if test="mealsModel!=null and mealsModel!=''">
+            AND t1.meals_model = #{mealsModel}
+        </if>
+        <if test="eohType!=null and eohType!=''">
+            AND t1.eoh_type = #{eohType}
+        </if>
+        ORDER BY t2.modify_dt desc
+    </select>
+
+    <update id="modifyCustomRecipe" parameterType="map">
+        UPDATE  t_prescription_recipes_caloric
+        <set>
+            modify_dt = now()
+            <if test="mealsModel !=null and mealsModel!=''">
+                ,meals_model =#{mealsModel}
+            </if>
+            <if test="recipeName !=null and recipeName!=''">
+                ,recipe_name =#{recipeName}
+            </if>
+            <if test="caloriesLevel!=null and caloriesLevel!=''">
+                ,calories_level = #{caloriesLevel}
+            </if>
+            <if test="foodNum!=null and foodNum!=''">
+                ,food_num = #{foodNum}
+            </if>
+            <if test="cerealNum!=null and cerealNum!=''">
+                ,cereal_num = #{cerealNum}
+            </if>
+            <if test="fruitsNum!=null  and fruitsNum!=''">
+                ,fruits_num =#{fruitsNum}
+            </if>
+            <if test="meatNum!=null and meatNum!=''">
+                ,meat_num = #{meatNum}
+            </if>
+            <if test="soymilkNum!=null and soymilkNum!=''">
+                ,soymilk_num = #{soymilkNum}
+            </if>
+            <if test="greaseNum!=null and greaseNum!=''">
+                ,grease_num = #{greaseNum}
+            </if>
+            <if test="vegetablesNum!=null and vegetablesNum!=''">
+                ,vegetables_num = #{vegetablesNum}
+            </if>
+            <if test="eggNum!=null and eggNum!=''">
+                ,egg_num = #{eggNum}
+            </if>
+            <if test="beansNum!=null and beansNum!=''">
+                ,beans_num = #{beansNum}
+            </if>
+            <if test="md5!=null and md5!=''">
+                ,md5 = #{md5}
+            </if>
+            <if test="eohType!=null and eohType!=''">
+                ,eoh_type = #{eohType}
+            </if>
+        </set>
+        WHERE sid = #{sid}
+    </update>
+
+    <update id="modifyCustomRecipeCatering" parameterType="map">
+        UPDATE  t_prescription_recipes_caloric_catering
+        <set>
+            modify_dt = now()
+            <if test="breakfastFoodJson !=null and breakfastFoodJson!=''">
+                ,breakfast_food_json =#{breakfastFoodJson}
+            </if>
+            <if test="breakfastFoodAddJson!=null and breakfastFoodAddJson!=''">
+                ,breakfast_food_add_json = #{breakfastFoodAddJson}
+            </if>
+            <if test="lunchFoodJson!=null and lunchFoodJson!=''">
+                ,lunch_food_json = #{lunchFoodJson}
+            </if>
+            <if test="lunchFoodAddJson!=null and lunchFoodAddJson!=''">
+                ,lunch_food_add_json = #{lunchFoodAddJson}
+            </if>
+            <if test="dinnerFoodJson!=null  and dinnerFoodJson!=''">
+                ,dinner_food_json =#{dinnerFoodJson}
+            </if>
+            <if test="dinnerFoodAddJson!=null and dinnerFoodAddJson!=''">
+                ,dinner_food_add_json = #{dinnerFoodAddJson}
+            </if>
+            <if test="md5!=null and md5!=''">
+                ,md5 = #{md5}
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delCustomRecipes" parameterType="java.lang.String">
+        delete t1,t2
+        from t_prescription_recipes_caloric as t1
+        left join t_prescription_recipes_caloric_catering as t2
+        on t1.sid = t2.recipes_caloric_relation_id and t1.caloric_type = 1
+        where t2.id= #{id};
+    </delete>
+    
+    <select id="listFoodNutrient" parameterType="java.lang.String" resultType="com.comvee.cdms.prescription.bo.FoodNutrientBO">
+        select id,name,unit,heat,protein,totalfats,carbohydrates,na,is_valid isValid,insert_dt insertDt,modify_dt modifyDt from t_food_nutrient where is_valid = 1
+        <if test="id!=null and id!=''">
+           and  id = #{id}
+        </if>
+        <if test="name!=null and name!=''">
+            and  name like concat('%',concat(#{name},'%'))
+        </if>
+    </select>
+    <select id="getPrescriptionPeopleNum" resultType="java.lang.Long">
+        select ifnull(count(distinct(member_id)),0)
+        from t_prescription
+        <where>
+            is_valid = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                AND hospital_id = #{hospitalId}
+            </if>
+            <if test="handDown!=null">
+                AND hand_down = #{handDown}
+            </if>
+            <if test="startDt != null and ''!=startDt">
+                and insert_dt >= #{startDt}
+            </if>
+            <if test="endDt != null and ''!=endDt">
+                and insert_dt &lt;= #{endDt}
+            </if>
+            <if test="hospitalIdList!=null and hospitalIdList.size()&gt;0">
+                AND hospital_id IN
+                <foreach collection="hospitalIdList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <!-- 6.7.0 end -->
+
+</mapper>

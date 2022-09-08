@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.education.mapper.EduCourseMapper">
+
+    <resultMap type="com.comvee.cdms.education.model.po.EduCoursePO" id="TEduCourseMap">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="courseNo" column="course_no" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="courseType" column="course_type" jdbcType="INTEGER"/>
+        <result property="classId" column="class_id" jdbcType="VARCHAR"/>
+        <result property="courseStatus" column="course_status" jdbcType="INTEGER"/>
+        <result property="imgUrl" column="img_url" jdbcType="VARCHAR"/>
+        <result property="intr" column="intr" jdbcType="VARCHAR"/>
+        <result property="teacherName" column="teacher_name" jdbcType="VARCHAR"/>
+        <result property="vedioUrl" column="vedio_url" jdbcType="VARCHAR"/>
+        <result property="articleContent" column="article_content" jdbcType="VARCHAR"/>
+        <result property="duration" column="duration" jdbcType="VARCHAR"/>
+        <result property="score" column="score" jdbcType="VARCHAR"/>
+        <result property="praise" column="praise" jdbcType="VARCHAR"/>
+        <result property="viewNum" column="view_num" jdbcType="VARCHAR"/>
+        <result property="peopleNum" column="people_num" jdbcType="VARCHAR"/>
+        <result property="operatorId" column="operator_id" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="VARCHAR"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap type="com.comvee.cdms.education.model.vo.ListEduCourseVO" id="ListEduCourseVO">
+        <result property="courseId" column="sid" jdbcType="VARCHAR"/>
+        <result property="courseNo" column="course_no" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="courseType" column="course_type" jdbcType="INTEGER"/>
+        <result property="classId" column="class_id" jdbcType="VARCHAR"/>
+        <result property="className" column="class_name" jdbcType="VARCHAR"/>
+        <result property="courseStatus" column="course_status" jdbcType="INTEGER"/>
+        <result property="imgUrl" column="img_url" jdbcType="VARCHAR"/>
+        <result property="duration" column="duration" jdbcType="VARCHAR"/>
+        <result property="viewNum" column="view_num" jdbcType="INTEGER"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="teacherName" column="teacher_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap type="com.comvee.cdms.education.model.vo.DetailEduCourseVO" id="DetailEduCourseVO">
+        <result property="courseId" column="sid" jdbcType="VARCHAR"/>
+        <result property="courseNo" column="course_no" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="courseType" column="course_type" jdbcType="INTEGER"/>
+        <result property="classId" column="class_id" jdbcType="VARCHAR"/>
+        <result property="className" column="class_name" jdbcType="VARCHAR"/>
+        <result property="courseStatus" column="course_status" jdbcType="INTEGER"/>
+        <result property="imgUrl" column="img_url" jdbcType="VARCHAR"/>
+        <result property="intr" column="intr" jdbcType="VARCHAR"/>
+        <result property="teacherName" column="teacher_name" jdbcType="VARCHAR"/>
+        <result property="duration" column="duration" jdbcType="VARCHAR"/>
+        <result property="score" column="score" jdbcType="VARCHAR"/>
+        <result property="praise" column="praise" jdbcType="VARCHAR"/>
+        <result property="viewNum" column="view_num" jdbcType="VARCHAR"/>
+        <result property="peopleNum" column="people_num" jdbcType="VARCHAR"/>
+        <result property="commentNum" column="comment_num" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="VARCHAR"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="isCollect" column="isCollect" jdbcType="VARCHAR"/>
+        <result property="praiseCommentNum" column="praiseCommentNum" jdbcType="VARCHAR"/>
+        <result property="midCommentNum" column="midCommentNum" jdbcType="VARCHAR"/>
+        <result property="negCommentNum" column="negCommentNum" jdbcType="VARCHAR"/>
+        <result property="vedioUrl" column="vedio_url" jdbcType="VARCHAR"/>
+        <result property="articleContent" column="article_content" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TEduCourseMap">
+        select
+        sid, course_no,title, course_type, class_id, course_status, img_url, intr, teacher_name, vedio_url, article_content,
+        duration, score, praise, view_num, people_num, operator_id, is_valid, modify_dt, insert_dt
+        from t_edu_course
+        where sid = #{sid}
+    </select>
+    
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TEduCourseMap">
+        select
+        sid, course_no,title, course_type, class_id, course_status, img_url, intr, teacher_name, vedio_url, article_content,
+        duration, score, praise, view_num, people_num,operator_id, is_valid, modify_dt, insert_dt
+        from t_edu_course
+        <where>
+            <if test="sid != null and sid != ''">
+                and sid = #{sid}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="courseType != null">
+                and course_type = #{courseType}
+            </if>
+            <if test="classId != null and classId != ''">
+                and class_id = #{classId}
+            </if>
+            <if test="courseStatus != null">
+                and course_status = #{courseStatus}
+            </if>
+            <if test="imgUrl != null and imgUrl != ''">
+                and img_url = #{imgUrl}
+            </if>
+            <if test="intr != null and intr != ''">
+                and intr = #{intr}
+            </if>
+            <if test="teacherName != null and teacherName != ''">
+                and teacher_name = #{teacherName}
+            </if>
+            <if test="vedioUrl != null and vedioUrl != ''">
+                and vedio_url = #{vedioUrl}
+            </if>
+            <if test="articleContent != null and articleContent != ''">
+                and article_content = #{articleContent}
+            </if>
+            <if test="duration != null and duration != ''">
+                and duration = #{duration}
+            </if>
+            <if test="score != null">
+                and score = #{score}
+            </if>
+            <if test="praise != null and praise != ''">
+                and praise = #{praise}
+            </if>
+            <if test="viewNum != null">
+                and view_num = #{viewNum}
+            </if>
+            <if test="peopleNum != null">
+                and people_num = #{peopleNum}
+            </if>
+            <if test="operatorId != null and operatorId != ''">
+                and operator_id = #{operatorId}
+            </if>
+            <if test="isValid != null">
+                and is_valid = #{isValid}
+            </if>
+        </where>
+    </select>
+    <select id="listEduCourseVO" parameterType="com.comvee.cdms.education.model.dto.ListEduCourseDTO" resultMap="ListEduCourseVO">
+        select
+        t.sid, t.course_no,t.title, t.course_type, t.class_id, t.course_status, t.img_url,
+        t.duration, t.view_num, t.insert_dt,c.class_name,t.teacher_name
+        from t_edu_course t left join t_edu_course_class c on t.class_id = c.sid
+        <where>
+            t.is_valid = 1
+            <if test="keyword != null and keyword != ''">
+                and instr(t.title, #{keyword}) > 0
+            </if>
+            <if test="courseType != null">
+                and t.course_type = #{courseType}
+            </if>
+            <if test="classId != null and classId != ''">
+                and t.class_id = #{classId}
+            </if>
+            <if test="teacherName != null and teacherName != ''">
+                and instr(t.teacher_name, #{teacherName}) > 0
+            </if>
+        </where>
+        order by
+        <if test="timeOrder != null and timeOrder != ''">
+            t.insert_dt ${timeOrder}
+        </if>
+        <if test="scoreOrder != null and scoreOrder != ''">
+            t.score ${scoreOrder}
+        </if>
+        <if test="viewOrder != null and viewOrder != ''">
+            t.view_num ${viewOrder}
+        </if>
+    </select>
+    <select id="loadEduCourseDetail" resultMap="DetailEduCourseVO">
+        select
+        t.sid,t.course_no, t.title, t.course_type, t.class_id,c.class_name, t.course_status, t.img_url,
+        t.intr, t.teacher_name,t.duration, t.score, t.praise, t.view_num, t.people_num,  t.modify_dt, t.insert_dt,
+        t.vedio_url,t.article_content,
+        (select count(sid) from t_edu_course_comment where course_id  = #{courseId} and  is_valid = 1 and is_show = 1)  comment_num,
+        (select count(sid) from t_edu_course_comment where course_id  = #{courseId} and  lever = 1 and  is_valid = 1 and is_show = 1)  praiseCommentNum,
+        (select count(sid) from t_edu_course_comment where course_id  = #{courseId} and  lever = 2 and  is_valid = 1 and is_show = 1)  midCommentNum,
+        (select count(sid) from t_edu_course_comment where course_id  = #{courseId} and  lever = 3 and  is_valid = 1 and is_show = 1)  negCommentNum
+        from t_edu_course t left join t_edu_course_class c on c.sid = t.class_id
+        where t.sid = #{courseId}
+        limit 1
+    </select>
+
+
+    <select id="listRecEduCourseVO" resultMap="ListEduCourseVO">
+        select
+        t.sid, t.course_no,t.title, t.course_type, t.class_id, t.course_status, t.img_url,
+        t.duration, t.view_num, t.insert_dt,c.class_name
+        from t_edu_course t left join t_edu_course_class c on t.class_id = c.sid
+        where t.is_valid = 1 and t.course_status = 1 and t.class_id = #{classId}
+        and t.sid &lt;&gt; #{courseId}
+        order by t.insert_dt desc
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sid" useGeneratedKeys="true">
+        insert into t_edu_course(sid,course_no,title, course_type, class_id, course_status, img_url, intr,
+        teacher_name, vedio_url, article_content, duration, score, praise, view_num, people_num,
+        operator_id, is_valid, modify_dt, insert_dt)
+        values (#{sid},#{courseNo},#{title}, #{courseType}, #{classId}, #{courseStatus}, #{imgUrl}, #{intr}, #{teacherName}, #{vedioUrl},
+        #{articleContent}, #{duration}, #{score}, #{praise}, #{viewNum}, #{peopleNum},#{operatorId},
+         1, now(), now())
+    </insert>
+    
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update t_edu_course
+        <set>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="courseType != null">
+                course_type = #{courseType},
+            </if>
+            <if test="classId != null">
+                class_id = #{classId},
+            </if>
+            <if test="courseStatus != null">
+                course_status = #{courseStatus},
+            </if>
+            <if test="imgUrl != null and imgUrl != ''">
+                img_url = #{imgUrl},
+            </if>
+            <if test="intr != null and intr != ''">
+                intr = #{intr},
+            </if>
+            <if test="teacherName != null and teacherName != ''">
+                teacher_name = #{teacherName},
+            </if>
+            <if test="vedioUrl != null and vedioUrl != ''">
+                vedio_url = #{vedioUrl},
+            </if>
+            <if test="articleContent != null and articleContent != ''">
+                article_content = #{articleContent},
+            </if>
+            <if test="duration != null and duration != ''">
+                duration = #{duration},
+            </if>
+            <if test="score != null">
+                score = #{score},
+            </if>
+            <if test="praise != null and praise != ''">
+                praise = #{praise},
+            </if>
+            <if test="viewNum != null">
+                view_num = #{viewNum},
+            </if>
+            <if test="peopleNum != null">
+                people_num = #{peopleNum},
+            </if>
+            <if test="operatorId != null and operatorId != ''">
+                operator_id = #{operatorId},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid},
+            </if>
+            modify_dt = now()
+        </set>
+        where sid = #{sid}
+    </update>
+
+    <update id="updateCourse">
+        update t_edu_course
+        <set>
+                title = #{title,jdbcType=VARCHAR},
+                course_type = #{courseType,jdbcType=INTEGER},
+                class_id = #{classId,jdbcType=VARCHAR},
+                course_status = #{courseStatus,jdbcType=INTEGER},
+                img_url = #{imgUrl,jdbcType=VARCHAR},
+                intr = #{intr,jdbcType=VARCHAR},
+                teacher_name = #{teacherName,jdbcType=VARCHAR},
+                vedio_url = #{vedioUrl,jdbcType=VARCHAR},
+                article_content = #{articleContent,jdbcType=VARCHAR},
+                duration = #{duration,jdbcType=VARCHAR},
+                operator_id = #{operatorId},
+            modify_dt = now()
+        </set>
+
+        where sid = #{sid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from t_edu_course where sid = #{sid}
+    </delete>
+
+</mapper>
+

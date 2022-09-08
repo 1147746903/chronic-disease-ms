@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.doctor.mapper.DoctorPopupRemindIgnoreTimeMapper">
+
+  <resultMap id="ignoreTime" type="com.comvee.cdms.doctor.po.DoctorPopupRemindIgnoreTimePO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="remind_type" jdbcType="TINYINT" property="remindType" />
+    <result column="ignore_dt" jdbcType="TIMESTAMP" property="ignoreDt" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+  </resultMap>
+
+  <insert id="addDoctorPopupRemindIgnoreTime" parameterType="com.comvee.cdms.doctor.po.DoctorPopupRemindIgnoreTimePO">
+    insert into t_doctor_popup_remind_ignore_time (sid, doctor_id, remind_type ,ignore_dt)
+    values (#{sid,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{remindType,jdbcType=TINYINT}, #{ignoreDt,jdbcType=TIMESTAMP})
+  </insert>
+
+  <update id="updateDoctorPopupRemindIgnoreTime" parameterType="com.comvee.cdms.doctor.po.DoctorPopupRemindIgnoreTimePO">
+    update t_doctor_popup_remind_ignore_time set ignore_dt = #{ignoreDt,jdbcType=TIMESTAMP}
+    where sid = #{sid,jdbcType=BIGINT}
+  </update>
+
+  <select id="getDoctorPopupRemindIgnoreTime"  resultMap="ignoreTime">
+    select sid, doctor_id, remind_type, ignore_dt, insert_dt, update_dt, valid
+    from t_doctor_popup_remind_ignore_time
+    where valid = 1 and doctor_id = #{doctorId} and remind_type = #{remindType} limit 1
+  </select>
+</mapper>

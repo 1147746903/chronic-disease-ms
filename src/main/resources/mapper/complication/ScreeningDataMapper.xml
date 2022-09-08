@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.complication.mapper.ScreeningDataMapper">
+
+    <resultMap id="screeningData" type="com.comvee.cdms.complication.model.po.ScreeningDataPO">
+        <id column="screening_id" jdbcType="VARCHAR" property="screeningId" />
+        <result column="patient_name" jdbcType="VARCHAR" property="patientName" />
+        <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+        <result column="sex" jdbcType="INTEGER" property="sex" />
+        <result column="age" jdbcType="INTEGER" property="age" />
+        <result column="screening_dt" jdbcType="TIMESTAMP" property="screeningDt" />
+        <result column="left_vpt" jdbcType="VARCHAR" property="leftVpt" />
+        <result column="right_vpt" jdbcType="VARCHAR" property="rightVpt" />
+        <result column="vpt_data_json" jdbcType="VARCHAR" property="vptDataJson" />
+        <result column="left_abi" jdbcType="VARCHAR" property="leftAbi" />
+        <result column="right_abi" jdbcType="VARCHAR" property="rightAbi" />
+        <result column="abi_data_json" jdbcType="VARCHAR" property="abiDataJson" />
+        <result column="modules" jdbcType="VARCHAR" property="modules" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    </resultMap>
+
+    <insert id="addScreeningData" parameterType="com.comvee.cdms.complication.model.po.ScreeningDataPO">
+          replace into t_screening_data (screening_id, patient_name, id_card,
+          sex, age, screening_dt,
+          left_vpt, right_vpt, vpt_data_json,
+          left_abi, right_abi, abi_data_json,
+          modules, insert_dt, update_dt,
+          doctor_id, member_id ,valid)
+        values (#{screeningId,jdbcType=VARCHAR}, #{patientName,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR},
+          #{sex,jdbcType=INTEGER}, #{age,jdbcType=INTEGER}, #{screeningDt,jdbcType=TIMESTAMP},
+          #{leftVpt,jdbcType=VARCHAR}, #{rightVpt,jdbcType=VARCHAR}, #{vptDataJson,jdbcType=VARCHAR},
+          #{leftAbi,jdbcType=VARCHAR}, #{rightAbi,jdbcType=VARCHAR}, #{abiDataJson,jdbcType=VARCHAR},
+          #{modules,jdbcType=VARCHAR}, #{insertDt,jdbcType=TIMESTAMP}, #{updateDt,jdbcType=TIMESTAMP},
+          #{doctorId,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT} ,#{valid})
+    </insert>
+
+    <select id="listScreeningData" resultMap="screeningData" parameterType="com.comvee.cdms.complication.model.dto.ListScreeningDataDTO">
+        select screening_id, patient_name, id_card, sex, age, date_format(screening_dt ,'%Y-%m-%d') screening_dt, left_vpt, right_vpt,
+        vpt_data_json, left_abi, right_abi, abi_data_json, modules, insert_dt, update_dt,
+        doctor_id, member_id
+        from t_screening_data where valid = 1
+        <if test="patientName != null and '' != patientName">
+            <bind name="patientNameLike" value="'%' + patientName + '%'"/>
+            and patient_name like #{patientNameLike}
+        </if>
+        <if test="sex != null">
+            and sex = #{sex}
+        </if>
+        <if test="leftVptMin != null">
+            and left_vpt &gt;= #{leftVptMin}
+        </if>
+        <if test="leftVptMax != null ">
+            and left_vpt &lt;= #{leftVptMax}
+        </if>
+        <if test="rightVptMin != null ">
+            and right_vpt &gt;= #{rightVptMin}
+        </if>
+        <if test="rightVptMax != null ">
+            and right_vpt &lt;= #{rightVptMax}
+        </if>
+        <if test="leftAbiMin != null ">
+            and left_abi &gt;= #{leftAbiMin}
+        </if>
+        <if test="leftAbiMax != null ">
+            and left_abi &lt;= #{leftAbiMax}
+        </if>
+        <if test="rightAbiMin != null ">
+            and right_abi &gt;= #{rightAbiMin}
+        </if>
+        <if test="rightAbiMax != null ">
+            and right_abi &lt;= #{rightAbiMax}
+        </if>
+        <if test="ageMin != null">
+            and age &gt;= #{ageMin}
+        </if>
+        <if test="ageMax != null">
+            and age &lt;= #{ageMax}
+        </if>
+        <if test="startDt != null and '' != startDt">
+            and screening_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and screening_dt &lt;= #{endDt}
+        </if>
+        <if test="doctorIdList != null and doctorIdList.size() > 0">
+            and doctor_id in
+            <foreach collection="doctorIdList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        order by insert_dt desc
+    </select>
+
+    <update id="deleteScreeningData">
+        update t_screening_data t set t.valid = 0 ,t.update_dt = now()
+        where t.valid = 1 and t.member_id = #{memberId} and t.doctor_id = #{doctorId}
+    </update>
+
+    <select id="getScreeningDataById" parameterType="String" resultMap="screeningData">
+        select screening_id, patient_name, id_card, sex, age, date_format(screening_dt ,'%Y-%m-%d') screening_dt, left_vpt, right_vpt,
+               vpt_data_json, left_abi, right_abi, abi_data_json, modules, insert_dt, update_dt,
+               doctor_id, member_id from t_screening_data where screening_id = #{screeningId} limit 1
+    </select>
+    <update id="updateScreeningData" parameterType="com.comvee.cdms.complication.model.po.ScreeningDataPO">
+        update t_screening_data set update_dt = now()
+        <if test="leftVpt != null and '' != leftVpt">
+            ,left_vpt = #{leftVpt}
+        </if>
+        <if test="rightVpt != null and '' != rightVpt">
+            ,right_vpt = #{rightVpt}
+        </if>
+        <if test="vptDataJson != null and '' != vptDataJson">
+            ,vpt_data_json = #{vptDataJson}
+        </if>
+        <if test="leftAbi != null and '' != leftAbi">
+            ,left_abi = #{leftAbi}
+        </if>
+        <if test="rightAbi != null and '' != rightAbi">
+            ,right_abi = #{rightAbi}
+        </if>
+        <if test="abiDataJson != null and '' != abiDataJson">
+            ,abi_data_json = #{abiDataJson}
+        </if>
+        where screening_id = #{screeningId}
+    </update>
+
+</mapper>

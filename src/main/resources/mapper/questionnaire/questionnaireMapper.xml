@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.questionnaire.mapper.QuestionnaireMapper">
+
+    <resultMap id="questionnaire" type="com.comvee.cdms.questionnaire.model.po.QuestionnairePO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="question_type" jdbcType="TINYINT" property="questionType" />
+        <result column="question_name" jdbcType="VARCHAR" property="questionName" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+        <result column="question_status" jdbcType="TINYINT" property="questionStatus" />
+        <result column="result_json" jdbcType="VARCHAR" property="resultJson" />
+        <result column="commit_dt" jdbcType="TIMESTAMP" property="commitDt" />
+        <result column="content_json" jdbcType="LONGVARCHAR" property="contentJson" />
+        <result column="create_type" jdbcType="TINYINT" property="createType"/>
+        <result column="follow_content_id" jdbcType="BIGINT" property="followContentId"/>
+    </resultMap>
+
+    <select id="getQuestionnaireById" resultMap="questionnaire">
+        select sid, question_type, question_name, insert_dt, update_dt, member_id, doctor_id,
+        operator_id, question_status, result_json, commit_dt, content_json
+        from t_questionnaire where sid = #{sid} limit 1
+    </select>
+
+    <insert id="addQuestionnaire" parameterType="com.comvee.cdms.questionnaire.model.po.QuestionnairePO">
+        insert into t_questionnaire (sid, question_type, question_name, member_id,
+          doctor_id, operator_id, result_json, commit_dt, content_json,question_status,create_type, follow_content_id
+          )
+        values (#{sid,jdbcType=BIGINT}, #{questionType,jdbcType=TINYINT}, #{questionName,jdbcType=VARCHAR},  #{memberId,jdbcType=BIGINT},
+          #{doctorId,jdbcType=BIGINT}, #{operatorId,jdbcType=BIGINT}, #{resultJson,jdbcType=VARCHAR}, #{commitDt,jdbcType=TIMESTAMP}, #{contentJson,jdbcType=LONGVARCHAR},1,
+          #{createType,jdbcType=TINYINT},#{followContentId,jdbcType=BIGINT}
+          )
+    </insert>
+
+    <update id="updateQuestionnairePO" parameterType="com.comvee.cdms.questionnaire.model.po.QuestionnairePO">
+        update t_questionnaire
+        <set>
+            <if test="questionStatus != null">
+                question_status = #{questionStatus,jdbcType=TINYINT},
+            </if>
+            <if test="resultJson != null and '' != resultJson">
+                result_json = #{resultJson,jdbcType=VARCHAR},
+            </if>
+            <if test="commitDt != null and '' != commitDt">
+                commit_dt = #{commitDt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="contentJson != null and '' != contentJson">
+                content_json = #{contentJson,jdbcType=LONGVARCHAR}
+            </if>
+        </set>
+        where sid = #{sid,jdbcType=BIGINT}
+    </update>
+
+    <select id="listQuestionnaire" resultMap="questionnaire" parameterType="com.comvee.cdms.questionnaire.model.dto.ListQuestionnaireDTO">
+        select sid, question_type, question_name, insert_dt, update_dt, member_id, doctor_id,
+        operator_id, question_status, result_json, commit_dt,create_type,follow_content_id
+        from t_questionnaire where create_type = 1
+            <if test="memberId != null and '' != memberId">
+                and member_id = #{memberId}
+            </if>
+            <if test="doctorId != null and '' != doctorId">
+                and doctor_id = #{doctorId}
+            </if>
+        order by insert_dt desc
+    </select>
+
+    <select id="getQuestionnaire" resultMap="questionnaire" parameterType="com.comvee.cdms.questionnaire.model.dto.ListQuestionnaireDTO">
+        select sid, question_type, question_name, insert_dt, update_dt, member_id, doctor_id,
+        operator_id, question_status, result_json, commit_dt,create_type,follow_content_id
+        from t_questionnaire where create_type in (1,2)
+            <if test="memberId != null and '' != memberId">
+                and member_id = #{memberId}
+            </if>
+            <if test="doctorId != null and '' != doctorId">
+                and doctor_id = #{doctorId}
+            </if>
+            <if test="questionType != null and '' != questionType">
+                and question_type = #{questionType}
+            </if>
+            <if test="questionStatus != null and '' != questionStatus">
+                and question_status = #{questionStatus}
+            </if>
+        order by update_dt desc  limit 1
+    </select>
+
+    <delete id="deleteQuestionnaire">
+        delete t from t_questionnaire t where t.sid = #{sid}
+    </delete>
+
+    <select id="getQuestionnaireByFollowId" resultMap="questionnaire" parameterType="java.lang.String">
+        select sid, question_type, question_name, insert_dt, update_dt, member_id, doctor_id,
+        operator_id, question_status, result_json, commit_dt, content_json,create_type,follow_content_id
+        from t_questionnaire where follow_content_id = #{followContentId} and create_type = 2
+    </select>
+
+    <select id="getNewQuestionnaire" resultMap="questionnaire" parameterType="com.comvee.cdms.questionnaire.model.dto.ListQuestionnaireDTO">
+        select a.sid, a.question_type, a.question_name, a.insert_dt, a.update_dt, a.member_id, a.doctor_id,
+        a.operator_id, a.question_status, a.result_json, a.commit_dt, a.content_json,a.create_type,a.follow_content_id
+        from t_questionnaire a,t_doctor b where a.doctor_id = b.doctor_id
+        <if test="questionType != null and '' != questionType">
+            and a.question_type = #{questionType}
+        </if>
+        <if test="memberId != null and '' != memberId">
+            and a.member_id = #{memberId}
+        </if>
+        <if test="doctorId != null and '' != doctorId">
+            and a.doctor_id = #{doctorId}
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and b.hospital_id = #{hospitalId}
+        </if>
+        <if test="questionStatus != null and '' != questionStatus">
+            and a.question_status = #{questionStatus}
+        </if>
+        order by update_dt desc  limit 1
+    </select>
+
+    <update id="updateQuestionnaireByFollowId" parameterType="java.lang.String">
+        update t_questionnaire
+        <set>
+                question_status = 3,
+        </set>
+        where follow_content_id = #{followContentId} and (question_status = 2 or question_status=4)
+    </update>
+
+</mapper>

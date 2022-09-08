@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.DyRememberSleepMapper">
+
+  <resultMap id="dySleepRemember" type="com.comvee.cdms.dybloodsugar.po.DyRememberSleepPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="operation_id" jdbcType="BIGINT" property="operationId" />
+    <result column="sleep_dt" jdbcType="VARCHAR" property="sleepDt" />
+    <result column="sleep_remark" jdbcType="VARCHAR" property="sleepRemark" />
+    <result column="record_dt" jdbcType="TIMESTAMP" property="recordDt" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+    <result column="is_valid" jdbcType="INTEGER" property="isValid" />
+    <result column="operation_type" jdbcType="INTEGER" property="operationType" />
+  </resultMap>
+
+  <select id="getDySleepRememberPO"  resultMap="dySleepRemember">
+    SELECT
+        sid,member_id, operation_id,sleep_dt,sleep_remark,
+    record_dt, insert_dt, modify_dt, is_valid, operation_type
+    FROM
+        dy_remember_member_sleep
+    WHERE
+	 member_id=#{memberId} and is_valid=1 and record_dt between #{recordDtStart} and #{recordDtEnd} and operation_type=#{operationType}
+  </select>
+
+  <select id="getSleepRemember"  resultMap="dySleepRemember">
+    SELECT
+        sid,member_id, operation_id,sleep_dt,sleep_remark,
+    record_dt, insert_dt, modify_dt, is_valid, operation_type
+    FROM
+        dy_remember_member_sleep
+    WHERE
+	 member_id=#{memberId} and is_valid=1 and record_dt between #{recordDtStart} and #{recordDtEnd}
+	 <if test="operationType != null">
+       and operation_type=#{operationType}
+     </if>
+     order by modify_dt desc
+  </select>
+
+  <insert id="addDySleepRemember" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberSleepPO">
+    insert into dy_remember_member_sleep (sid,member_id, operation_id,sleep_dt,sleep_remark,
+    record_dt, insert_dt, modify_dt, is_valid,operation_type)
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
+    #{operationId,jdbcType=BIGINT},#{sleepDt,jdbcType=VARCHAR},#{sleepRemark,jdbcType=VARCHAR},
+    #{recordDt,jdbcType=VARCHAR},now(), now(),1, #{operationType,jdbcType=INTEGER}
+    )
+  </insert>
+
+  <update id="updateDySleepRemember" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberSleepPO">
+    update dy_remember_member_sleep
+    <set>
+      <if test="operationId != null">
+        operation_id = #{operationId,jdbcType=VARCHAR},
+      </if>
+      <if test="sleepDt != null">
+          sleep_dt = #{sleepDt,jdbcType=VARCHAR},
+      </if>
+      <if test="recordDt != null">
+        record_dt =  #{recordDt,jdbcType=VARCHAR},
+      </if>
+      <if test="sleepRemark != null">
+          sleep_remark = #{sleepRemark,jdbcType=VARCHAR},
+      </if>
+        modify_dt = now()
+    </set>
+    where
+    member_id=#{memberId} and is_valid=1 and record_dt between #{recordDtStart} and #{recordDtEnd} and operation_type=#{operationType}
+  </update>
+
+</mapper>

@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.sign.mapper.BloodPressureMapper">
+
+    <resultMap id="bloodPressure" type="com.comvee.cdms.sign.po.BloodPressurePO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="dbp" jdbcType="VARCHAR" property="dbp" />
+        <result column="sbp" jdbcType="VARCHAR" property="sbp" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="record_time" jdbcType="TIMESTAMP" property="recordTime" />
+        <result column="sbp_level" jdbcType="TINYINT" property="sbpLevel" />
+        <result column="dbp_level" jdbcType="TINYINT" property="dbpLevel" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="operator_type" jdbcType="TINYINT" property="operatorType" />
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+        <result column="origin" jdbcType="TINYINT" property="origin" />
+        <result column="dbp_min" jdbcType="VARCHAR" property="dbpMin" />
+        <result column="dbp_max" jdbcType="VARCHAR" property="dbpMax" />
+        <result column="sbp_min" jdbcType="VARCHAR" property="sbpMin" />
+        <result column="sbp_max" jdbcType="VARCHAR" property="sbpMax" />
+        <result column="heart_rate" jdbcType="VARCHAR" property="heartRate" />
+    </resultMap>
+    <update id="updateHeartRateForBP">
+        update t_blood_pressure
+        set heart_rate = #{heartRate}
+        where sid = #{sid}
+    </update>
+
+    <select id="listBloodPressure" resultMap="bloodPressure" parameterType="com.comvee.cdms.sign.dto.ListBloodPressureDTO">
+        select t.sid, t.dbp, t.sbp, t.member_id, t.record_time, t.sbp_level, t.dbp_level, t.insert_dt, t.is_valid,
+        t.update_dt, t.operator_type, t.operator_id, t.origin ,t.dbp_min ,t.dbp_max ,t.sbp_min ,t.sbp_max,t.heart_rate
+        from t_blood_pressure t
+        <where>
+            t.is_valid = 1
+            <if test = "memberId != null and '' != memberId">
+                and t.member_id = #{memberId}
+            </if>
+            <if test = "startDt != null and '' != startDt">
+                and t.record_time &gt;= #{startDt}
+            </if>
+            <if test = "endDt != null and '' != endDt">
+                and t.record_time &lt;= #{endDt}
+            </if>
+            <if test="recordLevel != null">
+                <if test="recordLevel == 1">
+                    and t.sbp_level = '3' and t.dbp_level = '3'
+                </if>
+                <if test="recordLevel == 0">
+                    and (t.sbp_level != '3' or t.dbp_level != '3')
+                </if>
+            </if>
+        </where>
+        order by t.record_time desc
+    </select>
+
+    <select id="loadBloodPressureDbpMax" resultType="java.util.Map" parameterType = "com.comvee.cdms.sign.dto.CountBloodSugarDTO">
+        select
+        dbp,sbp
+        FROM t_blood_pressure t
+        where t.MEMBER_ID=#{memberId}
+        <if test = "startDt != null and '' != startDt">
+            AND t.record_time &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            AND t.record_time &lt;= #{endDt}
+        </if>
+        ORDER BY dbp desc LIMIT 1
+    </select>
+
+    <select id="loadBloodPressureSbpMax" resultType="java.util.Map" parameterType = "com.comvee.cdms.sign.dto.CountBloodSugarDTO">
+        select
+        dbp,sbp
+        FROM t_blood_pressure t
+        where t.MEMBER_ID=#{memberId}
+        <if test = "startDt != null and '' != startDt">
+            AND t.record_time &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            AND t.record_time &lt;= #{endDt}
+        </if>
+        ORDER BY sbp desc LIMIT 1
+    </select>
+
+    <select id="loadBloodPressureNomal" resultType="int" parameterType = "com.comvee.cdms.sign.dto.CountBloodSugarDTO">
+        SELECT
+        COUNT(t.sid)
+        FROM t_blood_pressure t
+        where t.MEMBER_ID=#{memberId}
+        <if test = "startDt != null and '' != startDt">
+            AND t.record_time &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            AND t.record_time &lt;= #{endDt}
+        </if>
+        and t.sbp_level=3 and t.dbp_level=3
+    </select>
+
+    <select id="loadBloodPressureHigh" resultType="int" parameterType = "com.comvee.cdms.sign.dto.CountBloodSugarDTO">
+        SELECT
+        COUNT(t.sid)
+        FROM t_blood_pressure t
+        where t.MEMBER_ID=#{memberId}
+        <if test = "startDt != null and '' != startDt">
+            AND t.record_time &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            AND t.record_time &lt;= #{endDt}
+        </if>
+        and (t.sbp_level=5 or t.dbp_level=5)
+    </select>
+
+    <select id="loadBloodPressureLow" resultType="int" parameterType = "com.comvee.cdms.sign.dto.CountBloodSugarDTO">
+        SELECT
+        COUNT(t.sid)
+        FROM t_blood_pressure t
+        where t.MEMBER_ID=#{memberId}
+        <if test = "startDt != null and '' != startDt">
+            AND t.record_time &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            AND t.record_time &lt;= #{endDt}
+        </if>
+        and (t.sbp_level=1 or t.dbp_level=1)
+    </select>
+
+    <select id="getBloodPressure" resultMap="bloodPressure" parameterType="com.comvee.cdms.sign.dto.GetBloodPressureDTO">
+        select sid, dbp, sbp, member_id, record_time, sbp_level, dbp_level, insert_dt, is_valid,
+        update_dt, operator_type, operator_id, origin,dbp_min ,dbp_max ,sbp_min ,sbp_max
+        from t_blood_pressure where is_valid = 1
+        <if test="sid != null and '' != sid">
+            and sid = #{sid}
+        </if>
+        <if test="memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test="recordTime != null and '' != recordTime">
+            and record_time = #{recordTime}
+        </if>
+        limit 1
+    </select>
+
+    <insert id="addBloodPressure" parameterType="com.comvee.cdms.sign.dto.AddBloodPressureMapperDTO">
+        insert into t_blood_pressure (sid, dbp, sbp,
+          member_id, record_time, sbp_level,
+          dbp_level, operator_type, operator_id,
+          origin ,dbp_min ,dbp_max ,sbp_min ,sbp_max,heart_rate)
+        values (#{sid,jdbcType=BIGINT}, #{dbp,jdbcType=VARCHAR}, #{sbp,jdbcType=VARCHAR},
+          #{memberId,jdbcType=BIGINT}, #{recordTime,jdbcType=TIMESTAMP}, #{sbpLevel,jdbcType=TINYINT},
+          #{dbpLevel,jdbcType=TINYINT}, #{operatorType,jdbcType=TINYINT}, #{operatorId,jdbcType=BIGINT},
+          #{origin,jdbcType=TINYINT} ,#{dbpMin} ,#{dbpMax} ,#{sbpMin} ,#{sbpMax},#{heartRate})
+    </insert>
+
+    <select id="listBloodPressureOfStatistics" resultMap="bloodPressure" parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO">
+        <!--visitType类型 1住院 2门诊&居家 -->
+        <if test="visitType==1">
+            select * from (SELECT sid, dbp, sbp, tbp.member_id, record_time, sbp_level, dbp_level, insert_dt, is_valid,
+            update_dt, operator_type, operator_id, origin
+            FROM t_blood_pressure tbp , (
+            select m.member_id from t_member m
+            join t_member_checkin_info mci on mci.member_id = m.member_id and mci.is_valid =1
+            join t_member_in_hospital_log h on m.member_id=h.member_id
+            where h.is_valid=1 and mci.checkin_status = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and h.hospital_id=#{hospitalId}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and (h.in_hospital_date &lt; #{endDt} and (h.out_hospital_date &gt; #{startDt} or h.out_hospital_date is null))
+            </if>
+            <if test="isDiabetes!=null">
+                and m.is_diabetes=#{isDiabetes}
+            </if>
+            <if test="sex!=null and sex!=''">
+                and m.sex=#{sex}
+            </if>
+            GROUP BY m.member_id
+            )t
+            where t.member_id=tbp.member_id
+            <if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+                and tbp.insert_dt BETWEEN #{startDt} and #{endDt}
+            </if>
+            order by tbp.record_time desc)t
+            GROUP by t.member_id
+        </if>
+        <if test="visitType==2">
+            select * from (SELECT sid, dbp, sbp, tbp.member_id, record_time, sbp_level, dbp_level, insert_dt, is_valid,
+            update_dt, operator_type, operator_id, origin
+            FROM t_blood_pressure tbp , (
+            select m.member_id from t_member m
+            join t_member_join_hospital mjh on m.member_id = mjh.member_id and mjh.valid = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and mjh.hospital_id=#{hospitalId}
+            </if>
+            left join
+            (select member_id,checkin_status,hospital_id from t_member_checkin_info where is_valid = 1) mci
+            on mci.member_id = mjh.member_id
+            where m.is_valid=1
+            and(mci.checkin_status is null or mci.checkin_status != 1)
+            <if test="sex!=null and sex!=''">
+                and m.sex=#{sex}
+            </if>
+            <if test="isDiabetes!=null">
+                and m.is_diabetes=#{isDiabetes}
+            </if>
+            GROUP BY m.member_id
+            )t
+            where t.member_id=tbp.member_id
+            <if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+                and tbp.insert_dt BETWEEN #{startDt} and #{endDt}
+            </if>
+            order by tbp.record_time desc)t
+            GROUP by t.member_id
+        </if>
+        <if test="visitType==3">
+            select * from (SELECT sid, dbp, sbp, tbp.member_id, record_time, sbp_level, dbp_level, tbp.insert_dt, is_valid,
+            update_dt, operator_type, operator_id, origin
+            FROM t_blood_pressure tbp , (
+                select q.member_id,e.insert_dt join_dt from t_member q ,t_research_group w,t_research_group_member e
+                where q.is_valid = 1 and w.valid = 1 and e.valid = 1
+                and q.member_id = e.member_id and w.group_id = e.research_group_id
+                and w.hospital_id = #{hospitalId}
+                <if test="researchGroupId != null and '' != researchGroupId">
+                    and w.group_id = #{researchGroupId}
+                </if>
+                group by q.member_id
+            )t
+            where t.member_id=tbp.member_id
+            and tbp.insert_dt BETWEEN DATE_FORMAT(t.join_dt,'%Y-%m-%d') and #{endDt}
+            order by tbp.record_time desc)t
+            GROUP by t.member_id
+        </if>
+    </select>
+
+    <select id="listBloodPressureByMemberIdOfInHos" resultMap="bloodPressure" parameterType="string">
+        select t.sid, t.dbp, t.sbp, t.member_id, t.record_time, t.sbp_level, t.dbp_level, t.insert_dt, t.is_valid,
+        t.update_dt, t.operator_type, t.operator_id, t.origin ,t.dbp_min ,t.dbp_max ,t.sbp_min ,t.sbp_max
+        from t_blood_pressure t
+        where
+        t.is_valid=1
+        and t.member_id=#{memberId}
+        order by record_time desc
+    </select>
+
+    <select id="getNewBloodPressure" resultMap="bloodPressure">
+        select sid, dbp, sbp, member_id, record_time, sbp_level, dbp_level, insert_dt, is_valid,
+        update_dt, operator_type, operator_id, origin,dbp_min ,dbp_max ,sbp_min ,sbp_max
+        from t_blood_pressure
+        where member_id = #{memberId,jdbcType=BIGINT} order by record_time desc limit 1
+    </select>
+
+    <!--出院患者血压列表-->
+    <select id="listBloodPressureOfStatisticsOutHos" resultMap="bloodPressure" parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO">
+        SELECT sid, dbp, sbp, tbp.member_id, record_time, sbp_level, dbp_level, insert_dt, is_valid,
+        update_dt, operator_type, operator_id, origin
+        FROM t_blood_pressure tbp , (
+        select m.member_id from t_member m
+        join t_member_checkin_info mci on mci.member_id = m.member_id and mci.is_valid =1
+        join t_member_in_hospital_log h on m.member_id=h.member_id
+        where h.is_valid=1 and mci.checkin_status = 1
+        <if test="hospitalId!=null and hospitalId!=''">
+            and h.hospital_id=#{hospitalId}
+        </if>
+        <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+            and h.out_hospital_date between #{startDt} and #{endDt}
+            and in_status=0
+        </if>
+        <if test="isDiabetes!=null">
+            and m.is_diabetes=#{isDiabetes}
+        </if>
+        <if test="sex!=null and sex!=''">
+            and m.sex=#{sex}
+        </if>
+        GROUP BY m.member_id
+        )t
+        where t.member_id=tbp.member_id
+        <if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+            and tbp.insert_dt BETWEEN #{startDt} and #{endDt}
+        </if>
+    </select>
+    <select id="listBloodPressureMemberList" resultType="java.lang.String">
+        select
+        distinct t.member_id
+        from (select a.* from (select sid, dbp, sbp, member_id, record_time, sbp_level, dbp_level, insert_dt, is_valid,
+        update_dt, operator_type, operator_id, origin,dbp_min ,dbp_max ,sbp_min ,sbp_max
+        from t_blood_pressure
+        having 1
+        order by record_time desc) a
+        group by a.member_id) t
+        join t_member_join_hospital h on t.member_id = h.member_id
+        <where>
+            t.is_valid = 1 and h.valid = 1
+            <if test = "memberId != null and '' != memberId">
+                and t.member_id = #{memberId}
+            </if>
+            <if test = "startDt != null and '' != startDt">
+                and t.record_time &gt;= #{startDt}
+            </if>
+            <if test = "endDt != null and '' != endDt">
+                and t.record_time &lt;= #{endDt}
+            </if>
+            <if test="hospitalId != null and '' != hospitalId">
+                and h.hospital_id = #{hospitalId}
+            </if>
+            <if test="hospitalIdList!=null and hospitalIdList.size()&gt;0">
+                AND h.hospital_id IN
+                <foreach collection="hospitalIdList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="recordLevel != null">
+                <if test="recordLevel == 1">
+                    and t.sbp_level = '3' and t.dbp_level = '3'
+                </if>
+                <if test="recordLevel == 0">
+                    and (t.sbp_level != '3' or t.dbp_level != '3')
+                </if>
+            </if>
+        </where>
+    </select>
+    <select id="listBloodPressureByHospitalId" resultMap="bloodPressure" parameterType="com.comvee.cdms.sign.dto.ListBloodPressureDTO">
+        select t.sid, t.dbp, t.sbp, t.member_id, t.record_time, t.sbp_level, t.dbp_level, t.insert_dt, t.is_valid,
+        t.update_dt, t.operator_type, t.operator_id, t.origin ,t.dbp_min ,t.dbp_max ,t.sbp_min ,t.sbp_max,t.heart_rate
+        from t_blood_pressure t left join t_member_join_hospital h on t.member_id = h.member_id
+        <where>
+            t.is_valid = 1 and h.valid = 1
+            <if test = "memberId != null and '' != memberId">
+                and t.member_id = #{memberId}
+            </if>
+            <if test = "startDt != null and '' != startDt">
+                and t.record_time &gt;= #{startDt}
+            </if>
+            <if test = "endDt != null and '' != endDt">
+                and t.record_time &lt;= #{endDt}
+            </if>
+            <if test="hospitalId != null and '' != hospitalId">
+                and h.hospital_id = #{hospitalId}
+            </if>
+            <if test="hospitalIdList!=null and hospitalIdList.size()&gt;0">
+                AND h.hospital_id IN
+                <foreach collection="paramCodeList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="recordLevel != null">
+                <if test="recordLevel == 1">
+                    and t.sbp_level = '3' and t.dbp_level = '3'
+                </if>
+                <if test="recordLevel == 0">
+                    and (t.sbp_level != '3' or t.dbp_level != '3')
+                </if>
+            </if>
+        </where>
+        order by t.record_time desc
+    </select>
+
+</mapper>

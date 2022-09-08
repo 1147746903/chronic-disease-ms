@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.CfgGroupMapper">
+    <sql id="CfgGroupColumns">
+         t.sid As sid ,  t.group_name As groupName ,  t.is_valid As isValid ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  t.type As type 
+    </sql>
+
+	<!--根据id获取分组场景表信息 -->
+	<select id="loadCfgGroupById" resultType="com.comvee.cdms.defender.model.CfgGroupModel">
+		SELECT 
+			<include refid="CfgGroupColumns"/>
+		FROM tiq_cfg_group t
+		WHERE t.sid = #{sid} 
+	</select>
+	
+	<!-- 获取分组场景分页信息  -->
+	<select id="loadCfgGroup"  resultType="com.comvee.cdms.defender.model.CfgGroupModel">
+		SELECT 
+			<include refid="CfgGroupColumns"/>
+		FROM tiq_cfg_group t
+		<where>
+			AND is_valid = 1
+			<if test="type!=null and type!='' ">     
+	        AND t.type = #{type}  
+	        </if> 
+	        
+	        <if test="param !=null and param!='' ">     
+	        AND ( group_name like  CONCAT(CONCAT('%',#{param},'%'))  )
+	        </if>  
+		</where>
+		order by sid desc
+	</select>
+
+    <!-- 统计分组场景记录数 -->
+	<select id="countCfgGroup"  resultType="Long">
+		SELECT count( sid )
+		FROM tiq_cfg_group t
+		<where>
+			AND is_valid = 1
+			<if test="type!=null and type!='' ">     
+	        AND t.type = #{type}  
+	        </if> 
+	        
+	        <if test="param !=null and param!='' ">     
+	        AND ( group_name like  CONCAT(CONCAT('%',#{param},'%'))  )
+	        </if>  
+		</where>
+	</select>	
+	
+	<!-- 添加分组场景记录 -->
+	<insert id="addCfgGroup">
+		INSERT INTO tiq_cfg_group(
+				sid,
+				group_name,
+				is_valid,
+				modify_dt,
+				insert_dt,
+				type
+		) VALUES (
+			    #{sid},
+				#{groupName},
+				1,
+				now(),
+				now(),
+				#{type}
+		)
+	</insert>
+
+    <!-- 修改分组场景记录 -->
+	<update id="modifyCfgGroup">
+		UPDATE tiq_cfg_group 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="sid!=null and sid!='' ">    
+	        sid = #{sid},
+	        </if>
+	        <if test="groupName!=null and groupName!='' ">    
+	        group_name = #{groupName},
+	        </if>
+	        <if test="type!=null and type!='' ">    
+	        type = #{type},
+	        </if>
+	        modify_dt = now(),
+		</trim>
+		WHERE sid = #{sid}
+	</update>
+	
+	<!-- 删除分组场景记录  -->
+	<update id="delCfgGroup" parameterType="Long">
+		UPDATE tiq_cfg_group SET  is_valid = 0
+		WHERE sid = #{sid} and is_valid = 1
+	</update>
+	
+	
+
+</mapper>

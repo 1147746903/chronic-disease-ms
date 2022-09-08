@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.DySensorMapper">
+    <resultMap id="sensorMap" type="com.comvee.cdms.dybloodsugar.po.DySensorPO">
+        <id column="sid" jdbcType="BIGINT" property="sid"/>
+        <result column="sensor_no" jdbcType="VARCHAR" property="sensorNo"/>
+        <result column="ex_warehouse_dt" jdbcType="TIMESTAMP" property="exWarehouseDt"/>
+        <result column="start_dt" jdbcType="VARCHAR" property="startDt"/>
+        <result column="member_id" jdbcType="VARCHAR" property="memberId"/>
+        <result column="member_name" jdbcType="VARCHAR" property="memberName"/>
+        <result column="mobile_phone" jdbcType="VARCHAR" property="memberPhone"/>
+        <result column="doctor_id" jdbcType="VARCHAR" property="doctorId"/>
+        <result column="doctor_name" jdbcType="VARCHAR" property="doctorName"/>
+        <result column="sensor_status" jdbcType="TINYINT" property="sensorStatus"/>
+        <result column="qr_code_url" jdbcType="VARCHAR" property="qrCodeUrl"/>
+        <result column="valid" jdbcType="TINYINT" property="valid"/>
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt"/>
+        <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt"/>
+    </resultMap>
+
+
+    <insert id="addDySensor" parameterType="com.comvee.cdms.dybloodsugar.po.DySensorPO">
+        insert into dy_sensor(sid, sensor_no, ex_warehouse_dt, start_dt, doctor_id, sensor_status, qr_code_url, valid,
+                              insert_dt, modify_dt)
+        values (#{sid}, #{sensorNo}, #{exWarehouseDt}, '', #{doctorId}, 1, '', 1, now(),
+                now())
+    </insert>
+
+    <update id="updateDySensor" parameterType="com.comvee.cdms.dybloodsugar.po.DySensorPO">
+        update dy_sensor
+        set modify_dt = now()
+        <if test=" exWarehouseDt != null and exWarehouseDt != '' ">
+            , ex_warehouse_dt = #{exWarehouseDt}
+        </if>
+        <if test=" doctorId != null and doctorId != '' ">
+            , doctor_id = #{doctorId}
+        </if>
+        <if test=" startDt != null and startDt != '' ">
+            , start_dt = #{startDt}
+        </if>
+        <if test=" sensorStatus != null ">
+            , sensor_status = #{sensorStatus}
+        </if>
+        <if test=" qrCodeUrl != null and qrCodeUrl != '' ">
+            , qr_code_url = #{qrCodeUrl}
+        </if>
+        where sid = #{sid}
+    </update>
+    <delete id="deleteDySensorById" parameterType="String">
+        update dy_sensor
+        set valid = 0
+        where sid = #{sid}
+    </delete>
+
+    <select id="getDySensorById" resultType="String" resultMap="sensorMap">
+        select b.doctor_name, a.*
+        from dy_sensor a
+                 left join t_doctor b on a.doctor_id = b.doctor_id
+        where sid = #{sid}
+    </select>
+
+    <select id="hasDySensor" parameterType="String" resultType="boolean" >
+        select count(sid) > 0
+        from dy_sensor
+        where sensor_no = #{sensorNo} and valid = 1
+    </select>
+
+    <select id="listDySensor" parameterType="com.comvee.cdms.dybloodsugar.dto.ListDySensorDTO"
+        resultMap="sensorMap">
+        select e.doctor_name doctor_name, sid, sensor_no, ex_warehouse_dt, start_dt, e.doctor_id doctor_id, sensor_status, qr_code_url, cc.valid valid, cc.insert_dt insert_dt, cc.modify_dt modify_dt, d.member_name member_name, d.mobile_phone mobile_phone
+        from (select (select member_id from dy_member_sensor b where b.sensor_no = a.sensor_no and b.is_valid = 1 limit 1) member_id,
+        sid, sensor_no, ex_warehouse_dt, start_dt, doctor_id, sensor_status, qr_code_url, valid, insert_dt, modify_dt from dy_sensor a) cc
+        left join t_member d on cc.member_id = d.member_id
+        left join t_doctor e on cc.doctor_id = e.doctor_id
+        where 1 = 1 and cc.valid = 1
+        <if test="sensorStatus != null and sensorStatus != '' ">
+            and sensor_status = #{sensorStatus}
+        </if>
+        <if test=" sensorNo != null and sensorNo != '' ">
+            and cc.sensor_no like CONCAT(CONCAT('%',#{sensorNo},'%'))
+        </if>
+        <if test=" keyWord != null and keyWord != '' ">
+            and (e.doctor_name like CONCAT(CONCAT('%',#{keyWord},'%'))
+             or d.member_name  like CONCAT(CONCAT('%',#{keyWord},'%')))
+        </if>
+        order by cc.ex_warehouse_dt desc
+    </select>
+
+</mapper>

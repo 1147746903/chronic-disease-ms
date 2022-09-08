@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.insulinpump.mapper.InsulinPumpObserveRecordMapper">
+
+  <resultMap id="observeRecord" type="com.comvee.cdms.insulinpump.model.po.InsulinPumpObserveRecordPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="hospital_no" jdbcType="VARCHAR" property="hospitalNo" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="sign" jdbcType="VARCHAR" property="sign" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+    <result column="record_dt" jdbcType="TIMESTAMP" property="recordDt" />
+    <result column="diagnosis" jdbcType="VARCHAR" property="diagnosis" />
+    <result column="data_json" jdbcType="LONGVARCHAR" property="dataJson" />
+    <result column="virtual_ward_id" jdbcType="BIGINT" property="virtualWardId" />
+    <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+  </resultMap>
+
+  <insert id="addInsulinPumpObserveRecord" parameterType="com.comvee.cdms.insulinpump.model.po.InsulinPumpObserveRecordPO">
+    insert into t_insulin_pump_observe_record (sid, member_id, hospital_no,
+      operator_id, sign,  record_dt,
+      diagnosis, data_json ,virtual_ward_id ,card_no)
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{hospitalNo,jdbcType=VARCHAR}, 
+      #{operatorId,jdbcType=BIGINT}, #{sign,jdbcType=VARCHAR}, #{recordDt,jdbcType=TIMESTAMP},
+      #{diagnosis,jdbcType=VARCHAR}, #{dataJson,jdbcType=LONGVARCHAR} ,#{virtualWardId} ,#{cardNo})
+  </insert>
+
+  <update id="updateInsulinPumpObserveRecord" parameterType="com.comvee.cdms.insulinpump.model.po.InsulinPumpObserveRecordPO">
+    update t_insulin_pump_observe_record
+    <set>
+      <if test="sign != null and '' != sign">
+        sign = #{sign,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        valid = #{valid,jdbcType=TINYINT},
+      </if>
+      <if test="recordDt != null and '' != recordDt">
+        record_dt = #{recordDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="diagnosis != null and '' != diagnosis">
+        diagnosis = #{diagnosis,jdbcType=VARCHAR},
+      </if>
+      <if test="dataJson != null and '' != dataJson">
+        data_json = #{dataJson,jdbcType=LONGVARCHAR}
+      </if>
+    </set>
+    where sid = #{sid,jdbcType=BIGINT}
+  </update>
+
+  <select id="getInsulinPumpObserveRecordById" parameterType="java.lang.String" resultMap="observeRecord">
+    select sid, member_id, hospital_no, operator_id, sign, insert_dt, update_dt, valid,
+    record_dt, diagnosis, data_json ,virtual_ward_id ,card_no
+    from t_insulin_pump_observe_record
+    where sid = #{sid,jdbcType=BIGINT} and valid = 1 limit 1
+  </select>
+
+  <select id="listInsulinPumpObserveRecord" resultMap="observeRecord">
+    select sid, member_id, hospital_no, operator_id, sign, insert_dt, update_dt, valid,
+    record_dt, diagnosis, data_json ,virtual_ward_id ,card_no
+    from t_insulin_pump_observe_record where valid = 1
+    and member_id = #{memberId} and virtual_ward_id = #{virtualWardId}
+    order by insert_dt desc
+  </select>
+</mapper>

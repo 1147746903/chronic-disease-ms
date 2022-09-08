@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.CourseChapterMapper">
+    <sql id="CourseChapterColumns">
+         t.sid As sid ,  t.course_id As courseId ,  t.chapter_name As chapterName ,  t.chapter_memo As chapterMemo ,  t.is_valid As isValid ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt,sort,img ,thumbnail  
+    </sql>
+
+	<!--根据id获取课程章节表信息 -->
+	<select id="loadCourseChapterById" resultType="com.comvee.cdms.defender.model.CourseChapterModel">
+		SELECT 
+			<include refid="CourseChapterColumns"/>
+		FROM tiq_course_chapter t
+		WHERE t.sid = #{sid} 
+	</select>
+	
+	<!-- 获取课程章节分页信息  -->
+	<select id="loadCourseChapter" parameterType="Map" resultType="com.comvee.cdms.defender.model.CourseChapterModel">
+		SELECT
+			<include refid="CourseChapterColumns"/>
+		FROM tiq_course_chapter t
+		where is_valid = 1
+		<if test="courseId!=null and courseId!='' ">     
+        AND t.course_id = #{courseId}  
+        </if>
+		<if test="param !=null and param!='' ">
+			AND ( chapter_name like  CONCAT(CONCAT('%',#{param},'%'))  )
+		</if>
+
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+        AND t.sid = #{sid}  
+        </if>  
+	    <if test="courseId!=null and courseId!='' ">     
+        AND t.course_id = #{courseId}  
+        </if>  
+	    <if test="chapterName!=null and chapterName!='' ">     
+        AND t.chapter_name = #{chapterName}  
+        </if>  
+	    <if test="chapterMemo!=null and chapterMemo!='' ">     
+        AND t.chapter_memo = #{chapterMemo}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+    <!-- 统计课程章节记录数 -->
+	<select id="countCourseChapter" resultType="Long">
+		SELECT count( sid )
+		FROM tiq_course_chapter t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+         AND t.sid = #{sid}    
+        </if>  
+	    <if test="courseId!=null and courseId!='' ">     
+         AND t.course_id = #{courseId}    
+        </if>  
+	    <if test="chapterName!=null and chapterName!='' ">     
+         AND t.chapter_name = #{chapterName}    
+        </if>  
+	    <if test="chapterMemo!=null and chapterMemo!='' ">     
+         AND t.chapter_memo = #{chapterMemo}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加课程章节记录 -->
+	<insert id="addCourseChapter">
+		INSERT INTO tiq_course_chapter(
+				sid,
+				course_id,
+				chapter_name,
+				chapter_memo,
+				is_valid,
+				insert_dt,
+				modify_dt,
+				sort,
+				img,
+				thumbnail
+		) VALUES (
+			         #{sid},
+				#{courseId},
+				#{chapterName},
+				#{chapterMemo},
+				1,
+				now(),
+				now(),
+				#{sort},
+				#{img},
+				#{thumbnail}
+		)
+	</insert>
+
+    <!-- 修改课程章节记录 -->
+	<update id="modifyCourseChapter">
+		UPDATE tiq_course_chapter 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="sid!=null and sid!='' ">    
+	        sid = #{sid},
+	        </if>
+	        <if test="courseId!=null and courseId!='' ">    
+	        course_id = #{courseId},
+	        </if>
+	        <if test="chapterName!=null and chapterName!='' ">    
+	        chapter_name = #{chapterName},
+	        </if>
+	        <if test="chapterMemo!=null and chapterMemo!='' ">    
+	        chapter_memo = #{chapterMemo},
+	        </if>
+	        modify_dt = now(),
+	        <if test="sort !=null and sort!='' ">    
+	        sort = #{sort},
+	        </if>
+	        <if test="img !=null and img!='' ">    
+	        img = #{img},
+	        </if>
+	        <if test="thumbnail !=null and thumbnail !='' ">    
+	        thumbnail = #{thumbnail},
+	        </if>
+	        
+		</trim>
+		WHERE sid = #{sid}
+	</update>
+	
+	<!-- 删除课程章节记录  -->
+	<update id="delCourseChapter" parameterType="Long">
+		UPDATE tiq_course_chapter SET  is_valid = 0 , modify_dt = now()
+		WHERE sid = #{sid} and is_valid = 1
+	</update>
+	
+ 	<select id="listMemberCourseChapter" resultType="com.comvee.cdms.defender.model.CourseChapterModel">
+		SELECT t.sid,t.chapter_name as chapterName,t.chapter_memo as chapterMemo,t.img,t.thumbnail,p.status,p.score,
+		t.course_id as courseId,DATE_FORMAT(p.insert_dt,'%Y-%m-%d %H:%i:%s') insertDt,p.patient_course_id as patientCourseId
+		FROM tiq_course_chapter t left join tiq_patient_chapter p on t.sid=p.chapter_id and p.pid=#{pid} and p.patient_course_id = #{patientCourseId}
+		WHERE t.course_id=#{courseId} and t.is_valid=1 
+		order by sort
+	</select> 
+	
+	<select id="listMemberCourseChapterByPatientCourseId" resultType="com.comvee.cdms.defender.model.CourseChapterModel">
+		SELECT t.sid,t.chapter_name AS chapterName,t.chapter_memo AS chapterMemo,t.img,t.thumbnail,p.status,p.score,
+		t.course_id AS courseId,DATE_FORMAT(p.insert_dt,'%Y-%m-%d %H:%i:%s') insertDt
+		FROM tiq_course_chapter t
+		left join tiq_patient_chapter p on t.`sid`=p.`chapter_id` AND p.`patient_course_id`=#{patientCourseId}
+		WHERE  t.course_id=#{courseId} and t.`is_valid`=1
+		 ORDER BY t.sort
+	</select> 
+
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.professional.mapper.ProfessionalMapper">
+
+  <resultMap id="professional" type="com.comvee.cdms.professional.po.ProfessionalPO">
+    <id column="professional_id"  property="professionalId" />
+    <result column="professional_name" property="professionalName" />
+    <result column="insert_dt" property="insertDt" />
+    <result column="update_dt"  property="updateDt" />
+    <result column="is_valid" property="isValid" />
+  </resultMap>
+
+  <insert id="addProfessional" parameterType="com.comvee.cdms.professional.po.ProfessionalPO">
+    insert into t_professional(professional_id, professional_name, insert_dt,
+      update_dt, is_valid
+      )
+    values (#{professionalId}, #{professionalName}, now(), now(), 1
+      )
+  </insert>
+
+  <select id="listPrefessional" resultMap="professional">
+    select professional_id,professional_name,insert_dt,update_dt,is_valid from t_professional
+    where is_valid=1 order by insert_dt desc
+  </select>
+
+  <select id="getPrefessionalByName" resultMap="professional">
+    select professional_id,professional_name,insert_dt,update_dt,is_valid from t_professional
+    where is_valid=1
+    <if test="professionalName != null and ''!=professionalName">
+      and professional_name = #{professionalName}
+    </if>
+    limit 1
+  </select>
+
+  <select id="queryPrefessionalByName" resultMap="professional">
+    select professional_id,professional_name,insert_dt,update_dt,is_valid from t_professional
+    where is_valid=1
+    <if test="professionalName != null and ''!=professionalName">
+      and instr(professional_name,#{professionalName}) > 0
+    </if>
+  </select>
+</mapper>

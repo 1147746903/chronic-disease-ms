@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.doctor.mapper.DoctorMapper" >
+
+    <!--医生信息-->
+    <resultMap id = "doctor" type="com.comvee.cdms.doctor.po.DoctorPO">
+        <id column="doctor_id" property="doctorId" jdbcType="BIGINT"/>
+        <result column="doctor_name" property="doctorName" jdbcType="VARCHAR"/>
+        <result column="depart_id" property="departId" jdbcType="VARCHAR"/>
+        <result column="depart_name" property="departName" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="brief" property="brief" jdbcType="VARCHAR"/>
+        <result column="position_id" property="positionId" jdbcType="VARCHAR"/>
+        <result column="position_name" property="positionName" jdbcType="VARCHAR"/>
+        <result column="work_no" property="workNo" jdbcType="VARCHAR"/>
+        <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP"/>
+        <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP"/>
+        <result column="photo_url" property="photoUrl" jdbcType="VARCHAR"/>
+        <result column="phone_no" property="phoneNo" jdbcType="VARCHAR"/>
+        <result column="birthday" property="birthday"/>
+        <result column="show_in_patient" property="showInPatient"/>
+        <result column="province_id" property="provinceId"/>
+        <result column="city_id" property="cityId"/>
+        <result column="skilled" property="skilled"/>
+        <result column="hospital_id" property="hospitalId"/>
+        <result column="hospital_name" property="hospitalName"/>
+        <result column="wechat_url" property="wechatUrl"/>
+        <result column="data_auth" property="dataAuth"/>
+        <result column="remark" property="remark"/>
+        <result column="entity_type" property="entityType"/>
+        <result column="switch_hospital" property="switchHospital"/>
+        <result column="open_id" property="openId"/>
+        <result column="is_virtual" property="isVirtual" jdbcType="INTEGER"/>
+        <result column="is_agent_doctor" property="isAgentDoctor" jdbcType="INTEGER"/>
+        <result column="union_id" property="unionId"/>
+        <result column="doctor_level" property="doctorLevel"/>
+    </resultMap>
+
+    <!--医生关系-->
+    <resultMap id="doctorRelation" type="com.comvee.cdms.doctor.po.DoctorRelationPO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+        <result column="foreign_id" jdbcType="BIGINT" property="foreignId" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    </resultMap>
+
+    <!--医生分组-->
+    <resultMap id="doctorGroup" type="com.comvee.cdms.doctor.po.DoctorGroupPO">
+        <id column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+        <result column="is_valid" jdbcType="INTEGER" property="isValid" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+    </resultMap>
+
+    <resultMap id = "memberDoctor" type="com.comvee.cdms.doctor.po.MemberDoctorListPO">
+        <id column="doctor_id" property="doctorId" jdbcType="BIGINT"/>
+        <result column="doctor_name" property="doctorName" jdbcType="VARCHAR"/>
+        <result column="depart_id" property="departId" jdbcType="VARCHAR"/>
+        <result column="depart_name" property="departName" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="brief" property="brief" jdbcType="VARCHAR"/>
+        <result column="position_id" property="positionId" jdbcType="VARCHAR"/>
+        <result column="position_name" property="positionName" jdbcType="VARCHAR"/>
+        <result column="work_no" property="workNo" jdbcType="VARCHAR"/>
+        <result column="photo_url" property="photoUrl" jdbcType="VARCHAR"/>
+        <result column="phone_no" property="phoneNo" jdbcType="VARCHAR"/>
+        <result column="birthday" property="birthday"/>
+        <result column="province_id" property="provinceId"/>
+        <result column="city_id" property="cityId"/>
+        <result column="skilled" property="skilled"/>
+        <result column="hospital_id" property="hospitalId"/>
+        <result column="hospital_name" property="hospitalName"/>
+        <result column="is_attend" property="isAttend"/>
+        <result column="entity_type" property="entityType"/>
+    </resultMap>
+    <!--医生可切换医院-->
+    <resultMap id="doctorHospital" type="com.comvee.cdms.doctor.po.DoctorHospitalPO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+        <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+    </resultMap>
+
+    <sql id="doctorSql">
+        select doctor_id, doctor_name, depart_id, depart_name, sex, brief, position_id, position_name,
+        work_no, insert_dt, photo_url, phone_no, birthday, show_in_patient, province_id,
+        city_id, hospital_id, hospital_name, skilled, wechat_url, data_auth,remark,entity_type,switch_hospital
+        ,open_id,is_virtual, is_agent_doctor,union_id,doctor_level
+        from t_doctor
+    </sql>
+
+    <select id="getDoctorById" resultMap="doctor">
+        <include refid="doctorSql"/>
+        where doctor_id = #{doctorId}
+    </select>
+
+    <select id="listDoctorInId" resultMap="doctor">
+        <include refid="doctorSql"/>
+        where doctor_id in 
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="listDoctors" resultMap="doctorRelation">
+        SELECT
+            dr.foreign_id
+        FROM
+            t_doctor_relation dr
+            JOIN t_doctor dt ON dt.doctor_id = dr.doctor_id
+        WHERE
+            dt.hospital_id = #{hospitalId}
+            AND dr.is_valid = 1
+            AND dr.doctor_id = #{doctorId}
+    </select>
+
+    <select id="listDoctorRelation" resultMap="doctorRelation">
+      select sid, doctor_id, foreign_id, insert_dt, update_dt
+      from t_doctor_relation where is_valid = 1
+      <if test="doctorId != null and '' != doctorId">
+          and doctor_id = #{doctorId}
+      </if>
+      <if test="groupId != null and '' != groupId">
+          and foreign_id = #{groupId}
+      </if>
+
+    </select>
+
+    <select id="listGroup" resultMap="doctorGroup">
+      select group_id, group_name, doctor_id, insert_dt, modify_dt, is_valid, sort
+      from t_doctor_group where doctor_id = #{doctorId}
+    </select>
+
+    <insert id="addGroup" parameterType="com.comvee.cdms.doctor.dto.AddGroupMapperDTO">
+      insert into t_doctor_group (group_id, group_name, doctor_id,
+      insert_dt, modify_dt,
+      sort)
+    values (#{groupId,jdbcType=BIGINT}, #{groupName,jdbcType=VARCHAR}, #{doctorId,jdbcType=BIGINT},
+      now(), now(),
+      #{sort,jdbcType=INTEGER})
+    </insert>
+
+    <update id="updateGroup" parameterType="com.comvee.cdms.doctor.dto.UpdateGroupDTO">
+        update t_doctor_group t set t.modify_dt = now()
+        ,t.group_name = #{groupName}
+        where t.group_id = #{groupId}
+    </update>
+    
+    <delete id="deleteGroup">
+      delete from t_doctor_group where group_id = #{groupId}
+    </delete>
+
+    <update id="updateDoctor">
+      update t_doctor
+      <set>
+          modify_dt = now(),
+          <if test="doctorName != null and '' != doctorName">
+              doctor_name = #{doctorName,jdbcType=VARCHAR},
+          </if>
+          <if test="departId != null and '' != departId">
+              depart_id = #{departId,jdbcType=VARCHAR},
+          </if>
+          <if test="departName != null and '' != departName">
+              depart_name = #{departName,jdbcType=VARCHAR},
+          </if>
+          <if test="sex != null">
+              sex = #{sex,jdbcType=VARCHAR},
+          </if>
+          <if test="brief != null and '' != brief">
+              brief = #{brief,jdbcType=VARCHAR},
+          </if>
+          <if test="positionId != null and '' != positionId">
+              position_id = #{positionId,jdbcType=VARCHAR},
+          </if>
+          <if test="positionName != null and '' != positionName">
+              position_name = #{positionName,jdbcType=VARCHAR},
+          </if>
+          <if test="workNo != null and '' != workNo">
+              work_no = #{workNo,jdbcType=VARCHAR},
+          </if>
+          <if test="photoUrl != null and '' != photoUrl">
+              photo_url = #{photoUrl,jdbcType=VARCHAR},
+          </if>
+          <if test="phoneNo != null and '' != phoneNo">
+              phone_no = #{phoneNo,jdbcType=VARCHAR},
+          </if>
+          <if test="birthday != null and '' != birthday">
+              birthday = #{birthday,jdbcType=VARCHAR},
+          </if>
+          <if test="showInPatient != null ">
+              show_in_patient = #{showInPatient,jdbcType=VARCHAR},
+          </if>
+          <if test="provinceId != null and '' != provinceId">
+              province_id = #{provinceId,jdbcType=VARCHAR},
+          </if>
+          <if test="cityId != null and '' != cityId">
+              city_id = #{cityId,jdbcType=VARCHAR},
+          </if>
+          <if test="hospitalId != null and '' != hospitalId">
+              hospital_id = #{hospitalId,jdbcType=VARCHAR},
+          </if>
+          <if test="hospitalName != null and '' != hospitalName">
+              hospital_name = #{hospitalName,jdbcType=VARCHAR},
+          </if>
+          <if test="skilled != null and '' != skilled">
+              skilled = #{skilled,jdbcType=VARCHAR},
+          </if>
+          <if test="dataAuth != null and '' != dataAuth">
+              data_auth = #{dataAuth},
+          </if>
+          <if test="wechatUrl != null and '' != wechatUrl">
+              wechat_url = #{wechatUrl},
+          </if>
+          <if test="remark != null and '' != remark">
+              remark = #{remark},
+          </if>
+          <if test="entityType != null and '' != entityType">
+              entity_type = #{entityType},
+          </if>
+          <if test="switchHospital != null">
+              switch_hospital = #{switchHospital},
+          </if>
+          <if test="openId != null and '' != openId">
+              open_id = #{openId},
+          </if>
+          <if test="isVirtual != null and '' != isVirtual">
+              is_virtual = #{isVirtual},
+          </if>
+          <if test="isAgentDoctor != null and '' != isAgentDoctor">
+              is_agent_doctor = #{isAgentDoctor},
+          </if>
+          <if test="unionId != null and '' != unionId">
+              union_id = #{unionId},
+          </if>
+          <if test="doctorLevel != null ">
+              doctor_level = #{doctorLevel},
+          </if>
+      </set>
+      where doctor_id = #{doctorId,jdbcType=BIGINT}
+    </update>
+
+    <select id="getGroupById" resultMap="doctorGroup">
+      select group_id, group_name, doctor_id, insert_dt, modify_dt, is_valid, sort
+      from t_doctor_group where group_id = #{groupId}
+    </select>
+
+    <select id="listDoctor" parameterType="com.comvee.cdms.doctor.dto.ListDoctorDTO" resultMap="doctor">
+        <include refid="doctorSql"/>
+        <where>
+            <if test="doctorName != null and '' != doctorName">
+                and instr(doctor_name, #{doctorName}) > 0
+            </if>
+            <if test="showInPatient != null">
+                and show_in_patient = #{showInPatient}
+            </if>
+            <if test="keyword != null and '' != keyword">
+                and (instr(doctor_name, #{keyword}) > 0 or instr(hospital_name, #{keyword}) > 0 or instr(phone_no, #{keyword}) > 0)
+            </if>
+            <if test="departmentId != null and '' != departmentId">
+                and depart_id = #{departmentId}
+            </if>
+            <if test="hospitalId != null and '' != hospitalId">
+                and hospital_id = #{hospitalId}
+            </if>
+            <if test="departmentName != null and '' != departmentName">
+                and depart_name = #{departmentName}
+            </if>
+            <if test="hospitalName != null and '' != hospitalName">
+                and hospital_name = #{hospitalName}
+            </if>
+            <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+                and hospital_id in
+                <foreach collection="hospitalIdList" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        order by insert_dt desc
+    </select>
+
+    <select id="listDoctorAndLogin" parameterType="com.comvee.cdms.doctor.dto.ListDoctorDTO" resultType="com.comvee.cdms.doctor.po.DoctorPO">
+        select DISTINCT a.doctor_id doctorId, a.doctor_name doctorName, a.depart_id departId, a.depart_name departName, a.sex sex, a.brief brief, a.position_id positionId, a.position_name positionName,
+        a.work_no workNo, a.insert_dt insertDt, a.photo_url photoUrl, a.phone_no phoneNo, a.birthday birthday, a.show_in_patient showInPatient, a.province_id provinceId,
+        a.city_id cityId, a.hospital_id hospitalId, a.hospital_name hospitalName, a.skilled skilled, a.modify_dt modifyDt, a.wechat_url wechatUrl, a.data_auth datAuth,a.remark remark,a.entity_type entityType,
+        b.last_login_dt lastLoginDt,b.insert_dt userInsertDt,b.user_status userStatus,b.uid
+        from t_doctor a
+        LEFT JOIN t_user b ON a.doctor_id = b.uid
+        LEFT JOIN t_role_user e ON a.doctor_id = e.foreign_id
+        LEFT JOIN t_role d ON d.role_id = e.role_id
+        <where>
+        <if test="doctorName != null and '' != doctorName">
+            and instr(a.doctor_name, #{doctorName}) > 0
+        </if>
+        <if test="showInPatient != null">
+            and a.show_in_patient = #{showInPatient}
+        </if>
+        <if test="keyword != null and '' != keyword">
+            and (instr(a.doctor_name, #{keyword}) > 0 or instr(a.hospital_name, #{keyword}) > 0 or instr(a.phone_no, #{keyword}) > 0)
+        </if>
+        <if test="departmentId != null and '' != departmentId">
+            and a.depart_id = #{departmentId}
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and a.hospital_id = #{hospitalId}
+        </if>
+        <if test="departmentName != null and '' != departmentName">
+            and a.depart_name = #{departmentName}
+        </if>
+        <if test="hospitalName != null and '' != hospitalName">
+            and a.hospital_name = #{hospitalName}
+        </if>
+        <if test="roleName != null and '' != roleName">
+            and instr(d.role_name,#{roleName}) > 0
+        </if>
+        <if test="eType != null and '' != eType">
+         and instr(a.entity_type,#{eType}) > 0
+        </if>
+        </where>
+        order by a.insert_dt desc
+    </select>
+
+
+    <select id="listMemberDoctor" resultMap="memberDoctor">
+        select q.birthday,q.brief,q.city_id,q.depart_id,q.depart_name,q.doctor_id
+        ,q.doctor_name,q.hospital_id,q.hospital_name,q.phone_no,q.photo_url
+        ,q.position_id,q.position_name,q.province_id,q.sex,q.skilled,q.work_no,q.entity_type,t.is_attend
+        from t_doctor_member t , t_doctor q
+        where t.doctor_id = q.doctor_id and t.member_id = #{memberId} and t.is_valid=1
+    </select>
+    
+    <!-- gwx -->
+    <resultMap id="version" type="com.comvee.cdms.app.doctorapp.model.app.MobileVersionModel">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="os_type" jdbcType="INTEGER" property="osType" />
+        <result column="version_num" jdbcType="VARCHAR" property="versionNum" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="upgrade_msg" jdbcType="VARCHAR" property="upgradeMsg" />
+        <result column="be_newest" jdbcType="INTEGER" property="beNewest" />
+        <result column="upgrade_num" jdbcType="INTEGER" property="upgradeNum" />
+        <result column="upgrade_url" jdbcType="VARCHAR" property="upgradeUrl" />
+        <result column="is_force" jdbcType="INTEGER" property="isForce" />
+    </resultMap>    
+    
+    <select id="getMobileNewestVersion" parameterType="map" resultMap="version">
+      select sid, os_type, version_num, insert_dt, upgrade_msg, be_newest, upgrade_num, upgrade_url,is_force
+      from t_client_version where be_newest = 1 and os_type = #{osType}
+    </select>
+
+    <insert id="addDoctor" parameterType="com.comvee.cdms.doctor.po.DoctorPO">
+      insert into t_doctor (doctor_id, doctor_name, depart_id,
+      depart_name, sex, brief,
+      position_id, position_name, work_no,
+      photo_url, phone_no,
+      birthday, show_in_patient, province_id,
+      city_id, hospital_id, hospital_name,
+      skilled,wechat_url,data_auth,insert_dt,modify_dt,remark,entity_type,
+      switch_hospital,is_virtual, is_agent_doctor,doctor_level)
+    values (#{doctorId,jdbcType=BIGINT}, #{doctorName,jdbcType=VARCHAR}, #{departId,jdbcType=VARCHAR},
+      #{departName,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{brief,jdbcType=VARCHAR},
+      #{positionId,jdbcType=VARCHAR}, #{positionName,jdbcType=VARCHAR}, #{workNo,jdbcType=VARCHAR},
+       #{photoUrl,jdbcType=VARCHAR}, #{phoneNo,jdbcType=VARCHAR},
+      #{birthday,jdbcType=DATE}, #{showInPatient,jdbcType=INTEGER}, #{provinceId,jdbcType=VARCHAR},
+      #{cityId,jdbcType=VARCHAR}, #{hospitalId,jdbcType=BIGINT}, #{hospitalName,jdbcType=VARCHAR},
+      #{skilled,jdbcType=VARCHAR},#{wechatUrl},#{dataAuth},now(),now(),#{remark},#{entityType},
+      #{switchHospital},#{isVirtual},#{isAgentDoctor},#{doctorLevel})
+    </insert>
+
+    <insert id="addDoctorRelation" parameterType="com.comvee.cdms.doctor.po.DoctorRelationPO">
+        INSERT INTO `t_doctor_relation` (`sid`, `doctor_id`, `foreign_id`)
+         VALUES (#{sid}, #{doctorId}, #{foreignId})
+    </insert>
+
+    <update id="deleteDoctorRelation">
+      update t_doctor_relation t set t.is_valid = 0
+      where t.doctor_id = #{doctorId} and t.foreign_id = #{foreignId}
+    </update>
+
+    <select id="listDepartmentByDid" resultMap="doctorGroup" parameterType="string">
+        SELECT
+	      d.department_id group_id ,
+	      d.department_name group_name ,
+	      dd.doctor_id ,
+	      d.insert_dt ,
+	      dd.modify_dt modify_dt ,
+	      dd.is_valid ,
+	      @rownum :=@rownum sort
+        FROM
+	      t_doctor_department dd ,
+	      t_department d ,
+	      (SELECT @rownum := 0) r
+        WHERE
+	      d.department_id = dd.department_id
+          AND dd.doctor_id = #{doctorId};
+    </select>
+
+    <select id="listMemberIdsByGroupId" parameterType="com.comvee.cdms.doctor.bo.DoctorMemberBO" resultType="string">
+        SELECT member_id FROM t_doctor_member WHERE doctor_id = #{doctorId} AND group_id= #{groupId} AND is_valid=1;
+    </select>
+
+    <update id="batchUpdateDoctorMemberGroupId" parameterType="com.comvee.cdms.doctor.bo.DoctorMemberBO">
+        UPDATE t_doctor_member SET group_id = #{groupId}, modify_time_stamp = #{modifyTimestamp} WHERE doctor_id = #{doctorId} AND member_id IN
+        <foreach collection="memberIds" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="getDoctorByWorkNo" resultMap="doctor">
+        <include refid="doctorSql"/>
+        where work_no = #{workNo} and hospital_id=#{hospitalId}
+        limit 1
+    </select>
+
+    <!--v5.1.1 start-->
+    <insert id="addDoctorHospital" parameterType="com.comvee.cdms.doctor.po.DoctorHospitalPO">
+        insert into t_doctor_hospital (sid, doctor_id, hospital_id,insert_dt, modify_dt)
+        values (#{sid,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{hospitalId,jdbcType=BIGINT},now(), now())
+    </insert>
+
+    <delete id="deleteDoctorHospital" parameterType="java.lang.String">
+        delete from t_doctor_hospital where doctor_id = #{doctorId}
+    </delete>
+
+    <select id="listDoctorHospitalByDoctorId" parameterType="java.lang.String" resultType="com.comvee.cdms.doctor.bo.DoctorHospitalBO">
+        select a.sid sid, a.doctor_id doctorId, a.hospital_id hospitalId,a.insert_dt insertDt, a.modify_dt modifyDt,b.hospital_name hospitalName
+        from t_doctor_hospital a,t_hospital b
+        where a.hospital_id = b.hospital_id and a.doctor_id = #{doctorId}
+    </select>
+
+    <select id="listDoctorByHospitalId" parameterType="java.lang.String" resultMap="doctor">
+        select doctor_id, doctor_name, depart_id, depart_name, sex, brief, position_id, position_name,
+        work_no, insert_dt, photo_url, phone_no, birthday, show_in_patient, province_id,
+        city_id, hospital_id, hospital_name, skilled, modify_dt, wechat_url, data_auth,remark,entity_type,switch_hospital
+        from t_doctor where hospital_id = #{hospitalId}
+    </select>
+
+    <select id="listDepartmentByHid" resultMap="doctorGroup" parameterType="string">
+        SELECT
+	      department_id group_id ,
+	      department_name group_name ,
+	      #{doctorId} doctor_id ,
+	      insert_dt ,
+	      update_dt modify_dt ,
+	      '' is_valid ,
+	      @rownum :=@rownum sort
+        FROM
+	      t_department,
+	      (SELECT @rownum := 0) r
+        WHERE
+	     hospital_id = #{hospitalId}
+    </select>
+    <!--v5.1.1 end-->
+
+    <!--v6.0.0 start-->
+    <delete id="deleteKeyNotes" parameterType="string">
+        delete from t_doctor_keynote where hospital_id = #{hospitalId}
+        and doctor_id = #{doctorId} and in_hos = #{inHos} and type = #{type}
+        <if test="memberId!= null and memberId != ''">
+            and member_id = #{memberId}
+        </if>
+    </delete>
+
+    <insert id="addDoctorKeyNotes" parameterType="com.comvee.cdms.doctor.dto.AddDoctorKeyNoteDTO">
+        INSERT INTO `t_doctor_keynote`(`sid`,`keynote_id`,`member_id`,`doctor_id`,`operator_id`,`is_valid`,
+        `insert_dt`,`modify_dt`,`in_hos`,hospital_id,type)
+        VALUES(#{sid},#{keynoteId},#{memberId},#{doctorId},#{operatorId},1,
+        now(),now(),#{inHos},#{hospitalId},#{type});
+    </insert>
+
+    <select id="listHospitalAllKeyNotes" resultType="com.comvee.cdms.doctor.model.KeyNoteModel" parameterType="com.comvee.cdms.doctor.dto.ListHospitalAllKeyNoteDTO">
+        SELECT a.keynote_id keynoteId,a.display_name displayName,a.show_name showName,
+        a.report_title reportTitle,a.hospital_id hospitalId,a.checkout_code checkoutCode,
+        a.range_str rangeStr,a.unit unit
+        from t_keynote_configure a
+        where a.is_valid=1 and a.hospital_id=#{hospitalId}
+        <if test="keyWord != null and keyWord != ''">
+            and (a.show_name like CONCAT('%',CONCAT(#{keyWord},'%'))
+            or a.display_name like CONCAT('%',CONCAT(#{keyWord},'%'))
+            or a.checkout_code like CONCAT('%',CONCAT(#{keyWord},'%')))
+        </if>
+        order by a.keynote_id;
+    </select>
+
+    <select id="listSelectedKeyNotes" resultType="com.comvee.cdms.doctor.model.KeyNoteModel" parameterType="com.comvee.cdms.doctor.dto.ListSelectedKeyNoteDTO">
+        SELECT a.keynote_id keynoteId,a.display_name displayName,a.show_name showName,
+        a.report_title reportTitle,b.doctor_id doctorId,a.checkout_code checkoutCode,
+        b.hospital_id hospitalId,b.in_hos inHos,b.type,
+        a.range_str rangeStr
+        from t_keynote_configure a
+        LEFT JOIN t_doctor_keynote b on b.keynote_id=a.keynote_id and a.is_valid=1
+        where b.is_valid=1 and b.doctor_id=#{doctorId} and b.in_hos=#{inHos} and b.hospital_id=#{hospitalId}
+        and b.type=#{type}
+        <if test="memberId != null and memberId != '' ">
+            and b.member_id=#{memberId}
+        </if>
+        order by a.keynote_id;
+    </select>
+
+    <select id="getDoctorKeyNotesNum" parameterType="map" resultType="long">
+        SELECT count(1)
+        from t_keynote_configure a
+        JOIN t_doctor_keynote b on b.keynote_id=a.keynote_id and a.is_valid=1
+        where b.is_valid=1 and b.doctor_id=#{doctorId} and b.in_hos=#{inHos} and b.hospital_id=#{hospitalId}
+        <if test="memberId != null and memberId != '' ">
+            and b.member_id=#{memberId}
+        </if>
+    </select>
+    <!--v6.0.0 end-->
+
+    <select id="getDoctorIdsSwitch" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT doctor_id FROM t_doctor WHERE switch_hospital = 1 AND hospital_id= #{hospitalId}
+    </select>
+
+    <delete id="deleteDoctorHospitalByParam">
+        DELETE FROM t_doctor_hospital
+        <where>
+            <if test="doctorIdList != null and doctorIdList.size() > 0">
+                and doctor_id IN
+                <foreach collection="doctorIdList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+                and hospital_id in
+                <foreach collection="hospitalIdList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <select id="getDoctorByOpenId" resultMap="doctor">
+        <include refid="doctorSql"/>
+        where open_id = #{openId} limit 1
+    </select>
+
+    <select id="queryDoctorByPhone" resultMap="doctor">
+        <include refid="doctorSql"/>
+        where phone_no = #{phoneNo} limit 1
+    </select>
+
+    <select id="getDoctorSumUser" resultType="java.lang.Integer">
+        select COUNT(1) num from t_order tor left join t_product tp on tor.goods_id=tp.product_id
+where tp.product_type=1 and tor.order_status=9 and tp.doctor_id=#{doctorId} GROUP BY buyer_id
+    </select>
+
+    <select id="getDoctorCurrentPatient" resultType="java.lang.Integer">
+        select count(1) from t_doctor_member where is_valid = 1 and doctor_id = #{doctorId}
+    </select>
+
+</mapper>

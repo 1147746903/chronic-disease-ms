@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.user.mapper.UserJoinMapper">
+  <resultMap id="wechatJoinInfo" type="com.comvee.cdms.user.po.UserWechatJoinPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="photo_url" jdbcType="VARCHAR" property="photoUrl" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="foreign_id" jdbcType="BIGINT" property="foreignId" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="join_type" property="joinType" />
+    <result column="union_id" jdbcType="VARCHAR" property="unionId" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="join_status" jdbcType="VARCHAR" property="joinStatus" />
+    <result column="authorized_source" jdbcType="TINYINT" property="authorizedSource" />
+  </resultMap>
+
+  <select id="getUserWechatJoinInfo" resultMap="wechatJoinInfo" parameterType="com.comvee.cdms.user.dto.GetWechatJoinMapperDTO">
+    select sid, insert_dt, nick_name, photo_url, is_valid, foreign_id, open_id, join_type,
+    union_id, app_id,join_status,authorized_source
+    from t_user_wechat_join  where is_valid = 1
+    <if test="foreignId != null and '' != foreignId">
+      and foreign_id = #{foreignId}
+    </if>
+    <if test="openId != null and '' != openId">
+      and open_id = #{openId}
+    </if>
+    <if test="joinType != null and '' != joinType">
+      and join_type = #{joinType}
+    </if>
+    <if test="unionId != null and '' != unionId">
+      and union_id = #{unionId}
+    </if>
+    <if test="appId != null and '' != appId">
+      and app_id = #{appId}
+    </if>
+    <if test="authorizedSource != null and '' != authorizedSource">
+      and authorized_source = #{authorizedSource}
+    </if>
+    limit 1
+  </select>
+
+  <insert id="addUserWechatJoinInfo" parameterType="com.comvee.cdms.user.dto.AddWechatJoinMapperDTO">
+    insert into t_user_wechat_join (sid, nick_name,
+      photo_url, foreign_id,
+      open_id, join_type, union_id,
+      app_id ,join_status,authorized_source)
+    values (#{sid,jdbcType=BIGINT},  #{nickName,jdbcType=VARCHAR},
+      #{photoUrl,jdbcType=VARCHAR},  #{foreignId,jdbcType=BIGINT},
+      #{openId,jdbcType=VARCHAR}, #{joinType,jdbcType=VARCHAR}, #{unionId,jdbcType=VARCHAR},
+      #{appId,jdbcType=VARCHAR} ,#{joinStatus},#{authorizedSource})
+  </insert>
+
+  <update id="updateUserWechatJoinInfo" parameterType="com.comvee.cdms.user.dto.UpdateWechatJoinMapperDTO">
+      update t_user_wechat_join
+      <set>
+        <if test="nickName != null and '' != nickName">
+          nick_name = #{nickName,jdbcType=VARCHAR},
+        </if>
+        <if test="photoUrl != null and '' != photoUrl">
+          photo_url = #{photo_url,jdbcType=VARCHAR},
+        </if>
+        <if test="foreignId != null and '' != foreignId">
+          foreign_id = #{foreignId,jdbcType=VARCHAR},
+        </if>
+        <if test="joinStatus != null">
+          join_status = #{joinStatus},
+        </if>
+        <if test="unionId != null and '' != unionId">
+          union_id = #{unionId} ,
+        </if>
+      </set>
+      where is_valid = 1
+      <if test="sid != null and '' != sid">
+        and sid = #{sid}
+      </if>
+      <if test="openId != null and '' != openId">
+        and open_id = #{openId}
+      </if>
+      <if test="appId != null and '' != appId">
+        and app_id = #{appId}
+      </if>
+      <if test="whereUnionId != null and '' != whereUnionId">
+        and union_id = #{whereUnionId}
+      </if>
+    <if test="authorizedSource != null and '' != authorizedSource">
+      and authorized_source = #{authorizedSource}
+    </if>
+  </update>
+</mapper>

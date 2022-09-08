@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.level.mapper.MemberLevelMapper">
+    <resultMap id="memberLevel" type="com.comvee.cdms.level.po.MemberLevelPO">
+        <result column="sid" jdbcType="BIGINT" property="sid"/>
+        <result column="member_id" jdbcType="BIGINT" property="memberId"/>
+        <result column="member_name" jdbcType="VARCHAR" property="memberName"/>
+        <result column="member_name_py" jdbcType="VARCHAR" property="memberNamePy"/>
+        <result column="sex" jdbcType="TINYINT" property="sex"/>
+        <result column="age" jdbcType="INTEGER" property="age"/>
+        <result column="change_date" jdbcType="DATE" property="changeDate"/>
+        <result column="change_dt" jdbcType="TIMESTAMP" property="changeDt"/>
+        <result column="member_level" jdbcType="TINYINT" property="memberLevel"/>
+        <result column="member_layer" jdbcType="TINYINT" property="memberLayer"/>
+        <result column="is_valid" jdbcType="TINYINT" property="isValid"/>
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt"/>
+        <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt"/>
+        <result column="origin" jdbcType="TINYINT" property="origin"/>
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId"/>
+        <result column="hospital_id" jdbcType="BIGINT" property="hospitalId"/>
+        <result column="confirm" jdbcType="TINYINT" property="confirm"/>
+        <result column="level_type" jdbcType="TINYINT" property="levelType"/>
+        <result column="data_json" jdbcType="LONGVARCHAR" property="dataJson"/>
+        <result column="contrast_analyze" jdbcType="LONGVARCHAR" property="contrastAnalyze"/>
+        <result column="adjustment" jdbcType="TINYINT" property="adjustment"/>
+        <result column="in_hos" property="inHos"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="change_reason" property="changeReason"/>
+        <result column="confirm_dt" property="confirmDt"/>
+    </resultMap>
+
+
+    <resultMap id="memberLevelVO" type="com.comvee.cdms.level.vo.MemberLevelVO">
+        <result column="sid" jdbcType="BIGINT" property="sid"/>
+        <result column="member_id" jdbcType="BIGINT" property="memberId"/>
+        <result column="member_name" jdbcType="VARCHAR" property="memberName"/>
+        <result column="sex" jdbcType="TINYINT" property="sex"/>
+        <result column="age" jdbcType="INTEGER" property="age"/>
+        <result column="member_level" jdbcType="TINYINT" property="memberLevel"/>
+        <result column="member_layer" jdbcType="TINYINT" property="memberLayer"/>
+        <result column="is_valid" jdbcType="TINYINT" property="isValid"/>
+        <result column="confirm" jdbcType="TINYINT" property="confirm"/>
+        <result column="level_type" jdbcType="TINYINT" property="levelType"/>
+        <result column="diabetesType" jdbcType="VARCHAR" property="diabetesType"/>
+        <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone"/>
+        <result column="confirm_dt" jdbcType="VARCHAR" property="confirmDt"/>
+        <result column="change_reason" jdbcType="VARCHAR" property="changeReason"/>
+    </resultMap>
+
+
+    <insert id="addMemberLevel" parameterType="com.comvee.cdms.level.po.MemberLevelPO">
+    insert into t_member_level (sid, member_id, member_name, 
+      member_name_py, sex, age, 
+      change_date, change_dt, member_level,
+      member_layer, is_valid,
+      insert_dt, modify_dt, origin, 
+      doctor_id, hospital_id, confirm,
+      level_type, data_json, contrast_analyze,
+      adjustment,confirm_dt,change_reason)
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{memberName,jdbcType=VARCHAR}, 
+      #{memberNamePy,jdbcType=VARCHAR}, #{sex,jdbcType=TINYINT}, #{age,jdbcType=INTEGER}, 
+      #{changeDate,jdbcType=DATE}, #{changeDt,jdbcType=TIMESTAMP}, #{memberLevel,jdbcType=TINYINT},
+      #{memberLayer,jdbcType=TINYINT}, 1, now(), now(), #{origin,jdbcType=TINYINT},
+      #{doctorId,jdbcType=BIGINT}, #{hospitalId,jdbcType=BIGINT}, #{confirm,jdbcType=TINYINT},
+      #{levelType,jdbcType=TINYINT}, #{dataJson,jdbcType=LONGVARCHAR}, #{contrastAnalyze,jdbcType=LONGVARCHAR},
+      #{adjustment,jdbcType=TINYINT},#{confirmDt},#{changeReason})
+  </insert>
+
+    <select id="getLastLevel" parameterType="com.comvee.cdms.level.dto.LastLevelDTO" resultMap="memberLevel">
+        select sid, member_id, member_name,member_name_py, sex, age, change_date, change_dt, member_level,
+        member_layer, is_valid, insert_dt, modify_dt, origin, doctor_id, hospital_id, confirm,
+        level_type, data_json, contrast_analyze, adjustment from t_member_level where is_valid = 1
+        <if test="memberId !=null and memberId != ''">
+            and member_id = #{memberId}
+        </if>
+        <if test="doctorId !=null and doctorId != ''">
+            and doctor_id = #{doctorId}
+        </if>
+        <!--<if test="hospitalId !=null and hospitalId != ''">-->
+            <!--and hospital_id = #{hospitalId}-->
+        <!--</if>-->
+        <if test="confirm != null">
+            and confirm = #{confirm}
+        </if>
+        <if test="levelType != null">
+            and level_type = #{levelType}
+        </if>
+        <if test="changeDate !=null and changeDate != ''">
+            and  change_date &lt; #{changeDate}
+        </if>
+        <!--<if test="nowLast != null">-->
+            <!--<if test="nowLast">-->
+                <!--<if test="changeDate !=null and changeDate != ''">-->
+                    <!--and change_date = #{changeDate}-->
+                <!--</if>-->
+            <!--</if>-->
+            <!--<if test="!nowLast">-->
+                <!--<if test="changeDate !=null and changeDate != ''">-->
+                    <!--and  change_dt &lt; #{changeDate}-->
+                <!--</if>-->
+            <!--</if>-->
+        <!--</if>-->
+
+        order by change_dt desc limit 1
+    </select>
+
+    <select id="listMemberLevel" resultMap="memberLevel" parameterType="com.comvee.cdms.level.dto.ListMemberLevelDTO">
+        select sid, member_id, member_name,member_name_py, sex, age, change_date, change_dt, member_level,
+        member_layer, is_valid, insert_dt, modify_dt, origin, doctor_id, hospital_id, confirm,
+        level_type, data_json, contrast_analyze, adjustment from t_member_level where is_valid = 1
+        <if test="memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test="levelType != null">
+            and level_type = #{levelType}
+        </if>
+        <if test="startDt != null and '' != startDt">
+            and change_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and change_dt &lt;= #{endDt}
+        </if>
+        <if test="confirm != null">
+            and confirm = #{confirm}
+        </if>
+        <if test="changeDate != null and '' != changeDate">
+            and change_date = #{changeDate}
+        </if>
+        <if test=" members != null and members.size() > 0">
+            AND member_id IN
+            <foreach collection="members" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="memberLevel != null">
+            and member_level = #{memberLevel}
+        </if>
+        <if test="memberLayer != null">
+            and member_layer = #{memberLayer}
+        </if>
+        order by change_dt desc
+    </select>
+
+    <select id="listMemberLevelRemind" resultMap="memberLevel" parameterType="com.comvee.cdms.level.dto.ListMemberLevelDTO">
+        select distinct a.sid, a.member_id, a.member_name,a.member_name_py, a.sex, a.age, a.change_date, a.change_dt,
+        a.member_level,a.member_layer, a.is_valid, a.insert_dt, a.modify_dt, a.origin, a.doctor_id, a.hospital_id, a.confirm,
+        a.level_type, a.data_json, a.contrast_analyze, a.adjustment,ifnull(mci.checkin_status,0)in_hos ,mci.department_id
+        from t_member_level a
+        join t_member_join_hospital mjh on a.member_id = mjh.member_id
+        LEFT JOIN t_member_checkin_info mci
+        on mci.member_id=a.member_id and mci.is_valid=1
+        where a.is_valid = 1 and a.confirm = 0 and mjh.valid = 1
+        <if test="memberName != null and memberName!=''">
+            and instr(a.member_name , #{memberName}) > 0
+        </if>
+        <if test="memberLevel != null">
+            and a.member_level = #{memberLevel}
+        </if>
+        <if test="memberLayer != null">
+            and a.member_layer = #{memberLayer}
+        </if>
+        <if test="levelType != null">
+            and a.level_type = #{levelType}
+        </if>
+        <if test="startDt != null and '' != startDt">
+            and a.change_date &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and a.change_date &lt;= #{endDt}
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and mjh.hospital_id = #{hospitalId}
+        </if>
+        order by a.change_dt desc
+    </select>
+
+
+    <select id="countMemberLevelRemind" resultType="java.lang.Long" parameterType="com.comvee.cdms.level.dto.ListMemberLevelDTO">
+        select count(distinct(a.sid))
+        from t_member_level a left join t_doctor_member b on a.member_id = b.member_id
+        where a.is_valid = 1 and a.confirm = 0
+        <!--<if test="null != hospitalId and hospitalId != ''">-->
+            <!--and a.hospital_id = #{hospitalId}-->
+        <!--</if>-->
+        <if test="doctorIdList!=null and doctorIdList.size()&gt;0">
+            AND b.doctor_id IN
+            <foreach collection="doctorIdList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="getMemberLevelById" parameterType="java.lang.String" resultMap="memberLevel">
+    select sid, member_id, member_name,member_name_py, sex, age, change_date, change_dt, member_level,
+    member_layer, is_valid, insert_dt, modify_dt, origin, doctor_id, hospital_id, confirm,
+    level_type, data_json, contrast_analyze, adjustment,change_reason from t_member_level
+    where sid = #{sid}
+  </select>
+
+    <update id="ignoreMemberLevel" parameterType="java.lang.String">
+    update t_member_level set modify_dt = now(),is_valid = 0
+    where sid = #{sid}
+  </update>
+
+    <update id="confirmMemberLevel" parameterType="com.comvee.cdms.level.dto.ConfirmLevelDTO">
+        update t_member_level
+        <set>
+            modify_dt = now(),confirm = 1,
+            <if test="contrastAnalyze != null and contrastAnalyze != ''">
+                 contrast_analyze = #{contrastAnalyze},
+            </if>
+            <if test="doctorId != null and doctorId != ''">
+                 doctor_id = #{doctorId},
+            </if>
+            <if test="memberLevel != null">
+                 member_level = #{memberLevel},
+            </if>
+            <if test="memberLayer != null">
+                 member_layer = #{memberLayer},
+            </if>
+            <if test="adjustment != null">
+                 adjustment = #{adjustment},
+            </if>
+            <if test="origin != null">
+                 origin = #{origin},
+            </if>
+            <if test="confirmDt != null and confirmDt != ''">
+                confirm_dt = #{confirmDt}
+            </if>
+        </set>
+        where sid = #{sid}
+    </update>
+
+    <select id="getCurrentGxyLevel" parameterType="com.comvee.cdms.level.dto.CurrentGxyLevelDTO" resultMap="memberLevel">
+          select sid, member_id, member_name,member_name_py, sex, age, change_date, change_dt, member_level,
+          member_layer, is_valid, insert_dt, modify_dt, origin, doctor_id, hospital_id, confirm,
+          level_type, data_json, contrast_analyze, adjustment from t_member_level where is_valid = 1 and confirm = 1
+        <if test="memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <!--<if test="hospitalId != null and '' != hospitalId">-->
+            <!--and hospital_id = #{hospitalId}-->
+        <!--</if>-->
+        order by change_dt desc limit 1
+    </select>
+
+    <select id="getMemberCurrentLevel" resultMap="memberLevel">
+        select sid, member_id, member_name,member_name_py, sex, age, change_date, change_dt, member_level,
+        member_layer, is_valid, insert_dt, modify_dt, origin, doctor_id, hospital_id, confirm,
+        level_type, data_json, contrast_analyze, adjustment
+        from t_member_level
+        where is_valid = 1 and confirm = 1
+        and member_id = #{memberId}
+        and level_type = #{levelType}
+        <if test="confirmDt != null and '' != confirmDt">
+            and confirm_dt = #{confirmDt}
+        </if>
+        order by change_dt desc limit 1
+    </select>
+
+    <select id="listMemberLevelNum" resultType="java.lang.Long">
+        select count(distinct(c.member_id)) from
+        (select * from
+        (select mjh.member_id
+        from t_member_join_hospital mjh join t_member tm on tm.member_id = mjh.member_id
+        join
+        (select * from
+        (select member_id,member_level,member_layer from t_member_level
+        where is_valid = 1 and confirm = 1
+        <if test="levelType != null">
+            and level_type = #{levelType}
+        </if>
+        <if test="startDt != null and '' != startDt">
+            and confirm_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and confirm_dt &lt;= #{endDt}
+        </if>
+        having 1
+        order by confirm_dt desc)a
+        group by a.member_id ) ml
+        on mjh.member_id = ml.member_id
+        where mjh.valid = 1
+        <if test=" memberLevel != null">
+            and ml.member_level = #{memberLevel}
+        </if>
+        <if test="memberLayer != null">
+            and ml.member_layer = #{memberLayer}
+        </if>
+        <if test=" hospitalIdList != null and hospitalIdList.size() > 0">
+            AND mjh.hospital_id IN
+            <foreach collection="hospitalIdList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        )b)c
+    </select>
+    <select id="listDayLevel" resultMap="memberLevel">
+        select * from
+        (select sid, member_id, member_name,member_name_py, sex, age, change_date, change_dt, member_level,
+        member_layer, is_valid, insert_dt, modify_dt, origin, doctor_id, hospital_id, confirm,
+        level_type, data_json, contrast_analyze, adjustment,confirm_dt
+        from t_member_level
+        where is_valid = 1 and confirm = 1
+        and level_type = #{levelType}
+        <if test="confirmDt != null and '' != confirmDt">
+            and DATE_FORMAT(confirm_dt,'%Y-%m-%d') =#{confirmDt}
+        </if>
+        order by confirm_dt desc
+        )a
+        group by member_id
+
+
+    </select>
+    <select id="getMemberLast2Level" resultMap="memberLevel">
+        select sid, member_id, member_name,member_name_py, sex, age, change_date, change_dt, member_level,
+        member_layer, is_valid, insert_dt, modify_dt, origin, doctor_id, hospital_id, confirm,
+        level_type, data_json, contrast_analyze, adjustment,confirm_dt
+        from t_member_level
+        where is_valid = 1 and confirm = 1  and member_id = #{memberId}
+        and level_type = #{levelType}
+        <if test="confirmDt != null and '' != confirmDt">
+            and confirm_dt &lt; #{confirmDt}
+        </if>
+        order by confirm_dt desc
+        limit 1
+    </select>
+    <select id="getMemberSuggestLevel" resultMap="memberLevel">
+        select sid, member_id, member_name,member_name_py, sex, age, change_date, change_dt, member_level,
+        member_layer, is_valid, insert_dt, modify_dt, origin, doctor_id, hospital_id, confirm,
+        level_type, data_json, contrast_analyze, adjustment,confirm_dt
+        from t_member_level
+        where is_valid = 1 and confirm = 0  and member_id = #{memberId}
+        and level_type = #{levelType}
+        order by change_dt desc
+        limit 1
+    </select>
+    <select id="listMemberLevelVO" resultMap="memberLevelVO">
+        select ml.sid, ml.member_id, ml.member_name,ml.sex, ml.age, ml.member_level,
+        ml.member_layer, ml.confirm,ml.level_type, tm.mobile_phone,ml.confirm_dt,ml.change_reason,
+        case
+        when tm.is_diabetes = 1 and tm.essential_hyp = 1 then '高血压-糖尿病'
+        when tm.is_diabetes = 1 then '糖尿病' when tm.essential_hyp = 1 then '高血压' else '无' end diabetesType
+        from t_member_level ml
+        join t_member tm on ml.member_id = tm.member_id
+        join t_member_join_hospital mjh on tm.member_id = mjh.member_id
+        where ml.is_valid = 1
+        <if test="memberId != null and '' != memberId">
+            and ml.member_id = #{memberId}
+        </if>
+        <if test="levelType != null">
+            and ml.level_type = #{levelType}
+        </if>
+        <if test="startDt != null and '' != startDt">
+            and ml.confirm_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and ml.confirm_dt &lt;= #{endDt}
+        </if>
+        <if test="confirm != null">
+            and ml.confirm = #{confirm}
+        </if>
+        <if test="memberLevel != null">
+            and ml.member_level = #{memberLevel}
+        </if>
+        <if test="memberLayer != null">
+            and ml.member_layer = #{memberLayer}
+        </if>
+        <if test="otherLevelLayer != null and otherLevelLayer == 1 ">
+            and (ml.member_layer != ml.member_level)
+        </if>
+        <if test="keyword != null and keyword != '' and mobilePhone != null and mobilePhone != '' ">
+            and (instr(tm.mobile_phone, #{mobilePhone}) > 0 or instr(tm.member_name, #{keyword}) > 0)
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and mjh.hospital_id = #{hospitalId}
+        </if>
+        <if test="hospitalIdList!=null and hospitalIdList.size()&gt;0">
+            AND mjh.hospital_id IN
+            <foreach collection="hospitalIdList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        group by ml.sid
+        order by ml.confirm_dt desc
+    </select>
+    <select id="listMemberNewstLevelVO" resultMap="memberLevelVO">
+        select ml.sid, ml.member_id, ml.member_name,ml.sex, ml.age, ml.member_level,
+        ml.member_layer, ml.confirm,ml.level_type, tm.mobile_phone,ml.confirm_dt,ml.change_reason,
+        case
+        when tm.is_diabetes = 1 and tm.essential_hyp = 1 then '高血压-糖尿病'
+        when tm.is_diabetes = 1 then '糖尿病' when tm.essential_hyp = 1 then '高血压' else '无' end diabetesType
+        FROM  t_member tm join t_member_join_hospital mjh
+        ON mjh.member_id = tm.member_id
+        join (select *
+        FROM (select sid,member_id,member_level,member_name,sex,age,member_layer,confirm,level_type,confirm_dt,change_reason,is_valid
+        FROM t_member_level
+        WHERE is_valid = 1 and confirm = 1
+        <if test="levelType != null">
+            and level_type = #{levelType}
+        </if>
+        <if test="startDt != null and '' != startDt">
+            and confirm_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and confirm_dt &lt;= #{endDt}
+        </if>
+         having 1 /*keep orderby*/ order by confirm_dt desc)a group by a.member_id ) ml
+        on ml.member_id = mjh.member_id
+        where mjh.valid = 1
+        <if test="memberId != null and '' != memberId">
+            and ml.member_id = #{memberId}
+        </if>
+        <if test="memberLevel != null">
+            and ml.member_level = #{memberLevel}
+        </if>
+        <if test="memberLayer != null">
+            and ml.member_layer = #{memberLayer}
+        </if>
+        <if test="otherLevelLayer != null and otherLevelLayer == 1 ">
+            and (ml.member_layer != ml.member_level)
+        </if>
+        <if test="keyword != null and keyword != '' and mobilePhone != null and mobilePhone != '' ">
+            and (instr(tm.mobile_phone, #{mobilePhone}) > 0 or instr(tm.member_name, #{keyword}) > 0)
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and mjh.hospital_id = #{hospitalId}
+        </if>
+        <if test="hospitalIdList!=null and hospitalIdList.size()&gt;0">
+            AND mjh.hospital_id IN
+            <foreach collection="hospitalIdList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        group by ml.sid
+        order by ml.confirm_dt desc
+    </select>
+
+    <update id="updateMemberLevel" parameterType="com.comvee.cdms.level.po.MemberLevelPO">
+        update t_member_level set modify_dt = now()
+        <if test="contrastAnalyze != null and contrastAnalyze != ''">
+            ,contrast_analyze = #{contrastAnalyze}
+        </if>
+        <if test="doctorId != null and doctorId != ''">
+            ,doctor_id = #{doctorId}
+        </if>
+        <if test="memberLevel != null">
+            ,member_level = #{memberLevel}
+        </if>
+        <if test="memberLayer != null">
+            ,member_layer = #{memberLayer}
+        </if>
+        <if test="adjustment != null">
+            ,adjustment = #{adjustment}
+        </if>
+        <if test="origin != null">
+            ,origin = #{origin}
+        </if>
+        <if test="isValid != null">
+            ,is_valid = #{isValid}
+        </if>
+        <if test="confirm != null">
+            ,confirm = #{confirm}
+        </if>
+        where sid = #{sid} and is_valid = 1
+    </update>
+
+    <update id="clearMemberLastUnConfirm" >
+        update t_member_level set modify_dt = now(),is_valid = 0
+        where sid in
+        <foreach collection="idList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

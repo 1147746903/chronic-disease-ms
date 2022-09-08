@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.complication.mapper.ScreeningMapper">
+
+    <resultMap id="screening" type="com.comvee.cdms.complication.model.po.ScreeningListPO">
+        <id column="screening_id" jdbcType="VARCHAR" property="screeningId" />
+        <result column="member_name" jdbcType="VARCHAR" property="patientName" />
+        <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+        <result column="sex" jdbcType="TINYINT" property="sex" />
+        <result column="birthday" jdbcType="VARCHAR" property="birthday" />
+        <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+        <result column="diabetes_type" jdbcType="VARCHAR" property="diabetesType" />
+        <result column="apply_dt" jdbcType="TIMESTAMP" property="applyDt" />
+        <result column="screening_status" jdbcType="TINYINT" property="screeningStatus" />
+        <result column="order_status" jdbcType="TINYINT" property="orderStatus" />
+        <result column="order_date" jdbcType="VARCHAR" property="orderDate" />
+        <result column="order_time" jdbcType="VARCHAR" property="orderTime" />
+        <result column="order_time_code" jdbcType="TINYINT" property="orderTimeCode" />
+        <result column="his_order_code" jdbcType="VARCHAR" property="hisOrderCode" />
+        <result column="his_ext_json" jdbcType="VARCHAR" property="hisExtJson" />
+        <result column="order_origin" jdbcType="TINYINT" property="orderOrigin" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="modules" jdbcType="VARCHAR" property="modules" />
+        <result column="modules_status" jdbcType="VARCHAR" property="modulesStatus" />
+        <result column="finish_dt" jdbcType="TIMESTAMP" property="finishDt" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+        <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+        <result column="abi_status" property="abiStatus" />
+        <result column="vpt_status"  property="vptStatus" />
+        <result column="valid"  property="valid" />
+        <result column="stop_item_json"  property="stopItemJson" />
+        <result column="in_hos" property="inHos"/>
+        <result column="department_id" property="departmentId"/>
+    </resultMap>
+
+    <resultMap id="screeningData" type="com.comvee.cdms.complication.model.po.ScreeningDataPO">
+        <id column="screening_id" property="screeningId"/>
+        <result column="patient_name" property="patientName"/>
+        <result column="id_card" property="idCard"/>
+        <result column="sex" property="sex"/>
+        <result column="age" property="age"/>
+        <result column="screening_dt" property="screeningDt"/>
+        <result column="left_vpt" property="leftVpt"/>
+        <result column="right_vpt" property="rightVpt"/>
+        <result column="vpt_data_json" property="vptDataJson"/>
+        <result column="left_abi" property="leftAbi"/>
+        <result column="right_abi" property="rightAbi"/>
+        <result column="abi_data_json" property="abiDataJson"/>
+        <result column="modules" property="modules"/>
+        <result column="insert_dt" property="insertDt"/>
+        <result column="update_dt" property="updateDt"/>
+        <result column="doctor_id" property="doctorId"/>
+        <result column="member_id" property="memberId"/>
+    </resultMap>
+
+    <resultMap id="screeningPre" type="com.comvee.cdms.complication.model.po.ScreeningItemPO">
+        <id column="item_id" property="itemId"/>
+        <id column="screening_id" property="screeningId"/>
+        <id column="insert_dt" property="insertDt"/>
+        <id column="screening_type" property="screeningType"/>
+        <id column="deal_status" property="dealStatus"/>
+        <id column="source_url" property="sourceUrl"/>
+        <id column="data_json" property="dataJson"/>
+        <id column="report_dt" property="reportDt"/>
+        <id column="doctor_id" property="doctorId"/>
+        <id column="member_id" property="memberId"/>
+    </resultMap>
+
+    <insert id="addScreeningList" parameterType="com.comvee.cdms.complication.model.dto.AddScreeningListDTO">
+        insert into t_screening_list (screening_id ,apply_dt,
+        screening_status, order_status, order_date,
+        order_time, order_time_code, his_order_code,
+        his_ext_json, order_origin, modules,
+        modules_status, finish_dt, member_id,
+        doctor_id , hospital_id, abi_status ,vpt_status ,valid ,stop_item_json)
+        values (#{screeningId,jdbcType=VARCHAR},#{applyDt,jdbcType=TIMESTAMP},
+        #{screeningStatus,jdbcType=TINYINT}, #{orderStatus,jdbcType=TINYINT}, #{orderDate,jdbcType=VARCHAR},
+        #{orderTime,jdbcType=VARCHAR}, #{orderTimeCode,jdbcType=TINYINT}, #{hisOrderCode,jdbcType=VARCHAR},
+        #{hisExtJson,jdbcType=VARCHAR}, #{orderOrigin,jdbcType=TINYINT}, #{modules,jdbcType=VARCHAR},
+        #{modulesStatus,jdbcType=VARCHAR}, #{finishDt,jdbcType=TIMESTAMP}, #{memberId,jdbcType=BIGINT},
+        #{doctorId,jdbcType=BIGINT}, #{hospitalId,jdbcType=BIGINT},0 ,0 ,1 ,#{stopItemJson})
+    </insert>
+
+    <select id="getScreeningById"  resultMap="screening">
+        select s.screening_id, q.member_name, q.id_card, q.sex, q.birthday, q.mobile_phone, q.diabetes_type,
+        s.apply_dt, s.screening_status, s.order_status, s.order_date, s.order_time,
+        s.order_time_code, s.his_order_code, s.his_ext_json, s.order_origin,  s.insert_dt,
+        s.update_dt, s.modules, s.modules_status, s.finish_dt, s.member_id, s.doctor_id, s.hospital_id,s.valid ,s.stop_item_json,
+        ifnull(ci.checkin_status,0)in_hos,ci.department_id
+        from t_screening_list s join t_member q on s.member_id = q.member_id left join t_member_checkin_info  ci
+        on s.member_id=ci.member_id and ci.is_valid=1
+        where valid = 1 and s.screening_id = #{screeningId,jdbcType=VARCHAR} limit 1
+    </select>
+
+    <update id="updateScreeningList" parameterType="com.comvee.cdms.complication.model.po.ScreeningListPO">
+        update t_screening_list
+        <set>
+            <if test="screeningStatus != null">
+                screening_status = #{screeningStatus,jdbcType=TINYINT},
+            </if>
+            <if test="orderStatus != null ">
+                order_status = #{orderStatus,jdbcType=TINYINT},
+            </if>
+            <if test="orderDate != null and '' != orderDate">
+                order_date = #{orderDate,jdbcType=VARCHAR},
+            </if>
+            <if test="orderTime != null and '' != orderTime">
+                order_time = #{orderTime,jdbcType=VARCHAR},
+            </if>
+            <if test="orderTimeCode != null and '' != orderTimeCode">
+                order_time_code = #{orderTimeCode,jdbcType=TINYINT},
+            </if>
+            <if test="hisOrderCode != null and '' != hisOrderCode">
+                his_order_code = #{hisOrderCode,jdbcType=VARCHAR},
+            </if>
+            <if test="hisExtJson != null and '' != hisExtJson">
+                his_ext_json = #{hisExtJson,jdbcType=VARCHAR},
+            </if>
+            <if test="modules != null and '' != modules">
+                modules = #{modules,jdbcType=VARCHAR},
+            </if>
+            <if test="modulesStatus != null and '' != modulesStatus">
+                modules_status = #{modulesStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="finishDt != null and '' != finishDt">
+                finish_dt = #{finishDt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="abiStatus != null ">
+                abi_status = #{abiStatus},
+            </if>
+            <if test="vptStatus != null">
+                vpt_status = #{vptStatus},
+            </if>
+            <if test="valid != null">
+                valid = #{valid},
+            </if>
+            <if test="stopItemJson != null and '' != stopItemJson">
+                stop_item_json = #{stopItemJson},
+            </if>
+            <if test="isIgnore != null">
+                is_ignore = #{isIgnore},
+            </if>
+        </set>
+        where screening_id = #{screeningId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="countScreening" resultType="long">
+        select count(*) from t_screening_list t
+        where t.valid = 1
+        <if test="screeningStatus != null">
+            and t.screening_status = #{screeningStatus}
+        </if>
+        <if test="orderStatus != null">
+            and t.order_status = #{orderStatus}
+        </if>
+        <if test="orderStartDt != null and '' != orderStartDt">
+            and t.order_date &gt;= #{orderStartDt}
+        </if>
+        <if test="orderEndDt != null and '' != orderEndDt">
+            and t.order_date &lt;= #{orderEndDt}
+        </if>
+        <if test="finishStartDt != null and '' != finishStartDt">
+            and t.finish_dt &gt;= #{finishStartDt}
+        </if>
+        <if test="finishEndDt != null and '' != finishEndDt">
+            and t.finish_dt &lt;= #{finishEndDt}
+        </if>
+        <if test="orderStartOrDt != null and '' != orderStartOrDt and orderEndOrDt != null and '' != orderEndOrDt">
+            and (t.order_date &gt;= #{orderStartOrDt} or t.order_date &lt;= #{orderEndOrDt})
+        </if>
+        <if test="finishStartOrDt != null and '' != finishStartOrDt and finishEndOrDt != null and '' != finishEndOrDt">
+            and (t.finish_dt &gt;= #{finishStartOrDt} or t.finish_dt &lt;= #{finishEndOrDt})
+        </if>
+        <if test="screeningStatusList != null and screeningStatusList.size() > 0">
+            and t.screening_status in
+            <foreach collection="screeningStatusList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="doctorList != null and doctorList.size() > 0">
+            and t.doctor_id in
+            <foreach collection="doctorList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="memberIdList != null and memberIdList.size() > 0">
+            and (member_id = '-1'
+            <foreach collection="memberIdList" index="index" item="item" open="or" separator="or">
+                member_id = #{item}
+            </foreach>)
+        </if>
+        <if test=" hospitalId != null and hospitalId != '' ">
+            and hospital_id = #{hospitalId}
+        </if>
+    </select>
+
+    <select id="listScreening" resultMap="screening">
+        select s.screening_id, q.member_name, q.id_card, q.sex, q.birthday, q.mobile_phone, q.diabetes_type,
+        s.apply_dt, s.screening_status, s.order_status, s.order_date, s.order_time,
+        s.order_time_code, s.his_order_code, s.his_ext_json, s.order_origin, s.insert_dt,
+        s.update_dt, s.modules, s.modules_status, s.finish_dt, s.member_id, s.doctor_id, s.hospital_id, s.valid ,s.stop_item_json,
+        ifnull(ci.checkin_status,0) in_hos,ci.department_id
+        from t_screening_list s join t_member q on s.member_id = q.member_id left join t_member_checkin_info ci
+        on s.member_id = ci.member_id
+        where s.valid = 1
+        <if test=" hospitalId != null and hospitalId != '' ">
+            and s.hospital_id = #{hospitalId}
+        </if>
+        <if test="patientName != null and '' != patientName">
+            <bind name="keyword" value="'%'+patientName+'%'"/>
+            and q.member_name like #{keyword}
+        </if>
+        <if test="idCard != null and '' != idCard">
+            and q.id_card = #{idCard}
+        </if>
+        <if test="memberId != null and '' != memberId">
+            and s.member_id = #{memberId}
+        </if>
+        <if test="mobilePhone != null and '' != mobilePhone">
+            and q.mobile_phone = #{mobilePhone}
+        </if>
+        <if test="applyDt != null and '' != applyDt">
+            and date_format(s.apply_dt  ,'%Y-%m-%d' ) = #{applyDt}
+        </if>
+        <if test="orderOrigin != null ">
+            and s.order_origin = #{orderOrigin}
+        </if>
+        <if test="screeningStatusList != null and screeningStatusList.size() > 0">
+            and s.screening_status in
+            <foreach collection="screeningStatusList" index="index" item = "item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="orderDate != null and '' != orderDate">
+            and s.order_date = #{orderDate}
+        </if>
+        <if test="orderStartDt != null and '' != orderStartDt">
+            and s.order_date &gt;= #{orderStartDt}
+        </if>
+        <if test="orderEndDt != null and '' != orderEndDt">
+            and s.order_date &lt;= #{orderEndDt}
+        </if>
+        <if test="orderStatus != null">
+            and s.order_status = #{orderStatus}
+        </if>
+        <if test="finishStartDt != null and '' != finishStartDt">
+            and s.finish_dt &gt;= #{finishStartDt}
+        </if>
+        <if test="finishEndDt != null and '' != finishEndDt">
+            and s.finish_dt &lt;= #{finishEndDt}
+        </if>
+        <if test="orderStartOrDt != null and '' != orderStartOrDt and orderEndOrDt != null and '' != orderEndOrDt">
+            and (s.order_date &gt;= #{orderStartOrDt} or s.order_date &lt;= #{orderEndOrDt})
+        </if>
+        <if test="finishStartOrDt != null and '' != finishStartOrDt and finishEndOrDt != null and '' != finishEndOrDt">
+            and (s.finish_dt &gt;= #{finishStartOrDt} or s.finish_dt &lt;= #{finishEndOrDt})
+        </if>
+        <if test="doctorList != null and doctorList.size() > 0">
+            and s.doctor_id in
+            <foreach collection="doctorList" index="index" item = "item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="memberIdList != null and memberIdList.size() > 0">
+            and s.member_id in
+            <foreach collection="memberIdList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="isIgnore != null">
+            and s.is_ignore = #{isIgnore}
+        </if>
+        order by s.insert_dt desc
+    </select>
+
+    <select id="listScreeningReturnVisitRemind" resultMap="screening">
+        select screening_id, q.member_name, id_card, sex, birthday, mobile_phone, diabetes_type,
+        apply_dt , screening_status, order_status, order_date, order_time,
+        order_time_code, his_order_code, his_ext_json, order_origin, insert_dt,
+        update_dt, modules, modules_status, finish_dt, member_id, doctor_id, hospital_id,stop_item_json
+        from t_screening_list t join t_member q on t.member_id = q.member_id
+        where t.valid = 1 and t.screening_status = 3 and date_format(t.finish_dt,'%Y-%m-%d') = #{finishDt}
+        group by t.member_id
+    </select>
+
+    <select id="listLastWeekScreening" resultMap="screening">
+        select screening_id, patient_name, id_card, sex, birthday, mobile_phone, diabetes_type,
+        apply_dt, patient_ext_json, screening_status, order_status, order_date, order_time,
+        order_time_code, his_order_code, his_ext_json, order_origin,  insert_dt,
+        update_dt, modules, modules_status, finish_dt, member_id, doctor_id, hospital_id
+        from t_screening_list t where t.valid = 1 and  t.screening_status = 3 and t.finish_dt BETWEEN #{startDt} and #{endDt}
+        group by t.member_id
+    </select>
+
+    <select id="listMemberScreening" resultMap="screening">
+        select screening_id, patient_name, id_card, sex, birthday, mobile_phone, diabetes_type,
+        apply_dt, patient_ext_json, screening_status, order_status, order_date, order_time,
+        order_time_code, his_order_code, his_ext_json, order_origin, insert_dt,
+        update_dt, modules, modules_status, finish_dt, member_id, doctor_id, hospital_id
+        from t_screening_list t where t.valid = 1 and screening_status = 3 and t.member_id = #{memberId} order by finish_dt desc
+    </select>
+
+    <select id="listScreeningOrderRemindPatient" resultMap="screening">
+        select screening_id, patient_name, id_card, sex, birthday, mobile_phone, diabetes_type,
+        apply_dt, patient_ext_json, screening_status, order_status, order_date, order_time,
+        order_time_code, his_order_code, his_ext_json, order_origin, insert_dt,
+        update_dt, modules, modules_status, finish_dt, member_id, doctor_id, hospital_id
+        from t_screening_list t where t.valid = 1 and screening_status = 1 and t.order_status = 1
+        and order_date = #{orderDate}
+    </select>
+
+    <select id="countNewScreening" resultType="java.util.Map" parameterType = "com.comvee.cdms.statistics.dto.SynthesizeDataDTO">
+        select count(if(instr(p.modules,'1')>0,true,null)) as countABI,
+        count(if(instr(p.modules,'2')>0,true,null)) as countVPT
+        from t_screening_list p,t_doctor d
+        where p.doctor_id = d.doctor_id and p.screening_status=3
+        <if test="memberId != null and ''!=memberId">
+            and p.member_id = #{memberId}
+        </if>
+        <if test="doctorId != null and ''!=doctorId">
+            and p.doctor_id = #{doctorId}
+        </if>
+        <if test="hospitalId != null and ''!=hospitalId">
+            and d.hospital_id = #{hospitalId}
+        </if>
+        <if test="departmentId != null and ''!=departmentId">
+            and d.depart_id = #{departmentId}
+        </if>
+        <if test="startDt != null and ''!=startDt">
+            and p.finish_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and ''!=endDt">
+            and p.finish_dt &lt;= #{endDt}
+        </if>
+    </select>
+
+    <select id="countScreeningPeople" resultType="java.util.Map" parameterType = "com.comvee.cdms.statistics.dto.SynthesizeDataDTO">
+        select count(if(instr(p.modules,'1')>0,true,null)) as countABIPeople,
+        count(if(instr(p.modules,'2')>0,true,null)) as countVPTPeople
+        from t_screening_list p,t_doctor d
+        where p.doctor_id = d.doctor_id and p.screening_status=3
+        <if test="hospitalName != null and ''!=hospitalName">
+            and d.hospital_name = #{hospitalName}
+        </if>
+        <if test="departmentName != null and ''!=departmentName">
+            and d.depart_name = #{departmentName}
+        </if>
+        <if test="doctorName != null and ''!=doctorName">
+            and d.doctor_name = #{doctorName}
+        </if>
+        <if test="hospitalId != null and ''!=hospitalId">
+            and d.hospital_id = #{hospitalId}
+        </if>
+        <if test="departmentId != null and ''!=departmentId">
+            and d.depart_id = #{departmentId}
+        </if>
+        <if test="doctorId != null and ''!=doctorId">
+            and d.doctor_id = #{doctorId}
+        </if>
+        <if test="startDt != null and ''!=startDt">
+            and p.finish_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and ''!=endDt">
+            and p.finish_dt &lt;= #{endDt}
+        </if>
+    </select>
+    <select id="getABI" parameterType="com.comvee.cdms.statistics.dto.SynthesizeDataDTO" resultMap="screeningData">
+        select a.screening_id,a.patient_name,a.id_card,a.sex,a.age,a.screening_dt,a.left_vpt,a.right_vpt,
+        a.vpt_data_json,a.left_abi,a.right_abi,a.abi_data_json,a.modules,a.insert_dt,a.update_dt,a.doctor_id,a.member_id
+        from t_screening_data a,t_doctor b where a.doctor_id = b.doctor_id and instr(a.modules,1)>0
+        <if test="memberId != null and ''!=memberId">
+            and a.member_id = #{memberId}
+        </if>
+        <if test="doctorId != null and ''!=doctorId">
+            and a.doctor_id = #{doctorId}
+        </if>
+        <if test="hospitalId != null and ''!=hospitalId">
+            and b.hospital_id = #{hospitalId}
+        </if>
+        <if test="departmentId != null and ''!=departmentId">
+            and b.depart_id = #{departmentId}
+        </if>
+        <if test="startDt != null and ''!=startDt">
+            and a.update_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and ''!=endDt">
+            and a.update_dt &lt;= #{endDt}
+        </if>
+        order by a.insert_dt desc
+    </select>
+    <select id="getVPT" parameterType="com.comvee.cdms.statistics.dto.SynthesizeDataDTO" resultMap="screeningData">
+        select a.screening_id,a.patient_name,a.id_card,a.sex,a.age,a.screening_dt,a.left_vpt,a.right_vpt,
+        a.vpt_data_json,a.left_abi,a.right_abi,a.abi_data_json,a.modules,a.insert_dt,a.update_dt,a.doctor_id,a.member_id
+        from t_screening_data a,t_doctor b where a.doctor_id = b.doctor_id and  instr(a.modules,2)>0
+        <if test="memberId != null and ''!=memberId">
+            and a.member_id = #{memberId}
+        </if>
+        <if test="doctorId != null and ''!=doctorId">
+            and a.doctor_id = #{doctorId}
+        </if>
+        <if test="hospitalId != null and ''!=hospitalId">
+            and b.hospital_id = #{hospitalId}
+        </if>
+        <if test="departmentId != null and ''!=departmentId">
+            and b.depart_id = #{departmentId}
+        </if>
+        <if test="startDt != null and ''!=startDt">
+            and a.update_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and ''!=endDt">
+            and a.update_dt &lt;= #{endDt}
+        </if>
+        order by a.insert_dt desc
+    </select>
+
+    <update id="deleteScreening">
+        update t_screening_list set valid = 0,update_dt = now() where screening_id = #{screeningId}
+    </update>
+
+    <update id="deleteScreeningList">
+        update t_screening_list t set t.valid = 0,t.update_dt = now()
+        where t.valid = 1 and t.member_id = #{memberId} and t.doctor_id = #{doctorId}
+    </update>
+
+    <insert id="addScreeningPre" parameterType="com.comvee.cdms.complication.model.po.ScreeningItemPO">
+        insert into t_screening_list_item (item_id, screening_id, screening_type, source_url, data_json
+        <if test="memberId!=null and memberId !=''">
+            ,member_id
+        </if>
+        <if test="doctorId!=null and doctorId !=''">
+            ,doctor_id
+        </if>
+        )
+        values(#{itemId}, #{screeningId} ,#{screeningType} , #{sourceUrl} , #{dataJson}
+        <if test="memberId!=null and memberId !=''">
+            ,#{memberId}
+        </if>
+        <if test="doctorId!=null and doctorId !=''">
+            ,#{doctorId}
+        </if>
+        )
+    </insert>
+
+    <update id="updateScreenPre" parameterType="com.comvee.cdms.complication.model.po.ScreeningItemPO">
+        update t_screening_list_item  set update_dt = now()
+        <if test="dealStatus != null">
+            ,deal_status = #{dealStatus}
+        </if>
+        <if test="sourceUrl != null and '' != sourceUrl">
+            ,source_url = #{sourceUrl}
+        </if>
+        <if test="dataJson != null and '' != dataJson">
+            ,data_json = #{dataJson}
+        </if>
+        <if test="reportDt != null and '' != reportDt">
+            ,report_dt = #{reportDt}
+        </if>
+        <where>
+            <if test="itemId != null and '' != itemId">
+                and item_id = #{itemId}
+            </if>
+            <if test="screeningId != null and '' != screeningId">
+                and screening_id = #{screeningId}
+            </if>
+            <if test="screeningType != null">
+                and screening_type = #{screeningType}
+            </if>
+        </where>
+    </update>
+
+    <select id="getScreeningPre" resultMap="screeningPre"  parameterType="com.comvee.cdms.complication.model.po.ScreeningItemPO">
+        select item_id, screening_id,insert_dt,update_dt,screening_type,deal_status
+        ,source_url,data_json,report_dt,member_id,doctor_id from t_screening_list_item
+        <where>
+            <if test="itemId != null and '' != itemId">
+                and item_id = #{itemId}
+            </if>
+            <if test="screeningId != null and '' != screeningId">
+                and screening_id = #{screeningId}
+            </if>
+            <if test="screeningType != null">
+                and screening_type = #{screeningType}
+            </if>
+            <if test="doctorId != null and '' != doctorId">
+                and doctor_id = #{doctorId}
+            </if>
+            <if test="memberId != null and '' != memberId">
+                and member_id = #{memberId}
+            </if>
+        </where>
+        limit 1
+    </select>
+
+    <insert id="addOrUpdateScreening" parameterType="com.comvee.cdms.complication.model.dto.AddScreeningListDTO">
+        insert into t_screening_list (screening_id,apply_dt, patient_ext_json,
+        screening_status, order_status, order_date,
+        order_time, order_time_code, his_order_code,
+        his_ext_json, order_origin, modules,
+        modules_status, finish_dt, member_id,
+        doctor_id ,abi_status ,vpt_status ,valid ,stop_item_json)
+        values (#{screeningId,jdbcType=VARCHAR}, #{applyDt,jdbcType=TIMESTAMP}, #{patientExtJson,jdbcType=VARCHAR},
+        #{screeningStatus,jdbcType=TINYINT}, #{orderStatus,jdbcType=TINYINT}, #{orderDate,jdbcType=VARCHAR},
+        #{orderTime,jdbcType=VARCHAR}, #{orderTimeCode,jdbcType=TINYINT}, #{hisOrderCode,jdbcType=VARCHAR},
+        #{hisExtJson,jdbcType=VARCHAR}, #{orderOrigin,jdbcType=TINYINT}, #{modules,jdbcType=VARCHAR},
+        #{modulesStatus,jdbcType=VARCHAR}, #{finishDt,jdbcType=TIMESTAMP}, #{memberId,jdbcType=BIGINT},
+        #{doctorId,jdbcType=BIGINT} ,#{abiStatus} ,#{vptStatus} ,#{valid} ,#{stopItemJson})
+        ON DUPLICATE KEY UPDATE
+        screening_status = #{screeningStatus},
+        order_status = #{orderStatus},
+        order_time = #{orderTime},
+        order_time_code = #{orderTimeCode},
+        modules_status = #{modulesStatus},
+        his_order_code = #{hisOrderCode},
+        his_ext_json = #{hisExtJson},
+        finish_dt = #{finishDt},
+        abi_status = #{abiStatus},
+        vpt_status = #{vptStatus},
+        valid = #{valid},
+        stop_item_json = #{stopItemJson}
+    </insert>
+</mapper>

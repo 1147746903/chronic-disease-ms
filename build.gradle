@@ -1,0 +1,115 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.1.7.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+group 'com.comvee.cdms'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    maven { url "https://maven.aliyun.com/nexus/content/groups/public/" }
+    mavenCentral()
+}
+
+
+configurations {
+    all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    all*.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+}
+
+def shiroVersion = "1.7.0"
+def log4j2Version = "2.17.0"
+def mybatisVersion = "3.5.7"
+def springWebVersion = "5.1.20.RELEASE"
+def jacksonDatabindVersion = "2.9.10.8"
+
+dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter-web',{
+        exclude group: 'org.springframework', module: 'spring-web'
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+    }
+    implementation "org.springframework:spring-web:${springWebVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
+    // 日志
+    implementation "org.springframework.boot:spring-boot-starter-log4j2",{
+        exclude group: 'org.apache.logging.log4j'
+    }
+    implementation "org.apache.logging.log4j:log4j-core:${log4j2Version}"
+    implementation "org.apache.logging.log4j:log4j-api:${log4j2Version}"
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl:${log4j2Version}"
+    implementation "org.apache.logging.log4j:log4j-jul:${log4j2Version}"
+
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    //mybatis
+//    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.0',{
+//        exclude group: 'org.mybatis' ,module: 'mybatis'
+//    }
+//    implementation "org.mybatis:mybatis:${mybatisVersion}"
+    //mybatis-plus
+    implementation group: 'com.baomidou', name: 'mybatis-plus-generator', version: '3.5.1'
+    implementation group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.5.0'
+    implementation 'org.apache.velocity:velocity-engine-core:2.0'
+    //lombok
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.16'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.16'
+
+
+    implementation "org.springframework.boot:spring-boot-starter-aop"
+    implementation 'com.github.pagehelper:pagehelper-spring-boot-starter:1.2.12'
+
+    implementation "com.alibaba:fastjson:1.2.75"
+    implementation "net.sf.ehcache:ehcache:2.8.9"
+    implementation "com.xuxueli:xxl-job-core:2.3.1"
+
+    implementation "commons-fileupload:commons-fileupload:1.3.3"
+    implementation "commons-beanutils:commons-beanutils:1.9.3"
+
+    implementation "org.apache.shiro:shiro-core:${shiroVersion}"
+    implementation "org.apache.shiro:shiro-web:${shiroVersion}"
+    implementation "org.apache.shiro:shiro-spring:${shiroVersion}"
+    implementation "org.apache.shiro:shiro-ehcache:${shiroVersion}"
+
+    implementation "com.belerweb:pinyin4j:2.5.1"
+    implementation "org.asynchttpclient:async-http-client:2.5.3"
+    implementation "com.google.guava:guava:25.1-jre"
+    implementation "org.jyaml:jyaml:1.3"
+    implementation "org.bouncycastle:bcprov-jdk15on:1.56"
+    implementation "dom4j:dom4j:1.6.1"
+    implementation "org.apache.poi:poi:4.0.1"
+    implementation "org.apache.poi:poi-ooxml:4.0.1"
+    implementation "com.lmax:disruptor:3.4.2"
+    implementation "mysql:mysql-connector-java:8.0.11"
+    // swagger
+    implementation "io.springfox:springfox-swagger2:2.9.2"
+    implementation 'com.github.xiaoymin:swagger-bootstrap-ui:1.9.6'
+
+    compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+}
+
+task myClearLib(type: Delete) {
+    delete "$buildDir/libs/lib"
+}
+
+task myCopyLib(type: Copy) {
+    from configurations.compileClasspath
+    into "$buildDir/libs/lib"
+}
+
+bootJar{
+    baseName = "chronic-disease-ms"
+    version = ""
+
+    excludes = ["*.jar"]
+
+    dependsOn myClearLib
+    dependsOn myCopyLib
+
+    manifest {
+        attributes "Manifest-Version": 1.0,
+                'Class-Path': configurations.compileClasspath.files.collect { "lib/$it.name" }.join(' ')
+    }
+}

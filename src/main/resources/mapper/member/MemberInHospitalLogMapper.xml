@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.member.mapper.MemberInHospitalLogMapper">
+
+  <resultMap id="log" type="com.comvee.cdms.member.po.MemberInHospitalLogPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="member_name" jdbcType="VARCHAR" property="memberName" />
+    <result column="in_hospital_date" jdbcType="DATE" property="inHospitalDate" />
+    <result column="out_hospital_date" jdbcType="DATE" property="outHospitalDate" />
+    <result column="department_name" jdbcType="VARCHAR" property="departmentName" />
+    <result column="department_id" jdbcType="BIGINT" property="departmentId" />
+    <result column="bed_no" jdbcType="VARCHAR" property="bedNo" />
+    <result column="has_return_visit" jdbcType="INTEGER" property="hasReturnVisit" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+    <result column="is_valid" jdbcType="INTEGER" property="isValid" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+    <result column="in_hospital_card_no" jdbcType="VARCHAR" property="inHospitalCardNo" />
+    <result column="in_hospital_day" jdbcType="INTEGER" property="inHospitalDay" />
+    <result column="matters_needing_attent" jdbcType="VARCHAR" property="mattersNeedingAttent" />
+    <result column="in_status" jdbcType="INTEGER" property="inStatus" />
+    <result column="pat_patient_id" jdbcType="VARCHAR" property="patPatientId" />
+    <result column="doctor_zg_code" jdbcType="VARCHAR" property="doctorZgCode" />
+    <result column="adm_no" jdbcType="BIGINT" property="admNo" />
+    <result column="main_nurse_desc" jdbcType="VARCHAR" property="mainNurseDesc" />
+    <result column="doctor_zg" jdbcType="VARCHAR" property="doctorZg" />
+    <result column="nur_level" jdbcType="VARCHAR" property="nurLevel" />
+    <result column="eat_model" jdbcType="VARCHAR" property="eatModel" />
+    <result column="charge_class" jdbcType="VARCHAR" property="chargeClass" />
+    <result column="hospital_no" jdbcType="BIGINT" property="hospitalNo" />
+    <result column="is_notification" jdbcType="VARCHAR" property="isNotification" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="initial_diagnosis" jdbcType="LONGVARCHAR" property="initialDiagnosis" />
+    <result column="treatment_situation" jdbcType="LONGVARCHAR" property="treatmentSituation" />
+    <result column="out_hospital_advice_json" jdbcType="LONGVARCHAR" property="outHospitalAdviceJson" />
+  </resultMap>
+
+  <resultMap id="info" type="com.comvee.cdms.member.vo.InHospitalMemberInfoWithBloodSugarVO">
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="member_name" jdbcType="VARCHAR" property="memberName" />
+    <result column="department_name" jdbcType="VARCHAR" property="departmentName" />
+    <result column="department_id" jdbcType="BIGINT" property="departmentId" />
+    <result column="bed_no" jdbcType="VARCHAR" property="bedNo" />
+    <result column="record_date" jdbcType="VARCHAR" property="recordDate" />
+  </resultMap>
+  <resultMap id="logVO" type="com.comvee.cdms.member.vo.ListInHospitalLogVO">
+    <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName" />
+    <result column="department_name" jdbcType="VARCHAR" property="departName" />
+    <result column="doctor_name" jdbcType="VARCHAR" property="doctorName" />
+    <result column="in_hospital_date" jdbcType="DATE" property="inTime" />
+    <result column="out_hospital_date" jdbcType="DATE" property="outTime" />
+    <result column="in_hospital_day" jdbcType="INTEGER" property="inHospitalDay" />
+  </resultMap>
+
+  <insert id="addMemberInHospitalLog" parameterType="com.comvee.cdms.member.po.MemberInHospitalLogPO">
+    insert into t_member_in_hospital_log (sid, member_id, member_name,
+      in_hospital_date, out_hospital_date, department_name, 
+      department_id, bed_no, has_return_visit, 
+      insert_dt, modify_dt, is_valid, 
+      sex, card_no, in_hospital_card_no, 
+      in_hospital_day, matters_needing_attent, in_status, 
+      pat_patient_id, doctor_zg_code, adm_no, 
+      main_nurse_desc, doctor_zg, nur_level, 
+      eat_model, charge_class, hospital_no, 
+      is_notification, hospital_id, initial_diagnosis, 
+      treatment_situation, out_hospital_advice_json
+      )
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{memberName,jdbcType=VARCHAR}, 
+      #{inHospitalDate,jdbcType=DATE}, #{outHospitalDate,jdbcType=DATE}, #{departmentName,jdbcType=VARCHAR}, 
+      #{departmentId,jdbcType=BIGINT}, #{bedNo,jdbcType=VARCHAR}, #{hasReturnVisit,jdbcType=INTEGER}, 
+      now() ,now() ,1 ,
+      #{sex,jdbcType=INTEGER}, #{cardNo,jdbcType=VARCHAR}, #{inHospitalCardNo,jdbcType=VARCHAR}, 
+      #{inHospitalDay,jdbcType=INTEGER}, #{mattersNeedingAttent,jdbcType=VARCHAR}, #{inStatus,jdbcType=INTEGER}, 
+      #{patPatientId,jdbcType=VARCHAR}, #{doctorZgCode,jdbcType=VARCHAR}, #{admNo,jdbcType=BIGINT}, 
+      #{mainNurseDesc,jdbcType=VARCHAR}, #{doctorZg,jdbcType=VARCHAR}, #{nurLevel,jdbcType=VARCHAR}, 
+      #{eatModel,jdbcType=VARCHAR}, #{chargeClass,jdbcType=VARCHAR}, #{hospitalNo,jdbcType=BIGINT}, 
+      '0', #{hospitalId,jdbcType=BIGINT}, #{initialDiagnosis,jdbcType=LONGVARCHAR},
+      #{treatmentSituation,jdbcType=LONGVARCHAR}, #{outHospitalAdviceJson,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+
+  <update id="updateMemberInHospitalLog" parameterType="com.comvee.cdms.member.po.MemberInHospitalLogPO">
+    update t_member_in_hospital_log set modify_dt = now()
+      <if test="inHospitalDate != null and '' != inHospitalDate">
+        ,in_hospital_date = #{inHospitalDate,jdbcType=DATE}
+      </if>
+      <if test="outHospitalDate != null and '' != outHospitalDate">
+        ,out_hospital_date = #{outHospitalDate,jdbcType=DATE}
+      </if>
+      <if test="bedNo != null and '' != bedNo">
+        ,bed_no = #{bedNo,jdbcType=VARCHAR}
+      </if>
+      <if test="hasReturnVisit != null and '' != hasReturnVisit">
+        ,has_return_visit = #{hasReturnVisit,jdbcType=INTEGER}
+      </if>
+      <if test="inHospitalCardNo != null and '' != inHospitalCardNo">
+        ,in_hospital_card_no = #{inHospitalCardNo,jdbcType=VARCHAR}
+      </if>
+      <if test="inHospitalDay != null">
+        ,in_hospital_day = #{inHospitalDay,jdbcType=INTEGER}
+      </if>
+      <if test="inStatus != null">
+        ,in_status = #{inStatus,jdbcType=INTEGER}
+      </if>
+      <if test="hospitalNo != null and '' != hospitalNo">
+        ,hospital_no = #{hospitalNo,jdbcType=BIGINT}
+      </if>
+      <if test="isNotification != null">
+        ,is_notification = #{isNotification,jdbcType=VARCHAR}
+      </if>
+      <if test="initialDiagnosis != null and '' != initialDiagnosis">
+        ,initial_diagnosis = #{initialDiagnosis,jdbcType=LONGVARCHAR}
+      </if>
+      <if test="treatmentSituation != null and '' != treatmentSituation">
+        ,treatment_situation = #{treatmentSituation,jdbcType=LONGVARCHAR}
+      </if>
+      <if test="outHospitalAdviceJson != null and '' != outHospitalAdviceJson">
+        ,out_hospital_advice_json = #{outHospitalAdviceJson,jdbcType=LONGVARCHAR}
+      </if>
+    where is_valid = 1 and sid = #{sid,jdbcType=BIGINT}
+  </update>
+
+
+  <select id="getMemberInHospitalLogPOByAdmNo" parameterType="java.lang.String" resultMap="log">
+    select sid, member_id, member_name, in_hospital_date, out_hospital_date, department_name,
+    department_id, bed_no, has_return_visit, insert_dt, modify_dt, is_valid, sex, card_no,
+    in_hospital_card_no, in_hospital_day, matters_needing_attent, in_status, pat_patient_id,
+    doctor_zg_code, adm_no, main_nurse_desc, doctor_zg, nur_level, eat_model, charge_class,
+    hospital_no, is_notification, hospital_id, initial_diagnosis, treatment_situation,
+    out_hospital_advice_json
+    from t_member_in_hospital_log
+    where is_valid = 1 and adm_no = #{admNo,jdbcType=BIGINT} limit 1
+  </select>
+
+  <select id="getMemberInHospitalLogByMemberId" resultMap="log">
+    select sid, member_id, member_name, in_hospital_date, out_hospital_date, department_name,
+    department_id, bed_no, has_return_visit, insert_dt, modify_dt, is_valid, sex, card_no,
+    in_hospital_card_no, in_hospital_day, matters_needing_attent, in_status, pat_patient_id,
+    doctor_zg_code, adm_no, main_nurse_desc, doctor_zg, nur_level, eat_model, charge_class,
+    hospital_no, is_notification, hospital_id, initial_diagnosis, treatment_situation,
+    out_hospital_advice_json
+    from t_member_in_hospital_log
+    <where>
+      member_id = #{memberId}
+      <if test="departmentId != null and '' != departmentId">
+        and hospital_id = #{hospitalId}
+      </if>
+      <if test="departmentId != null and '' != departmentId">
+        and department_id =#{departmentId}
+      </if>
+    </where>
+    order by in_hospital_date desc
+  </select>
+
+  <select id="getMemberInHospitalLog" resultMap="log">
+    select sid, member_id, member_name, in_hospital_date, out_hospital_date, department_name,
+    department_id, bed_no, has_return_visit, insert_dt, modify_dt, is_valid, sex, card_no,
+    in_hospital_card_no, in_hospital_day, matters_needing_attent, in_status, pat_patient_id,
+    doctor_zg_code, adm_no, main_nurse_desc, doctor_zg, nur_level, eat_model, charge_class,
+    hospital_no, is_notification, hospital_id, initial_diagnosis, treatment_situation,
+    out_hospital_advice_json
+    from t_member_in_hospital_log
+    where
+    is_valid = 1
+    <if test="memberId != null and '' != memberId">
+        and member_id = #{memberId}
+    </if>
+    <if test="hospitalId != null and '' != hospitalId">
+        and hospital_id = #{hospitalId}
+    </if>
+    <if test="departmentId != null and '' != departmentId">
+        and department_id =#{departmentId}
+    </if>
+    <if test="bedNo != null and '' != bedNo">
+        and bed_no = #{bedNo}
+    </if>
+    <if test="hospitalNo != null and '' != hospitalNo">
+        and hospital_no = #{hospitalNo}
+    </if>
+    and out_hospital_date != null
+    order by out_hospital_date desc limit 1
+  </select>
+
+  <select id="getMemberInHospitalLogByTime" resultMap="log">
+    select sid, member_id, member_name, in_hospital_date, out_hospital_date, department_name,
+    department_id, bed_no, has_return_visit, insert_dt, modify_dt, is_valid, sex, card_no,
+    in_hospital_card_no, in_hospital_day, matters_needing_attent, in_status, pat_patient_id,
+    doctor_zg_code, adm_no, main_nurse_desc, doctor_zg, nur_level, eat_model, charge_class,
+    hospital_no, is_notification, hospital_id, initial_diagnosis, treatment_situation,
+    out_hospital_advice_json
+    from t_member_in_hospital_log
+    where member_id = #{memberId} and hospital_id = #{hospitalId} and in_hospital_date = #{startDt}
+    <if test="endDt != null and '' != endDt">
+      and out_hospital_date = #{endDt}
+    </if>
+
+  </select>
+
+  <select id="listMembersHospitalRecord" resultMap="logVO">
+    SELECT l.member_id, l.member_name, l.in_hospital_date,
+    ifnull(l.out_hospital_date,"至今") out_hospital_date, l.department_name,h.hospital_name,
+    ifnull(l.in_hospital_day,datediff(now(),l.in_hospital_date)) in_hospital_day,l.doctor_zg doctor_name
+    FROM
+    t_member_in_hospital_log l left join t_hospital h on h.hospital_id = l.hospital_id
+    WHERE l.is_valid =1
+    and l.member_id = #{memberId}
+    ORDER BY l.in_hospital_date desc
+  </select>
+
+  <select id="listInHospitalOrVirtualWardHasBloodSugarData" resultMap="info" parameterType="com.comvee.cdms.member.dto.ListInHospitalOrVirtualWardHasBloodSugarDataDTO">
+      select c.member_id,c.department_name,c.bed_no,c.department_id,c.member_name,c.record_date from (
+          <if test="loadInHospitalData != null and loadInHospitalData">
+            select t.member_id,t.department_name,t.bed_no,t.department_id,t.adm_no hospitalNo
+            ,DATE_FORMAT(q.record_dt ,'%Y-%m-%d') record_date ,r.member_name
+            from t_member_in_hospital_log t ,t_blood_sugar q,t_member r
+            where t.is_valid = 1 and q.is_valid = 1 and q.in_hos = 1 and q.member_id = t.member_id
+            and r.is_valid = 1 and r.member_id = t.member_id
+            and q.record_dt BETWEEN #{startDt} and #{endDt}
+            <if test="paramLevel != null">
+              and q.param_level = #{paramLevel}
+            </if>
+            and t.hospital_id = #{hospitalId}
+            <if test="inHospitalDepartIdList != null and inHospitalDepartIdList.size() > 0">
+              and t.department_id in
+              <foreach collection="inHospitalDepartIdList" item="item" open="(" close=")" separator=",">
+                #{item}
+              </foreach>
+            </if>
+            and (
+            (t.in_hospital_date BETWEEN #{startDt} and #{endDt} or t.out_hospital_date between #{startDt} and #{endDt} )
+            or
+            (t.out_hospital_date is null and t.in_hospital_date &lt; #{startDt}))
+          </if>
+          <if test="loadInHospitalData != null and loadInHospitalData and loadVirtualWardData != null and loadVirtualWardData">
+            union ALL
+          </if>
+          <if test="loadVirtualWardData != null and loadVirtualWardData">
+            select t.member_id,w.department_name,w.bed_no,w.department_id,t.hospital_no hospitalNo
+            ,DATE_FORMAT(q.record_dt ,'%Y-%m-%d') record_date ,r.member_name
+            from t_virtual_ward t ,t_member_in_hospital_log w ,t_blood_sugar q ,t_member r
+            where t.valid = 1 and w.is_valid = 1 and q.is_valid = 1 and r.is_valid = 1 and r.member_id = t.member_id
+            and t.hospital_id = w.hospital_id and t.hospital_no = w.adm_no and t.member_id = w.member_id
+            and q.member_id = t.member_id and q.record_dt BETWEEN #{startDt} and #{endDt} and t.hospital_id = #{hospitalId}
+            <if test="paramLevel != null">
+              and q.param_level = #{paramLevel}
+            </if>
+            <if test="virtualWardDepartIdList != null and virtualWardDepartIdList.size() > 0">
+              and t.department_id in
+              <foreach collection="virtualWardDepartIdList" item="item" open="(" close=")" separator=",">
+                #{item}
+              </foreach>
+            </if>
+            and (
+            (t.into_date BETWEEN #{startDt} and #{endDt} or t.out_date between #{startDt} and #{endDt})
+            or
+            (t.out_date is null and t.into_date &lt; #{startDt}))
+          </if>
+      ) c  group by c.member_id,c.record_date order by record_date,c.department_id ,c.bed_no
+
+  </select>
+
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.doctor.mapper.DoctorServiceTimeMapper">
+
+  <resultMap id="doctorServiceTime" type="com.comvee.cdms.doctor.po.DoctorServiceTimePO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="week_code" jdbcType="VARCHAR" property="weekCode" />
+    <result column="start_time" jdbcType="VARCHAR" property="startTime" />
+    <result column="end_time" jdbcType="VARCHAR" property="endTime" />
+    <result column="open_status" jdbcType="TINYINT" property="openStatus" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+  </resultMap>
+
+  <resultMap id="doctorServiceRemind" type="com.comvee.cdms.doctor.po.DoctorServiceRemindPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="remind_info" jdbcType="VARCHAR" property="remindInfo" />
+    <result column="open_status" jdbcType="TINYINT" property="openStatus" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+  </resultMap>
+
+  <delete id="deleteDoctorServiceTime" parameterType="java.lang.String">
+
+    delete from t_doctor_service_time
+    where sid = #{sid}
+  </delete>
+
+  <insert id="addDoctorServiceTime" parameterType="com.comvee.cdms.doctor.po.DoctorServiceTimePO">
+    insert into t_doctor_service_time (sid, doctor_id, week_code,
+      start_time, end_time,insert_dt, update_dt)
+    values (#{sid,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{weekCode,jdbcType=VARCHAR},
+      #{startTime,jdbcType=VARCHAR}, #{endTime,jdbcType=VARCHAR},now(),now())
+  </insert>
+
+  <update id="updateDoctorServiceTime" parameterType="com.comvee.cdms.doctor.po.DoctorServiceTimePO">
+    update t_doctor_service_time
+    <set>
+      update_dt = now(),
+      <if test="weekCode != null and '' != weekCode">
+        week_code = #{weekCode,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null and '' != startTime">
+        start_time = #{startTime,jdbcType=VARCHAR},
+      </if>
+      <if test="endTime != null and '' != endTime">
+        end_time = #{endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="openStatus != null">
+        open_status = #{openStatus,jdbcType=TINYINT},
+      </if>
+    </set>
+    where sid = #{sid,jdbcType=BIGINT}
+  </update>
+
+
+  <select id="listDoctorServiceTime" resultMap="doctorServiceTime">
+
+    select sid, doctor_id, week_code, start_time, end_time, open_status, insert_dt, update_dt
+    from t_doctor_service_time
+    where doctor_id = #{doctorId}
+    <if test = "weekCode != null and '' != weekCode">
+      and instr(week_code, #{weekCode}) > 0
+    </if>
+    <if test = "openStatus != null ">
+      and open_status = #{openStatus}
+    </if>
+
+  </select>
+  <!--v4.0.4-->
+  <select id="getDoctorServiceTimeById" resultMap="doctorServiceTime">
+    select sid, doctor_id, week_code, start_time, end_time, open_status, insert_dt, update_dt
+    from t_doctor_service_time
+    where sid = #{sid}
+  </select>
+  <!--v4.0.4-->
+  <insert id="insertDoctorServiceRemind" parameterType="com.comvee.cdms.doctor.po.DoctorServiceRemindPO">
+    insert into t_doctor_service_remind (sid, doctor_id, remind_info,open_status, insert_dt, update_dt)
+    values (#{sid,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{remindInfo,jdbcType=VARCHAR},
+    #{openStatus,jdbcType=TINYINT},now(), now())
+  </insert>
+  <!--v4.0.4-->
+  <update id="modifyDoctorServiceRemind" parameterType="com.comvee.cdms.doctor.po.DoctorServiceRemindPO">
+    update t_doctor_service_remind
+    <set>
+      update_dt = now(),
+      <if test="remindInfo != null and remindInfo != ''">
+        remind_info = #{remindInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="openStatus != null">
+        open_status = #{openStatus,jdbcType=TINYINT},
+      </if>
+    </set>
+    where doctor_id = #{doctorId,jdbcType=BIGINT}
+  </update>
+  <!--v4.0.4-->
+  <select id="getDoctorServiceRemindByDoctorId" resultMap="doctorServiceRemind">
+    select sid, doctor_id, remind_info,open_status, insert_dt, update_dt
+    from t_doctor_service_remind
+    <where>
+      <if test="doctorId != null and doctorId != ''">
+        and doctor_id = #{doctorId}
+      </if>
+      <if test="openStatus != null">
+        and open_status = #{openStatus}
+      </if>
+    </where>
+    limit 1
+  </select>
+</mapper>

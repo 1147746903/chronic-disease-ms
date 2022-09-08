@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodpressure.mapper.DyBloodPressureDiaryMapper">
+
+    <resultMap type="com.comvee.cdms.dybloodpressure.po.DyBloodPressureDiaryPO"
+               id="DyBloodPressureDiaryPO">
+        <result property="sid" column="sid" jdbcType="INTEGER"/>
+        <result property="memberId" column="member_id" jdbcType="INTEGER"/>
+        <result property="operationId" column="operation_id" jdbcType="INTEGER"/>
+        <result property="machineNo" column="machine_no" jdbcType="VARCHAR"/>
+        <result property="armLine" column="arm_line" jdbcType="VARCHAR"/>
+        <result property="armsOn" column="arms_on" jdbcType="VARCHAR"/>
+        <result property="cuff" column="cuff" jdbcType="VARCHAR"/>
+        <result property="workShift" column="work_shift" jdbcType="VARCHAR"/>
+        <result property="noonSleepStart" column="noon_sleep_start" jdbcType="VARCHAR"/>
+        <result property="noonSleepEnd" column="noon_sleep_end" jdbcType="VARCHAR"/>
+        <result property="nightSleepStart" column="night_sleep_start" jdbcType="VARCHAR"/>
+        <result property="bedDt" column="bed_dt" jdbcType="VARCHAR"/>
+        <result property="breakfastDt" column="breakfast_dt" jdbcType="VARCHAR"/>
+        <result property="lunchDt" column="lunch_dt" jdbcType="VARCHAR"/>
+        <result property="dinnerDt" column="dinner_dt" jdbcType="VARCHAR"/>
+        <result property="nervous" column="nervous" jdbcType="VARCHAR"/>
+        <result property="symptom" column="symptom" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="startDt" column="start_dt" jdbcType="TIMESTAMP"/>
+        <result property="endDt" column="end_dt" jdbcType="TIMESTAMP"/>
+        <result property="insertDt" column="insert_dt" jdbcType="TIMESTAMP"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="TIMESTAMP"/>
+        <result property="isValid" column="is_valid" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap type="com.comvee.cdms.dybloodpressure.vo.DyBloodPressureDiaryVO"
+               id="DyBloodPressureDiaryVO">
+        <result property="sid" column="sid" jdbcType="INTEGER"/>
+        <result property="memberId" column="member_id" jdbcType="INTEGER"/>
+        <result property="memberName" column="member_name" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="age" column="age" jdbcType="VARCHAR"/>
+        <result property="machineNo" column="machine_no" jdbcType="VARCHAR"/>
+        <result property="mobilePhone" column="mobile_phone" jdbcType="VARCHAR"/>
+        <result property="armLine" column="arm_line" jdbcType="VARCHAR"/>
+        <result property="armsOn" column="arms_on" jdbcType="VARCHAR"/>
+        <result property="cuff" column="cuff" jdbcType="VARCHAR"/>
+        <result property="workShift" column="work_shift" jdbcType="VARCHAR"/>
+        <result property="noonSleepStart" column="noon_sleep_start" jdbcType="VARCHAR"/>
+        <result property="noonSleepEnd" column="noon_sleep_end" jdbcType="VARCHAR"/>
+        <result property="nightSleepStart" column="night_sleep_start" jdbcType="VARCHAR"/>
+        <result property="bedDt" column="bed_dt" jdbcType="VARCHAR"/>
+        <result property="breakfastDt" column="breakfast_dt" jdbcType="VARCHAR"/>
+        <result property="lunchDt" column="lunch_dt" jdbcType="VARCHAR"/>
+        <result property="dinnerDt" column="dinner_dt" jdbcType="VARCHAR"/>
+        <result property="nervous" column="nervous" jdbcType="VARCHAR"/>
+        <result property="symptom" column="symptom" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="startDt" column="start_dt" jdbcType="TIMESTAMP"/>
+        <result property="endDt" column="end_dt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="DyBloodPressureDiaryPO">
+        select
+        sid, member_id, operation_id, arm_line, arms_on, cuff, work_shift, noon_sleep_start, noon_sleep_end,
+        night_sleep_start, bed_dt, breakfast_dt, lunch_dt, dinner_dt,
+        nervous, symptom, remark,start_dt,end_dt, insert_dt, modify_dt, is_valid,machine_no
+        from  t_dynamic_bp_diary
+        where sid = #{sid}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="DyBloodPressureDiaryPO">
+        select
+        sid, member_id, operation_id, arm_line, arms_on, cuff, work_shift, noon_sleep_start, noon_sleep_end,
+        night_sleep_start, bed_dt, breakfast_dt, lunch_dt, dinner_dt,
+        nervous, symptom, remark,start_dt,end_dt,insert_dt, modify_dt, is_valid,machine_no
+        from  t_dynamic_bp_diary
+        <where>
+            <if test="sid != null and sid !=''">
+                and sid = #{sid}
+            </if>
+            <if test="memberId != null and memberId !=''">
+                and member_id = #{memberId}
+            </if>
+            <if test="operationId != null">
+                and operation_id = #{operationId}
+            </if>
+            <if test="armLine != null and armLine != ''">
+                and arm_line = #{armLine}
+            </if>
+            <if test="armsOn != null ">
+                and arms_on = #{armsOn}
+            </if>
+            <if test="cuff != null ">
+                and cuff = #{cuff}
+            </if>
+            <if test="workShift != null">
+                and work_shift = #{workShift}
+            </if>
+            <if test="noonSleepStart != null and noonSleepStart != ''">
+                and noon_sleep_start = #{noonSleepStart}
+            </if>
+            <if test="noonSleepEnd != null and noonSleepEnd != ''">
+                and noon_sleep_end = #{noonSleepEnd}
+            </if>
+            <if test="nightSleepStart != null and nightSleepStart != ''">
+                and night_sleep_start = #{nightSleepStart}
+            </if>
+            <if test="bedDt != null and bedDt != ''">
+                and bed_dt = #{bedDt}
+            </if>
+            <if test="breakfastDt != null and breakfastDt != ''">
+                and breakfast_dt = #{breakfastDt}
+            </if>
+            <if test="lunchDt != null and lunchDt != ''">
+                and lunch_dt = #{lunchDt}
+            </if>
+            <if test="dinnerDt != null and dinnerDt != ''">
+                and dinner_dt = #{dinnerDt}
+            </if>
+            <if test="nervous != null and nervous != ''">
+                and nervous = #{nervous}
+            </if>
+            <if test="symptom != null and symptom != ''">
+                and symptom = #{symptom}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="startDt != null and startDt != ''" >
+                and start_dt = #{startDt}
+            </if>
+            <if test="endDt != null and endDt != ''" >
+                and end_dt = #{endDt}
+            </if>
+            <if test="insertDt != null and insertDt != ''" >
+                and insert_dt = #{insertDt}
+            </if>
+            <if test="modifyDt != null">
+                and modify_dt = #{modifyDt}
+            </if>
+            <if test="isValid != null">
+                and is_valid = #{isValid}
+            </if>
+        </where>
+    </select>
+    <!--查询单个-->
+    <select id="queryByMemberId" resultMap="DyBloodPressureDiaryPO">
+        select
+        sid, member_id, operation_id, arm_line, arms_on, cuff, work_shift, noon_sleep_start, noon_sleep_end,
+        night_sleep_start, bed_dt, breakfast_dt, lunch_dt, dinner_dt,
+        nervous, symptom, remark,start_dt,end_dt,insert_dt, modify_dt, is_valid,machine_no
+        from t_dynamic_bp_diary
+        where is_valid = 1 and
+        member_id = #{memberId} and start_dt = #{startDt} and end_dt = #{endDt}
+        limit 1
+    </select>
+    <select id="queryVOByMemberId" resultMap="DyBloodPressureDiaryVO">
+         select
+        sid, t.member_id, operation_id, arm_line, arms_on, cuff, work_shift, noon_sleep_start, noon_sleep_end,
+        night_sleep_start, bed_dt, breakfast_dt, lunch_dt, dinner_dt,
+        nervous, symptom, remark,start_dt,end_dt,m.member_name,m.mobile_phone,m.sex,m.birthday as age,t.machine_no
+        from t_dynamic_bp_diary t right join t_member m on t.member_id = m.member_id
+        where
+        t.member_id = #{memberId} and start_dt = #{startDt} and end_dt = #{endDt} and t.is_valid = 1
+        limit 1
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sid" useGeneratedKeys="true">
+        insert into  t_dynamic_bp_diary(sid,member_id, operation_id, arm_line, arms_on, cuff,
+        work_shift, noon_sleep_start, noon_sleep_end, night_sleep_start, bed_dt, breakfast_dt, lunch_dt, dinner_dt,
+       nervous, symptom, remark,start_dt,end_dt, insert_dt, modify_dt, is_valid,machine_no)
+        values (#{sid},#{memberId}, #{operationId}, #{armLine}, #{armsOn}, #{cuff}, #{workShift}, #{noonSleepStart},
+        #{noonSleepEnd}, #{nightSleepStart}, #{bedDt}, #{breakfastDt}, #{lunchDt}, #{dinnerDt}, #{nervous}, #{symptom}, #{remark},#{startDt},#{endDt}, now(), now(),1,#{machineNo})
+    </insert>
+
+
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update  t_dynamic_bp_diary
+        <set>
+            <if test="operationId != null and operationId !=''">
+                operation_id = #{operationId},
+            </if>
+            <if test="armLine != null and armLine != ''">
+                arm_line = #{armLine},
+            </if>
+            <if test="armsOn != null">
+                arms_on = #{armsOn},
+            </if>
+            <if test="cuff != null ">
+                cuff = #{cuff},
+            </if>
+            <if test="workShift != null">
+                work_shift = #{workShift},
+            </if>
+            <if test="noonSleepStart != null and noonSleepStart != ''">
+                noon_sleep_start = #{noonSleepStart},
+            </if>
+            <if test="noonSleepEnd != null and noonSleepEnd != ''">
+                noon_sleep_end = #{noonSleepEnd},
+            </if>
+            <if test="nightSleepStart != null and nightSleepStart != ''">
+                night_sleep_start = #{nightSleepStart},
+            </if>
+            <if test="bedDt != null and bedDt != ''">
+                bed_dt = #{bedDt},
+            </if>
+            <if test="breakfastDt != null and breakfastDt != ''">
+                breakfast_dt = #{breakfastDt},
+            </if>
+            <if test="lunchDt != null and lunchDt != ''">
+                lunch_dt = #{lunchDt},
+            </if>
+            <if test="dinnerDt != null and dinnerDt != ''">
+                dinner_dt = #{dinnerDt},
+            </if>
+            <if test="nervous != null and nervous != ''">
+                nervous = #{nervous},
+            </if>
+            <if test="symptom != null and symptom != ''">
+                symptom = #{symptom},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid},
+            </if>
+            <if test="machineNo != null and machineNo != ''">
+                machine_no = #{machineNo},
+            </if>
+            modify_dt = now()
+        </set>
+        <where>
+        <if test="sid != null and sid != ''" >
+            sid = #{sid}
+        </if>
+        <if test="startDt != null and startDt != ''" >
+            and start_dt = #{startDt}
+        </if>
+        <if test="endDt != null and endDt != ''" >
+            and end_dt = #{endDt}
+        </if>
+        <if test="memberId != null and memberId !=''">
+            and member_id = #{memberId}
+        </if>
+        </where>
+    </update>
+    <update id="realUpdate">
+        update  t_dynamic_bp_diary
+        <set>
+                operation_id = #{operationId,jdbcType=INTEGER},
+                arm_line = #{armLine,jdbcType=VARCHAR},
+                arms_on = #{armsOn,jdbcType=VARCHAR},
+                cuff = #{cuff,jdbcType=VARCHAR},
+                work_shift = #{workShift,jdbcType=VARCHAR},
+                noon_sleep_start = #{noonSleepStart,jdbcType=VARCHAR},
+                noon_sleep_end = #{noonSleepEnd,jdbcType=VARCHAR},
+                night_sleep_start = #{nightSleepStart,jdbcType=VARCHAR},
+                bed_dt = #{bedDt,jdbcType=VARCHAR},
+                breakfast_dt = #{breakfastDt,jdbcType=VARCHAR},
+                lunch_dt = #{lunchDt,jdbcType=VARCHAR},
+                dinner_dt = #{dinnerDt,jdbcType=VARCHAR},
+                nervous = #{nervous,jdbcType=VARCHAR},
+                symptom = #{symptom,jdbcType=VARCHAR},
+                remark = #{remark,jdbcType=VARCHAR},
+                machine_no = #{machineNo,jdbcType=INTEGER},
+                modify_dt = now()
+        </set>
+        <where>
+            <if test="sid != null and sid != ''" >
+               sid = #{sid}
+            </if>
+            <if test="startDt != null and startDt != ''" >
+                and start_dt = #{startDt}
+            </if>
+            <if test="endDt != null and endDt != ''" >
+                and end_dt = #{endDt}
+            </if>
+            <if test="memberId != null and memberId !=''">
+                and member_id = #{memberId}
+            </if>
+        </where>
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from  t_dynamic_bp_diary where sid = #{sid}
+    </delete>
+
+</mapper>
+

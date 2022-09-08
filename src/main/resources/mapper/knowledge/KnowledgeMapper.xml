@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.knowledge.mapper.KnowledgeMapper">
+
+	<resultMap id="articleClicks" type="com.comvee.cdms.knowledge.po.MemberArticleClicksPO">
+		<id column="sid" jdbcType="BIGINT" property="sid" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="wiki_clicks" jdbcType="INTEGER" property="wikiClicks" />
+		<result column="knowledge_clicks" jdbcType="INTEGER" property="knowledgeClicks" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+	</resultMap>
+
+    
+    <sql id="KnowledgeColumns">
+		t.id As id , t.key_id As keyId , t.py As py , DATE_FORMAT(t.insert_dt,'%Y-%m-%d
+		%H:%i:%s') As insertDt , DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s')
+		As modifyDt , t.is_valid As isValid , t.name As name , t.pid As pid ,
+		t.has_child As hasChild , t.sort As sort , t.zindex As zindex ,
+		t.operate_id As operateId,t.category_id as categoryId
+	</sql>
+	
+	<sql id="KnowledgeClassifyColumns">
+         t.id As id ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid ,  t.name As name ,  t.pid As pid ,  t.has_child As hasChild ,  t.sort As sort ,  t.zindex As zindex ,  t.operate_id As operateId 
+    </sql>
+    
+    <sql id="FeatureColumns">
+         t.id As id ,  t.title As title ,  t.code As code ,  t.num As num ,  t.type As type ,  t.unit As unit ,  t.maxv As maxv ,  t.minv As minv ,  t.defv As defv ,  t.seq As seq ,  t.son_type As sonType ,  t.help As help ,  t.is_valid As isValid ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.operate_id As operateId,t.sort_element as sortElement 
+    </sql>
+    
+    
+    <sql id="FeatureItemColumns">
+         t.id As id ,  t.fid As fid ,  t.seq As seq ,  t.vals As vals ,  t.lable As lable ,  t.help As help ,  t.type As type ,  t.max_rule As maxRule ,  t.min_rule As minRule ,  t.motions As motions ,  t.operate_id As operateId ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid,t.sort_element  as sortElement,t.key_id as keyId  
+    </sql>
+    
+    <sql id="CfgTagColumns">
+		t.id As id , t.lable As lable , t.code As code ,
+		DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,
+		DATE_FORMAT(t.update_dt,'%Y-%m-%d %H:%i:%s') As updateDt , t.is_valid
+		As isValid , t.operate_id As operateId,t.py as py,t.classify as classify
+	</sql>
+	<sql id="CfgKeywordColumns">
+		t.id As id , t.lable As lable , t.code As code ,
+		DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,
+		DATE_FORMAT(t.update_dt,'%Y-%m-%d %H:%i:%s') As updateDt , t.is_valid
+		As isValid , t.py As py , t.operate_id As operateId
+	</sql>
+	<sql id="CategoryRuleColumns">
+         t.id As id ,  t.rule As rule ,  t.category_id As categoryId ,  t.rule_json As ruleJson ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  
+         DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid ,  t.out_id As outId ,  t.operate_id As operateId , t.salience as salience 
+    </sql>
+    
+    <sql id="ArticleTxtColumns">
+         t.id As id ,  t.article_id As articleId ,  t.content As content ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid ,  t.opearate_id As opearateId 
+    </sql>
+    
+    <sql id="ArticleColumns">
+         t.id As id ,  t.summary As summary ,  t.title As title ,  t.platform As platform ,  t.reference As reference ,  t.img As img ,  t.purposes As purposes ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid ,  t.tag_id As tagId ,  t.key_id As keyId ,  t.bar_id As barId ,  t.operate_id As operateId 
+    </sql>
+    
+    
+    <sql id="ArticleKnowledgeColumns">
+         t.id As id ,  t.article_id As articleId ,  t.knowledge_id As knowledgeId ,  t.is_valid As isValid ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  t.operate_id As operateId 
+    </sql>
+    
+	
+	
+	
+	<sql id="KnowledgeAntColumns">
+         t.id As id ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid ,  t.name As name ,  t.pid As pid ,  t.has_child As hasChild ,  t.sort As sort ,  t.zindex As zindex ,  t.operate_id As operateId 
+    </sql>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+<!-- ==========================key id===================  -->    
+    
+    
+    
+    <!-- 获取知识点分页信息 -->
+	<select id="loadKnowledge" parameterType="com.comvee.cdms.knowledge.model.KnowledgeModel"
+		resultType="com.comvee.cdms.knowledge.model.KnowledgeModel">
+		SELECT
+		<include refid="KnowledgeColumns" />
+		FROM t_knowledge t
+		<where>
+			<if test="id!=null and id!='' ">
+				AND t.id = #{id}
+			</if>
+			<if test="insertDt!=null and insertDt!='' ">
+				AND t.insert_dt = #{insertDt}
+			</if>
+			<if test="modifyDt!=null and modifyDt!='' ">
+				AND t.modify_dt = #{modifyDt}
+			</if>
+			<if test="categoryId!=null and categoryId!='' ">
+				AND t.categoryId = #{categoryId}
+			</if>
+			<if test="isValid!=null and isValid!='' ">
+				AND t.is_valid = #{isValid}
+			</if>
+			<if test="name!=null and name!='' ">
+				AND t.name like CONCAT('%',#{name},'%')
+			</if>
+			<if test="pid!=null and pid!='' ">
+				AND t.pid = #{pid}
+			</if>
+			<if test="hasChild!=null and hasChild!='' ">
+				AND t.has_child = #{hasChild}
+			</if>
+			<if test="sort!=null and sort!='' ">
+				AND t.sort = #{sort}
+			</if>
+			<if test="zindex!=null and zindex!='' ">
+				AND t.zindex = #{zindex}
+			</if>
+			<if test="operateId!=null and operateId!='' ">
+				AND t.operate_id = #{operateId}
+			</if>
+		</where>
+		<if test="orderBy!=null and orderBy=='py' "> 
+		 order by t.py asc </if> 
+		 
+		 <if test="orderBy!=null and orderBy=='sort' "> 
+		 order by t.sort asc 
+		 </if> 
+		
+	</select>
+	
+	
+	<!-- 获取知识点层级分类分页信息(根据pid)  -->
+	<select id="loadKnowledgeClassify" parameterType="Map" resultType="com.comvee.cdms.knowledge.model.KnowledgeClassifyModel">
+		SELECT 
+			<include refid="KnowledgeClassifyColumns"/>
+		FROM t_knowledge_classify t
+		where t.pid = #{pid}  
+		order by t.sort asc
+	</select>
+	
+	
+	<!--根据id获取用户画像特征表信息 -->
+	<select id="loadFeatureById" resultType="com.comvee.cdms.knowledge.model.FeatureModel">
+		SELECT 
+			<include refid="FeatureColumns"/>
+		FROM t_feature t
+		WHERE t.id = #{id} 
+	</select>
+
+	<!--根据id获取画像特征选项表信息 -->
+	<select id="loadFeatureItemById" resultType="com.comvee.cdms.knowledge.model.FeatureItemModel">
+		SELECT 
+			<include refid="FeatureItemColumns"/>
+		FROM t_feature_item t
+		WHERE t.id = #{id} 
+	</select>
+	
+	<select id="loadFeatureForSort" resultType="com.comvee.cdms.knowledge.model.FeatureItemModel">
+		SELECT 
+			<include refid="FeatureItemColumns"/>,f.code as code
+		FROM t_feature_item t , t_feature f 
+		WHERE
+			f.is_valid = 1 and t.is_valid = 1 and f.sort_element = 1 and t.fid = f.id
+			order by t.sort_element desc, f.seq asc 
+	</select>
+	
+	
+	<!-- 获取标签表分页信息 -->
+	<select id="loadCfgTag" parameterType="Map"
+		resultType="com.comvee.cdms.knowledge.model.CfgTagModel">
+		SELECT
+		<include refid="CfgTagColumns" />
+		FROM t_cfg_tag t
+		<where>
+			<if test="id!=null and id!='' ">
+				AND t.id = #{id}
+			</if>
+			<if test="lable!=null and lable!='' ">
+				AND t.lable = #{lable}
+			</if>
+			<if test="code!=null and code!='' ">
+				AND t.code = #{code}
+			</if>
+			<if test="insertDt!=null and insertDt!='' ">
+				AND t.insert_dt = #{insertDt}
+			</if>
+			<if test="updateDt!=null and updateDt!='' ">
+				AND t.update_dt = #{updateDt}
+			</if>
+			<if test="isValid!=null and isValid!='' ">
+				AND t.is_valid = #{isValid}
+			</if>
+			<if test="operateId!=null and operateId!='' ">
+				AND t.operate_id = #{operateId}
+			</if>
+		</where>
+		<if test="orderBy!=null and orderBy=='py' ">
+			order by py asc
+		</if>
+		<if test="orderBy==null or orderBy=='' ">
+			order by py asc
+		</if>
+		
+	</select>
+	
+	
+	<!-- 获取关键字分页信息 -->
+	<select id="loadCfgKeyword" parameterType="Map"
+		resultType="com.comvee.cdms.knowledge.model.CfgKeywordModel">
+		SELECT
+		<include refid="CfgKeywordColumns" />
+		FROM t_cfg_keyword t
+		<where>
+			<if test="id!=null and id!='' ">
+				AND t.id = #{id}
+			</if>
+			<if test="lable!=null and lable!='' ">
+				AND t.lable like CONCAT('%',#{lable},'%')
+			</if>
+			<if test="code!=null and code!='' ">
+				AND t.code = #{code}
+			</if>
+			<if test="insertDt!=null and insertDt!='' ">
+				AND t.insert_dt = #{insertDt}
+			</if>
+			<if test="updateDt!=null and updateDt!='' ">
+				AND t.update_dt = #{updateDt}
+			</if>
+			<if test="isValid!=null and isValid!='' ">
+				AND t.is_valid = #{isValid}
+			</if>
+			<if test="operateId!=null and operateId!='' ">
+				AND t.operate_id = #{operateId}
+			</if>
+		</where>
+		<if test="orderBy!=null and orderBy=='py' ">
+			order by py asc
+		</if>
+		<if test="orderBy==null or orderBy=='' ">
+			order by id asc
+		</if>
+		
+	</select>
+	
+	
+	<!--根据id获取特片规则表信息 -->
+	<select id="loadCategoryRuleById" resultType="com.comvee.cdms.knowledge.model.CategoryRuleModel">
+		SELECT 
+			<include refid="CategoryRuleColumns"/>
+		FROM t_category_rule t
+		WHERE t.id = #{id} 
+	</select>
+	
+	<!-- 获取特片规则分页信息  -->
+	<select id="loadCategoryRule" parameterType="Map" resultType="com.comvee.cdms.knowledge.model.CategoryRuleModel">
+		SELECT 
+			<include refid="CategoryRuleColumns"/>
+		FROM t_category_rule t
+        where t.category_id = #{categoryId}  
+	</select>
+	
+	<!--根据id获取文章正文表信息 -->
+	<select id="loadArticleTxtByArticleId" resultType="com.comvee.cdms.knowledge.model.ArticleTxtModel">
+		SELECT 
+			<include refid="ArticleTxtColumns"/>
+		FROM t_article_txt t
+		WHERE t.article_id = #{articleId} AND is_valid = 1  limit 1
+	</select>
+	
+	
+
+
+	<!--根据id获取文章表表信息 -->
+	<select id="loadArticleById" resultType="com.comvee.cdms.knowledge.model.ArticleModel">
+		SELECT 
+			<include refid="ArticleColumns"/>,b.name as barName
+		FROM t_article t , t_bar b
+		WHERE t.id = #{id}   AND t.bar_id = b.id 
+	</select>
+	
+	<!-- 获取文章表分页信息  -->
+	<select id="loadArticle" parameterType="Map" resultType="com.comvee.cdms.knowledge.model.ArticleModel">
+		SELECT 
+			t.id As id ,  t.summary As summary ,  t.title As title ,  t.platform As platform ,  t.reference As reference ,  t.img As img ,  t.purposes As purposes ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  t.is_valid As isValid ,  t.tag_id As tagId ,  t.key_id As keyId ,  t.bar_id As barId ,  t.operate_id As operateId,b.name as barName
+		FROM t_article t , t_bar b
+		<where>
+	    <if test="title!=null and title!='' ">     
+        AND t.title like CONCAT('%',#{title},'%')
+        </if>  
+	    <if test="platform!=null and platform!='' ">     
+        AND t.platform like CONCAT('%', #{platform},'%')  
+        </if>  
+	    <if test="barId!=null and barId!='' ">     
+        AND t.bar_id = #{barId}  
+        </if>
+        
+ 		<if test="startDt !=null and startDt != '' ">
+        AND  t.insert_dt &gt;=  STR_TO_DATE(#{startDt},'%Y-%m-%d') 
+        </if>
+        <if test="endDt != null and endDt != ''">
+        AND t.insert_dt &lt;= date_sub( STR_TO_DATE(#{endDt},'%Y-%m-%d') ,interval -1 day)
+        </if>
+        
+        AND t.bar_id = b.id
+		</where>
+		order by t.insert_dt desc
+	</select>
+
+    <!-- 统计文章表记录数 -->
+	<select id="countArticle" parameterType="Map" resultType="java.lang.Long">
+		SELECT count( id )
+		FROM t_article t
+		<where>
+	    <if test="title!=null and title!='' ">     
+         AND t.title like CONCAT('%',#{title},'%')
+        </if>  
+	    <if test="platform!=null and platform!='' ">     
+         AND t.platform like CONCAT('%', #{platform},'%')   
+        </if>    
+	    <if test="barId!=null and barId!='' ">     
+         AND t.bar_id = #{barId}    
+        </if>  
+        <if test="startDt !=null and startDt != '' ">
+        AND  t.insert_dt &gt;=  STR_TO_DATE(#{startDt},'%Y-%m-%d') 
+        </if>
+        <if test="endDt != null and endDt != ''">
+        AND t.insert_dt &lt;= date_sub( STR_TO_DATE(#{endDt},'%Y-%m-%d') ,interval -1 day)
+        </if>
+		</where>
+	</select>	
+	
+	<!-- 
+	loadByKnowledgeId
+	根据知识点id获取文章信息
+	 -->
+	 <select id="loadByKnowledgeId" resultType="com.comvee.cdms.knowledge.model.ArticleModel">
+	 	SELECT 
+	 	<include refid="ArticleColumns"/>
+	 	FROM  t_article t ,t_article_knowledge a 
+	 	WHERE a.knowledge_id = #{knowledgeId} and a.is_valid = 1 and t.is_valid = 1 and t.id = a.article_id
+	 </select>
+	 
+	 	
+			<!--根据文章id获取文章知识点 -->
+	<select id="loadKnowledgeByAid" resultType="com.comvee.cdms.knowledge.model.KnowledgeModel">
+		SELECT 
+			<include refid="KnowledgeAntColumns"/>
+		FROM  t_knowledge t ,t_article_knowledge a 
+		WHERE a.article_id = #{articleId} and a.is_valid = 1 and t.is_valid = 1 and t.id = a.knowledge_id
+	</select>
+	
+			<!--根据文章id获取文章知识点 -->
+	<select id="findArticleKnowledgeByIds" resultType="com.comvee.cdms.knowledge.model.ArticleKnowledgeModel">
+		SELECT 
+			<include refid="ArticleKnowledgeColumns"/>
+		FROM t_article_knowledge t 
+		WHERE  t.is_valid = 1 AND article_id IN
+		<foreach item="item" index="index" collection="articleIds"  open="(" separator="," close=")">
+		 #{item}
+		</foreach>
+		
+	</select>
+
+	<select id="getMemberArticleClicks" resultMap="articleClicks">
+		select sid, member_id, wiki_clicks, knowledge_clicks, insert_dt, update_dt
+		from t_member_article_clicks
+		where member_id = #{memberId,jdbcType=BIGINT} limit 1
+	</select>
+
+	<insert id="addMemberArticleClicks" parameterType="com.comvee.cdms.knowledge.po.MemberArticleClicksPO">
+		insert into t_member_article_clicks (sid, member_id, wiki_clicks, knowledge_clicks
+		  )
+		values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{wikiClicks,jdbcType=INTEGER},  #{knowledgeClicks,jdbcType=INTEGER}
+		  )
+	</insert>
+
+	<update id="updateMemberArticleClicks" parameterType="com.comvee.cdms.knowledge.po.MemberArticleClicksPO">
+		update t_member_article_clicks
+		<set>
+			<if test="wikiClicks != null">
+				wiki_clicks = #{wikiClicks,jdbcType=INTEGER},
+			</if>
+			<if test="knowledgeClicks != null">
+				knowledge_clicks = #{knowledgeClicks,jdbcType=INTEGER},
+			</if>
+		</set>
+		where sid = #{sid,jdbcType=BIGINT}
+	</update>
+</mapper>

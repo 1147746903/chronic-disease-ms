@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.doctor.mapper.DoctorServiceSettingMapper" >
+    <resultMap id="settingResultMap" type="com.comvee.cdms.doctor.po.DoctorServiceSettingPO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId"/>
+        <result column="hospital_id" jdbcType="BIGINT" property="hospitalId"/>
+        <result column="blood_sugar_max" jdbcType="DOUBLE" property="bloodSugarMax"/>
+        <result column="blood_sugar_min" jdbcType="DOUBLE" property="bloodSugarMin"/>
+        <result column="is_remind" jdbcType="INTEGER" property="isRemind"/>
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt"/>
+        <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt"/>
+        <result column="is_valid" jdbcType="INTEGER" property="isValid"/>
+    </resultMap>
+
+    <insert id="addServiceSetting">
+        insert into t_blood_sugar_high_remind (sid, doctor_id, hospital_id, blood_sugar_max, blood_sugar_min
+        ,is_remind, insert_dt, modify_dt, is_valid
+		  )
+		values (#{sid,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{hospitalId,jdbcType=INTEGER},
+		#{bloodSugarMax,jdbcType=DOUBLE}, #{bloodSugarMin,jdbcType=DOUBLE},  #{isRemind,jdbcType=INTEGER},now(),now(),1
+		  )
+    </insert>
+
+    <select id="getServiceSetting" resultMap="settingResultMap">
+        select sid, doctor_id, hospital_id, blood_sugar_max, blood_sugar_min
+        ,is_remind, insert_dt, modify_dt, is_valid from t_blood_sugar_high_remind
+        where doctor_id = #{doctorId}
+    </select>
+
+    <update id="updateServiceSetting" parameterType="com.comvee.cdms.doctor.dto.AddSettingDTO">
+        update t_blood_sugar_high_remind
+        <set>
+            modify_dt = now(),
+            <if test="bloodSugarMax != null and '' != bloodSugarMax">
+                blood_sugar_max = #{bloodSugarMax},
+            </if>
+            <if test="bloodSugarMin != null and '' != bloodSugarMin">
+               blood_sugar_min = #{bloodSugarMin},
+            </if>
+            <if test="isRemind != null" >
+               is_remind = #{isRemind }
+            </if>
+        </set>
+        where doctor_id = #{doctorId}
+    </update>
+</mapper>

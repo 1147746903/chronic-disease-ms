@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.foot.mapper.FootMapper">
+
+    <!--足部管理处方-->
+    <resultMap id="foot" type="com.comvee.cdms.foot.po.FootPO">
+        <id column="follow_id" jdbcType="BIGINT" property="followId" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+        <result column="team_id" jdbcType="BIGINT" property="teamId" />
+        <result column="doctor_name" jdbcType="VARCHAR" property="doctorName" />
+        <result column="save_type" jdbcType="TINYINT" property="saveType" />
+        <result column="record_dt" jdbcType="TIMESTAMP" property="recordDt" />
+        <result column="next_follow_time" jdbcType="TIMESTAMP" property="nextFollowTime" />
+        <result column="assess_item" jdbcType="LONGVARCHAR" property="assessItem" />
+        <result column="assist_check" jdbcType="LONGVARCHAR" property="assistCheck" />
+        <result column="assess_result" jdbcType="LONGVARCHAR" property="assessResult" />
+        <result column="relation_report" jdbcType="LONGVARCHAR" property="relationReport" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+        <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+        <result column="foot_type" jdbcType="TINYINT" property="footType" />
+        <result column="has_relation"  property="hasRelation" />
+        <result column="qr_code_data"  property="qrCodeData" />
+        <result column="qr_code_invalid_dt"  property="qrCodeInvalidDt" />
+        <result column="create_doctor_name"  property="createDoctorName" />
+    </resultMap>
+
+    <resultMap id="footRelateReport" type="com.comvee.cdms.foot.po.FootReportPO">
+        <id column="sid" jdbcType="VARCHAR" property="sid" />
+        <result column="prescript_id" jdbcType="VARCHAR" property="prescriptId" />
+        <result column="report_id" jdbcType="VARCHAR" property="reportId" />
+        <result column="report_type" jdbcType="TINYINT" property="reportType" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    </resultMap>
+
+    <select id="listFoot" parameterType="com.comvee.cdms.foot.dto.ListFootDTO" resultMap="foot">
+        select t.follow_id, t.member_id, t.team_id, t.doctor_id, t.doctor_name, t.save_type, t.record_dt,
+        t.next_follow_time, t.assess_item, t.assist_check, t.assess_result, t.relation_report,
+        t.insert_dt, t.modify_dt, t.is_valid, t.foot_type ,q.doctor_name create_doctor_name
+        from t_foot t,t_doctor q where is_valid = 1 and t.doctor_id = q.doctor_id
+        <if test = "memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test = "doctorId != null and '' != doctorId">
+            and team_id = #{doctorId}
+        </if>
+        <if test = "saveType != null and '' != saveType">
+            and save_type = #{saveType}
+        </if>
+        <if test = "footType != null and '' != footType">
+            and foot_type = #{footType}
+        </if>
+        <if test="operatorId != null and '' != operatorId">
+            and t.doctor_id = #{operatorId}
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and q.hospital_id = #{hospitalId}
+        </if>
+        order by insert_dt desc
+    </select>
+
+    <select id="getFoot" resultMap="foot">
+        select follow_id, member_id, team_id, doctor_id, doctor_name, save_type, record_dt,
+        next_follow_time, assess_item, assist_check, assess_result, relation_report,
+        insert_dt, modify_dt, is_valid, foot_type ,has_relation,qr_code_data ,qr_code_invalid_dt
+        from t_foot
+        where follow_id = #{followId}
+    </select>
+
+    <insert id="addFoot" parameterType="com.comvee.cdms.foot.po.FootPO">
+        insert into t_foot (follow_id, member_id, team_id, doctor_id, doctor_name, save_type, record_dt,
+        next_follow_time, assess_item, assist_check, assess_result, relation_report, foot_type,
+        insert_dt, modify_dt, is_valid ,has_relation ,qr_code_data ,qr_code_invalid_dt
+        )
+        values (#{followId}, #{memberId},#{teamId}, #{doctorId},#{doctorName}, #{saveType},#{recordDt},
+        #{nextFollowTime}, #{assessItem}, #{assistCheck},#{assessResult}, #{relationReport}, #{footType},
+        now(), now(),1 ,#{hasRelation},#{qrCodeData},#{qrCodeInvalidDt}
+        )
+    </insert>
+
+    <update id="modifyFoot" parameterType="com.comvee.cdms.foot.po.FootPO" >
+        update t_foot
+        <set >
+            modify_dt = now(),
+            <if test="doctorId != null and doctorId!=''" >
+                doctor_id = #{doctorId},
+            </if>
+            <if test="doctorName != null and doctorName!=''" >
+                doctor_name = #{doctorName},
+            </if>
+            <if test="saveType != null and saveType!=''" >
+                save_type = #{saveType},
+            </if>
+            <if test="isValid != null and isValid!=''" >
+                is_valid = #{isValid},
+            </if>
+            <if test="recordDt != null and recordDt!=''" >
+                record_dt = #{recordDt},
+            </if>
+            <if test="nextFollowTime != null and nextFollowTime!=''" >
+                next_follow_time = #{nextFollowTime},
+            </if>
+
+            <if test="assessItem != null and assessItem!=''" >
+                assess_item = #{assessItem},
+            </if>
+            <if test="assistCheck != null and assistCheck!=''" >
+                assist_check = #{assistCheck},
+            </if>
+            <if test="assessResult != null and assessResult!=''" >
+                assess_result = #{assessResult},
+            </if>
+            <if test="relationReport != null and relationReport!=''" >
+                relation_report = #{relationReport},
+            </if>
+            <if test="hasRelation != null" >
+                has_relation = #{hasRelation},
+            </if>
+            <if test="qrCodeData != null and qrCodeData!=''" >
+                qr_code_data = #{qrCodeData},
+            </if>
+            <if test="qrCodeInvalidDt != null and qrCodeInvalidDt!=''" >
+                qr_code_invalid_dt = #{qrCodeInvalidDt},
+            </if>
+        </set>
+        where follow_id = #{followId}
+    </update>
+
+    <select id="listFootRelateReport" parameterType="java.lang.String" resultMap="footRelateReport">
+        select sid, prescript_id, report_id, report_type, insert_dt, update_dt
+        from t_foot_report
+        where valid = 1 and prescript_id = #{prescriptId,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="addFootReportRelate" parameterType="com.comvee.cdms.foot.po.FootReportPO">
+        insert into t_foot_report (sid, prescript_id, report_id,
+          report_type, insert_dt, update_dt ,valid
+          )
+        values (#{sid,jdbcType=VARCHAR}, #{prescriptId,jdbcType=VARCHAR}, #{reportId,jdbcType=VARCHAR},
+          #{reportType,jdbcType=TINYINT}, #{insertDt,jdbcType=TIMESTAMP}, #{updateDt,jdbcType=TIMESTAMP} ,#{valid}
+          )
+    </insert>
+
+    <update id="updateFootReportRelate" parameterType="com.comvee.cdms.foot.po.FootReportPO">
+        update t_foot_report
+        set valid = #{valid}
+        where sid = #{sid,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getFootReportById" resultMap="footRelateReport">
+        select sid, prescript_id, report_id, report_type, insert_dt, update_dt
+        from t_foot_report
+        where sid = #{id,jdbcType=VARCHAR} limit 1
+    </select>
+
+    <update id="deleteFootReportRelate">
+        update t_foot_report t set t.update_dt = now(), t.valid = 0 where t.prescript_id = #{prescriptId}
+    </update>
+
+    <!--v 5.1.6-->
+    <select id="listFootByMemberOfInHos" parameterType="java.lang.String" resultMap="foot">
+        select t.follow_id, t.member_id, t.team_id, t.doctor_id, t.doctor_name, t.save_type, t.record_dt,
+        t.next_follow_time, t.assess_item, t.assist_check, t.assess_result, t.relation_report,
+        t.insert_dt, t.modify_dt, t.is_valid, t.foot_type
+        from t_foot t
+        where t.is_valid=1 and t.save_type = 3
+        and t.member_id=#{memberId}
+        order by t.modify_dt desc limit 1
+    </select>
+</mapper>

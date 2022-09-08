@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.bloodmonitor.mapper.MemberMonitorPlanMapper" >
+  
+   <resultMap id="BaseResultMap" type="com.comvee.cdms.bloodmonitor.po.MemberMonitorPlanPO" >
+    <id column="plan_id" property="planId" jdbcType="BIGINT" />
+    <result column="member_id" property="memberId" jdbcType="BIGINT" />
+    <result column="plan_type" property="planType" jdbcType="TINYINT" />
+    <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP" />
+    <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="isValid" jdbcType="TINYINT" />
+    <result column="plan_name" property="planName" jdbcType="VARCHAR" />
+    <result column="apply_explain" property="applyExplain" jdbcType="VARCHAR" />
+    <result column="plan_detail" property="planDetail" jdbcType="LONGVARCHAR" />
+    <result column="start_dt" property="startDt" />
+    <result column="end_dt" property="endDt" />
+    <result column="in_progress" property="inProgress" />
+    <result column="doctor_id" property="doctorId" />
+    <result column="illness_type" property="illnessType" />
+    <result column="eoh_type" property="eohType" />
+	<result column="monitor_start_dt" property="startMonitorDt" jdbcType="TIMESTAMP" />
+	<result column="monitor_end_dt" property="endMonitorDt" jdbcType="TIMESTAMP" />
+	<result column="operation_type" property="operationType" jdbcType="TINYINT" />
+   </resultMap>
+
+
+	<!--血糖监测方案模板-->
+   <resultMap id="sugarMonitorTemplate" type="com.comvee.cdms.bloodmonitor.model.SugarMonitorTemplatePO">
+		<id column="sid" jdbcType="BIGINT" property="sid" />
+		<result column="scheme_name" jdbcType="VARCHAR" property="schemeName" />
+		<result column="guid_desc" jdbcType="VARCHAR" property="guidDesc" />
+		<result column="is_tolevel" jdbcType="VARCHAR" property="isTolevel" />
+		<result column="monitor_scheme" jdbcType="VARCHAR" property="monitorScheme" />
+		<result column="is_valid" jdbcType="BIT" property="isValid" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+		<result column="monitor_type" jdbcType="TINYINT" property="monitorType" />
+		<result column="monitor_suggestions" jdbcType="VARCHAR" property="monitorSuggestions" />
+		<result column="treatment" jdbcType="INTEGER" property="treatment" />
+		<result column="pre_select" jdbcType="VARCHAR" property="preSelect" />
+		<result column="treatment_text"  property="treatmentText" />
+		<result column="plan_type"  property="planType" />
+		<result column="doctor_id"  property="doctorId" />
+		<result column="operator_id"  property="operatorId" />
+	   <result column="permission" property="permission"/>
+	   <result column="eoh_type" property="eohType"/>
+	   <result column="illness_type" property="illnessType"/>
+	</resultMap>
+
+  <resultMap type="com.comvee.cdms.bloodmonitor.po.MemberSugarCodeNumberPO" id="suageCodeNumber">
+    <result column="param_code" property="paramCode"/>
+    <result column="number" property="number"/>
+  </resultMap>
+  
+  
+    <!--   获取血糖计划 -->
+  <select id="getMemberMonitorPlan" resultMap="BaseResultMap" parameterType="com.comvee.cdms.bloodmonitor.dto.GetMemberMonitorDTO">
+  	SELECT t.`plan_id`,t.`member_id`,t.`plan_name`,t.`plan_type`,t.`plan_detail`,t.`apply_explain`
+  	,t.`insert_dt`,t.`modify_dt`,t.`is_valid`,t.doctor_id ,t.illness_type ,t.eoh_type,monitor_start_dt,monitor_end_dt,operation_type
+	FROM `t_member_monitor_plan` t WHERE t.`is_valid`=1
+	<if test="inProgress != null">
+		and t.in_progress = #{inProgress}
+	</if>
+	<if test="memberId != null and '' != memberId">
+	  and t.member_id = #{memberId}
+	</if>
+	<if test="planId != null and '' != planId">
+	  and t.plan_id = #{planId}
+	</if>
+	<if test="illnessType != null">
+		and t.illness_type = #{illnessType}
+	</if>
+	  <if test="eohType != null">
+		  and t.eoh_type = #{eohType}
+	  </if>
+	  limit 1
+  </select>
+
+	<select id="getExecutionMemberMonitorPlan" resultMap="BaseResultMap">
+		SELECT t.`plan_id`,t.`member_id`,t.`plan_name`,t.`plan_type`,t.`plan_detail`,t.`apply_explain`
+		,t.`insert_dt`,t.`modify_dt`,t.`is_valid`,t.doctor_id ,t.illness_type ,t.eoh_type,monitor_start_dt,monitor_end_dt,operation_type
+		FROM `t_member_monitor_plan` t WHERE t.`is_valid`=1
+		and t.in_progress = 1
+		<if test="memberId != null and '' != memberId">
+			and t.member_id = #{memberId}
+		</if>
+		<if test="planId != null and '' != planId">
+			and t.plan_id = #{planId}
+		</if>
+		<if test="illnessType != null">
+			and t.illness_type = #{illnessType}
+		</if>
+		<if test="eohType != null">
+			and t.eoh_type = #{eohType}
+		</if>
+		order by t.insert_dt desc
+		limit 1
+	</select>
+  <!-- 停止医嘱 -->
+  <update id="stopMonitor" >
+  		UPDATE `t_member_monitor_plan` t SET t.in_progress = 0,t.modify_dt = now()
+  		WHERE   t.is_valid= 1 and t.in_progress = 1 and t.`member_id`=#{memberId} and t.illness_type = #{illnessType}
+  </update>
+
+	<!-- 修改方案状态为停止 -->
+	<update id="modifyMonitorPlanByPlanId" >
+  		UPDATE `t_member_monitor_plan` t SET t.in_progress = 0,t.modify_dt = now() ,monitor_end_dt = now()
+  		WHERE   t.plan_id = #{planId}
+  	</update>
+
+	<delete id="updateMonitorPlanDetailByPlanId">
+		DELETE FROM t_member_monitor_plan_detail WHERE sid in (
+		select sid from (
+		select sid from t_member_monitor_plan_detail where sid =  #{planId}
+	) as tmp)
+	</delete>
+
+	<update id="deleteMonitorByMemberId">
+		UPDATE `t_member_monitor_plan` t SET t.is_valid = 0,t.modify_dt = now()
+  		WHERE   t.plan_id = #{planId}
+	</update>
+  <!-- 保存医嘱 -->
+  <insert id="saveMonitor" parameterType="com.comvee.cdms.bloodmonitor.po.MemberMonitorPlanPO">
+  		INSERT INTO `t_member_monitor_plan` (
+		  `plan_id`, `member_id`, `plan_type`, `insert_dt`, `modify_dt`,  `plan_detail`
+		  , `plan_name`, apply_explain,doctor_id,sender_id ,illness_type ,eoh_type,monitor_start_dt
+		  ,monitor_end_dt,operation_type
+		)
+		VALUES
+		  (
+		    #{planId}, #{memberId}, #{planType}, now(), now(),  #{planDetail}, #{planName}
+		    , #{applyExplain},#{doctorId},#{senderId} ,#{illnessType} ,#{eohType},#{startMonitorDt}
+		    ,#{endMonitorDt},#{operationType}
+		  )
+  </insert>
+  
+  <!-- 根据memberId和监测类型，获取监测方案 -->
+  <select id="getMemberMonitorPlanByMap" parameterType="map" resultMap="BaseResultMap">
+	  	SELECT t.`plan_id`,t.`member_id`,t.`plan_name`,t.`plan_type`,t.`plan_detail`
+	  	,t.`apply_explain`,t.`insert_dt`,t.`modify_dt`,t.`is_valid`,t.doctor_id
+	  	,t.sender_id,t.in_progress ,t.illness_type ,t.eoh_type
+		FROM `t_member_monitor_plan` t WHERE t.`is_valid`=1 and t.in_progress = 1
+		and t.`plan_type`=#{planType} AND t.`member_id`=#{memberId}
+  </select>
+  
+  <!-- 修改监测方案 -->
+  <update id="modifyMonitor" parameterType="com.comvee.cdms.bloodmonitor.po.MemberMonitorPlanPO">
+  		UPDATE `t_member_monitor_plan` t 
+  		SET t.`modify_dt`=NOW()
+  		<if test="planType != null">
+  			,t.plan_type = #{planType}
+  		</if>
+  		<if test="planName != null">
+  			,t.plan_name = #{planName}
+  		</if>
+  		<if test="applyExplain != null">
+  			,t.apply_explain = #{applyExplain}
+  		</if>
+  		<if test="planDetail != null">
+  			,t.plan_detail = #{planDetail}
+  		</if>
+  		<if test="isValid != null">
+  			,SET t.`is_valid`= #{isValid} 
+  		</if>
+  		WHERE t.`member_id`=#{memberId} and t.is_valid=1 
+  </update>
+  
+  <select id="listHasMonitorPeopleNumber" resultMap="suageCodeNumber" parameterType="map">
+    select t.monitor_time param_code,count(t.monitor_time) number from t_member_monitor_plan_detail t,t_member_monitor_plan p
+	,t_doctor_department q,t_member_checkin_info w
+	where p.in_progress=1 and p.member_id=t.member_id and q.is_valid = 1 and w.is_valid = 1 and q.department_id = w.department_id
+	and t.member_id = w.member_id and w.checkin_status = 1 and (( t.plan_type = 1 and t.date_code = #{weekCode} )
+	or (t.plan_type = 2 and t.date_code = #{date}))
+	and q.doctor_id = #{doctorId} group by t.monitor_time
+  </select>
+  
+  <select id="listHasMonitorAndRecordPeopleNumber" resultMap="suageCodeNumber" parameterType="map">
+    SELECT t.param_code , count(t.sid) number FROM t_member_card t , t_doctor_department q , t_member_checkin_info w
+    WHERE q.is_valid = 1 AND w.is_valid = 1 AND w.checkin_status = 1 AND q.department_id = w.department_id
+    AND t.member_id = w.member_id AND t.param_date = #{today} and t.param_status = 1 and q.doctor_id = #{doctorId}
+    AND EXISTS( SELECT 1 FROM t_member_monitor_plan_detail e WHERE t.member_id = e.member_id AND t.param_code = e.monitor_time
+    AND(( e.plan_type = 1
+    AND e.date_code = #{weekCode})
+    OR( e.plan_type = 2 AND e.date_code = #{date}
+    )))
+    GROUP BY t.param_code
+  </select>
+
+	<resultMap id="schemaPO" type="com.comvee.cdms.bloodmonitor.po.SchemaPO">
+		<result column="plan_id" property="planId"/>
+		<result column="member_id" property="memberId"/>
+		<result column="plan_type" property="planType"/><!--类型1长期2临时-->
+		<result column="insert_dt" property="insertDt"/>
+		<result column="is_valid" property="isValid"/>
+		<result column="plan_detail" property="planDetail"/><!--监测方案详情-->
+		<result column="plan_name" property="planName"/><!--方案名称-->
+		<result column="apply_explain" property="applyExplain"/><!--适用说明-->
+	</resultMap>
+
+	<select id="listSchemaPoOfMember" resultMap="schemaPO">
+		select plan_id,member_id,plan_type,insert_dt,is_valid,plan_detail,plan_name,apply_explain,illness_type ,eoh_type from t_member_monitor_plan
+		where is_valid=1 and in_progress=1
+		<if test="po.midList!=null">
+			and member_id in
+			<foreach collection="po.midList" separator="," open="(" item="item" index="index" close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="po.illnessType!=null">
+			and illness_type = #{po.illnessType}
+		</if>
+	</select>
+
+	<select id="getTestSugarNumberOfSchema" resultType="java.lang.Long">
+		select COUNT(1) from t_member_monitor_plan_detail smmd,t_member_monitor_plan p,t_member_checkin_info sc
+		<if test="po.joinDocMember!=null and po.joinDocMember">
+			, t_doctor_member dm
+		</if>
+		where p.in_progress = 1 and p.is_valid = 1 and smmd.member_id = p.member_id and smmd.member_id = sc.member_id
+		and sc.is_valid=1
+		<if test="po.joinDocMember and po.doctorId!=null and po.doctorId!=''">
+			and p.member_id = dm.member_id and dm.doctor_id = #{po.doctorId}
+			and dm.is_valid = 1
+		</if>
+		<if test="po.departmentIdList!=null and po.departmentIdList.size > 0 ">
+			and sc.department_id in
+			<foreach collection="po.departmentIdList" separator="," open="(" item="item" index="index" close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="po.midList!=null">
+			and smmd.member_id in
+			<foreach collection="po.midList" separator="," open="(" item="item" index="index" close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="po.checkinStatus!=null">
+			and sc.checkin_status=#{po.checkinStatus}
+		</if>
+		<if test="po.dateCode!=null and po.dateCode!=''">
+			AND (smmd.date_code = #{po.dateCode}
+			<if test="po.weekCode!=null and po.weekCode!=''">
+				OR smmd.date_code = #{po.weekCode}
+			</if>)
+		</if>
+		<if test="po.dateCode==null or po.dateCode==''">
+			<if test="po.weekCode!=null and po.weekCode!=''">
+				AND smmd.date_code = #{po.weekCode}
+			</if>
+		</if>
+		<if test="po.illnessType!=null">
+			and smmd.illness_type=#{po.illnessType}
+			and p.illness_type=#{po.illnessType}
+		</if>
+	</select>
+
+	<select id="getTestSugarNumberOfMember" resultType="java.lang.Long">
+		select count(1) from (
+		select smmd.member_id from t_member_monitor_plan_detail smmd,t_member_monitor_plan p,t_member_checkin_info sc
+		where p.in_progress = 1 and smmd.member_id = p.member_id and p.is_valid = 1 and smmd.member_id = sc.member_id
+		and sc.is_valid=1
+		<if test="po.departmentIdList!=null and po.departmentIdList.size > 0 ">
+			and sc.department_id in
+			<foreach collection="po.departmentIdList" separator="," open="(" item="item" index="index" close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="po.midList!=null">
+			and smmd.member_id in
+			<foreach collection="po.midList" separator="," open="(" item="item" index="index" close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="po.checkinStatus!=null">
+			and sc.checkin_status=#{po.checkinStatus}
+		</if>
+		<if test="po.dateCode!=null and po.dateCode!=''">
+			AND (smmd.date_code = #{po.dateCode}
+			<if test="po.weekCode!=null and po.weekCode!=''">
+				OR smmd.date_code = #{po.weekCode}
+			</if>)
+		</if>
+		<if test="po.dateCode==null or po.dateCode==''">
+			<if test="po.weekCode!=null and po.weekCode!=''">
+				AND smmd.date_code = #{po.weekCode}
+			</if>
+		</if>
+		<if test="po.illnessType!=null">
+			and smmd.illness_type=#{po.illnessType}
+			and p.illness_type=#{po.illnessType}
+		</if>
+		GROUP BY smmd.member_id)cnt
+	</select>
+
+	<select id="getHasTestSchemaOfMemberId" resultType="java.lang.String">
+		select smmd.member_id from t_member_monitor_plan_detail smmd,t_member_monitor_plan p,t_member_checkin_info sc
+		<if test="po.joinDocMember!=null and po.joinDocMember">
+			, t_doctor_member dm
+		</if>
+		where p.in_progress = 1 and smmd.member_id = p.member_id and p.is_valid = 1
+		and p.member_id=sc.member_id and sc.is_valid=1
+		<if test="po.departmentIdList!=null and po.departmentIdList.size > 0 ">
+			and sc.department_id in
+			<foreach collection="po.departmentIdList" separator="," open="(" item="item" index="index" close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="po.joinDocMember and po.doctorId!=null and po.doctorId!=''">
+			and p.member_id = dm.member_id and dm.doctor_id = #{po.doctorId}
+			and dm.is_valid = 1
+		</if>
+		<if test="po.midList!=null">
+			and smmd.member_id in
+			<foreach collection="po.midList" separator="," open="(" item="item" index="index" close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="po.checkinStatus!=null">
+			and sc.checkin_status=#{po.checkinStatus}
+		</if>
+		<if test="po.dateCode!=null and po.dateCode!=''">
+			AND (smmd.date_code = #{po.dateCode}
+			<if test="po.weekCode!=null and po.weekCode!=''">
+				OR smmd.date_code = #{po.weekCode}
+			</if>)
+		</if>
+		<if test="po.dateCode==null or po.dateCode==''">
+			<if test="po.weekCode!=null and po.weekCode!=''">
+				AND smmd.date_code = #{po.weekCode}
+			</if>
+		</if>
+		<if test="po.illnessType!=null">
+			and smmd.illness_type=#{po.illnessType}
+			and p.illness_type=#{po.illnessType}
+		</if>
+		GROUP BY smmd.member_id
+	</select>
+
+	<select id="listMonitorPlanTemplate" resultMap="sugarMonitorTemplate" parameterType="com.comvee.cdms.bloodmonitor.dto.ListMonitorPlanTemplateMapperDTO">
+		select a.sid, a.scheme_name, a.guid_desc, a.is_tolevel, a.monitor_scheme, a.is_valid, a.insert_dt,
+		a.modify_dt, a.monitor_type, a.monitor_suggestions, a.treatment, a.pre_select ,a.treatment_text ,a.plan_type ,a.doctor_id ,a.operator_id,a.permission,a.eoh_type,a.illness_type
+		from t_sugar_monitor_template a , t_doctor b where a.doctor_id = b.doctor_id and a.is_valid = 1
+		<if test="hospitalId != null and hospitalId !=''">
+			and b.hospital_id = #{hospitalId}
+		</if>
+		<if test="monitorType != null">
+			and a.monitor_type = #{monitorType}
+		</if>
+		<if test="planType != null">
+			and a.plan_type = #{planType}
+		</if>
+		<if test="permission != null">
+			and a.permission = #{permission}
+		</if>
+		<if test="eohType != null">
+			and a.eoh_type = #{eohType}
+		</if>
+		<if test="doctorIdList != null and doctorIdList.size() > 0">
+			and a.doctor_id in
+			<foreach collection="doctorIdList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		order by a.modify_dt desc
+	</select>
+
+	<select id="listSystemMonitorPlanTemplate" resultMap="sugarMonitorTemplate" parameterType="com.comvee.cdms.bloodmonitor.dto.ListMonitorPlanTemplateMapperDTO">
+		select sid, scheme_name, guid_desc, is_tolevel, monitor_scheme, is_valid, insert_dt,
+		modify_dt, monitor_type, monitor_suggestions, treatment, pre_select ,treatment_text ,plan_type ,doctor_id ,operator_id,permission,eoh_type,illness_type
+		from t_sugar_monitor_template where is_valid = 1
+		<if test="monitorType != null">
+			and monitor_type = #{monitorType}
+		</if>
+		<if test="planType != null">
+			and plan_type = #{planType}
+		</if>
+		<if test="permission != null">
+			and permission = #{permission}
+		</if>
+		<if test="eohType != null">
+			and eoh_type = #{eohType}
+		</if>
+		<if test="doctorIdList != null and doctorIdList.size() > 0">
+			and doctor_id in
+			<foreach collection="doctorIdList" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+		order by modify_dt desc
+	</select>
+
+	<select id="listMonitorPlanHistory" parameterType="map" resultMap="BaseResultMap">
+		SELECT t.`plan_id`,t.`member_id`,t.`plan_name`,t.`plan_type`,t.`plan_detail`
+	  	,t.`apply_explain`,t.`insert_dt`,t.`modify_dt`,t.`is_valid`,t.doctor_id
+	  	,t.sender_id,DATE_FORMAT(t.insert_dt,'%Y-%m-%d') start_dt,DATE_FORMAT(t.modify_dt,'%Y-%m-%d') end_dt
+		FROM `t_member_monitor_plan` t WHERE t.`is_valid`=1
+		and t.`plan_type`=#{planType} AND t.`member_id`=#{memberId} order by t.insert_dt desc
+	</select>
+
+	<select id="getMemberCodeModelBySchema" parameterType="com.comvee.cdms.bloodmonitor.po.SchemaPO" resultType="com.comvee.cdms.member.bo.MemberCodeBO">
+		select smmd.member_id memberId, smmd.monitor_time code from t_member_monitor_plan_detail smmd,t_member_monitor_plan p,t_member_checkin_info sc
+		<if test="po.isJoinDocMember!=null and po.isJoinDocMember">
+			, t_doctor_member dm
+		</if>
+		where p.in_progress = 1 and p.is_valid = 1 and smmd.member_id = p.member_id and smmd.member_id = sc.member_id
+		<if test="po.isJoinDocMember and po.doctorId!=null and po.doctorId!=''">
+			and p.member_id = dm.member_id and dm.doctor_id = #{po.doctorId}
+			and dm.is_valid = 1
+		</if>
+		<if test="po.departmentIdList!=null and po.departmentIdList.size > 0 ">
+			and sc.department_id in
+			<foreach collection="po.departmentIdList" separator="," open="(" item="item" index="index" close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="po.midList!=null">
+			and smmd.member_id in
+			<foreach collection="po.midList" separator="," open="(" item="item" index="index" close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="po.checkinStatus!=null">
+			and sc.checkin_status=#{po.checkinStatus}
+		</if>
+		<if test="po.dateCode!=null and po.dateCode!=''">
+			AND (smmd.date_code = #{po.dateCode}
+			<if test="po.weekCode!=null and po.weekCode!=''">
+				OR smmd.date_code = #{po.weekCode})
+			</if>
+		</if>
+		<if test="po.dateCode==null or po.dateCode==''">
+			<if test="po.weekCode!=null and po.weekCode!=''">
+				AND (smmd.date_code = #{po.weekCode}
+			</if>
+		</if>
+	</select>
+	<select id="getBloodMonitorPlan" resultMap="BaseResultMap" parameterType="com.comvee.cdms.statistics.dto.SynthesizeDataDTO">
+		SELECT a.plan_id,a.member_id,a.plan_name,a.plan_type,a.plan_detail,a.apply_explain
+  			,a.insert_dt,a.modify_dt,a.is_valid,a.doctor_id
+		FROM t_member_monitor_plan a,t_doctor b WHERE a.doctor_id = b.doctor_id AND a.is_valid=1
+		<if test="memberId != null and ''!=memberId">
+			and a.member_id = #{memberId}
+		</if>
+		<if test="doctorId != null and ''!=doctorId">
+			and a.doctor_id = #{doctorId}
+		</if>
+		<if test="hospitalId != null and ''!=hospitalId">
+			and b.hospital_id = #{hospitalId}
+		</if>
+		<if test="departmentId != null and ''!=departmentId">
+			and b.depart_id = #{departmentId}
+		</if>
+		<if test="endDt != null and ''!=endDt">
+			and a.insert_dt >= #{startDt}
+		</if>
+		<if test="endDt != null and ''!=endDt">
+			and a.insert_dt &lt;= #{endDt}
+		</if>
+		order by a.insert_dt desc
+	</select>
+
+	<insert id="addMonitorPlanTemplate" parameterType="com.comvee.cdms.bloodmonitor.model.SugarMonitorTemplatePO">
+		insert into t_sugar_monitor_template (sid, scheme_name, guid_desc,
+		  is_tolevel, monitor_scheme,
+		  insert_dt, modify_dt, monitor_type,
+		  monitor_suggestions, treatment, pre_select,
+		  treatment_text, plan_type, doctor_id,
+		  operator_id,permission,eoh_type ,illness_type)
+		values (#{sid,jdbcType=BIGINT}, #{schemeName,jdbcType=VARCHAR}, #{guidDesc,jdbcType=VARCHAR},
+		  #{isTolevel,jdbcType=VARCHAR}, #{monitorScheme,jdbcType=VARCHAR},
+		  now(), now(), #{monitorType,jdbcType=TINYINT},
+		  #{monitorSuggestions,jdbcType=VARCHAR}, #{treatment,jdbcType=INTEGER}, #{preSelect,jdbcType=VARCHAR},
+		  #{treatmentText,jdbcType=VARCHAR}, #{planType,jdbcType=TINYINT}, #{doctorId,jdbcType=BIGINT},
+		  #{operatorId,jdbcType=BIGINT},#{permission,jdbcType=TINYINT},#{eohType,jdbcType=TINYINT} ,#{illnessType})
+	</insert>
+
+	<update id="updateCustomMonitorPlanTemplate" parameterType="com.comvee.cdms.bloodmonitor.model.SugarMonitorTemplatePO">
+		update t_sugar_monitor_template
+		set modify_dt = now()
+		<if test="schemeName != null and '' != schemeName">
+			,scheme_name = #{schemeName,jdbcType=VARCHAR}
+		</if>
+		<if test="guidDesc != null and '' != guidDesc">
+			,guid_desc = #{guidDesc,jdbcType=VARCHAR}
+		</if>
+		<if test="monitorScheme != null and '' != monitorScheme">
+			,monitor_scheme = #{monitorScheme,jdbcType=VARCHAR}
+		</if>
+		<if test="monitorSuggestions != null and '' != monitorSuggestions">
+			,monitor_suggestions = #{monitorSuggestions,jdbcType=VARCHAR}
+		</if>
+		where sid = #{sid,jdbcType=BIGINT}
+	</update>
+
+    <select id="listMonitorTemplateByPerson"  resultMap="sugarMonitorTemplate">
+        select sid,scheme_name,guid_desc,is_tolevel,monitor_scheme,is_valid,insert_dt,modify_dt,
+		monitor_type,monitor_suggestions,treatment,pre_select,treatment_text,plan_type,doctor_id,operator_id,permission,eoh_type,illness_type
+        from t_sugar_monitor_template
+        where is_valid = 1
+        <if test="doctorList != null and doctorList.size() > 0">
+            and  doctor_id in
+            <foreach collection="doctorList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+		<if test="keyword!=null and keyword!=''">
+			and instr(scheme_name , #{keyword}) > 0
+		</if>
+        order by modify_dt desc
+    </select>
+
+
+	<update id="deleteMonitorTemplate" parameterType="com.comvee.cdms.bloodmonitor.dto.DeleteMonitorTemplateDTO">
+		update t_sugar_monitor_template set is_valid = 0,modify_dt = now()
+		<where>
+			<if test="ids != null and ids.size() > 0">
+				and sid in
+				<foreach collection="ids" open="(" close=")" separator="," item="item">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</update>
+	<update id="updateMonitorPlanByPlanId">
+		UPDATE `t_member_monitor_plan` t SET t.in_progress = 1,t.modify_dt = now()
+  		WHERE   t.plan_id = #{planId}
+	</update>
+
+	<update id="stopMonitorPlanByPlanId">
+		UPDATE `t_member_monitor_plan` t SET t.in_progress = 0,t.modify_dt = now()
+  		WHERE   t.plan_id = #{planId}
+	</update>
+
+	<select id="getMonitorTemplateById" parameterType="java.lang.String" resultMap="sugarMonitorTemplate">
+		select sid,scheme_name,guid_desc,is_tolevel,monitor_scheme,is_valid,insert_dt,modify_dt,
+		monitor_type,monitor_suggestions,treatment,pre_select,treatment_text,plan_type,doctor_id,operator_id,permission,eoh_type,illness_type
+        from t_sugar_monitor_template where sid = #{sid}
+	</select>
+    <select id="getBloodMonitorPlanAndRecord" resultMap="BaseResultMap">
+		select * from t_member_monitor_plan mp
+		where mp.is_valid = 1 and mp.in_progress = 1 and illness_type = #{illnessType}
+		and member_id = #{memberId} order by insert_dt desc
+	</select>
+
+	<select id="listBloodMonitorPlan" resultMap="BaseResultMap">
+		select * from t_member_monitor_plan mp
+		where mp.is_valid = 1 and mp.in_progress = 1
+	</select>
+
+	<select id="getMemberMonitorPlanBySid" resultMap="BaseResultMap">
+		select * from t_member_monitor_plan where plan_id = #{planId}
+	</select>
+
+	<select id="listMonitorPlan" resultMap="BaseResultMap">
+		select * from t_member_monitor_plan where
+		<if test="memberId!=null and memberId!=''">
+			member_id = #{memberId}
+		</if>
+		and is_valid = 1
+	</select>
+
+	<select id="listInHospitalTodayTask" resultType="com.comvee.cdms.bloodmonitor.vo.TodayTaskDetailListVO">
+		select t2.member_name memberName,t2.member_id memberId,t2.sex,t3.param_value latestBloodSugar
+		,t3.param_code paramCode,t1.bed_no bedNo
+		from t_member_checkin_info t1 ,t_member t2 ,t_member_monitor_task_card t3
+		where t1.is_valid = 1 and t2.is_valid = 1 and t3.is_valid = 1
+		and t1.member_id = t2.member_id and t2.member_id = t3.member_id
+		and t1.checkin_status = 1 and t3.monitor_state = 1 and t3.illness_type = #{illnessType}
+		and t1.department_id = #{departmentId} and t3.monitor_dt = #{date}
+		<if test="paramCode != null and '' != paramCode">
+			and t3.param_code = #{paramCode}
+		</if>
+		order by t1.bed_no * 1
+	</select>
+	<select id="listMemberMonitorPlanList"
+			resultType="com.comvee.cdms.bloodmonitor.vo.MemberMonitorPlanListVO" parameterType="com.comvee.cdms.bloodmonitor.dto.GetMemberMonitorPlanListDTO">
+		select mp.plan_id,mp.member_id,hl.member_name,hl.hospital_no,hl.department_name,hl.doctor_zg doctor_name
+		from t_member_monitor_plan mp left join
+		(select member_id,member_name,hospital_no,department_name,doctor_zg
+		from t_member_in_hospital_log  group by member_id) hl on hl.member_id = mp.member_id
+		<where>
+			mp.is_valid = 1 and mp.illness_type =1
+            <if test="departmentId!=null and departmentId!=''">
+                hl.departmentId = #{departmentId}
+            </if>
+            <if test="doctorId!=null and doctorId!=''">
+                hl.doctor_id = #{doctorId}
+            </if>
+            <if test="recordDt!=null and recordDt!=''">
+                 #{recordDt} between mp.monitor_start_dt and mp.monitor_end_dt
+            </if>
+            <if test="keyword != null and '' != keyword">
+                and (instr(hl.member_name, #{keyword}) > 0 or instr(a.hospital_no, #{keyword}) > 0 or instr(a.bed_no, #{keyword}) > 0)
+            </if>
+        </where>
+	</select>
+</mapper>

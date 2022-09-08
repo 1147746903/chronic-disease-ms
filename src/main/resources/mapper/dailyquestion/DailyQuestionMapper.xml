@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.wechat.mapper.DailyQuestionMapper">
+
+    <resultMap type="com.comvee.cdms.defender.wechat.po.DailyQuestionPO" id="TiqDailyQuestionMap">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="groupCode" column="group_code" jdbcType="VARCHAR"/>
+        <result property="recommendCourse" column="recommend_course" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="answerOptions" column="answer_options" jdbcType="VARCHAR"/>
+        <result property="answerKey" column="answer_key" jdbcType="VARCHAR"/>
+        <result property="analyse" column="analyse" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="twoType" column="two_type" jdbcType="INTEGER"/>
+        <result property="quesType" column="ques_type" jdbcType="INTEGER"/>
+        <result property="quesSign" column="ques_sign" jdbcType="VARCHAR"/>
+        <result property="quesTag" column="ques_tag" jdbcType="VARCHAR"/>
+        <result property="lever" column="lever" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap type="com.comvee.cdms.defender.wechat.vo.DailyQuestionVO" id="DailyQuestionVO">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="groupCode" column="group_code" jdbcType="VARCHAR"/>
+        <result property="recommendCourse" column="recommend_course" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="answerOptions" column="answer_options" jdbcType="VARCHAR"/>
+        <result property="answerKey" column="answer_key" jdbcType="VARCHAR"/>
+        <result property="analyse" column="analyse" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="twoType" column="two_type" jdbcType="INTEGER"/>
+        <result property="quesType" column="ques_type" jdbcType="INTEGER"/>
+        <result property="quesSign" column="ques_sign" jdbcType="VARCHAR"/>
+        <result property="quesTag" column="ques_tag" jdbcType="VARCHAR"/>
+        <result property="lever" column="lever" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap type="com.comvee.cdms.defender.wechat.bo.DailyQuestionBO" id="DailyQuestionBOMap">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="groupCode" column="group_code" jdbcType="VARCHAR"/>
+        <result property="recommendCourse" column="recommend_course" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="answerOptions" column="answer_options" jdbcType="VARCHAR"/>
+        <result property="answerKey" column="answer_key" jdbcType="VARCHAR"/>
+        <result property="analyse" column="analyse" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="twoType" column="two_type" jdbcType="INTEGER"/>
+        <result property="quesType" column="ques_type" jdbcType="INTEGER"/>
+        <result property="quesSign" column="ques_sign" jdbcType="VARCHAR"/>
+        <result property="quesTag" column="ques_tag" jdbcType="VARCHAR"/>
+        <result property="lever" column="lever" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="TIMESTAMP"/>
+        <result property="pushId" column="pushId" jdbcType="VARCHAR"/>
+        <result property="isCorrect" column="is_correct" jdbcType="VARCHAR"/>
+        <result property="isSubmit" column="is_submit" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TiqDailyQuestionMap">
+        select
+          sid, sort, group_code, recommend_course, title, answer_options, answer_key, analyse, type, two_type,ques_type, ques_sign, ques_tag, lever, remark, is_valid, insert_dt, modify_dt
+        from tiq_daily_question
+        where sid = #{sid}
+    </select>
+
+    <select id="queryVOById" resultMap="DailyQuestionVO">
+        select
+          sid, sort, group_code, recommend_course, title, answer_options, answer_key, analyse, type, two_type,ques_type, ques_sign, ques_tag, lever, remark, is_valid, insert_dt, modify_dt
+        from tiq_daily_question
+        where sid = #{sid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TiqDailyQuestionMap">
+        select
+          sid, sort, group_code, recommend_course, title, answer_options, answer_key, analyse, type, two_type, ques_type,ques_sign, ques_tag, lever, remark, is_valid, insert_dt, modify_dt
+        from tiq_daily_question
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TiqDailyQuestionMap">
+        select
+        sid, sort, group_code, recommend_course, title, answer_options, answer_key, analyse, type, two_type,ques_type, ques_sign,
+        ques_tag, lever, remark, is_valid, insert_dt, modify_dt
+        from tiq_daily_question
+        <where>
+            is_valid = 1
+            <if test="sid != null and sid != ''">
+                and sid = #{sid}
+            </if>
+            <if test="sort != null">
+                and sort = #{sort}
+            </if>
+            <if test="groupCode != null and groupCode != ''">
+                and group_code = #{groupCode}
+            </if>
+            <if test="recommendCourse != null and recommendCourse != ''">
+                and recommend_course = #{recommendCourse}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            <if test="twoType != null">
+                and two_type = #{twoType}
+            </if>
+            <if test="quesSign != null and quesSign != ''">
+                and ques_sign = #{quesSign}
+            </if>
+            <if test="quesTag != null and quesTag != ''">
+                and ques_tag = #{quesTag}
+            </if>
+            <if test="lever != null and lever != ''">
+                and lever = #{lever}
+            </if>
+
+        </where>
+        order by insert_dt desc
+    </select>
+
+
+    <select id="queryVOList" resultMap="DailyQuestionVO">
+        select
+        sid, sort, group_code, recommend_course, title, answer_options, answer_key, analyse, type, two_type,ques_type, ques_sign,
+        ques_tag, lever, remark, is_valid, insert_dt, modify_dt
+        from tiq_daily_question
+        <where>
+            is_valid = 1
+            <if test="sid != null and sid != ''">
+                and sid = #{sid}
+            </if>
+            <if test="sort != null">
+                and sort = #{sort}
+            </if>
+            <if test="groupCode != null and groupCode != ''">
+                and group_code = #{groupCode}
+            </if>
+            <if test="recommendCourse != null and recommendCourse != ''">
+                and recommend_course = #{recommendCourse}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            <if test="twoType != null">
+                and two_type = #{twoType}
+            </if>
+            <if test="quesSign != null and quesSign != ''">
+                and ques_sign = #{quesSign}
+            </if>
+            <if test="quesTag != null and quesTag != ''">
+                and ques_tag = #{quesTag}
+            </if>
+            <if test="lever != null and lever != ''">
+                and lever = #{lever}
+            </if>
+
+        </where>
+        order by insert_dt asc,sid asc
+    </select>
+
+
+    <select id="getDailyQuestionPO" resultMap="TiqDailyQuestionMap">
+        select
+        sid, sort, group_code, recommend_course, title, answer_options, answer_key, analyse, type, two_type,ques_type, ques_sign,
+        ques_tag, lever, remark, is_valid, insert_dt, modify_dt
+        from tiq_daily_question
+        <where>
+            is_valid = 1
+            <if test="sid != null and sid != ''">
+                and sid = #{sid}
+            </if>
+            <if test="sort != null">
+                and sort = #{sort}
+            </if>
+            <if test="groupCode != null and groupCode != ''">
+                and group_code = #{groupCode}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            <if test="twoType != null">
+                and two_type = #{twoType}
+            </if>
+            <if test="quesSign != null and quesSign != ''">
+                and ques_sign = #{quesSign}
+            </if>
+            <if test="quesTag != null and quesTag != ''">
+                and ques_tag = #{quesTag}
+            </if>
+        </where>
+        order by sort asc
+        limit 1
+    </select>
+
+    <select id="queryAllByCodeExcludeMember" resultMap="TiqDailyQuestionMap">
+        select
+        sid, sort, group_code, recommend_course, title, answer_options, answer_key, analyse, type, two_type,ques_type, ques_sign,
+        ques_tag, lever, remark, is_valid, insert_dt, modify_dt
+        from tiq_daily_question
+        where is_valid = 1  and two_type = 1 and group_code = #{groupCode} and sid not in
+        (select qid sid from tiq_daily_question_push where member_id = #{memberId})
+        order by type asc,sort asc
+    </select>
+
+    <select id="queryAllByTwoTypeExcludeMember" resultMap="TiqDailyQuestionMap">
+        select
+        sid, sort, group_code, recommend_course, title, answer_options, answer_key, analyse, type, two_type,ques_type, ques_sign,
+        ques_tag, lever, remark, is_valid, insert_dt, modify_dt
+        from tiq_daily_question
+        where is_valid = 1  and two_type = 2 and type in
+        <foreach collection="list" item="type" open="(" close=")" separator=",">
+            #{type}
+        </foreach>
+        and sid not in
+        (select qid sid from tiq_daily_question_push where member_id = #{memberId})
+        order by type asc,sort asc
+    </select>
+    <select id="queryAllCommonExcludeMember" resultMap="TiqDailyQuestionMap">
+        select
+        sid, sort, group_code, recommend_course, title, answer_options, answer_key, analyse, type, two_type,ques_type, ques_sign,
+        ques_tag, lever, remark, is_valid, insert_dt, modify_dt
+        from tiq_daily_question
+        where is_valid = 1  and two_type = 1 and group_code != 'two_week'
+        and sid not in
+        (select qid sid from tiq_daily_question_push where member_id = #{memberId})
+        order by type asc,sort asc
+    </select>
+
+    <select id="queryAllCommonByMemberId" resultType="java.lang.String">
+        select qid
+        from tiq_daily_question_push p left join tiq_daily_question q on p.qid = q.sid
+        where p.member_id = #{memberId} and q.group_code != 'two_week' and two_type = 1
+  </select>
+    <select id="queryBoById" resultMap="DailyQuestionBOMap">
+        select
+          q.sid, q.sort, q.group_code, q.recommend_course, q.title, q.answer_options, q.answer_key,
+          q.analyse, q.type, q.two_type,q.ques_type, q.ques_sign, q.ques_tag, q.lever, q.remark,
+          q.is_valid, q.insert_dt, q.modify_dt,r.is_correct
+        from  tiq_member_daily_question_record r left join tiq_daily_question q on r.qid = q.sid
+        left join tiq_daily_question_push p on p.sid = r.push_id
+        where r.sid = #{sid}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sid" useGeneratedKeys="true">
+        insert into tiq_daily_question(sid,sort, group_code, recommend_course, title, answer_options, answer_key, analyse, type, two_type,ques_type, ques_sign, ques_tag, lever, remark, is_valid, insert_dt, modify_dt)
+        values (#{sid},#{sort}, #{groupCode}, #{recommendCourse}, #{title}, #{answerOptions},
+        #{answerKey}, #{analyse}, #{type}, #{twoType}, #{quesType},#{quesSign}, #{quesTag}, #{lever}, #{remark}, 1,now(),now())
+    </insert>
+
+    <insert id="insertBatch" keyProperty="sid" useGeneratedKeys="true">
+        insert into tiq_daily_question(sid,sort, group_code, recommend_course, title,
+        answer_options, answer_key, analyse, type, two_type, ques_type,ques_sign, ques_tag, lever, remark, is_valid, insert_dt,
+        modify_dt)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.sid},#{entity.sort}, #{entity.groupCode}, #{entity.recommendCourse}, #{entity.title}, #{entity.answerOptions},
+            #{entity.answerKey}, #{entity.analyse}, #{entity.type}, #{entity.twoType}, #{entity.quesSign},
+            #{entity.quesTag}, #{entity.lever}, #{entity.remark}, #{entity.isValid}, #{entity.insertDt},
+            #{entity.modifyDt})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="sid" useGeneratedKeys="true">
+        insert into tiq_daily_question(sort, group_code, recommend_course, title,
+        answer_options, answer_key, analyse, type, two_type, ques_sign, ques_tag, lever, remark, is_valid, insert_dt,
+        modify_dt)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.sort}, #{entity.groupCode}, #{entity.recommendCourse}, #{entity.title}, #{entity.answerOptions},
+            #{entity.answerKey}, #{entity.analyse}, #{entity.type}, #{entity.twoType}, #{entity.quesSign},
+            #{entity.quesTag}, #{entity.lever}, #{entity.remark}, #{entity.isValid}, #{entity.insertDt},
+            #{entity.modifyDt})
+        </foreach>
+        on duplicate key update
+        sort = values(sort) , group_code = values(group_code) , recommend_course = values(recommend_course) , title =
+        values(title) , answer_options = values(answer_options) , answer_key = values(answer_key) , analyse =
+        values(analyse) , type = values(type) , two_type = values(two_type) , ques_sign = values(ques_sign) , ques_tag =
+        values(ques_tag) , lever = values(lever) , remark = values(remark) , is_valid = values(is_valid) , insert_dt =
+        values(insert_dt) , modify_dt = values(modify_dt)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tiq_daily_question
+        <set>
+                sort = #{sort},
+                group_code = #{groupCode},
+                recommend_course = #{recommendCourse},
+                title = #{title},
+                answer_options = #{answerOptions},
+                answer_key = #{answerKey},
+                analyse = #{analyse},
+                type = #{type},
+                two_type = #{twoType},
+                ques_sign = #{quesSign},
+                ques_tag = #{quesTag},
+                lever = #{lever},
+                remark = #{remark},
+                modify_dt = now()
+
+        </set>
+        where sid = #{sid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tiq_daily_question where sid = #{sid}
+    </delete>
+
+</mapper>
+

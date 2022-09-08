@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.consultation.mapper.RemoteConsultationMapper">
+
+  <resultMap id="remoteConsultation" type="com.comvee.cdms.consultation.model.po.RemoteConsultationPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="consultation_way" jdbcType="TINYINT" property="consultationWay" />
+    <result column="from_hospital_id" jdbcType="BIGINT" property="fromHospitalId" />
+    <result column="from_depart_id" jdbcType="BIGINT" property="fromDepartId" />
+    <result column="from_doctor_id" jdbcType="BIGINT" property="fromDoctorId" />
+    <result column="from_contact" jdbcType="VARCHAR" property="fromContact" />
+    <result column="to_hospital_id" jdbcType="BIGINT" property="toHospitalId" />
+    <result column="to_depart_id" jdbcType="BIGINT" property="toDepartId" />
+    <result column="to_doctor_id" jdbcType="BIGINT" property="toDoctorId" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+    <result column="consultation_status" jdbcType="TINYINT" property="consultationStatus" />
+    <result column="from_unread_number" jdbcType="INTEGER" property="fromUnreadNumber" />
+    <result column="to_unread_number" jdbcType="INTEGER" property="toUnreadNumber" />
+    <result column="consultation_reason" jdbcType="VARCHAR" property="consultationReason" />
+    <result column="consultation_result" jdbcType="VARCHAR" property="consultationResult" />
+    <result column="confirm_dt" jdbcType="TIMESTAMP" property="confirmDt" />
+    <result column="finish_dt" jdbcType="TIMESTAMP" property="finishDt" />
+    <result column="finish_operator_id" jdbcType="BIGINT" property="finishOperatorId" />
+    <result column="from_remind_status" jdbcType="TINYINT" property="fromRemindStatus" />
+    <result column="from_remind_dt" jdbcType="TIMESTAMP" property="fromRemindDt" />
+    <result column="to_remind_status" jdbcType="TINYINT" property="toRemindStatus" />
+    <result column="to_remind_dt" jdbcType="TIMESTAMP" property="toRemindDt" />
+  </resultMap>
+
+  <resultMap id="remoteConsultationVO" type="com.comvee.cdms.consultation.model.vo.RemoteConsultationVO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="consultation_way" jdbcType="TINYINT" property="consultationWay" />
+    <result column="from_hospital_id" jdbcType="BIGINT" property="fromHospitalId" />
+    <result column="from_depart_id" jdbcType="BIGINT" property="fromDepartId" />
+    <result column="from_doctor_id" jdbcType="BIGINT" property="fromDoctorId" />
+    <result column="from_contact" jdbcType="VARCHAR" property="fromContact" />
+    <result column="to_hospital_id" jdbcType="BIGINT" property="toHospitalId" />
+    <result column="to_depart_id" jdbcType="BIGINT" property="toDepartId" />
+    <result column="to_doctor_id" jdbcType="BIGINT" property="toDoctorId" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="consultation_status" jdbcType="TINYINT" property="consultationStatus" />
+    <result column="from_unread_number" jdbcType="INTEGER" property="fromUnreadNumber" />
+    <result column="to_unread_number" jdbcType="INTEGER" property="toUnreadNumber" />
+    <result column="consultation_reason" jdbcType="VARCHAR" property="consultationReason" />
+    <result column="consultation_result" jdbcType="VARCHAR" property="consultationResult" />
+    <result column="confirm_dt" jdbcType="TIMESTAMP" property="confirmDt" />
+    <result column="finish_dt" jdbcType="TIMESTAMP" property="finishDt" />
+    <result column="finish_operator_id" jdbcType="BIGINT" property="finishOperatorId" />
+    <result column="from_remind_status" jdbcType="TINYINT" property="fromRemindStatus" />
+    <result column="from_remind_dt" jdbcType="TIMESTAMP" property="fromRemindDt" />
+    <result column="to_remind_status" jdbcType="TINYINT" property="toRemindStatus" />
+    <result column="to_remind_dt" jdbcType="TIMESTAMP" property="toRemindDt" />
+    <result column="member_name" jdbcType="VARCHAR" property="memberName" />
+    <result column="sex" jdbcType="BIGINT" property="sex" />
+    <result column="birthday" jdbcType="VARCHAR" property="birthday" />
+    <result column="from_hospital_name" jdbcType="VARCHAR" property="fromHospitalName" />
+    <result column="from_depart_name" jdbcType="VARCHAR" property="fromDepartName" />
+    <result column="from_doctor_name" jdbcType="VARCHAR" property="fromDoctorName" />
+    <result column="to_hospital_name" jdbcType="VARCHAR" property="toHospitalName" />
+    <result column="to_depart_name" jdbcType="VARCHAR" property="toDepartName" />
+    <result column="to_doctor_name" jdbcType="VARCHAR" property="toDoctorName" />
+  </resultMap>
+
+  <insert id="addRemoteConsultation" parameterType="com.comvee.cdms.consultation.model.po.RemoteConsultationPO">
+    insert into t_remote_consultation (sid, member_id, consultation_way,
+      from_hospital_id, from_depart_id, from_doctor_id, 
+      from_contact, to_hospital_id, to_depart_id, 
+      to_doctor_id, consultation_reason, consultation_result,
+      confirm_dt, finish_dt, finish_operator_id, 
+      from_remind_status, from_remind_dt, to_remind_status,
+      to_remind_dt)
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{consultationWay,jdbcType=TINYINT}, 
+      #{fromHospitalId,jdbcType=BIGINT}, #{fromDepartId,jdbcType=BIGINT}, #{fromDoctorId,jdbcType=BIGINT}, 
+      #{fromContact,jdbcType=VARCHAR}, #{toHospitalId,jdbcType=BIGINT}, #{toDepartId,jdbcType=BIGINT}, 
+      #{toDoctorId,jdbcType=BIGINT},  #{consultationReason,jdbcType=VARCHAR}, #{consultationResult,jdbcType=VARCHAR},
+      #{confirmDt,jdbcType=TIMESTAMP}, #{finishDt,jdbcType=TIMESTAMP}, #{finishOperatorId,jdbcType=BIGINT}, 
+      #{fromRemindStatus,jdbcType=TINYINT}, #{fromRemindDt,jdbcType=TIMESTAMP}, #{toRemindStatus,jdbcType=TINYINT},
+      #{toRemindDt,jdbcType=TIMESTAMP})
+  </insert>
+
+  <update id="updateRemoteConsultation" parameterType="com.comvee.cdms.consultation.model.po.RemoteConsultationPO">
+    update t_remote_consultation
+    <set>
+      <if test="update.toDoctorId != null and '' != update.toDoctorId">
+        to_doctor_id = #{update.toDoctorId,jdbcType=BIGINT},
+      </if>
+      <if test="update.consultationStatus != null">
+        consultation_status = #{update.consultationStatus,jdbcType=TINYINT},
+      </if>
+      <if test="update.fromUnreadNumber != null">
+        from_unread_number = #{update.fromUnreadNumber,jdbcType=INTEGER},
+      </if>
+      <if test="update.toUnreadNumber != null">
+        to_unread_number = #{update.toUnreadNumber,jdbcType=INTEGER},
+      </if>
+      <if test="update.consultationReason != null and '' != update.consultationReason">
+        consultation_reason = #{update.consultationReason,jdbcType=VARCHAR},
+      </if>
+      <if test="update.consultationStatus != null">
+        consultation_status = #{update.consultationStatus,jdbcType=TINYINT},
+      </if>
+      <if test="update.consultationResult != null and '' != update.consultationResult">
+        consultation_result = #{update.consultationResult,jdbcType=VARCHAR},
+      </if>
+      <if test="update.confirmDt != null and '' != update.confirmDt">
+        confirm_dt = #{update.confirmDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="update.finishDt != null and '' != update.finishDt">
+        finish_dt = #{update.finishDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="update.finishOperatorId != null and '' != update.finishOperatorId">
+        finish_operator_id = #{update.finishOperatorId,jdbcType=BIGINT},
+      </if>
+      <if test="update.fromRemindStatus != null">
+        from_remind_status = #{update.fromRemindStatus,jdbcType=TINYINT},
+      </if>
+      <if test="update.fromRemindDt != null and '' != update.fromRemindDt">
+        from_remind_dt = #{update.fromRemindDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="update.toRemindStatus != null">
+        to_remind_status = #{update.toRemindStatus,jdbcType=TINYINT},
+      </if>
+      <if test="update.toRemindDt != null and '' != update.toRemindDt">
+        to_remind_dt = #{update.toRemindDt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where valid = 1
+    <if test="where.sid != null and '' != where.sid">
+      and sid = #{where.sid,jdbcType=BIGINT}
+    </if>
+    <if test="where.fromDepartId != null and '' != where.fromDepartId">
+      and from_depart_id = #{where.fromDepartId,jdbcType=BIGINT}
+    </if>
+    <if test="where.toDepartId != null and '' != where.toDepartId">
+      and to_depart_id = #{where.toDepartId ,jdbcType=BIGINT}
+    </if>
+    <if test="where.fromRemindStatus != null">
+      and from_remind_status = #{where.fromRemindStatus,jdbcType=BIGINT}
+    </if>
+    <if test="where.toRemindStatus != null">
+      and to_remind_status = #{where.toRemindStatus,jdbcType=BIGINT}
+    </if>
+    <if test="where.consultationStatusList != null and where.consultationStatusList.size() > 0">
+      and consultation_status in
+      <foreach collection="where.consultationStatusList" item="item" open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+    </if>
+    <if test="where.overdueDtValidate != null and where.overdueDtValidate">
+      and insert_dt &lt;= DATE_SUB(now(),INTERVAL 24 hour)
+    </if>
+  </update>
+
+  <select id="getRemoteConsultationById" parameterType="java.lang.String" resultMap="remoteConsultation">
+    select sid, member_id, consultation_way, from_hospital_id, from_depart_id, from_doctor_id,
+    from_contact, to_hospital_id, to_depart_id, to_doctor_id, insert_dt, update_dt, valid,
+    consultation_status, from_unread_number, to_unread_number, consultation_reason, consultation_result,
+    confirm_dt, finish_dt, finish_operator_id, from_remind_status, from_remind_dt, to_remind_status,
+    to_remind_dt
+    from t_remote_consultation
+    where sid = #{sid,jdbcType=BIGINT} and valid = 1 limit 1
+  </select>
+
+  <select id="getRemoteConsultation" parameterType="com.comvee.cdms.consultation.model.param.GetRemoteConsultationMapperParam" resultMap="remoteConsultation">
+    select sid, member_id, consultation_way, from_hospital_id, from_depart_id, from_doctor_id,
+    from_contact, to_hospital_id, to_depart_id, to_doctor_id, insert_dt, update_dt, valid,
+    consultation_status, from_unread_number, to_unread_number, consultation_reason, consultation_result,
+    confirm_dt, finish_dt, finish_operator_id, from_remind_status, from_remind_dt, to_remind_status,
+    to_remind_dt
+    from t_remote_consultation
+    where valid = 1
+    <if test="sid != null and '' != sid">
+        and sid = #{sid}
+    </if>
+    <if test="memberId != null and '' != memberId">
+      and member_id = #{memberId}
+    </if>
+    <if test="consultationStatusList != null and consultationStatusList.size() > 0">
+      and consultation_status in
+      <foreach collection="consultationStatusList" open="(" close=")" separator="," item="item">
+        #{item}
+      </foreach>
+    </if>
+    limit 1
+  </select>
+
+  <select id="listRemoteConsultationVO" resultMap="remoteConsultationVO" parameterType="com.comvee.cdms.consultation.model.param.ListRemoteConsultationParam">
+    select t.sid, t.member_id, t.consultation_way, t.from_hospital_id, t.from_depart_id, t.from_doctor_id,
+    t.from_contact, t.to_hospital_id, t.to_depart_id, t.to_doctor_id, t.insert_dt, t.update_dt, t.valid,
+    t.consultation_status, t.from_unread_number, t.to_unread_number, t.consultation_reason, t.consultation_result,
+    t.confirm_dt, t.finish_dt, t.finish_operator_id, t.from_remind_status, t.from_remind_dt, t.to_remind_status,
+    t.to_remind_dt,t1.member_name,t1.sex,t1.birthday
+    ,t2.doctor_name from_doctor_name,t2.depart_name from_depart_name,t2.hospital_name from_hospital_name
+    ,t3.hospital_name to_hospital_name,t4.department_name to_depart_name,t5.doctor_name to_doctor_name
+    from t_remote_consultation t
+    left join t_member t1 on t.member_id = t1.member_id and t1.is_valid = 1
+    left join t_doctor t2 on t2.doctor_id = t.from_doctor_id
+    left join t_hospital t3 on t3.hospital_id = t.to_hospital_id
+    left join t_department t4 on t4.department_id = t.to_depart_id
+    left join t_doctor t5 on t5.doctor_id = t.to_doctor_id
+    where valid = 1
+    <if test="toDepartId != null and '' != toDepartId">
+        and t.to_depart_id = #{toDepartId}
+    </if>
+    <if test="fromDepartId != null and '' != fromDepartId">
+      and t.from_depart_id = #{fromDepartId}
+    </if>
+    <if test="orDepartId != null and '' != orDepartId">
+      and (t.to_depart_id = #{orDepartId} or t.from_depart_id = #{orDepartId})
+    </if>
+    <if test="memberIdList != null and memberIdList.size() > 0">
+      and t.member_id in
+      <foreach collection="memberIdList" open="(" close=")" separator="," item="item">
+        #{item}
+      </foreach>
+    </if>
+    <if test="consultationStatusList != null and consultationStatusList.size() > 0">
+      and t.consultation_status in
+      <foreach collection="consultationStatusList" open="(" close=")" separator="," item="item">
+        #{item}
+      </foreach>
+    </if>
+    <if test="searchMemberName != null and '' != searchMemberName">
+      and instr(t1.member_name , #{searchMemberName}) > 0
+    </if>
+    <if test="searchFromHospitalName != null and '' != searchFromHospitalName">
+      and instr(t2.hospital_name , #{searchFromHospitalName}) > 0
+    </if>
+    <if test="searchToHospitalName != null and '' != searchToHospitalName">
+      and instr(t3.hospital_name , #{searchToHospitalName}) > 0
+    </if>
+    order by t.insert_dt desc
+  </select>
+
+  <select id="countRemoteConsultation" resultType="long" parameterType="com.comvee.cdms.consultation.model.param.CountRemoteConsultationParam">
+    select count(*)
+    from t_remote_consultation t where valid = 1
+    <if test="toDepartId != null and '' != toDepartId">
+      and t.to_depart_id = #{toDepartId}
+    </if>
+    <if test="fromDepartId != null and '' != fromDepartId">
+      and t.from_depart_id = #{fromDepartId}
+    </if>
+    <if test="consultationStatusList != null and consultationStatusList.size() > 0">
+      and t.consultation_status in
+      <foreach collection="consultationStatusList" open="(" close=")" separator="," item="item">
+        #{item}
+      </foreach>
+    </if>
+    <if test="fromRemindStatus != null">
+      and t.from_remind_status = #{fromRemindStatus}
+    </if>
+    <if test="toRemindStatus != null">
+      and t.to_remind_status = #{toRemindStatus}
+    </if>
+    <if test="fromRemindDtCheck != null and fromRemindDtCheck">
+      and t.from_remind_dt &lt; now()
+    </if>
+    <if test="toRemindDtCheck != null and toRemindDtCheck">
+      and t.to_remind_dt &lt; now()
+    </if>
+  </select>
+
+  <select id="listRemoteConsultation" resultMap="remoteConsultation" parameterType="com.comvee.cdms.consultation.model.param.CountRemoteConsultationParam">
+    select sid, member_id, consultation_way, from_hospital_id, from_depart_id, from_doctor_id,
+    from_contact, to_hospital_id, to_depart_id, to_doctor_id, insert_dt, update_dt, valid,
+    consultation_status, from_unread_number, to_unread_number, consultation_reason, consultation_result,
+    confirm_dt, finish_dt, finish_operator_id, from_remind_status, from_remind_dt, to_remind_status,
+    to_remind_dt
+    from t_remote_consultation where valid = 1
+    <if test="consultationStatusList != null and consultationStatusList.size() > 0">
+      and consultation_status in
+      <foreach collection="consultationStatusList" open="(" close=")" separator="," item="item">
+        #{item}
+      </foreach>
+    </if>
+    <if test="memberIdList != null and memberIdList.size() > 0">
+      and member_id in
+      <foreach collection="memberIdList" open="(" close=")" separator="," item="item">
+        #{item}
+      </foreach>
+    </if>
+  </select>
+</mapper>

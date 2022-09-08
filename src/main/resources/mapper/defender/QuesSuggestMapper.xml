@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.QuesSuggestMapper">
+    <sql id="QuesSuggestColumns">
+         t.sid As sid ,  t.tid As tid ,  t.qid As qid ,  t.con As con ,  t.rule As rule ,  t.con_html As conHtml ,  t.suggest As suggest ,  t.is_valid As isValid ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt 
+    </sql>
+
+	<!--根据id获取题目结果表信息 -->
+	<select id="loadQuesSuggestById" resultType="com.comvee.cdms.defender.model.QuesSuggestModel">
+		SELECT 
+			<include refid="QuesSuggestColumns"/>
+		FROM tiq_ques_suggest t
+		WHERE t.sid = #{sid} 
+	</select>
+	
+	<!-- 获取题目结果分页信息  -->
+	<select id="loadQuesSuggest" parameterType="Map" resultType="com.comvee.cdms.defender.model.QuesSuggestModel">
+		SELECT 
+			<include refid="QuesSuggestColumns"/>
+		FROM tiq_ques_suggest t
+		where is_valid = 1
+	    <if test="tid!=null and tid!='' ">     
+        AND t.tid = #{tid}  
+        </if> 
+	    order by sid desc
+		
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+        AND t.sid = #{sid}  
+        </if>  
+	    <if test="tid!=null and tid!='' ">     
+        AND t.tid = #{tid}  
+        </if>  
+	    <if test="qid!=null and qid!='' ">     
+        AND t.qid = #{qid}  
+        </if>  
+	    <if test="con!=null and con!='' ">     
+        AND t.con = #{con}  
+        </if>  
+	    <if test="rule!=null and rule!='' ">     
+        AND t.rule = #{rule}  
+        </if>  
+	    <if test="conHtml!=null and conHtml!='' ">     
+        AND t.con_html = #{conHtml}  
+        </if>  
+	    <if test="suggest!=null and suggest!='' ">     
+        AND t.suggest = #{suggest}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+    <!-- 统计题目结果记录数 -->
+	<select id="countQuesSuggest" parameterType="Map" resultType="Long">
+		SELECT count( sid )
+		FROM tiq_ques_suggest t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+         AND t.sid = #{sid}    
+        </if>  
+	    <if test="tid!=null and tid!='' ">     
+         AND t.tid = #{tid}    
+        </if>  
+	    <if test="qid!=null and qid!='' ">     
+         AND t.qid = #{qid}    
+        </if>  
+	    <if test="con!=null and con!='' ">     
+         AND t.con = #{con}    
+        </if>  
+	    <if test="rule!=null and rule!='' ">     
+         AND t.rule = #{rule}    
+        </if>  
+	    <if test="conHtml!=null and conHtml!='' ">     
+         AND t.con_html = #{conHtml}    
+        </if>  
+	    <if test="suggest!=null and suggest!='' ">     
+         AND t.suggest = #{suggest}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加题目结果记录 -->
+	<insert id="addQuesSuggest">
+		INSERT INTO tiq_ques_suggest(
+				
+				    sid,
+				
+				tid,
+				qid,
+				con,
+				rule,
+				con_html,
+				suggest,
+				is_valid,
+				modify_dt,
+				insert_dt
+		) VALUES (
+			         #{sid},
+				#{tid},
+				#{qid},
+				#{con},
+				#{rule},
+				#{conHtml},
+				#{suggest},
+				1,
+				now(),
+				now()
+		)
+	</insert>
+
+    <!-- 修改题目结果记录 -->
+	<update id="modifyQuesSuggest">
+		UPDATE tiq_ques_suggest 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="sid!=null and sid!='' ">    
+	        sid = #{sid},
+	        </if>
+	        <if test="tid!=null and tid!='' ">    
+	        tid = #{tid},
+	        </if>
+	        <if test="qid!=null and qid!='' ">    
+	        qid = #{qid},
+	        </if>
+	        <if test="con!=null and con!='' ">    
+	        con = #{con},
+	        </if>
+	        <if test="rule!=null and rule!='' ">    
+	        rule = #{rule},
+	        </if>
+	        <if test="conHtml!=null and conHtml!='' ">    
+	        con_html = #{conHtml},
+	        </if>
+	        <if test="suggest!=null and suggest!='' ">    
+	        suggest = #{suggest},
+	        </if>
+	        modify_dt = now(),
+		</trim>
+		WHERE sid = #{sid}
+	</update>
+	
+	<!-- 删除题目结果记录  -->
+	<update id="delQuesSuggest" parameterType="Long">
+		UPDATE tiq_ques_suggest SET  is_valid = 0
+		WHERE sid = #{sid} and is_valid = 1
+	</update>
+	
+	
+	<update id="delQuesSuggestByTid" parameterType="Long">
+	UPDATE tiq_ques_suggest t SET t.modify_dt = SYSDATE(),t.is_valid = 0 
+	 WHERE  tid = #{tid} and is_valid = 1  
+	</update>
+
+	
+	
+
+</mapper>

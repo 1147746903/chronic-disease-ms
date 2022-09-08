@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.GreenStarPlanCourseMapper">
+    <resultMap id="course" type="com.comvee.cdms.dybloodsugar.po.GreenStarPlanCoursePO">
+        <id column="sid" property="sid" jdbcType="BIGINT"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="course_type" property="courseType" jdbcType="TINYINT"/>
+        <result column="course_index" property="courseIndex" jdbcType="TINYINT"/>
+        <result column="date_index" property="dateIndex" jdbcType="TINYINT"/>
+        <result column="jump_url" property="jumpUrl" jdbcType="VARCHAR"/>
+        <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP"/>
+        <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="addCourse" parameterType="com.comvee.cdms.dybloodsugar.po.GreenStarPlanCoursePO">
+        insert into t_green_star_plan_course(sid, title, course_type, course_index, date_index, jump_url, insert_dt, modify_dy)
+        values (#{sid}, #{title}, #{courseType}, #{courseIndex}, #{dateIndex}, #{jumpUrl}, now(), now())
+    </insert>
+    <update id="updateCourse" parameterType="com.comvee.cdms.dybloodsugar.po.GreenStarPlanCoursePO">
+        update t_green_star_plan_course
+        set modify_dy = now()
+        <if test=" title != null and title != ''">
+            , title = #{title}
+        </if>
+        <if test=" jumpUrl != null and jumpUrl != ''">
+            , jump_url = #{jumpUrl}
+        </if>
+        <if test=" courseType != null ">
+            , course_type = #{title}
+        </if>
+        <if test=" courseIndex != null ">
+            , course_index = #{courseIndex}
+        </if>
+        <if test=" dateIndex != null ">
+            , date_index = #{dateIndex}
+        </if>
+        where sid = #{sid}
+    </update>
+    <select id="listCourse" resultMap="course">
+        select *
+        from t_green_star_plan_course
+    </select>
+    <select id="listCourseByDate" resultMap="course" parameterType="integer">
+        select *
+        from t_green_star_plan_course
+        where date_index = #{dateIndex}
+    </select>
+    <select id="getCourseById"  resultMap="course" parameterType="String">
+        select *
+        from t_green_star_plan_course
+        where sid = #{sid}
+    </select>
+    <select id="countDailyCourse" resultType="integer" parameterType="integer">
+        select count(sid)
+        from t_green_star_plan_course
+        where date_index = #{dateIndex}
+    </select>
+</mapper>

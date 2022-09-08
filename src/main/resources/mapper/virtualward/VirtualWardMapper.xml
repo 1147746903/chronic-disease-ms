@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.virtualward.mapper.VirtualWardMapper">
+
+  <resultMap id="virtualWard" type="com.comvee.cdms.virtualward.model.po.VirtualWardPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="hospital_no" jdbcType="VARCHAR" property="hospitalNo" />
+    <result column="bed_no" jdbcType="VARCHAR" property="bedNo" />
+    <result column="department_id" jdbcType="BIGINT" property="departmentId" />
+    <result column="department_name" jdbcType="VARCHAR" property="departmentName" />
+    <result column="in_hospital_date" jdbcType="TIMESTAMP" property="inHospitalDate" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+    <result column="into_doctor_id" jdbcType="BIGINT" property="intoDoctorId" />
+    <result column="out_doctor_id" jdbcType="BIGINT" property="outDoctorId" />
+    <result column="into_date" jdbcType="TIMESTAMP" property="intoDate" />
+    <result column="out_date" jdbcType="TIMESTAMP" property="outDate" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="transfer_status" jdbcType="TINYINT" property="transferStatus" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="use_insulin_pump_date" jdbcType="TIMESTAMP" property="useInsulinPumpDate" />
+    <result column="use_insulin_pump_status" jdbcType="TINYINT" property="useInsulinPumpStatus" />
+    <result column="allow_into_doctor_id" jdbcType="BIGINT" property="allowIntoDoctorId" />
+    <result column="allow_out_doctor_id" jdbcType="BIGINT" property="allowOutDoctorId" />
+    <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+  </resultMap>
+
+  <resultMap id="virtualWardList" type="com.comvee.cdms.virtualward.model.po.VirtualWardListPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="hospital_no" jdbcType="VARCHAR" property="hospitalNo" />
+    <result column="bed_no" jdbcType="VARCHAR" property="bedNo" />
+    <result column="department_id" jdbcType="BIGINT" property="departmentId" />
+    <result column="department_name" jdbcType="VARCHAR" property="departmentName" />
+    <result column="in_hospital_date" jdbcType="TIMESTAMP" property="inHospitalDate" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+    <result column="into_doctor_id" jdbcType="BIGINT" property="intoDoctorId" />
+    <result column="out_doctor_id" jdbcType="BIGINT" property="outDoctorId" />
+    <result column="into_date" jdbcType="TIMESTAMP" property="intoDate" />
+    <result column="out_date" jdbcType="TIMESTAMP" property="outDate" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="transfer_status" jdbcType="TINYINT" property="transferStatus" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="use_insulin_pump_date" jdbcType="TIMESTAMP" property="useInsulinPumpDate" />
+    <result column="use_insulin_pump_status" jdbcType="TINYINT" property="useInsulinPumpStatus" />
+    <result column="allow_into_doctor_id" jdbcType="BIGINT" property="allowIntoDoctorId" />
+    <result column="allow_out_doctor_id" jdbcType="BIGINT" property="allowOutDoctorId" />
+    <result column="member_name"  property="memberName" />
+    <result column="sex"  property="sex" />
+    <result column="birthday"  property="birthday" />
+    <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+  </resultMap>
+
+  <resultMap id="InHospitalPatientList" type="com.comvee.cdms.virtualward.model.po.InHospitalPatientListPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="hospital_no" jdbcType="VARCHAR" property="hospitalNo" />
+    <result column="bed_no" jdbcType="VARCHAR" property="bedNo" />
+    <result column="department_id" jdbcType="BIGINT" property="departmentId" />
+    <result column="department_name" jdbcType="VARCHAR" property="departmentName" />
+    <result column="in_hospital_date" jdbcType="TIMESTAMP" property="inHospitalDate" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="member_name"  property="memberName" />
+    <result column="sex"  property="sex" />
+    <result column="birthday"  property="birthday" />
+    <result column="virtual_ward_id"  property="virtualWardId" />
+  </resultMap>
+
+  <insert id="addVirtualWard" parameterType="com.comvee.cdms.virtualward.model.po.VirtualWardPO">
+    insert into t_virtual_ward (sid, member_id, hospital_no,
+      bed_no, department_id, department_name,
+      in_hospital_date, into_doctor_id, out_doctor_id,
+      into_date, out_date, hospital_id,
+      transfer_status, apply_status, use_insulin_pump_date,
+      use_insulin_pump_status ,allow_into_doctor_id ,card_no)
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{hospitalNo,jdbcType=VARCHAR},
+      #{bedNo,jdbcType=VARCHAR}, #{departmentId,jdbcType=BIGINT}, #{departmentName,jdbcType=VARCHAR},
+      #{inHospitalDate,jdbcType=TIMESTAMP}, #{intoDoctorId,jdbcType=BIGINT}, #{outDoctorId,jdbcType=BIGINT},
+      #{intoDate,jdbcType=TIMESTAMP}, #{outDate,jdbcType=TIMESTAMP}, #{hospitalId,jdbcType=BIGINT},
+      #{transferStatus,jdbcType=TINYINT}, #{applyStatus,jdbcType=TINYINT}, #{useInsulinPumpDate,jdbcType=TIMESTAMP},
+      #{useInsulinPumpStatus,jdbcType=TINYINT} ,#{allowIntoDoctorId} ,#{cardNo})
+  </insert>
+
+  <update id="updateVirtualWard" parameterType="com.comvee.cdms.virtualward.model.po.VirtualWardPO">
+    update t_virtual_ward
+    <set>
+      <if test="hospitalNo != null and '' != hospitalNo">
+        hospital_no = #{hospitalNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bedNo != null and '' != bedNo">
+        bed_no = #{bedNo,jdbcType=VARCHAR},
+      </if>
+      <if test="outDoctorId != null and '' != outDoctorId">
+        out_doctor_id = #{outDoctorId,jdbcType=BIGINT},
+      </if>
+      <if test="outDate != null and '' != outDate">
+        out_date = #{outDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="transferStatus != null">
+        transfer_status = #{transferStatus,jdbcType=TINYINT},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="useInsulinPumpDate != null and '' != useInsulinPumpDate">
+        use_insulin_pump_date = #{useInsulinPumpDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="useInsulinPumpStatus != null">
+        use_insulin_pump_status = #{useInsulinPumpStatus,jdbcType=TINYINT},
+      </if>
+      <if test="allowOutDoctorId != null and '' != allowOutDoctorId">
+        allow_out_doctor_id = #{allowOutDoctorId},
+      </if>
+    </set>
+    where sid = #{sid,jdbcType=BIGINT}
+  </update>
+
+  <select id="getVirtualWard" resultMap="virtualWard" parameterType="com.comvee.cdms.virtualward.model.param.GetVirtualWardParam">
+    select sid, member_id, hospital_no, bed_no, department_id, department_name, in_hospital_date,
+    insert_dt, update_dt, valid, into_doctor_id, out_doctor_id, into_date, out_date,
+    hospital_id, transfer_status, apply_status, use_insulin_pump_date, use_insulin_pump_status
+    ,allow_into_doctor_id ,allow_out_doctor_id ,card_no
+    from t_virtual_ward where valid = 1
+    <if test="id != null and '' != id">
+      and sid = #{id}
+    </if>
+    <if test="memberId != null and '' != memberId">
+      and member_id = #{memberId}
+    </if>
+    <if test="departmentId != null and '' != departmentId">
+      and department_id = #{departmentId}
+    </if>
+    <if test="transferStatus != null">
+      and transfer_status = #{transferStatus}
+    </if>
+    <if test="transferStatusList!=null and transferStatusList.size()>0">
+      and transfer_status in
+      <foreach collection="transferStatusList" index="index" item="item" open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+    </if>
+    <if test="hospitalNo != null and '' != hospitalNo">
+      and hospital_no = #{hospitalNo}
+    </if>
+    <if test="hospitalId != null and '' != hospitalId">
+      and hospital_id = #{hospitalId}
+    </if>
+    <if test="intoDate != null">
+      and into_date = #{intoDate}
+    </if>
+
+    limit 1
+  </select>
+
+  <select id="listVirtualWardPatient" resultMap="virtualWardList" parameterType="com.comvee.cdms.virtualward.model.param.ListVirtualWardPatientParam">
+    select t.sid, t.member_id, t.hospital_no, t.bed_no, t.department_id, t.department_name, t.in_hospital_date,
+    t.insert_dt, t.update_dt, t.valid, t.into_doctor_id, t.out_doctor_id, t.into_date, out_date,
+    t.hospital_id, t.transfer_status, t.apply_status, t.use_insulin_pump_date, t.use_insulin_pump_status
+    ,t.allow_into_doctor_id ,t.allow_out_doctor_id ,q.member_name,q.sex,q.birthday ,t.card_no
+    from t_virtual_ward t,t_member q where valid = 1 and q.is_valid = 1 and t.member_id = q.member_id
+    <if test="hospitalId != null and '' != hospitalId">
+      and t.hospital_id = #{hospitalId}
+    </if>
+    <if test="keyword != null and '' != keyword">
+      and (instr(q.member_name ,#{keyword}) > 0 or instr(t.hospital_no ,#{keyword}) > 0)
+    </if>
+    <if test="departmentId != null and '' != departmentId">
+      and t.department_id = #{departmentId}
+    </if>
+    <if test="transferStatus != null">
+      and t.transfer_status = #{transferStatus}
+    </if>
+    <if test="applyStatus != null">
+      and t.apply_status = #{applyStatus}
+    </if>
+    <if test="useInsulinPumpStatus != null">
+      and t.use_insulin_pump_status = #{useInsulinPumpStatus}
+    </if>
+    <if test="statStartDt != null and '' != statStartDt and statEndDt != null and '' != statEndDt">
+      and ((t.into_date between #{statStartDt} and #{statEndDt}) or  (t.out_date is null)
+      or (t.out_date between #{statStartDt} and #{statEndDt}))
+    </if>
+    <if test="departIdList!=null and departIdList.size()>0">
+      and t.department_id in
+      <foreach collection="departIdList" index="index" item="item" open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+    </if>
+    order by t.into_date desc
+  </select>
+
+  <select id="listVirtualWardPatientRecord" resultMap="virtualWardList" parameterType="com.comvee.cdms.virtualward.model.param.ListVirtualWardPatientParam">
+    select t.sid, t.member_id, t.hospital_no, t.bed_no, t.department_id, t.department_name, t.in_hospital_date,
+    t.insert_dt, t.update_dt, t.valid, t.into_doctor_id, t.out_doctor_id, t.into_date, out_date,
+    t.hospital_id, t.transfer_status, t.apply_status, t.use_insulin_pump_date, t.use_insulin_pump_status
+    ,t.allow_into_doctor_id ,t.allow_out_doctor_id ,q.member_name,q.sex,q.birthday ,t.card_no
+    from t_virtual_ward t,t_member q where valid = 1 and q.is_valid = 1 and t.member_id = q.member_id
+    <if test="hospitalId != null and '' != hospitalId">
+      and t.hospital_id = #{hospitalId}
+    </if>
+    <if test="keyword != null and '' != keyword">
+      and (instr(q.member_name ,#{keyword}) > 0 or instr(t.hospital_no ,#{keyword}) > 0)
+    </if>
+    <if test="departmentId != null and '' != departmentId">
+       and t.department_id = #{departmentId}
+    </if>
+    <if test="transferStatus != null">
+      and t.transfer_status = #{transferStatus}
+    </if>
+    <if test="transferStatusList!=null and transferStatusList.size()>0">
+      and t.transfer_status in
+      <foreach collection="transferStatusList" index="index" item="item" open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+    </if>
+    <if test="applyStatus != null">
+      and t.apply_status = #{applyStatus}
+    </if>
+    <if test="departIdList!=null and departIdList.size()>0">
+      and t.department_id in
+      <foreach collection="departIdList" index="index" item="item" open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+    </if>
+    order by t.into_date desc
+  </select>
+
+  <select id="listInHospitalPatientForVirtualWard" resultMap="InHospitalPatientList" parameterType="com.comvee.cdms.virtualward.model.param.QueryInHospitalPatientListParam">
+    select t.sid,t.department_id,t.department_name,t.bed_no,t.hospital_no,t.in_hospital_date
+    ,q.member_name,q.birthday,q.sex,w.apply_status,t.member_id ,w.sid virtual_ward_id
+    from t_member_checkin_info t join t_member q
+    on t.member_id = q.member_id and q.is_valid = 1
+    left join t_virtual_ward w on t.member_id = w.member_id
+    and t.department_id = w.department_id and w.transfer_status = 1
+    where t.is_valid = 1 and t.checkin_status = 1
+    <if test="departmentId != null and '' != departmentId">
+      and t.department_id = #{departmentId}
+    </if>
+    <if test="keyword != null and '' != keyword">
+      and (instr(q.member_name , #{keyword}) > 0 or instr(t.hospital_no , #{keyword}) > 0)
+    </if>
+    <if test="applyStatus != null">
+      and w.apply_status = #{applyStatus}
+    </if>
+    order by t.bed_no
+  </select>
+
+  <select id="listVirtualWardDepartment" resultType="com.comvee.cdms.virtualward.model.po.VirtualWardDepartmentPO">
+    select t.department_id departmentId,t.department_name  departmentName
+    from t_virtual_ward t where t.transfer_status = 1 and t.valid = 1
+    <if test="hospitalId != null and '' != hospitalId">
+      and t.hospital_id = #{hospitalId}
+    </if>
+    group by t.department_id
+  </select>
+
+  <select id="listAllVirtualWardDepartment" resultType="com.comvee.cdms.virtualward.model.po.VirtualWardDepartmentPO">
+    select t.department_id departmentId,t.department_name  departmentName
+    from t_virtual_ward t where
+    t.valid = 1
+    <if test="transferStatus != null and '' != transferStatus">
+        and t.transfer_status = #{transferStatus}
+    </if>
+    <if test="hospitalId != null and '' != hospitalId">
+      and t.hospital_id = #{hospitalId}
+    </if>
+    group by t.department_id
+  </select>
+
+  <select id="listAllVirtualWardByHospitalId" resultMap="virtualWard">
+    select sid, member_id, hospital_no,
+    bed_no, department_id, department_name,
+    in_hospital_date, into_doctor_id, out_doctor_id,
+    into_date, out_date, hospital_id,
+    transfer_status, apply_status, use_insulin_pump_date,
+    use_insulin_pump_status ,allow_into_doctor_id
+    from t_virtual_ward  where transfer_status = 1 and valid = 1
+    <if test="hospitalId != null and '' != hospitalId">
+      and hospital_id = #{hospitalId}
+    </if>
+  </select>
+
+  <select id="getCurrentVirtualWard" resultMap="virtualWard">
+    select sid, member_id, hospital_no, bed_no, department_id, department_name, in_hospital_date,
+    insert_dt, update_dt, valid, into_doctor_id, out_doctor_id, into_date, out_date,
+    hospital_id, transfer_status, apply_status, use_insulin_pump_date, use_insulin_pump_status
+    ,allow_into_doctor_id ,allow_out_doctor_id ,card_no
+    from t_virtual_ward where valid = 1 and member_id = #{memberId} and hospital_id = #{hospitalId}
+    and transfer_status = 1
+    order by into_date desc limit 1
+  </select>
+
+  <select id="getCurrentVirtualWardByInDate" resultMap="virtualWard">
+    select sid, member_id, hospital_no, bed_no, department_id, department_name, in_hospital_date,
+    insert_dt, update_dt, valid, into_doctor_id, out_doctor_id, into_date, out_date,
+    hospital_id, transfer_status, apply_status, use_insulin_pump_date, use_insulin_pump_status
+    ,allow_into_doctor_id ,allow_out_doctor_id ,card_no
+    from t_virtual_ward where valid = 1 and member_id = #{memberId} and hospital_id = #{hospitalId}
+    and in_hospital_date = #{inHospitalDate} order by in_hospital_date desc limit 1
+  </select>
+
+  <select id="listHistoryVirtualWardWithNurseRecord" resultMap="virtualWardList" parameterType="com.comvee.cdms.virtualward.model.param.ListHistoryVirtualWardWithNurseRecordParam">
+    select t.sid, t.member_id, t.hospital_no, t.bed_no, t.department_id, t.department_name, t.in_hospital_date,
+    t.insert_dt, t.update_dt, t.valid, t.into_doctor_id, t.out_doctor_id, t.into_date, out_date,
+    t.hospital_id, t.transfer_status, t.apply_status, t.use_insulin_pump_date, t.use_insulin_pump_status
+    ,t.allow_into_doctor_id ,t.allow_out_doctor_id ,q.member_name,q.sex,q.birthday ,t.card_no
+    from t_virtual_ward t,t_member q,t_insulin_pump_nurse_record w where t.valid = 1 and q.is_valid = 1 and t.member_id = q.member_id
+    and w.valid = 1 and w.virtual_ward_id = t.sid and t.hospital_id = #{hospitalId}
+    <if test="keyword != null and '' != null">
+      and ((instr(q.member_name ,#{keyword}) > 0) or (instr(t.hospital_no ,#{keyword}) > 0))
+    </if>
+    <if test="departmentId != null and '' != departmentId">
+      and t.department_id = #{departmentId}
+    </if>
+    group by t.sid
+    order by t.insert_dt desc
+  </select>
+
+
+  <select id="listAllVirtualWardByDepartment" resultMap="virtualWard" parameterType="com.comvee.cdms.virtualward.model.param.GetVirtualWardParam">
+
+    select tv.sid, tv.member_id, tv.hospital_no, tv.bed_no, tv.department_id, tv.department_name,tv.insert_dt,
+    tv.hospital_id, tv.transfer_status, tv.apply_status
+    from t_virtual_ward tv
+    join t_blood_sugar tb on tb.member_id = tv.member_id
+    where valid = 1
+    <if test="hospitalId!=null and hospitalId!=''">
+      AND tv.hospital_id = #{hospitalId}
+    </if>
+    <if test="departmentId!=null and departmentId!=''">
+      AND tv.department_id = #{departmentId}
+    </if>
+    GROUP BY tb.member_id
+    ORDER BY tb.record_dt asc,tv.department_id asc,tv.bed_no asc
+  </select>
+
+
+
+  <select id="listAllVirtualWard" resultMap="virtualWard" >
+
+    select  member_id, hospital_no, bed_no, department_id, department_name,insert_dt,
+    hospital_id, transfer_status, apply_status ,card_no
+    from t_virtual_ward
+    WHERE
+    date_format(into_date  ,'%Y-%m-%d' ) &lt;= #{endDt}
+    AND ( date_format(out_date  ,'%Y-%m-%d' ) >= #{startDt} OR out_date IS NULL)
+    AND hospital_id = #{hospitalId}
+    <if test="departmentId!=null and departmentId != ''">
+      AND department_id = #{departmentId}
+    </if>
+    <if test="transferStatus!=null and transferStatus != ''">
+      AND transfer_status = #{transferStatus}
+    </if>
+    <if test="departmentIdList!=null and departmentIdList.size>0">
+      AND department_id IN
+      <foreach collection="departmentIdList" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    ORDER BY department_id asc,bed_no asc
+  </select>
+
+  <select id="getVirtualWardByMemberId" resultMap="virtualWard" parameterType="com.comvee.cdms.virtualward.model.param.GetVirtualWardParam">
+    select sid, member_id, hospital_no, bed_no, department_id, department_name,insert_dt,
+    hospital_id, transfer_status, apply_status ,card_no
+    from t_virtual_ward where valid = 1  and member_id =#{memberId}
+    and hospital_id = #{hospitalId}
+    and out_date is null
+    order by insert_dt desc limit 1
+  </select>
+
+  <select id="listTodayBloodSugarByVirtualWard" resultMap="virtualWard" parameterType="com.comvee.cdms.virtualward.model.param.GetVirtualWardParam">
+    select w.sid, w.member_id, w.hospital_no, w.bed_no, w.department_id, w.department_name,w.insert_dt,
+    w.hospital_id, w.transfer_status, w.apply_status ,w.card_no
+    from t_virtual_ward w
+    LEFT JOIN t_blood_sugar tb ON w.member_id = tb.member_id
+    left join t_member m on w.member_id = m.member_id
+    where w.valid = 1 and w.transfer_status = 1
+    <if test="startDt != null and '' != startDt and endDt != null and '' != endDt">
+      and into_date &lt; #{endDt}
+      AND ( out_date > #{startDt} OR out_date IS NULL)
+    </if>
+    <if test="hospitalId!=null and hospitalId != ''">
+      AND w.hospital_id = #{hospitalId}
+    </if>
+    <if test="departmentId!=null and departmentId != ''">
+      AND w.department_id = #{departmentId}
+    </if>
+    <if test="departmentIdList!=null and departmentIdList.size>0">
+      AND w.department_id IN
+      <foreach collection="departmentIdList" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="paramLevel!=null and paramLevel!=''">
+      AND tb.param_level in (${paramLevel})
+    </if>
+    <if test="startDt!=null and startDt!=''">
+      AND tb.record_dt &gt;= #{startDt}
+    </if>
+    <if test="endDt!=null and endDt!=''">
+      AND tb.record_dt &lt;= #{endDt}
+    </if>
+    <if test="keyword!=null and keyword != ''">
+      AND (instr(m.member_name ,#{keyword}) > 0 or instr(w.bed_no  ,#{keyword}) > 0 or instr(w.hospital_no  ,#{keyword}) > 0)
+    </if>
+    GROUP BY w.member_id
+    ORDER BY w.department_id asc,w.bed_no asc
+  </select>
+
+  <select id="listDepartmentByMemberId" resultMap="virtualWard" parameterType="com.comvee.cdms.virtualward.model.param.GetVirtualWardParam">
+    select sid, member_id, hospital_no, bed_no, department_id, department_name,insert_dt,
+    hospital_id, transfer_status, apply_status
+    from t_virtual_ward where valid = 1
+    <if test="listMemberId!=null and listMemberId.size()>0">
+      and member_id in
+      <foreach collection="listMemberId" index="index" item="item" open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+    </if>
+     group by department_name
+    ORDER BY  department_id asc,bed_no asc
+  </select>
+
+  <select id="listVirtualWardMemberByMonitor" resultType="string" parameterType="com.comvee.cdms.virtualward.model.param.ListVirtualWardMemberByMonitorParam">
+      select t.member_id from t_virtual_ward t where t.valid = 1 and t.transfer_status = 1 and t.hospital_id = #{hospitalId}
+      <if test="departmentIdList != null and departmentIdList.size() > 0">
+        and t.department_id in
+        <foreach collection="departmentIdList" item="item" open="(" close=")" separator=",">
+          #{item}
+        </foreach>
+      </if>
+      <if test="monitor != null">
+        and
+        <if test="monitor == 0">
+          not
+        </if>
+        exists (
+        select 1 from t_blood_sugar q where q.is_valid = 1 and q.record_dt > DATE_FORMAT(now(),'%Y-%m-%d')
+        and q.member_id = t.member_id
+        )
+      </if>
+  </select>
+</mapper>

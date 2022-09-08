@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.mapper.CfgQuesMapper">
+    <sql id="CfgQuesColumns">
+         t.qid As qid ,  t.title As title ,  t.keyword As keyword ,  t.type As type ,  t.is_valid As isValid ,  
+         DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  
+         t.code As code ,  t.unit As unit ,  t.max_val As maxVal ,  t.min_val As minVal ,  t.default_val As defaultVal ,  
+         t.iffloat As iffloat ,  t.seq As seq ,  t.son_type As sonType ,  t.files_code As filesCode ,  t.help As help ,  t.label As label,t.answer 
+    </sql>
+
+	<!--根据id获取题目配置表信息 -->
+	<select id="loadCfgQuesById" resultType="com.comvee.cdms.defender.model.CfgQuesModel">
+		SELECT 
+			<include refid="CfgQuesColumns"/>
+		FROM tiq_cfg_ques t
+		WHERE t.qid = #{qid} 
+	</select>
+	
+	<!-- 获取题目配置分页信息  -->
+	<select id="loadCfgQues" resultType="com.comvee.cdms.defender.model.CfgQuesModel">
+		SELECT 
+			<include refid="CfgQuesColumns"/>
+		FROM tiq_cfg_ques t
+		where is_valid = 1
+	    <if test="label!=null">     
+        AND t.label = #{label}  
+        </if>  
+	    <if test="param !=null and param!='' ">   
+	    	and ( t.title like CONCAT(CONCAT('%',#{param},'%'))  or t.code like CONCAT(CONCAT('%',#{param},'%')) )
+	    </if>
+	     order by t.insert_dt desc ,t.qid desc 
+		<!--
+		<where>
+	    <if test="qid!=null and qid!='' ">     
+        AND t.qid = #{qid}  
+        </if>  
+	    <if test="title!=null and title!='' ">     
+        AND t.title = #{title}  
+        </if>  
+	    <if test="keyword!=null and keyword!='' ">     
+        AND t.keyword = #{keyword}  
+        </if>  
+	    <if test="type!=null and type!='' ">     
+        AND t.type = #{type}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+	    <if test="code!=null and code!='' ">     
+        AND t.code = #{code}  
+        </if>  
+	    <if test="unit!=null and unit!='' ">     
+        AND t.unit = #{unit}  
+        </if>  
+	    <if test="maxVal!=null and maxVal!='' ">     
+        AND t.max_val = #{maxVal}  
+        </if>  
+	    <if test="minVal!=null and minVal!='' ">     
+        AND t.min_val = #{minVal}  
+        </if>  
+	    <if test="defaultVal!=null and defaultVal!='' ">     
+        AND t.default_val = #{defaultVal}  
+        </if>  
+	    <if test="iffloat!=null and iffloat!='' ">     
+        AND t.iffloat = #{iffloat}  
+        </if>  
+	    <if test="seq!=null and seq!='' ">     
+        AND t.seq = #{seq}  
+        </if>  
+	    <if test="sonType!=null and sonType!='' ">     
+        AND t.son_type = #{sonType}  
+        </if>  
+	    <if test="filesCode!=null and filesCode!='' ">     
+        AND t.files_code = #{filesCode}  
+        </if>  
+	    <if test="help!=null and help!='' ">     
+        AND t.help = #{help}  
+        </if>  
+	    <if test="label!=null and label!='' ">     
+        AND t.label = #{label}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+    <!-- 统计题目配置记录数 -->
+	<select id="countCfgQues" parameterType="Map" resultType="Long">
+		SELECT count( qid )
+		FROM tiq_cfg_ques t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="qid!=null and qid!='' ">     
+         AND t.qid = #{qid}    
+        </if>  
+	    <if test="title!=null and title!='' ">     
+         AND t.title = #{title}    
+        </if>  
+	    <if test="keyword!=null and keyword!='' ">     
+         AND t.keyword = #{keyword}    
+        </if>  
+	    <if test="type!=null and type!='' ">     
+         AND t.type = #{type}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+	    <if test="code!=null and code!='' ">     
+         AND t.code = #{code}    
+        </if>  
+	    <if test="unit!=null and unit!='' ">     
+         AND t.unit = #{unit}    
+        </if>  
+	    <if test="maxVal!=null and maxVal!='' ">     
+         AND t.max_val = #{maxVal}    
+        </if>  
+	    <if test="minVal!=null and minVal!='' ">     
+         AND t.min_val = #{minVal}    
+        </if>  
+	    <if test="defaultVal!=null and defaultVal!='' ">     
+         AND t.default_val = #{defaultVal}    
+        </if>  
+	    <if test="iffloat!=null and iffloat!='' ">     
+         AND t.iffloat = #{iffloat}    
+        </if>  
+	    <if test="seq!=null and seq!='' ">     
+         AND t.seq = #{seq}    
+        </if>  
+	    <if test="sonType!=null and sonType!='' ">     
+         AND t.son_type = #{sonType}    
+        </if>  
+	    <if test="filesCode!=null and filesCode!='' ">     
+         AND t.files_code = #{filesCode}    
+        </if>  
+	    <if test="help!=null and help!='' ">     
+         AND t.help = #{help}    
+        </if>  
+	    <if test="label!=null and label!='' ">     
+         AND t.label = #{label}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加题目配置记录 -->
+	<insert id="addCfgQues">
+		INSERT INTO tiq_cfg_ques(
+				
+				    qid,
+				
+				title,
+				keyword,
+				type,
+				is_valid,
+				modify_dt,
+				insert_dt,
+				code,
+				unit,
+				max_val,
+				min_val,
+				default_val,
+				iffloat,
+				seq,
+				son_type,
+				files_code,
+				help,
+				label,
+				answer
+		) VALUES (
+			         #{qid},
+				#{title},
+				#{keyword},
+				#{type},
+				1,
+				now(),
+				now(),
+				#{code},
+				#{unit},
+				#{maxVal},
+				#{minVal},
+				#{defaultVal},
+				#{iffloat},
+				#{seq},
+				#{sonType},
+				#{filesCode},
+				#{help},
+				#{label},
+				#{answer}
+		)
+	</insert>
+
+    <!-- 修改题目配置记录 -->
+	<update id="modifyCfgQues">
+		UPDATE tiq_cfg_ques 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="qid!=null and qid!='' ">    
+	        qid = #{qid},
+	        </if>
+	        <if test="title!=null and title!='' ">    
+	        title = #{title},
+	        </if>
+	        <if test="keyword!=null and keyword!='' ">    
+	        keyword = #{keyword},
+	        </if>
+	        <if test="type!=null and type!='' ">    
+	        type = #{type},
+	        </if>
+	        <if test="code!=null and code!='' ">    
+	        code = #{code},
+	        </if>
+	        <if test="unit!=null and unit!='' ">    
+	        unit = #{unit},
+	        </if>
+	        <if test="maxVal!=null and maxVal!='' ">    
+	        max_val = #{maxVal},
+	        </if>
+	        <if test="minVal!=null and minVal!='' ">    
+	        min_val = #{minVal},
+	        </if>
+	        <if test="defaultVal!=null and defaultVal!='' ">    
+	        default_val = #{defaultVal},
+	        </if>
+	        <if test="iffloat!=null and iffloat!='' ">    
+	        iffloat = #{iffloat},
+	        </if>
+	        <if test="seq!=null and seq!='' ">    
+	        seq = #{seq},
+	        </if>
+	        <if test="sonType!=null and sonType!='' ">    
+	        son_type = #{sonType},
+	        </if>
+	        <if test="filesCode!=null and filesCode!='' ">    
+	        files_code = #{filesCode},
+	        </if>
+	        <if test="help!=null and help!='' ">    
+	        help = #{help},
+	        </if>
+	        <if test="label!=null and label!='' ">    
+	        label = #{label},
+	        </if>
+	        <if test="answer!=null and answer!='' ">    
+	        answer = #{answer},
+	        </if>
+	        modify_dt = now(),
+		</trim>
+		WHERE qid = #{qid}
+	</update>
+	
+	<!-- 删除题目配置记录  -->
+	<update id="delCfgQues" parameterType="Long">
+		UPDATE tiq_cfg_ques SET  is_valid = 0 , modify_dt = now()
+		WHERE qid = #{qid} and is_valid = 1
+	</update>
+	
+	<select id="loadQuesByKnowledgeId" resultType="com.comvee.cdms.defender.model.CfgQuesModel">
+		SELECT <include refid="CfgQuesColumns"/>
+		from tiq_cfg_ques t left join tiq_knowledge_ques k on t.qid=k.ques_id 
+		where k.knowledge_id=#{knowledgeId} and k.is_valid=1 and t.is_valid=1
+	</select>
+	
+	<select id="loadQuesByCourseId" resultType="com.comvee.cdms.defender.model.CfgQuesModel">
+		SELECT <include refid="CfgQuesColumns"/>
+		from tiq_cfg_ques t left join tiq_course_ques k on t.qid=k.qid 
+		where k.course_id=#{courseId} and k.is_valid=1 and t.is_valid=1
+		order by k.sort;
+	</select>
+
+</mapper>

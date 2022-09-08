@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.knowledge.mapper.WikiMapper">
+
+	<resultMap id="wiki" type="com.comvee.cdms.knowledge.po.WikiPO">
+		<id column="sid" jdbcType="BIGINT" property="sid" />
+		<result column="parent_id" jdbcType="BIGINT" property="parentId" />
+		<result column="has_node" jdbcType="TINYINT" property="hasNode" />
+		<result column="click_num" jdbcType="INTEGER" property="clickNum" />
+		<result column="fictitious_clicks_num" jdbcType="INTEGER" property="fictitiousClicksNum" />
+		<result column="sort" jdbcType="TINYINT" property="sort" />
+		<result column="is_valid" jdbcType="TINYINT" property="isValid" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+		<result column="title" jdbcType="LONGVARCHAR" property="title" />
+		<result column="digest" jdbcType="LONGVARCHAR" property="digest" />
+		<result column="url" jdbcType="LONGVARCHAR" property="url" />
+		<result column="img_url" jdbcType="LONGVARCHAR" property="imgUrl" />
+	</resultMap>
+
+	<select id="listWiki"  resultMap="wiki">
+		select sid, parent_id, has_node, click_num, fictitious_clicks_num, sort, is_valid,
+		insert_dt, modify_dt, title, digest, url, img_url
+		from t_wiki
+		where parent_id = #{pid}
+	</select>
+
+	<update id="updateWikiClick" >
+		update t_wiki
+		set click_num =click_num + 1,
+		fictitious_clicks_num = fictitious_clicks_num + 1
+		where sid = #{sid}
+	</update>
+</mapper>

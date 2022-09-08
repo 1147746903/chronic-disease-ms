@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.bloodmonitor.mapper.MemberMonitorTaskCardMapper" >
+  <resultMap id="BaseResultMap" type="com.comvee.cdms.bloodmonitor.po.MemberMonitorTaskCardPO" >
+    <id column="sid" property="sid" jdbcType="BIGINT" />
+    <result column="plan_id" property="planId" jdbcType="BIGINT" />
+    <result column="member_id" property="memberId" jdbcType="BIGINT" />
+    <result column="date_code" property="dateCode" jdbcType="VARCHAR" />
+    <result column="param_code" property="paramCode" jdbcType="VARCHAR" />
+    <result column="monitor_time" property="monitorTime" jdbcType="VARCHAR" />
+    <result column="monitor_type" property="monitorType" jdbcType="TINYINT" />
+    <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP" />
+    <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP" />
+    <result column="is_monitor" property="isMonitor" jdbcType="TINYINT"/>
+    <result column="is_valid" property="isValid" jdbcType="TINYINT"/>
+    <result column="illness_type" property="illnessType" jdbcType="TINYINT"/>
+    <result column="monitor_state" property="monitorState" jdbcType="TINYINT"/>
+  </resultMap>
+    <resultMap id="listTaskPoMemberListMap" type="com.comvee.cdms.sign.vo.MemberBloodSugarVO" >
+        <result column="member_id" property="memberId" />
+        <result column="member_name" property="memberName" />
+        <result column="department_name" property="departmentName"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="doctor_name" property="doctorName"/>
+        <result column="plan_id" property="planId"/>
+        <result column="hospital_no" property="hospitalNo"/>
+        <result column="diabetes_type" property="diabetesType"/>
+    </resultMap>
+
+    <sql id="Hospital_Log_Column" >
+		sid, member_id, member_name, in_hospital_date, out_hospital_date, department_name,
+	department_id, bed_no, has_return_visit, insert_dt, modify_dt, is_valid, sex, card_no,
+	in_hospital_card_no, in_hospital_day, matters_needing_attent, in_status, pat_patient_id,
+	doctor_zg_code, adm_no, main_nurse_desc, doctor_zg, nur_level, eat_model, charge_class,
+	hospital_no, is_notification, hospital_id, initial_diagnosis, treatment_situation,
+	out_hospital_advice_json
+	</sql>
+
+  <insert id="addMemberMonitorTaskCard" parameterType="com.comvee.cdms.bloodmonitor.po.MemberMonitorTaskCardPO">
+      	insert into t_member_monitor_task_card
+		(	sid,plan_id,  member_id,  date_code, param_code, monitor_time, monitor_type, monitor_dt, insert_dt, modify_dt ,is_monitor ,is_valid ,illness_type,monitor_state
+		) values
+		(
+			#{sid}, #{planId}, #{memberId}, #{dateCode}, #{paramCode} ,#{monitorTime} ,#{monitorType}, #{monitorDt} ,now(),  now() ,0 ,1 ,#{illnessType},1
+		)
+  </insert>
+    <update id="updateMemberMonitorTaskCard">
+        UPDATE `t_member_monitor_task_card` t SET t.monitor_state = 0,t.modify_dt = now()
+  		<where>
+            <if test="sids!=null and sids.size()>0">
+                t.sid in
+                <foreach collection="sids" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+
+    </update>
+
+    <select id="listAfterMemberMonitorTaskCard" resultMap="BaseResultMap">
+        select * from t_member_monitor_task_card t where t.plan_id = #{planId} and t.param_code >= #{dt}
+        <if test="insertDt !=null and insertDt!='' ">
+            AND ( insert_dt like  CONCAT(CONCAT('%',#{insertDt},'%'))  )
+        </if>
+        order by insert_dt desc
+    </select>
+
+    <select id="listBeforeMemberMonitorTaskCard" resultMap="BaseResultMap">
+        select * from t_member_monitor_task_card t where t.plan_id = #{planId} and t.param_code &lt; #{dt} order by insert_dt desc
+    </select>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select * from t_member_monitor_task_card where is_valid = 1 and member_id= #{memberId} and monitor_time = #{monitorTime} and monitor_state = 1
+        <if test="insertDt !=null and insertDt!='' ">
+            AND ( insert_dt like  CONCAT(CONCAT('%',#{insertDt},'%'))  )
+        </if>
+
+    </select>
+
+    <select id="listTaskPoOfMember" resultMap="BaseResultMap">
+        select sid,plan_id,  member_id,  date_code, param_code, monitor_time, monitor_type, monitor_dt, insert_dt, modify_dt ,is_monitor ,is_valid ,illness_type ,monitor_state
+        from t_member_monitor_task_card
+        where is_valid=1 and monitor_state = 1
+        and member_id = #{memberId}
+        <if test="insertDt !=null and insertDt!='' ">
+            AND ( insert_dt like  CONCAT(CONCAT('%',#{insertDt},'%'))  )
+        </if>
+        <if test="illnessType!=null">
+            and illness_type = #{illnessType}
+        </if>
+    </select>
+    <select id="listTaskPoMemberList" parameterType="com.comvee.cdms.sign.dto.MemberBloodSugarDTO" resultMap="listTaskPoMemberListMap">
+        select t.member_id,mci.member_name,mci.department_name,mci.doctor_zg doctor_name,t.plan_id,mci.department_id,mci.hospital_no,m.diabetes_type
+        from t_member_monitor_plan t
+        inner join  t_member_monitor_task_card tc on tc.plan_id = t.plan_id
+        left join t_member m on m.member_id = t.member_id
+        left join
+        (select * from
+        (select <include refid="Hospital_Log_Column"/>
+        from t_member_in_hospital_log order by insert_dt desc) mhl group by mhl.member_id) mci on mci.member_id = t.member_id
+        where t.is_valid=1 and t.illness_type = 1 and  t.in_progress = 1 and
+        tc.monitor_dt = DATE_FORMAT(#{monitorDt},'%Y-%m-%d')
+        <if test="keyword != null and '' != keyword">
+            and (instr(mci.member_name, #{keyword}) > 0
+            or instr(mci.doctor_zg, #{keyword}) > 0 or instr(mci.hospital_no, #{keyword}) > 0)
+        </if>
+        <if test="departmentId!=null and departmentId!=''">
+            and mci.department_id = #{departmentId}
+        </if>
+        <if test="departmentIdList!=null and departmentIdList.size()&gt;0">
+            and mci.department_id in
+            <foreach collection="departmentIdList" item="item" open="(" close=")" separator="," index="index">
+                #{item}
+            </foreach>
+        </if>
+        group by t.member_id order by t.insert_dt desc
+    </select>
+    <select id="listTaskByPlanId" resultMap="BaseResultMap">
+        select sid,plan_id,  member_id,  date_code, param_code, monitor_time, monitor_type, monitor_dt, insert_dt, modify_dt ,is_monitor ,is_valid ,illness_type ,monitor_state
+        from t_member_monitor_task_card
+        where
+       plan_id = #{planId} and monitor_dt =  DATE_FORMAT(#{monitorDt},'%Y-%m-%d')
+    </select>
+    <update id="updateMonitorTaskCard">
+        UPDATE `t_member_monitor_task_card` t
+        <set>
+        t.modify_dt = now(),
+        <if test="isMonitor != null">
+            t.is_monitor = #{isMonitor},
+        </if>
+        <if test="monitorDt != null and monitorDt!=''" >
+            t.monitor_dt = #{monitorDt},
+        </if>
+        <if test="paramValue != null and paramValue!=''">
+            t.param_value = #{paramValue},
+        </if>
+        </set>
+        where t.member_id = #{memberId}
+        and t.param_code = #{paramCode}
+        AND ( t.insert_dt like  CONCAT(CONCAT('%',#{insertDt},'%'))  )
+        and t.monitor_state = 1
+        <if test="monitorType != null">
+           and t.monitor_type = #{monitorType}
+        </if>
+
+    </update>
+</mapper>

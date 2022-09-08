@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.DyBloodManagementMapper">
+
+    <resultMap id="management" type="com.comvee.cdms.dybloodsugar.po.DyBloodManagementPO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+        <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName" />
+        <result column="equipment_no" jdbcType="VARCHAR" property="equipmentNo" />
+        <result column="equipment_type" jdbcType="TINYINT" property="equipmentType" />
+        <result column="outbound_dt" jdbcType="VARCHAR" property="outBoundDt" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+        <result column="is_valid" jdbcType="INTEGER" property="isValid" />
+    </resultMap>
+
+
+    <insert id="addHospitalNameAndEquipmentNo" parameterType="com.comvee.cdms.dybloodsugar.po.DyBloodManagementPO">
+    insert into dy_blood_management (sid, hospital_id, hospital_name, equipment_no, equipment_type,
+    outbound_dt,remark,insert_dt, modify_dt, is_valid
+    )
+    values (#{sid,jdbcType=BIGINT}, #{hospitalId,jdbcType=BIGINT}, #{hospitalName,jdbcType=VARCHAR},
+     #{equipmentNo,jdbcType=VARCHAR},#{equipmentType,jdbcType=TINYINT},#{outBoundDt,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},now(),now(), 1)
+  </insert>
+
+    <select id="getBloodManagementByHospitalIdAndEquipment" resultMap="management">
+        SELECT
+        sid, hospital_id, hospital_name, equipment_no, equipment_type,
+        outbound_dt,remark,insert_dt, modify_dt, is_valid
+        FROM
+        dy_blood_management
+        WHERE
+        is_valid = 1
+        <if test="hospitalName != null">
+            and hospital_name like  CONCAT(CONCAT('%', #{hospitalName},'%'))
+        </if>
+        <if test="equipmentNo != null">
+            and equipment_no like CONCAT(CONCAT('%', #{equipmentNo},'%'))
+        </if>
+    </select>
+
+    <select id="getBloodManagement" resultMap="management">
+        SELECT
+        sid, hospital_id, hospital_name, equipment_no, equipment_type,
+        outbound_dt,remark,insert_dt, modify_dt, is_valid
+        FROM
+        dy_blood_management
+        WHERE
+        is_valid = 1
+        and equipment_no = #{equipmentNo}
+    </select>
+
+    <select id="getManagementBySid" resultMap="management">
+        SELECT
+        sid, hospital_id, hospital_name, equipment_no, equipment_type,
+        outbound_dt,remark,insert_dt, modify_dt, is_valid
+        FROM
+        dy_blood_management
+        WHERE
+        sid = #{sid}
+
+    </select>
+
+    <update id="updateBloodManagement" parameterType="java.lang.String">
+        update dy_blood_management
+        <set>
+            <if test="equipmentNo != null">
+                equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+            </if>
+            <if test="equipmentType != null">
+                equipment_type = #{equipmentType,jdbcType=VARCHAR},
+            </if>
+            <if test="outBoundDt != null">
+                outbound_dt =  #{outBoundDt,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark =  #{remark,jdbcType=VARCHAR},
+            </if>
+            modify_dt = now() ,insert_dt = now()
+        </set>
+        where sid = #{sid}
+    </update>
+
+    <update id="deleteManagementBySid" parameterType="java.lang.String">
+        update dy_blood_management
+        set is_valid = 0,modify_dt = now() ,insert_dt = now()
+        where sid = #{sid}
+    </update>
+
+    <select id="listHospitals" resultMap="management">
+        SELECT
+        sid, hospital_id, hospital_name, equipment_no, equipment_type,
+        outbound_dt,remark,insert_dt, modify_dt, is_valid
+        FROM
+        dy_blood_management
+        WHERE
+        is_valid = 1
+        group by hospital_id
+    </select>
+
+    <select id="getDyBloodManagementPO" resultMap="management">
+        SELECT
+        sid, hospital_id, hospital_name, equipment_no, equipment_type,
+        outbound_dt,remark,insert_dt, modify_dt, is_valid
+        FROM
+        dy_blood_management
+        WHERE
+        is_valid = 1
+        and sid = #{sid}
+    </select>
+    <select id="countAllWhiteBoxByHos" parameterType="com.comvee.cdms.statistics.dto.HospitalDataDTO" resultType="long">
+        select count(sid)
+        from dy_blood_management
+        where is_valid = 1
+          and hospital_id = #{hospitalId}
+          and equipment_type = 1
+        <if test="beginDt != null and beginDt != '' ">
+            and outbound_dt >= #{beginDt}
+        </if>
+        <if test="endDt != null and endDt != '' ">
+            and #{endDt} >= outbound_dt
+        </if>
+    </select>
+    <select id="countHandheldDeviceByHos" parameterType="com.comvee.cdms.statistics.dto.HospitalDataDTO" resultType="long">
+        select count(sid)
+        from dy_blood_management
+        where is_valid = 1
+        and hospital_id = #{hospitalId}
+        and equipment_type = 2
+        <if test="beginDt != null and beginDt != '' ">
+            and outbound_dt >= #{beginDt}
+        </if>
+        <if test="endDt != null and endDt != '' ">
+            and #{endDt} >= outbound_dt
+        </if>
+    </select>
+</mapper>

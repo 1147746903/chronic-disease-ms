@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.other.mapper.DoctorPushTokenMapper">
+
+  <resultMap id="doctorPushToken" type="com.comvee.cdms.other.po.DoctorPushTokenPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="push_token" jdbcType="VARCHAR" property="pushToken" />
+    <result column="device_type" jdbcType="TINYINT" property="deviceType" />
+    <result column="channel_code" jdbcType="VARCHAR" property="channelCode" />
+  </resultMap>
+
+  <delete id="deleteDoctorPushTokenById" >
+    delete from t_doctor_push_token
+    where sid = #{sid,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="addDoctorPushToken" parameterType="com.comvee.cdms.other.po.DoctorPushTokenPO">
+    insert into t_doctor_push_token (sid, doctor_id, push_token, device_type, channel_code)
+    values (#{sid,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{pushToken,jdbcType=VARCHAR}, #{deviceType,jdbcType=TINYINT},
+      #{channelCode,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateDoctorPushToken" parameterType="com.comvee.cdms.other.po.DoctorPushTokenPO">
+    update t_doctor_push_token
+    <set>
+      <if test="pushToken != null and '' != pushToken">
+        push_token = #{pushToken,jdbcType=VARCHAR},
+      </if>
+      <if test="pushToken != null and '' != pushToken">
+        device_type = #{deviceType,jdbcType=TINYINT},
+      </if>
+      <if test="pushToken != null and '' != pushToken">
+        channel_code = #{channelCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <where>
+      <if test="sid != null and '' != sid">
+        and sid = #{sid,jdbcType=BIGINT}
+      </if>
+      <if test="doctorId != null and '' != doctorId">
+        and doctor_id = #{doctorId,jdbcType=BIGINT}
+      </if>
+    </where>
+  </update>
+
+  <select id="getDoctorPushToken"  resultMap="doctorPushToken">
+    select sid, doctor_id, insert_dt, update_dt, push_token, device_type, channel_code
+    from t_doctor_push_token
+    <where>
+      <if test="doctorId != null and '' != doctorId">
+        and doctor_id = #{doctorId}
+      </if>
+      <if test="pushToken != null and '' != pushToken">
+        and push_token = #{pushToken}
+      </if>
+    </where>
+    limit 1
+  </select>
+
+</mapper>

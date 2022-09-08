@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.healthrecord.mapper.HealthRecordMapper">
+
+  <resultMap id="healthRecord" type="com.comvee.cdms.healthrecord.model.po.HealthRecordPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="checkup_date" jdbcType="DATE" property="checkupDate" />
+    <result column="visit_type" jdbcType="TINYINT" property="visitType" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+    <result column="jw_sync_status" jdbcType="TINYINT" property="jwSyncStatus" />
+  </resultMap>
+
+  <resultMap id="healthRecordDetail" type="com.comvee.cdms.healthrecord.model.po.HealthRecordDetailPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="pid" jdbcType="BIGINT" property="pid" />
+    <result column="checkup_item" jdbcType="VARCHAR" property="checkupItem" />
+    <result column="checkup_result" jdbcType="VARCHAR" property="checkupResult" />
+    <result column="checkup_dt" jdbcType="TIMESTAMP" property="checkupDt" />
+    <result column="device_identifier" jdbcType="VARCHAR" property="deviceIdentifier" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+  </resultMap>
+
+  <resultMap id="healthRecordWithMember" type="com.comvee.cdms.healthrecord.model.vo.HealthRecordWithMemberVO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="checkup_date" jdbcType="DATE" property="checkupDate" />
+    <result column="visit_type" jdbcType="TINYINT" property="visitType" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="member_name"  property="memberName" />
+    <result column="sex"  property="sex" />
+    <result column="birthday"  property="birthday" />
+    <result column="mobile_phone"  property="mobilePhone" />
+    <result column="is_diabetes"  property="isDiabetes" />
+    <result column="essential_hyp"  property="essentialHyp" />
+    <result column="jw_sync_status"  property="jwSyncStatus" />
+  </resultMap>
+
+
+    <select id="listHealthRecord" parameterType="com.comvee.cdms.healthrecord.model.dto.ListHealthRecordDTO" resultMap="healthRecordWithMember">
+    select t.sid, t.member_id, t.hospital_id, t.checkup_date, t.visit_type, t.insert_dt
+    ,q.member_name,q.sex,q.birthday,q.mobile_phone,q.is_diabetes,q.essential_hyp,t.jw_sync_status
+    from t_health_record t,t_member q
+    where t.valid = 1 and q.is_valid = 1 and t.member_id = q.member_id
+    <if test="hospitalId != null and '' != hospitalId">
+        and t.hospital_id = #{hospitalId}
+    </if>
+    <if test="keyword != null and '' != keyword">
+      and (instr(q.member_name ,#{keyword}) > 0 or instr(q.member_name_py ,#{keyword}) > 0)
+    </if>
+    <if test="checkupDateStart != null and '' != checkupDateStart">
+      and t.checkup_date &gt;= #{checkupDateStart}
+    </if>
+    <if test="checkupDateEnd != null and '' != checkupDateEnd">
+      and t.checkup_date &lt;= #{checkupDateEnd}
+    </if>
+    <if test="visitType != null">
+      and t.visit_type = #{visitType}
+    </if>
+    <if test="jwSyncStatus != null">
+        and t.jw_sync_status = #{jwSyncStatus}
+    </if>
+        <if test="jwSyncStatusList!=null and jwSyncStatusList.size()&gt;0">
+            AND t.jw_sync_status IN
+            <foreach collection="jwSyncStatusList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    order by t.insert_dt desc
+  </select>
+
+  <select id="listHealthRecordDetail" resultMap="healthRecordDetail">
+    select sid, pid, checkup_item, checkup_result, checkup_dt, device_identifier, insert_dt,
+    update_dt, valid
+    from t_health_record_detail where valid = 1 and pid = #{pid} order by checkup_dt desc
+  </select>
+
+  <select id="countHealthRecord" resultType="long" parameterType="com.comvee.cdms.healthrecord.model.dto.CountHealthRecordDTO">
+    select ifnull(count(*) ,0)
+    from t_health_record t,t_member q
+    where t.valid = 1 and q.is_valid = 1 and t.member_id = q.member_id
+    <if test="hospitalId != null and '' != hospitalId">
+      and t.hospital_id = #{hospitalId}
+    </if>
+    <if test="checkupDate != null and '' != checkupDate">
+      and t.checkup_date = #{checkupDate}
+    </if>
+  </select>
+
+  <select id="countHealthRecordDistinctPeople" resultType="long" parameterType="com.comvee.cdms.healthrecord.model.dto.CountHealthRecordDTO">
+    select ifnull(count(*) ,0) from (
+      select t.sid
+      from t_health_record t,t_member q
+      where t.valid = 1 and q.is_valid = 1 and t.member_id = q.member_id
+      <if test="hospitalId != null and '' != hospitalId">
+        and t.hospital_id = #{hospitalId}
+      </if>
+      <if test="isDiabetes != null and '' != isDiabetes">
+        and q.is_diabetes = #{isDiabetes}
+      </if>
+      <if test="essentialHyp != null and '' != essentialHyp">
+        and q.essential_hyp = #{essentialHyp}
+      </if>
+      group by t.member_id
+    ) cnt
+  </select>
+
+  <select id="getLastConstitutionHealthRecordDetail" resultType="String" resultMap="healthRecordDetail">
+    select b.sid, pid, checkup_item, checkup_result, checkup_dt, device_identifier, b.insert_dt,
+           b.update_dt, b.valid
+    from t_health_record a left join t_health_record_detail b on a.sid = b.pid
+    where a.valid = 1 and member_id = #{memberId}
+      and checkup_item = 'constitution'
+    order by checkup_dt desc
+      limit 1
+  </select>
+    <select id="getHealthRecord" resultMap="healthRecord">
+        select sid, member_id, hospital_id, checkup_date, visit_type, insert_dt,
+           update_dt, valid,jw_sync_status
+           from t_health_record
+        <where>
+            <if test="sid != null and sid != ''">
+                and sid = #{sid}
+            </if>
+            <if test="memberId != null and memberId != ''">
+                and member_id = #{memberId}
+            </if>
+            <if test="hospitalId != null and hospitalId != ''">
+                and hospital_id = #{hospitalId}
+            </if>
+            <if test="checkupDate != null and checkupDate != ''">
+                and checkup_date = #{checkupDate}
+            </if>
+            <if test="visitType != null">
+                and visit_type = #{visitType}
+            </if>
+            <if test="valid != null">
+                and valid = #{valid}
+            </if>
+            <if test="jwSyncStatus != null">
+                and jw_sync_status = #{jwSyncStatus}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateHealthRecord" parameterType="com.comvee.cdms.healthrecord.model.po.HealthRecordPO">
+        update t_health_record
+        <set >
+            <if test="jwSyncStatus != null" >
+                jw_sync_status = #{jwSyncStatus},
+            </if>
+            <if test="valid != null" >
+                valid = #{valid},
+            </if>
+            <if test="visitType != null" >
+                visit_type = #{visitType},
+            </if>
+            update_dt = now()
+        </set>
+        where sid = #{sid}
+    </update>
+</mapper>

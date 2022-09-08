@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.education.mapper.EduViewHistoryMapper">
+
+    <resultMap type="com.comvee.cdms.education.model.po.EduViewHistoryPO" id="TEduViewHistoryMap">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="doctorId" column="doctor_id" jdbcType="VARCHAR"/>
+        <result property="courseId" column="course_id" jdbcType="VARCHAR"/>
+        <result property="origin" column="origin" jdbcType="INTEGER"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="VARCHAR"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap type="com.comvee.cdms.education.model.vo.ListEduCourseVO" id="ListEduCourseVO">
+        <result property="courseId" column="sid" jdbcType="VARCHAR"/>
+        <result property="courseNo" column="course_no" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="courseType" column="course_type" jdbcType="INTEGER"/>
+        <result property="classId" column="class_id" jdbcType="VARCHAR"/>
+        <result property="className" column="class_name" jdbcType="VARCHAR"/>
+        <result property="courseStatus" column="course_status" jdbcType="INTEGER"/>
+        <result property="imgUrl" column="img_url" jdbcType="VARCHAR"/>
+        <result property="duration" column="duration" jdbcType="VARCHAR"/>
+        <result property="viewNum" column="view_num" jdbcType="VARCHAR"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TEduViewHistoryMap">
+        select
+        sid, doctor_id, course_id, origin, is_valid, modify_dt, insert_dt
+        from t_edu_view_history
+        where sid = #{sid}
+    </select>
+    
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TEduViewHistoryMap">
+        select
+        sid, doctor_id, course_id, origin, is_valid, modify_dt, insert_dt
+        from t_edu_view_history
+        <where>
+            <if test="sid != null and sid != ''">
+                and sid = #{sid}
+            </if>
+            <if test="doctorId != null and doctorId != ''">
+                and doctor_id = #{doctorId}
+            </if>
+            <if test="courseId != null and courseId != ''">
+                and course_id = #{courseId}
+            </if>
+            <if test="origin != null">
+                and origin = #{origin}
+            </if>
+            <if test="isValid != null">
+                and is_valid = #{isValid}
+            </if>
+            <if test="modifyDt != null and modifyDt != ''">
+                and modify_dt = #{modifyDt}
+            </if>
+            <if test="insertDt != null and insertDt != ''">
+                and insert_dt = #{insertDt}
+            </if>
+        </where>
+    </select>
+
+    <select id="loadDoctorViewHistory" resultMap="ListEduCourseVO">
+        select
+        t.sid, t.course_no,t.title, t.course_type, t.class_id, t.course_status, t.img_url,
+        t.duration, t.view_num, h.insert_dt,c.class_name
+        from t_edu_course t inner join
+        (select * from (select course_id,doctor_id,is_valid,insert_dt
+        from t_edu_view_history where is_valid = 1 and doctor_id = #{doctorId}
+        having 1  /*keep orderby*/ ORDER BY insert_dt desc) vh group by course_id) h
+        on t.sid = h.course_id left join t_edu_course_class c on t.class_id = c.sid
+        where t.is_valid = 1 and c.is_valid = 1
+        order by h.insert_dt desc
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sid" useGeneratedKeys="true">
+        insert into t_edu_view_history(sid,doctor_id, course_id, origin, is_valid, modify_dt, insert_dt)
+        values (#{sid},#{doctorId}, #{courseId}, #{origin},  1, now(), now())
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update t_edu_view_history
+        <set>
+            <if test="doctorId != null and doctorId != ''">
+                doctor_id = #{doctorId},
+            </if>
+            <if test="courseId != null and courseId != ''">
+                course_id = #{courseId},
+            </if>
+            <if test="origin != null">
+                origin = #{origin},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid},
+            </if>
+            modify_dt = now()
+        </set>
+        where sid = #{sid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from t_edu_view_history where sid = #{sid}
+    </delete>
+
+</mapper>
+

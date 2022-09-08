@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.other.mapper.WechatMessageMapper">
+	<resultMap id="wechatMessage" type="com.comvee.cdms.other.po.WechatMessagePO">
+		<id column="sid" jdbcType="BIGINT" property="sid" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+		<result column="data_type" jdbcType="TINYINT" property="dataType" />
+		<result column="deal_status" jdbcType="TINYINT" property="dealStatus" />
+		<result column="response_data" jdbcType="VARCHAR" property="responseData" />
+		<result column="foreign_id" jdbcType="BIGINT" property="foreignId" />
+		<result column="data_json" jdbcType="LONGVARCHAR" property="dataJson" />
+		<result column="user_type" jdbcType="TINYINT" property="userType" />
+	</resultMap>
+
+	<insert id="addWechatMessage" parameterType="com.comvee.cdms.other.po.WechatMessagePO">
+		insert into t_wechat_message (sid, member_id, data_type,
+		response_data, foreign_id, data_json ,user_type
+		)
+		values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},#{dataType,jdbcType=TINYINT},
+		#{responseData,jdbcType=VARCHAR}, #{foreignId,jdbcType=BIGINT}, #{dataJson,jdbcType=LONGVARCHAR} , #{userType,jdbcType=TINYINT}
+		)
+	</insert>
+
+	<select id="listWechatMessage" resultMap="wechatMessage">
+		select sid, member_id, insert_dt, update_dt, data_type, deal_status, response_data,
+		foreign_id, data_json ,user_type
+		from t_wechat_message
+		where deal_status = 1 order by insert_dt asc
+	</select>
+
+	<update id="updateMessageHandlerResult">
+		<foreach collection="resultList" index="index" item="item">
+			update t_wechat_message
+			set deal_status = #{item.dealStatus,jdbcType=TINYINT},
+			response_data = #{item.responseData,jdbcType=VARCHAR},
+			request_body = #{item.requestBody}
+			where sid = #{item.sid,jdbcType=BIGINT};
+		</foreach>
+	</update>
+
+	<insert id="insertMessageHistory">
+		insert into t_wechat_message_history (sid, member_id, insert_dt,
+		update_dt, data_type, deal_status,
+		response_data, foreign_id, data_json ,request_body
+		)
+		select t.sid,t.member_id,t.insert_dt,t.update_dt,t.data_type,t.deal_status,t.response_data,t.foreign_id,t.data_json,t.request_body
+		from t_wechat_message t where t.deal_status &lt;&gt; 1
+		and t.insert_dt &lt; DATE_FORMAT(now(),'%Y-%m-%d')
+	</insert>
+
+	<delete id="deleteMessage">
+		delete t from t_wechat_message t  where t.deal_status &lt;&gt; 1
+		and  t.insert_dt &lt; DATE_FORMAT(now(),'%Y-%m-%d')
+	</delete>
+</mapper>

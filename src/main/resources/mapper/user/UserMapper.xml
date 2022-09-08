@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.user.mapper.UserMapper">
+
+  <resultMap id="user" type="com.comvee.cdms.user.po.UserPO">
+    <id column="uid" jdbcType="BIGINT" property="uid" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="salt" jdbcType="VARCHAR" property="salt" />
+    <result column="last_login_dt" jdbcType="TIMESTAMP" property="lastLoginDt" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="user_type" jdbcType="TINYINT" property="userType" />
+    <result column="valid_dt" jdbcType="VARCHAR" property="validDt" />
+    <result column="user_status" jdbcType="TINYINT" property="userStatus"/>
+    <result column="login_fail_times" jdbcType="INTEGER" property="loginFailTimes"/>
+    <result column="last_update_password_dt" jdbcType="TIMESTAMP" property="lastUpdatePasswordDt"/>
+    <result column="lock_dt" jdbcType="TIMESTAMP" property="lockDt"/>
+  </resultMap>
+
+  <resultMap id="userRelation" type="com.comvee.cdms.user.po.UserRelationPO">
+    <id column="sid" property="sid" />
+    <result column="uid" property="uid"/>
+    <result column="foreign_id" property="foreignId"/>
+  </resultMap>
+
+  <select id="getUser" parameterType="com.comvee.cdms.user.dto.GetUserDTO" resultMap="user">
+    select uid, user_name, password, salt, last_login_dt, insert_dt, update_dt, user_type, valid_dt,user_status
+    ,login_fail_times ,last_update_password_dt ,lock_dt
+    from t_user
+    <where>
+      <if test="uid != null and '' != uid">
+          and uid = #{uid}
+      </if>
+      <if test="userName != null and '' != userName">
+          and user_name = #{userName}
+      </if>
+      <if test="userType != null">
+        and user_type = #{userType}
+      </if>
+    </where>
+  </select>
+
+  <update id="updateUser" parameterType="com.comvee.cdms.user.dto.UpdateUserDTO">
+      update t_user
+      <set>
+        <if test="password != null and '' != password">
+          password = #{password},
+        </if>
+        <if test="lastLoginDt != null and '' != lastLoginDt">
+          last_login_dt = #{lastLoginDt},
+        </if>
+        <if test="validDt != null and '' != validDt">
+          valid_dt = #{validDt},
+        </if>
+        <if test="lastLoginIPAddress != null and '' != lastLoginIPAddress">
+          last_login_ip_address = #{lastLoginIPAddress},
+        </if>
+        <if test="userStatus != null">
+          user_status = #{userStatus},
+        </if>
+        <if test="loginFailTimes != null">
+          login_fail_times = #{loginFailTimes},
+        </if>
+        <if test="lastUpdatePasswordDt != null and '' != lastUpdatePasswordDt">
+          last_update_password_dt = #{lastUpdatePasswordDt},
+        </if>
+        <if test="lockDt != null and '' != lockDt">
+          lock_dt = #{lockDt},
+        </if>
+      </set>
+      where uid = #{uid}
+  </update>
+
+  <insert id="addUser" parameterType="com.comvee.cdms.user.po.UserPO">
+    insert into t_user (uid, user_name, password,
+    salt,  user_type, valid_dt,user_status
+    )
+    values (#{uid,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+    #{salt,jdbcType=VARCHAR},  #{userType,jdbcType=TINYINT}, #{validDt,jdbcType=TIMESTAMP},1
+    )
+  </insert>
+
+</mapper>

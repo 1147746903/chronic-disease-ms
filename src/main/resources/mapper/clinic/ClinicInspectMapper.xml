@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.clinic.mapper.ClinicInspectMapper">
+    <resultMap id="clinicInspectPO" type="com.comvee.cdms.clinic.po.ClinicInspectPO">
+        <id column="sid" jdbcType="BIGINT" property="sid"/>
+        <result column="member_id" jdbcType="BIGINT" property="memberId"/>
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId"/>
+        <result column="doctor_name" jdbcType="VARCHAR" property="doctorName"/>
+        <result column="creator_id" jdbcType="BIGINT" property="creatorId"/>
+        <result column="bed_number" jdbcType="VARCHAR" property="bedNumber"/>
+        <result column="base_json" jdbcType="LONGVARCHAR" property="baseJson"/>
+        <result column="check_json" jdbcType="LONGVARCHAR" property="checkJson"/>
+        <result column="save_status" jdbcType="TINYINT" property="saveStatus"/>
+        <result column="check_dt" jdbcType="DATE" property="checkDt"/>
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt"/>
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt"/>
+        <result column="is_valid" jdbcType="TINYINT" property="isValid"/>
+    </resultMap>
+
+
+    <select id="listClinicInspect" resultMap="clinicInspectPO" parameterType="com.comvee.cdms.clinic.dto.ListClinicInspectDTO">
+        select a.sid, a.member_id, a.doctor_id, a.doctor_name, a.creator_id, a.bed_number, a.base_json, a.check_json,a.save_status,
+        a.check_dt,
+        a.insert_dt, a.update_dt, a.is_valid from t_clinic_inspect a join t_doctor b on a.doctor_id = b.doctor_id
+        where a.is_valid = 1
+        <if test="memberId != null and '' != memberId">
+            and a.member_id = #{memberId}
+        </if>
+        <if test="checkDt != null and '' != checkDt">
+            and a.check_dt = #{checkDt}
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and b.hospital_id = #{hospitalId}
+        </if>
+        order by a.insert_dt desc
+    </select>
+
+    <select id="getClinicInspectById" resultMap="clinicInspectPO" parameterType="java.lang.String">
+    select sid, member_id, doctor_id, doctor_name, creator_id, bed_number, base_json, check_json,save_status, check_dt,
+    insert_dt, update_dt, is_valid from t_clinic_inspect where sid = #{sid}
+  </select>
+
+
+    <insert id="addClinicInspect" parameterType="com.comvee.cdms.clinic.po.ClinicInspectPO">
+    insert into t_clinic_inspect (sid, member_id, doctor_id,
+      doctor_name, creator_id, bed_number,
+      save_status, check_dt, insert_dt,
+      update_dt, is_valid, base_json,
+      check_json)
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, 
+      #{doctorName,jdbcType=VARCHAR}, #{creatorId,jdbcType=BIGINT}, #{bedNumber,jdbcType=INTEGER}, 
+      #{saveStatus,jdbcType=TINYINT}, #{checkDt,jdbcType=DATE}, now(),
+      now(), 1 , #{baseJson,jdbcType=LONGVARCHAR},
+      #{checkJson,jdbcType=LONGVARCHAR})
+  </insert>
+
+
+    <update id="modifyClinicInspect" parameterType="com.comvee.cdms.clinic.po.ClinicInspectPO">
+        update t_clinic_inspect
+        <set>
+            update_dt = now(),
+            <if test="memberId != null and memberId != ''">
+                member_id = #{memberId},
+            </if>
+            <if test="doctorId != null and doctorId != ''">
+                doctor_id = #{doctorId},
+            </if>
+            <if test="doctorName != null and doctorName != ''">
+                doctor_name = #{doctorName},
+            </if>
+            <if test="creatorId != null and creatorId != ''">
+                creator_id = #{creatorId},
+            </if>
+            <if test="bedNumber != null and bedNumber !=''">
+                bed_number = #{bedNumber},
+            </if>
+            <if test="saveStatus != null">
+                save_status = #{saveStatus},
+            </if>
+            <if test="checkDt != null and checkDt != ''">
+                check_dt = #{checkDt},
+            </if>
+            <if test="insertDt != null and insertDt != ''">
+                insert_dt = #{insertDt},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid},
+            </if>
+            <if test="baseJson != null and baseJson != ''">
+                base_json = #{baseJson},
+            </if>
+            <if test="checkJson != null and checkJson != ''">
+                check_json = #{checkJson},
+            </if>
+        </set>
+        where sid = #{sid}
+    </update>
+
+    <update id="deleteClinicInspect" parameterType="java.lang.String">
+        update t_clinic_inspect set update_dt = now(),is_valid = 0 where sid = #{sid}
+    </update>
+
+    <select id="getNewClinicInspect" resultMap="clinicInspectPO" parameterType="com.comvee.cdms.clinic.dto.GetClinicInspectDTO">
+        select a.sid, a.member_id, a.doctor_id, a.doctor_name, a.creator_id, a.bed_number, a.base_json, a.check_json,a.save_status,
+        a.check_dt,
+        a.insert_dt, a.update_dt, a.is_valid from t_clinic_inspect a join t_doctor b on a.doctor_id = b.doctor_id
+        where a.is_valid = 1
+        <if test="memberId != null and '' != memberId">
+            and a.member_id = #{memberId}
+        </if>
+        <if test="doctorId != null and '' != doctorId">
+            and a.doctor_id = #{doctorId}
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and b.hospital_id = #{hospitalId}
+        </if>
+        order by update_dt desc limit 1
+    </select>
+
+    <select id="listClinicInspectByParam" resultMap="clinicInspectPO" parameterType="com.comvee.cdms.clinic.dto.ListClinicInspectDTO">
+        select a.sid, a.member_id, a.doctor_id, a.doctor_name, a.creator_id, a.bed_number, a.base_json, a.check_json,a.save_status,
+        a.check_dt,
+        a.insert_dt, a.update_dt, a.is_valid from t_clinic_inspect a join t_doctor b on a.doctor_id = b.doctor_id
+        where a.is_valid = 1
+        <if test="memberId != null and '' != memberId">
+            and a.member_id = #{memberId}
+        </if>
+        <if test="checkDt != null and '' != checkDt">
+            and a.check_dt = #{checkDt}
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and b.hospital_id = #{hospitalId}
+        </if>
+    </select>
+
+
+
+
+</mapper>

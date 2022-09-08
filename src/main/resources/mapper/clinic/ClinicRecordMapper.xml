@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.clinic.mapper.ClinicRecordMapper">
+  <resultMap id="clinicRecord" type="com.comvee.cdms.clinic.po.ClinicRecordPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="clinic_type" jdbcType="TINYINT" property="clinicType" />
+    <result column="clinic_data" jdbcType="LONGVARCHAR" property="clinicData" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="clinic_id" jdbcType="BIGINT" property="clinicId" />
+    <result column="record_dt" jdbcType="TIMESTAMP" property="recordDt" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+  </resultMap>
+
+  <insert id="addClinicRecord" parameterType="com.comvee.cdms.clinic.po.ClinicRecordPO">
+    insert into t_clinic_record (sid, clinic_type, member_id,clinic_id, record_dt, insert_dt,
+    modify_dt, is_valid, clinic_data)
+    values (#{sid,jdbcType=BIGINT}, #{clinicType,jdbcType=TINYINT}, #{memberId,jdbcType=BIGINT},
+    #{clinicId,jdbcType=BIGINT}, now(), now(),now(), 1, #{clinicData,jdbcType=LONGVARCHAR}
+    )
+  </insert>
+
+   <select id="getClinicRecordByClinicIdAndType" resultMap="clinicRecord">
+       select sid, clinic_type,clinic_data, member_id, clinic_id, record_dt, insert_dt, modify_dt, is_valid
+       from t_clinic_record where is_valid = 1
+       <if test="clinicId != null and clinicId != ''">
+           and clinic_id = #{clinicId}
+       </if>
+       <if test="clinicType != null">
+           and clinic_type = #{clinicType}
+       </if>
+       order by record_dt desc
+   </select>
+
+
+  <update id="delClinicRecord" parameterType="com.comvee.cdms.clinic.dto.DelClinicRecordDTO">
+    update t_clinic_record set is_valid = 0,modify_dt = now()
+    <where>
+      <if test="sid != null and sid != ''">
+          and sid != #{sid}
+      </if>
+      <if test="clinicType != null">
+          and clinic_type = #{clinicType}
+      </if>
+      <if test="clinicId != null and clinicId != ''">
+          and clinic_id = #{clinicId}
+      </if>
+      <if test="startDt != null and startDt != ''">
+          and record_dt &gt;= #{startDt}
+      </if>
+      <if test="endDt != null and endDt != ''">
+          and record_dt &lt;= #{endDt}
+      </if>
+    </where>
+  </update>
+
+    <update id="delClinicRecordByClinicId" parameterType="com.comvee.cdms.clinic.dto.DelClinicRecordDTO">
+        update t_clinic_record set is_valid = 0,modify_dt = now() where clinic_id = #{clinicId}
+    </update>
+</mapper>

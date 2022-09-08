@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.DyApplicationMapper">
+
+    <resultMap id="application" type="com.comvee.cdms.dybloodsugar.po.DyApplicationPO">
+        <id column="app_id" jdbcType="BIGINT" property="appId" />
+        <result column="secret_key" jdbcType="VARCHAR" property="secretKey" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="is_valid" jdbcType="INTEGER" property="isValid" />
+        <result column="while_list" jdbcType="VARCHAR" property="whileList" />
+        <result column="push_url" jdbcType="VARCHAR" property="pushUrl" />
+    </resultMap>
+
+    <resultMap id="applicationMachine" type="com.comvee.cdms.dybloodsugar.po.DyApplicationMachinePO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="app_id" jdbcType="BIGINT" property="appId" />
+        <result column="machine_no" jdbcType="VARCHAR" property="machineNo" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="is_valid" jdbcType="INTEGER" property="isValid" />
+    </resultMap>
+
+    <insert id="addDyApplication" parameterType="com.comvee.cdms.dybloodsugar.po.DyApplicationPO">
+    insert into dy_application (app_id, secret_key, description,insert_dt, update_dt, is_valid,
+    while_list,push_url
+    )
+    values (#{appId,jdbcType=BIGINT}, #{secretKey,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+    now(),now(), 1 ,#{whileList,jdbcType=VARCHAR},#{pushUrl,jdbcType=VARCHAR})
+  </insert>
+
+    <insert id="addApplicationMachine" parameterType="com.comvee.cdms.dybloodsugar.po.DyApplicationMachinePO">
+    insert into dy_application_machine (sid, app_id, machine_no,insert_dt, update_dt, is_valid
+    )
+    values (#{sid,jdbcType=BIGINT}, #{appId,jdbcType=BIGINT}, #{machineNo,jdbcType=VARCHAR},
+     now(),now(), 1 )
+  </insert>
+
+    <update id="updateDyApplicationMachinePO" parameterType="java.lang.String">
+        update dy_application_machine
+        <set>
+            <if test="machineNo != null">
+                machine_no = #{machineNo,jdbcType=VARCHAR},
+            </if>
+            <if test="appId != null">
+                app_id = #{appId,jdbcType=VARCHAR},
+            </if>
+            update_dt = now() ,insert_dt = now()
+        </set>
+        where app_id = #{appId}
+    </update>
+
+    <delete id="deleteApplicationMachineBySid" parameterType="java.lang.String">
+    delete from dy_application_machine
+    where machine_no = #{machineNo}
+  </delete>
+    <select id="countMachineByMachineNo" resultType="java.lang.Long">
+        select count(*) from dy_application_machine where is_valid=1
+        <if test="machineNo != null and machineNo !=''">
+            and machine_no = #{machineNo}
+        </if>
+    </select>
+
+    <update id="deleteApplicationBySid" parameterType="java.lang.String">
+        update dy_application
+        set is_valid = 0,update_dt = now()
+        where app_id = #{appId,jdbcType=BIGINT}
+    </update>
+
+    <select id="getDyApplicationPOByAppId" resultMap="application">
+        select * from dy_application where is_valid=1
+        and app_id = #{appId,jdbcType=BIGINT}
+    </select>
+
+    <update id="updateDyApplicationPO" parameterType="java.lang.String">
+        update dy_application
+        set description = #{description},update_dt = now()
+        where app_id = #{appId,jdbcType=BIGINT}
+    </update>
+</mapper>

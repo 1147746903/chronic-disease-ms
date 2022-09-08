@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dialogue.mapper.DialogueMapper">
+
+  <resultMap id="dialogueLatest" type="com.comvee.cdms.dialogue.po.DialogueLatestPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="patient_msg" jdbcType="VARCHAR" property="patientMsg" />
+    <result column="doctor_msg" jdbcType="VARCHAR" property="doctorMsg" />
+    <result column="be_delete" jdbcType="TIMESTAMP" property="beDelete" />
+    <result column="doctor_timestamp" jdbcType="BIGINT" property="doctorTimestamp" />
+    <result column="patient_timestamp" jdbcType="BIGINT" property="patientTimestamp" />
+    <result column="latest_dt" jdbcType="TIMESTAMP" property="latestDt" />
+    <result column="patient_unread" property="patientUnread" />
+    <result column="doctor_unread" property="doctorUnread" />
+  </resultMap>
+
+  <resultMap id="dialogue" type="com.comvee.cdms.dialogue.po.DialoguePO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="owner_type" jdbcType="TINYINT" property="ownerType" />
+    <result column="msg_type" jdbcType="TINYINT" property="msgType" />
+    <result column="patient_msg" jdbcType="VARCHAR" property="patientMsg" />
+    <result column="doctor_msg" jdbcType="VARCHAR" property="doctorMsg" />
+    <result column="show_client" jdbcType="TINYINT" property="showClient" />
+    <result column="show_type" jdbcType="TINYINT" property="showType" />
+    <result column="send_timestamp" jdbcType="BIGINT" property="sendTimestamp" />
+    <result column="update_timestamp" jdbcType="BIGINT" property="updateTimestamp" />
+    <result column="sender_id" jdbcType="BIGINT" property="senderId" />
+    <result column="data_str" jdbcType="LONGVARCHAR" property="dataStr" />
+    <result column="be_delete" jdbcType="TINYINT" property="beDelete" />
+    <result column="foreign_id" jdbcType="BIGINT" property="foreignId" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId"/>
+  </resultMap>
+
+  <resultMap id="teamDialogue" type="com.comvee.cdms.dialogue.po.TeamDialoguePO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="owner_type" jdbcType="TINYINT" property="ownerType" />
+    <result column="msg_type" jdbcType="TINYINT" property="msgType" />
+    <result column="patient_msg" jdbcType="VARCHAR" property="patientMsg" />
+    <result column="doctor_msg" jdbcType="VARCHAR" property="doctorMsg" />
+    <result column="show_client" jdbcType="TINYINT" property="showClient" />
+    <result column="show_type" jdbcType="TINYINT" property="showType" />
+    <result column="send_timestamp" jdbcType="BIGINT" property="sendTimestamp" />
+    <result column="update_timestamp" jdbcType="BIGINT" property="updateTimestamp" />
+    <result column="sender_id" jdbcType="BIGINT" property="senderId" />
+    <result column="data_str" jdbcType="LONGVARCHAR" property="dataStr" />
+    <result column="be_delete" jdbcType="TINYINT" property="beDelete" />
+    <result column="foreign_id" jdbcType="BIGINT" property="foreignId" />
+    <result column="doctor_name" property="senderName"/>
+    <result column="sex" property="senderSex"/>
+    <result column="photo_url" property="senderHeadImg"/>
+    <result column="template_id" property="templateId"/>
+  </resultMap>
+
+  <resultMap id="doctorDialogueLatest" type="com.comvee.cdms.dialogue.vo.DialogueLatestDoctorVO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="patient_msg" jdbcType="VARCHAR" property="patientMsg" />
+    <result column="doctor_msg" jdbcType="VARCHAR" property="doctorMsg" />
+    <result column="be_delete" jdbcType="TIMESTAMP" property="beDelete" />
+    <result column="doctor_timestamp" jdbcType="BIGINT" property="doctorTimestamp" />
+    <result column="patient_timestamp" jdbcType="BIGINT" property="patientTimestamp" />
+    <result column="latest_dt" jdbcType="TIMESTAMP" property="latestDt" />
+    <result column="patient_unread" property="patientUnread" />
+    <result column="doctor_unread" property="doctorUnread" />
+    <result column="member_name" property="memberName" />
+    <result column="pic_url" property="headImgUrl" />
+    <result column="sex" property="sex" />
+    <result column="pay_status" property="priceFlag" />
+    <result column="level_hx" property="levelHx" />
+    <result column="inHos" property="inHos"/>
+  </resultMap>
+
+  <insert id="addDialogueLatest" parameterType="com.comvee.cdms.dialogue.po.DialogueLatestPO">
+    insert into t_dialogue_latest (sid, member_id, doctor_id,
+      insert_dt, patient_msg, doctor_msg,
+       doctor_timestamp, latest_dt, patient_timestamp
+      )
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT},
+      now(), #{patientMsg,jdbcType=VARCHAR}, #{doctorMsg,jdbcType=VARCHAR},
+      #{doctorTimestamp,jdbcType=BIGINT}, now(),#{patientTimestamp}
+      )
+  </insert>
+
+  <insert id="addDialogue" parameterType="com.comvee.cdms.dialogue.po.DialoguePO">
+    insert into t_dialogue (sid, doctor_id, member_id,
+    insert_dt, owner_type, msg_type,
+    patient_msg, doctor_msg, show_client,
+    show_type, send_timestamp, sender_id,
+    data_str, update_timestamp,foreign_id,template_id)
+    values (#{sid,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
+    now(), #{ownerType,jdbcType=TINYINT}, #{msgType,jdbcType=TINYINT},
+    #{patientMsg,jdbcType=VARCHAR}, #{doctorMsg,jdbcType=VARCHAR}, #{showClient,jdbcType=TINYINT},
+    #{showType,jdbcType=TINYINT}, #{sendTimestamp,jdbcType=BIGINT}, #{senderId,jdbcType=BIGINT},
+    #{dataStr,jdbcType=LONGVARCHAR},#{updateTimestamp},#{foreignId},#{templateId})
+  </insert>
+
+  <select id="countDialogueLatest" parameterType="java.util.Map" resultType="java.lang.Long">
+    select count(1) from t_dialogue_latest t where t.member_id = #{memberId}
+    and t.doctor_id = #{doctorId}
+  </select>
+
+  <update id="updateDialogueLatest" parameterType="com.comvee.cdms.dialogue.dto.UpdateDialogueLastestMapperDTO">
+    update t_dialogue_latest t
+    <set>
+      <if test="latestDt != null and '' != latestDt">
+        t.latest_dt = now(),
+      </if>
+      <if test="doctorMsg != null and '' != doctorMsg">
+        t.doctor_msg = #{doctorMsg},
+      </if>
+      <if test="doctorTimestamp != null">
+        t.doctor_timestamp = #{doctorTimestamp},
+      </if>
+      <if test="patientMsg != null and '' != patientMsg">
+        t.patient_msg = #{patientMsg},
+      </if>
+      <if test="patientTimestamp != null">
+        t.patient_timestamp = #{patientTimestamp},
+      </if>
+      <if test="patientUnread != null">
+        t.patient_unread = patient_unread + #{patientUnread},
+      </if>
+      <if test="doctorUnread != null">
+        t.doctor_unread = doctor_unread + #{doctorUnread},
+      </if>
+      <if test="clearDoctorUnRead != null">
+        t.doctor_unread = #{clearDoctorUnRead},
+      </if>
+      <if test="clearMemberUnRead != null">
+        t.patient_unread = #{clearMemberUnRead},
+      </if>
+      <if test="beDelete != null">
+        t.be_delete = #{beDelete},
+      </if>
+    </set>
+    where t.doctor_id = #{doctorId} and t.member_id = #{memberId}
+  </update>
+
+  <select id="listDialogueLatest" parameterType="com.comvee.cdms.dialogue.dto.ListDialogueLatestMapperDTO" resultMap="dialogueLatest">
+    select t.be_delete,t.doctor_id,t.doctor_msg,t.doctor_timestamp,t.insert_dt,t.latest_dt
+    ,t.member_id,t.patient_msg,t.patient_timestamp,t.sid,t.doctor_unread,t.patient_unread
+    from t_dialogue_latest t
+    <where>
+      <if test="beDelete!=null">
+        and t.be_delete = #{beDelete}
+      </if>
+      <if test="memberId != null and '' != memberId">
+        and t.member_id = #{memberId}
+      </if>
+      <if test="doctorId != null and '' != doctorId">
+        and t.doctor_id = #{doctorId}
+      </if>
+      <if test="doctorRefreshTime != null and '' != doctorRefreshTime">
+        and t.doctor_timestamp &gt;= #{doctorRefreshTime}
+      </if>
+      <if test="memberRefreshTime != null and '' != memberRefreshTime">
+        and t.patient_timestamp &gt;= #{memberRefreshTime}
+      </if>
+      <if test="doctorList != null and doctorList.size() > 0">
+          and t.doctor_id in
+          <foreach collection="doctorList" item="item" open="(" close=")" separator=",">
+             #{item}
+          </foreach>
+      </if>
+    </where>
+
+    ORDER by t.doctor_timestamp DESC
+  </select>
+
+  <update id="updateDialogue" parameterType="com.comvee.cdms.dialogue.po.DialoguePO">
+    update t_dialogue t
+    <set>
+      <if test="beDelete != null">
+        t.be_delete = #{beDelete},
+      </if>
+      <if test="updateTimestamp != null">
+        t.update_timestamp = #{updateTimestamp}
+      </if>
+    </set>
+    where t.be_delete = 0
+    <if test="doctorId != null and '' != doctorId">
+      and t.doctor_id = #{doctorId}
+    </if>
+    <if test="memberId != null and '' != memberId">
+      and t.member_id = #{memberId}
+    </if>
+    <if test="sid != null and '' != sid">
+      and t.sid = #{sid}
+    </if>
+  </update>
+
+  <select id="listDialogue" parameterType="java.util.Map" resultMap="dialogue">
+    select t.be_delete,t.data_str,t.doctor_id,t.doctor_msg,t.foreign_id,t.insert_dt,t.member_id
+    ,t.msg_type,t.owner_type,t.patient_msg,t.sender_id,t.send_timestamp,t.sid,t.update_timestamp,t.template_id
+    from t_dialogue t where 1=1
+    <if test="beDelete!=null">
+      and t.be_delete = #{beDelete}
+    </if>
+    <if test="upTimeStamp != null and '' != upTimeStamp">
+      and t.send_timestamp &lt; #{upTimeStamp}
+    </if>
+    <if test="downTimeStamp != null and '' != downTimeStamp">
+      and t.update_timestamp &gt; #{downTimeStamp}
+    </if>
+    <if test="showClient != null">
+      and t.show_client in
+      <foreach collection="showClient" open="(" close=")" item="item" index="index" separator=",">
+        #{item}
+      </foreach>
+    </if>
+    <if test="showType != null">
+      and t.show_type in
+      <foreach collection="showType" open="(" close=")" item="item" index="index" separator=",">
+        #{item}
+      </foreach>
+    </if>
+    <if test="doctorId != null and '' != doctorId ">
+      and t.doctor_id = #{doctorId}
+    </if>
+    <if test="memberId != null and '' != memberId">
+      and t.member_id = #{memberId}
+    </if>
+    ORDER BY t.send_timestamp DESC
+  </select>
+
+  <select id="getDialogue" resultMap="dialogue">
+    select t.be_delete,t.data_str,t.doctor_id,t.doctor_msg,t.foreign_id,t.insert_dt,t.member_id
+    ,t.msg_type,t.owner_type,t.patient_msg,t.sender_id,t.send_timestamp,t.sid,t.update_timestamp,t.template_id
+    from t_dialogue t where t.sid = #{sid}
+  </select>
+
+  <select id="listDoctorDialogueLatestWithSearch" parameterType="com.comvee.cdms.dialogue.dto.DoctorDialogueLatestSearchDTO" resultMap="doctorDialogueLatest">
+    select t.be_delete,t.doctor_id,t.doctor_msg,t.doctor_timestamp,t.insert_dt,t.latest_dt,
+    t.member_id,t.patient_msg,t.patient_timestamp,t.sid,t.doctor_unread,q.member_name,q.sex,
+    q.pic_url,q.level_hx,ifnull(mci.checkin_status,0)inHos
+    from t_dialogue_latest t,t_member q
+    left join t_member_checkin_info mci on mci.member_id=q.member_id and mci.is_valid=1
+    where t.member_id = q.member_id and t.be_delete=0
+    <if test="doctorId != null and '' != doctorId">
+      and t.doctor_id = #{doctorId}
+    </if>
+    <if test="refreshTimeStamp!=null and '' != refreshTimeStamp">
+      and t.doctor_timestamp &gt;= #{refreshTimeStamp}
+    </if>
+    <if test="beDelete!=null">
+      and t.be_delete = #{beDelete}
+    </if>
+    <if test="keyword != null and '' != keyword">
+      and instr(q.member_name, #{keyword}) > 0
+    </if>
+    <if test="keyword != null and '' != keyword">
+      and instr(q.member_name, #{keyword}) > 0
+    </if>
+    <if test="doctorList != null and doctorList.size() > 0">
+        and t.doctor_id in
+        <foreach collection="doctorList" index="index" item="item" open="(" close=")" separator=",">
+          #{item}
+        </foreach>
+    </if>
+    ORDER by t.doctor_timestamp DESC
+  </select>
+
+  <select id="countUnRead" resultType="com.comvee.cdms.dialogue.po.UnReadDialoguePO" parameterType="com.comvee.cdms.dialogue.dto.UnReadDialogueDTO">
+      select ifnull(sum(t.doctor_unread), 0) 'doctorUnRead',ifnull(sum(t.patient_unread), 0) 'memberUnRead'
+      from t_dialogue_latest t
+      <where>
+        <if test="doctorId != null and '' != doctorId">
+          and t.doctor_id = #{doctorId}
+        </if>
+        <if test="memberId != null and '' != memberId">
+          and t.member_id = #{memberId}
+        </if>
+        <if test="doctorList != null and doctorList.size() > 0">
+            and t.doctor_id in
+            <foreach collection="doctorList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+      </where>
+  </select>
+
+
+  <select id="listTeamDialogue" parameterType="java.util.Map" resultMap="teamDialogue">
+    select t.be_delete,t.data_str,t.doctor_id,t.doctor_msg,t.foreign_id,t.insert_dt,t.member_id
+    ,t.msg_type,t.owner_type,t.patient_msg,t.sender_id,t.send_timestamp,t.sid,t.update_timestamp,t.template_id
+    ,q.doctor_name,q.sex,q.photo_url
+    from t_dialogue t left join t_doctor q on t.sender_id = q.doctor_id where 1=1
+    <if test="beDelete!=null">
+      and t.be_delete = #{beDelete}
+    </if>
+    <if test="upTimeStamp != null ">
+      and t.send_timestamp &lt; #{upTimeStamp}
+    </if>
+    <if test="downTimeStamp != null ">
+      and t.update_timestamp &gt; #{downTimeStamp}
+    </if>
+    <if test="showClient != null">
+      and t.show_client in
+      <foreach collection="showClient" open="(" close=")" item="item" index="index" separator=",">
+        #{item}
+      </foreach>
+    </if>
+    <if test="showType != null">
+      and t.show_type in
+      <foreach collection="showType" open="(" close=")" item="item" index="index" separator=",">
+        #{item}
+      </foreach>
+    </if>
+    <if test="doctorId != null and '' != doctorId ">
+      and t.doctor_id = #{doctorId}
+    </if>
+    <if test="memberId != null and '' != memberId">
+      and t.member_id = #{memberId}
+    </if>
+    ORDER BY t.send_timestamp DESC
+  </select>
+
+  <select id="countAllOnlineMember" resultType="java.lang.Long" parameterType="com.comvee.cdms.statistics.dto.SynthesizeDataDTO">
+    select count(distinct(a.member_id))
+    from t_dialogue a ,t_doctor b where a.doctor_id = b.doctor_id
+    <if test="hospitalName != null and ''!=hospitalName">
+      and b.hospital_name = #{hospitalName}
+    </if>
+    <if test="departmentName != null and ''!=departmentName">
+      and b.depart_name = #{departmentName}
+    </if>
+    <if test="doctorName != null and ''!=doctorName">
+      and b.doctor_name = #{doctorName}
+    </if>
+    <if test="hospitalId != null and ''!=hospitalId">
+      and b.hospital_id = #{hospitalId}
+    </if>
+    <if test="departmentId != null and ''!=departmentId">
+      and b.depart_id = #{departmentId}
+    </if>
+    <if test="doctorId != null and ''!=doctorId">
+      and b.doctor_id = #{doctorId}
+    </if>
+    <if test="endDt != null and ''!=endDt">
+      and a.insert_dt >= #{startDt}
+    </if>
+    <if test="endDt != null and ''!=endDt">
+      and a.insert_dt &lt;= #{endDt}
+    </if>
+  </select>
+  <select id="countExchange" parameterType="com.comvee.cdms.statistics.dto.SynthesizeDataDTO" resultType="java.util.Map">
+    select count(if(a.owner_type=1,true,null)) as countMemberMsg,
+    count(if(a.owner_type=2,true,null)) as countDoctorMsg
+    from t_dialogue a,t_doctor b
+    where a.doctor_id = b.doctor_id and a.msg_type = 1
+    <if test="memberId != null and ''!=memberId">
+      and a.member_id = #{memberId}
+    </if>
+    <if test="doctorId != null and ''!=doctorId">
+      and a.doctor_id = #{doctorId}
+    </if>
+    <if test="hospitalId != null and ''!=hospitalId">
+      and b.hospital_id = #{hospitalId}
+    </if>
+    <if test="departmentId != null and ''!=departmentId">
+      and b.depart_id = #{departmentId}
+    </if>
+    <if test="endDt != null and ''!=endDt">
+      and a.insert_dt >= #{startDt}
+    </if>
+    <if test="endDt != null and ''!=endDt">
+      and a.insert_dt &lt;= #{endDt}
+    </if>
+  </select>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.other.mapper.SystemDictMapper">
+
+  <resultMap id="dict" type="com.comvee.cdms.other.po.DictPO">
+    <id column="dict_id" jdbcType="BIGINT" property="dictId" />
+    <result column="dict_code" jdbcType="VARCHAR" property="dictCode" />
+    <result column="dict_value" jdbcType="VARCHAR" property="dictValue" />
+    <result column="dict_desc" jdbcType="VARCHAR" property="dictDesc" />
+    <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+  </resultMap>
+
+  <insert id="addDict" parameterType="com.comvee.cdms.other.po.DictPO">
+    insert into t_dict (dict_id, dict_code, dict_value,
+      dict_desc, parent_code)
+    values (#{dictId,jdbcType=BIGINT}, #{dictCode,jdbcType=VARCHAR}, #{dictValue,jdbcType=VARCHAR}, 
+      #{dictDesc,jdbcType=VARCHAR}, #{parentCode,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateDict" parameterType="com.comvee.cdms.other.po.DictPO">
+    update t_dict
+    <set>
+      <if test="dictCode != null and '' != dictCode">
+        dict_code = #{dictCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dictValue != null and '' != dictValue">
+        dict_value = #{dictValue,jdbcType=VARCHAR},
+      </if>
+      <if test="dictDesc != null and '' != dictDesc">
+        dict_desc = #{dictDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="parentCode != null and '' != parentCode">
+        parent_code = #{parentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        valid = #{valid,jdbcType=TINYINT},
+      </if>
+    </set>
+    where dict_id = #{dictId,jdbcType=BIGINT} and valid = 1
+  </update>
+
+  <select id="getDict" parameterType="java.lang.String" resultMap="dict">
+    select dict_id, dict_code, dict_value, dict_desc, parent_code, insert_dt, update_dt,
+    valid
+    from t_dict
+    where dict_code = #{dictCode,jdbcType=VARCHAR} and valid = 1 limit 1
+  </select>
+
+  <select id="listDict" resultMap="dict">
+    select dict_id, dict_code, dict_value, dict_desc, parent_code, insert_dt, update_dt,
+    valid
+    from t_dict where valid = 1 and parent_code = #{parentCode} order by null
+  </select>
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.tcm.mapper.TcmCollectQueMapper">
+    <resultMap id="baseMap" type="com.comvee.cdms.tcm.model.vo.TcmCollectQueVO">
+        <result column="queId" jdbcType="BIGINT" property="queId"/>
+        <result column="queIndex" jdbcType="TINYINT" property="queIndex"/>
+        <result column="queTopic" jdbcType="VARCHAR" property="queTopic"/>
+        <result column="queType" jdbcType="TINYINT" property="queType"/>
+        <result column="ansType" jdbcType="TINYINT" property="ansType"/>
+        <result column="ansId" jdbcType="BIGINT" property="ansId"/>
+        <result column="ansIndex" jdbcType="TINYINT" property="ansIndex"/>
+        <result column="ansDesc" jdbcType="VARCHAR" property="ansDesc"/>
+    </resultMap>
+    <select id="listTcmCollectQue" resultMap="baseMap" parameterType="com.comvee.cdms.tcm.model.dto.TcmCollectQueDTO">
+        select que.sid queId, que_index queIndex, que_topic queTopic, que_type queType,
+               ans_type ansType, ans.sid ansId,ans_index ansIndex, ans_desc ansDesc
+        from t_tcm_collect_que que
+        left join t_tcm_collect_que_ans ans on que.sid = ans.que_id
+        where 1=1
+        and que.valid = 1 and ans.valid = 1
+        <if test="queType != null">
+            and que_type in (1, #{queType})
+        </if>
+        order by que_index, ans_index
+    </select>
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.consultation.mapper.RemoteConsultationMessageMapper">
+
+  <resultMap id="dialogue" type="com.comvee.cdms.consultation.model.po.RemoteConsultationMessagePO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="consultation_id" jdbcType="BIGINT" property="consultationId" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="depart_id" jdbcType="BIGINT" property="departId" />
+    <result column="send_dt" jdbcType="TIMESTAMP" property="sendDt" />
+    <result column="send_timestamp" jdbcType="INTEGER" property="sendTimestamp" />
+    <result column="content_type" jdbcType="TINYINT" property="contentType" />
+    <result column="content_data" jdbcType="VARCHAR" property="contentData" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+  </resultMap>
+
+  <resultMap id="dialogueVO" type="com.comvee.cdms.consultation.model.vo.RemoteConsultationMessageVO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="consultation_id" jdbcType="BIGINT" property="consultationId" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="depart_id" jdbcType="BIGINT" property="departId" />
+    <result column="send_dt" jdbcType="TIMESTAMP" property="sendDt" />
+    <result column="send_timestamp" jdbcType="BIGINT" property="sendTimestamp" />
+    <result column="content_type" jdbcType="TINYINT" property="contentType" />
+    <result column="content_data" jdbcType="VARCHAR" property="contentData" />
+    <result column="doctor_name" jdbcType="VARCHAR" property="doctorName" />
+    <result column="photo_url" jdbcType="VARCHAR" property="photoUrl" />
+  </resultMap>
+
+  <insert id="addMessage" parameterType="com.comvee.cdms.consultation.model.po.RemoteConsultationMessagePO">
+    insert into t_remote_consultation_message (sid, consultation_id, doctor_id,
+      hospital_id, depart_id, send_dt, 
+      send_timestamp, content_type, content_data
+      )
+    values (#{sid,jdbcType=BIGINT}, #{consultationId,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, 
+      #{hospitalId,jdbcType=BIGINT}, #{departId,jdbcType=BIGINT}, #{sendDt,jdbcType=TIMESTAMP}, 
+      #{sendTimestamp,jdbcType=INTEGER}, #{contentType,jdbcType=TINYINT}, #{contentData,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <select id="listMessage" resultMap="dialogueVO" parameterType="com.comvee.cdms.consultation.model.param.ListRemoteConsultationMessageParam">
+    select t.sid, t.consultation_id, t.doctor_id, t.hospital_id, t.depart_id, t.send_dt, t.send_timestamp,
+    t.content_type, t.content_data,t1.doctor_name,t1.photo_url
+    from t_remote_consultation_message t
+    left join t_doctor t1 on t.doctor_id = t1.doctor_id
+    where t.valid = 1 and t.consultation_id = #{consultationId}
+    <if test="newTimeStamp != null">
+      and t.send_timestamp &gt; #{newTimeStamp}
+    </if>
+    <if test="oldTimeStamp != null">
+      and t.send_timestamp &lt; #{newTimeStamp}
+    </if>
+    order by t.send_timestamp ${orderSort}
+    <if test="size != null">
+      limit #{size}
+    </if>
+  </select>
+</mapper>

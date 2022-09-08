@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.sign.mapper.SignSuggestMapper">
+
+    <resultMap id="signSuggest" type="com.comvee.cdms.sign.po.SignSuggestPO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="sign_id" jdbcType="BIGINT" property="signId" />
+        <result column="suggest_text" jdbcType="VARCHAR" property="suggestText" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="sign_type" jdbcType="TINYINT" property="signType" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    </resultMap>
+
+    <select id="getSignSuggetBySignId" resultMap="signSuggest">
+        select sid, member_id, sign_id, suggest_text, insert_dt, update_dt, sign_type, doctor_id
+        from t_sign_suggest
+        where sign_id = #{signId,jdbcType=BIGINT} limit 1
+    </select>
+
+    <insert id="addSignSuggest">
+        insert into t_sign_suggest (sid, member_id, sign_id,
+          suggest_text,
+          sign_type, doctor_id)
+        values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{signId,jdbcType=BIGINT},
+          #{suggestText,jdbcType=VARCHAR},
+          #{signType,jdbcType=TINYINT}, #{doctorId,jdbcType=BIGINT})
+    </insert>
+</mapper>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.member.mapper.MemberApplyMapper">
+    <resultMap id="memberApply" type="com.comvee.cdms.member.po.DoctorMemberApplyPO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="apply_dt" jdbcType="TIMESTAMP" property="applyDt" />
+        <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="check_info" jdbcType="VARCHAR" property="checkInfo" />
+    </resultMap>
+    
+	<resultMap id="memberApplyList" type="com.comvee.cdms.member.po.DoctorMemberApplyPO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="apply_dt" jdbcType="TIMESTAMP" property="applyDt" />
+        <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="check_info" jdbcType="VARCHAR" property="checkInfo" />
+        <result column="member_name" jdbcType="VARCHAR" property="memberName" />
+    </resultMap>    
+
+    <select id="listDoctorMemberApply"  parameterType="com.comvee.cdms.member.dto.ListDoctorMemberApplyDTO" resultMap="memberApply">
+        select sid, member_id, doctor_id, insert_dt, apply_dt, apply_status, update_dt, remark,
+        check_info
+        from t_doctor_member_apply
+        <where>
+            <if test="doctorIdList!=null and doctorIdList.size()&gt;0">
+                AND doctor_id IN
+                <foreach collection="doctorIdList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test = "applyStatus != null and '' != applyStatus">
+                and apply_status = #{applyStatus}
+            </if>
+        </where>
+        order by insert_dt desc
+    </select>
+
+    <select id="countDoctorMemberApply" parameterType="com.comvee.cdms.member.dto.ListDoctorMemberApplyDTO" resultType="long">
+        select count(*) from t_doctor_member_apply  where apply_status = 1
+        <if test = "doctorId != null and '' != doctorId">
+            and doctor_id = #{doctorId}
+        </if>
+    </select>
+
+
+    <select id="getDoctorMemberApply" resultMap="memberApply">
+        select sid, member_id, doctor_id, insert_dt, apply_dt, apply_status, update_dt, remark,
+        check_info
+        from t_doctor_member_apply
+        where member_id = #{memberId} and doctor_id = #{doctorId} limit 1
+    </select>
+
+    <insert id="addDoctorMemberApply" parameterType="com.comvee.cdms.member.po.DoctorMemberApplyPO">
+        insert into t_doctor_member_apply (sid, member_id, doctor_id,
+          apply_status,  remark, check_info
+          )
+        values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT},
+          #{applyStatus,jdbcType=TINYINT},  #{remark,jdbcType=VARCHAR}, #{checkInfo,jdbcType=VARCHAR}
+          )
+    </insert>
+
+    <update id="updateDoctorMemberApply" parameterType = "com.comvee.cdms.member.dto.UpdateDoctorMemberApplyDTO">
+        update t_doctor_member_apply
+        <set>
+            <if test="applyStatus != null">
+                apply_status = #{applyStatus,jdbcType=TINYINT},
+            </if>
+            <if test="remark != null and '' != remark">
+                remark = #{remark,jdbcType=TINYINT},
+            </if>
+            <if test="checkInfo != null and '' != checkInfo">
+                check_info = #{checkInfo,jdbcType=TINYINT},
+            </if>
+        </set>
+        <where>
+            <if test="memberId != null and '' != memberId">
+              and member_id = #{memberId}
+            </if>
+            <if test="sid != null and '' != sid">
+                and sid = #{sid}
+            </if>
+            <if test="doctorId != null and '' != doctorId">
+                and doctor_id = #{doctorId}
+            </if>
+        </where>
+    </update>
+  
+     <!-- gwx -->
+    <select id="countUntreatedApply" resultType="long">
+        select count(1)
+        from t_doctor_member_apply
+        <where>
+            <if test="applyStatus != null and '' != applyStatus">
+              and apply_status = #{applyStatus}
+            </if>
+            <if test="doctorId != null and '' != doctorId">
+              and doctor_id=#{doctorId}
+            </if>
+        </where>
+    </select>  
+    
+    <select id="getLastPatientRequest" resultType="com.comvee.cdms.member.po.DoctorMemberApplyPO">
+        select sid, member_id, doctor_id, insert_dt, apply_dt, apply_status, update_dt, remark,
+        check_info
+        from t_doctor_member_apply
+        where apply_status = #{applyStatus} and doctor_id=#{doctorId}
+        order by apply_dt desc
+        limit 1
+    </select>  
+    
+    <select id="getDoctorMemberApplyList" resultMap="memberApplyList">
+        select t.sid, t.member_id, t.doctor_id,t.apply_dt, t.apply_status, t.update_dt, t.remark,t.insert_dt,
+        t.check_info,m.member_name
+        from t_doctor_member_apply t
+        join t_member m on t.member_id = m.member_id and m.is_valid = 1
+        where t.doctor_id = #{doctorId}
+    </select>
+             
+</mapper>

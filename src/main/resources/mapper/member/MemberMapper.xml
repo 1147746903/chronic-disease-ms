@@ -1,0 +1,3433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.member.mapper.MemberMapper">
+    <resultMap id="member" type="com.comvee.cdms.member.po.MemberPO">
+        <id column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="member_name" jdbcType="VARCHAR" property="memberName" />
+        <result column="member_name_py" jdbcType="VARCHAR" property="memberNamePy" />
+        <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+        <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+        <result column="sex" jdbcType="VARCHAR" property="sex" />
+        <result column="birthday" jdbcType="DATE" property="birthday" />
+        <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+        <result column="profession" jdbcType="VARCHAR" property="profession" />
+        <result column="diabetes_type" jdbcType="VARCHAR" property="diabetesType" />
+        <result column="diabetes_date" jdbcType="DATE" property="diabetesDate" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+        <result column="height" jdbcType="VARCHAR" property="height" />
+        <result column="weight" jdbcType="VARCHAR" property="weight" />
+        <result column="bmi" jdbcType="VARCHAR" property="bmi" />
+        <result column="sbp_pressure" jdbcType="VARCHAR" property="sbpPressure" />
+        <result column="dbp_pressure" jdbcType="VARCHAR" property="dbpPressure" />
+        <result column="country" jdbcType="VARCHAR" property="country" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="essential_hyp" jdbcType="VARCHAR" property="essentialHyp" />
+        <result column="chd" jdbcType="VARCHAR" property="chd" />
+        <result column="nephropathy" jdbcType="VARCHAR" property="nephropathy" />
+        <result column="labour_intensity" jdbcType="VARCHAR" property="labourIntensity" />
+        <result column="hreat_rate" jdbcType="VARCHAR" property="hreatRate" />
+        <result column="member_info" jdbcType="LONGVARCHAR" property="memberInfo" />
+        <result column="level_hx" property="levelHx" />
+        <result column="dsme_hx" property="dsmeHx" />
+        <result column="is_diabetes" property="isDiabetes"/>
+		<result column="hyp_type" jdbcType="VARCHAR" property="hypType" />
+		<result column="hyp_date" jdbcType="DATE" property="hypDate" />
+		<result column="in_hos" property="inHos"/>
+		<result column="department_id" property="departmentId"/>
+		<result column="fat" property="fat"/>
+		<result column="member_tag" property="memberTag"/>
+		<result column="treatment" property="treatment"/>
+		<result column="social_card" property="socialCard"/>
+		<result column="committee_id" property="committeeId"/>
+		<result column="committee_name" property="committeeName"/>
+    </resultMap>
+    <resultMap id="memberList" type="com.comvee.cdms.member.po.MemberListPO">
+        <id column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="member_name" jdbcType="VARCHAR" property="memberName" />
+        <result column="member_name_py" jdbcType="VARCHAR" property="memberNamePy" />
+        <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+        <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+        <result column="sex" jdbcType="VARCHAR" property="sex" />
+        <result column="birthday" jdbcType="DATE" property="birthday" />
+        <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+        <result column="profession" jdbcType="VARCHAR" property="profession" />
+        <result column="diabetes_type" jdbcType="VARCHAR" property="diabetesType" />
+        <result column="diabetes_date" jdbcType="DATE" property="diabetesDate" />
+        <result column="height" jdbcType="VARCHAR" property="height" />
+        <result column="weight" jdbcType="VARCHAR" property="weight" />
+        <result column="bmi" jdbcType="VARCHAR" property="bmi" />
+        <result column="sbp_pressure" jdbcType="VARCHAR" property="sbpPressure" />
+        <result column="dbp_pressure" jdbcType="VARCHAR" property="dbpPressure" />
+        <result column="essential_hyp" jdbcType="VARCHAR" property="essentialHyp" />
+        <result column="chd" jdbcType="VARCHAR" property="chd" />
+        <result column="nephropathy" jdbcType="VARCHAR" property="nephropathy" />
+        <result column="labour_intensity" jdbcType="VARCHAR" property="labourIntensity" />
+        <result column="hreat_rate" jdbcType="VARCHAR" property="hreatRate" />
+        <result column="doctor_id" property="doctorId"/>
+        <result column="group_id" property="groupId"/>
+        <result column="label" property="label"/>
+        <result column="concern_status" property="concernStatus"/>
+        <result column="pay_status" property="priceFlag" />
+        <result column="level_hx" property="levelHx" />
+        <result column="dsme_hx" property="dsmeHx" />
+        <result column="is_diabetes" property="isDiabetes"/>
+		<result column="hospital_id" property="hospitalId"/>
+		<result column="hospital_no" property="hospitalNo"/>
+		<result column="in_hospital_date" property="inHospitalDt"/>
+		<result column="bed_no" property="bedNo"/>
+		<result column="department_id" property="departmentId"/>
+		<result column="department_name" property="departmentName"/>
+		<result column="hyp_type" jdbcType="VARCHAR" property="hypType" />
+		<result column="hyp_date" jdbcType="DATE" property="hypDate" />
+		<result column="sid" property="sid" />
+		<result column="checkin_status" property="checkinStatus" />
+		<result column="doctor_zg_code" property="doctorZgCode" />
+		<result column="doctor_zg" property="doctorZg" />
+		<result column="fat" property="fat"/>
+		<result column="position_name" property="positionName"/>
+		<result column="out_hospital_date" property="outHospitalDt"/>
+    </resultMap>
+    <resultMap id="memberOutList" type="com.comvee.cdms.member.po.MemberListPO">
+        <id column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="member_name" jdbcType="VARCHAR" property="memberName" />
+        <result column="member_name_py" jdbcType="VARCHAR" property="memberNamePy" />
+        <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+        <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+        <result column="sex" jdbcType="VARCHAR" property="sex" />
+        <result column="birthday" jdbcType="DATE" property="birthday" />
+        <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+        <result column="profession" jdbcType="VARCHAR" property="profession" />
+        <result column="diabetes_type" jdbcType="VARCHAR" property="diabetesType" />
+        <result column="diabetes_date" jdbcType="DATE" property="diabetesDate" />
+        <result column="height" jdbcType="VARCHAR" property="height" />
+        <result column="weight" jdbcType="VARCHAR" property="weight" />
+        <result column="bmi" jdbcType="VARCHAR" property="bmi" />
+        <result column="sbp_pressure" jdbcType="VARCHAR" property="sbpPressure" />
+        <result column="dbp_pressure" jdbcType="VARCHAR" property="dbpPressure" />
+        <result column="essential_hyp" jdbcType="VARCHAR" property="essentialHyp" />
+        <result column="chd" jdbcType="VARCHAR" property="chd" />
+        <result column="nephropathy" jdbcType="VARCHAR" property="nephropathy" />
+        <result column="labour_intensity" jdbcType="VARCHAR" property="labourIntensity" />
+        <result column="hreat_rate" jdbcType="VARCHAR" property="hreatRate" />
+        <result column="doctor_id" property="doctorId"/>
+        <result column="group_id" property="groupId"/>
+        <result column="label" property="label"/>
+        <result column="concern_status" property="concernStatus"/>
+        <result column="pay_status" property="priceFlag" />
+        <result column="level_hx" property="levelHx" />
+        <result column="dsme_hx" property="dsmeHx" />
+        <result column="is_diabetes" property="isDiabetes"/>
+		<result column="hospital_id" property="hospitalId"/>
+		<result column="hospital_no" property="hospitalNo"/>
+		<result column="in_hospital_date" property="inHospitalDt"/>
+		<result column="bed_no" property="bedNo"/>
+		<result column="department_id" property="departmentId"/>
+		<result column="department_name" property="departmentName"/>
+		<result column="hyp_type" jdbcType="VARCHAR" property="hypType" />
+		<result column="hyp_date" jdbcType="DATE" property="hypDate" />
+		<result column="sid" property="sid" />
+		<result column="checkin_status" property="checkinStatus" />
+		<result column="doctor_zg_code" property="doctorZgCode" />
+		<result column="doctor_zg" property="doctorZg" />
+		<result column="fat" property="fat"/>
+		<result column="position_name" property="positionName"/>
+		<result column="out_hospital_date" property="outHospitalDt"/>
+		<result column="in_hospital_day" property="inHospitalDay"/>
+    </resultMap>
+
+	<!--患者档案 -->
+	<resultMap id="memberArchives"
+		type="com.comvee.cdms.member.po.MemberArchivesPO">
+		<id column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+		<result column="archives_json" jdbcType="LONGVARCHAR" property="archivesJson" />
+		<result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+	</resultMap>
+
+	<!-- 患者-就诊卡 -->
+	<resultMap id="memberVisitCard"
+		type="com.comvee.cdms.member.po.MemberVisitCardPO">
+		<id column="sid" jdbcType="BIGINT" property="sid" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="visit_no" jdbcType="VARCHAR" property="visitNo" />
+		<result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+		<result column="card_type" jdbcType="TINYINT" property="cardType" />
+	</resultMap>
+
+	<!--患者用药 -->
+	<resultMap id="memberDrugItem"
+		type="com.comvee.cdms.member.po.MemberDrugItemPO">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="drug_json" jdbcType="LONGVARCHAR" property="drugJson" />
+		<result column="scheme_status" jdbcType="TINYINT" property="schemeStatus" />
+		<result column="start_dt" jdbcType="TIMESTAMP" property="startDt" />
+		<result column="end_dt" jdbcType="TIMESTAMP" property="endDt" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+		<result column="record_id" jdbcType="BIGINT" property="recordId" />
+		<result column="is_valid" jdbcType="VARCHAR" property="isValid" />
+		<result column="follow_id" jdbcType="BIGINT" property="followId" />
+		<result column="origin" jdbcType="VARCHAR" property="origin" />
+		<result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+	</resultMap>
+
+	<resultMap id="memberDrugItemBO"
+		type="com.comvee.cdms.member.bo.MemberDrugItemBO">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="drug_json" jdbcType="LONGVARCHAR" property="drugJson" />
+		<result column="scheme_status" jdbcType="TINYINT" property="schemeStatus" />
+		<result column="start_dt" jdbcType="TIMESTAMP" property="startDt" />
+		<result column="end_dt" jdbcType="TIMESTAMP" property="endDt" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+		<result column="record_id" jdbcType="BIGINT" property="recordId" />
+		<result column="is_valid" jdbcType="VARCHAR" property="isValid" />
+		<result column="follow_id" jdbcType="BIGINT" property="followId" />
+		<result column="origin" jdbcType="VARCHAR" property="origin" />
+		<result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+		<result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+		<result column="doctor_name" jdbcType="VARCHAR" property="doctorName" />
+	</resultMap>
+
+    <!--患者用药记录-->
+    <resultMap id="memberDrugRecord" type="com.comvee.cdms.member.po.MemberDrugRecordPO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="is_valid" jdbcType="VARCHAR" property="isValid" />
+        <result column="follow_id" jdbcType="BIGINT" property="followId" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+        <result column="team_id" jdbcType="BIGINT" property="teamId" />
+        <result column="type" jdbcType="BIGINT" property="dType"/>
+    </resultMap>
+
+	<resultMap id="monthMember"
+		type="com.comvee.cdms.member.po.CountMonthMemberPO">
+		<result column="count" property="count" />
+		<result column="month" property="month" />
+	</resultMap>
+
+	<resultMap id="doctorMember"
+		type="com.comvee.cdms.member.po.DoctorMemberPO">
+		<id column="sid" jdbcType="BIGINT" property="sid" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="modify_time_stamp" jdbcType="BIGINT" property="modifyTimeStamp" />
+		<result column="is_valid" jdbcType="INTEGER" property="isValid" />
+		<result column="is_attend" jdbcType="TINYINT" property="isAttend" />
+		<result column="label" jdbcType="VARCHAR" property="label" />
+		<result column="group_id" jdbcType="BIGINT" property="groupId" />
+		<result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+		<result column="concern_status" jdbcType="TINYINT" property="concernStatus" />
+		<result column="pay_status" property="priceFlag" />
+	</resultMap>
+
+	<!--医生备注信息 -->
+	<resultMap id="doctorMemberRemark"
+		type="com.comvee.cdms.member.po.DoctorMemberRemarkPO">
+		<id column="remark_id" jdbcType="BIGINT" property="remarkId" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+	</resultMap>
+
+	<resultMap id="memberCheckingInfo" type="com.comvee.cdms.member.po.MemberCheckinInfoPO">
+		<id column="sid" jdbcType="VARCHAR" property="sid" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="checkin_status" jdbcType="TINYINT" property="checkinStatus" />
+		<result column="department_id" jdbcType="BIGINT" property="departmentId" />
+		<result column="department_name" jdbcType="VARCHAR" property="departmentName" />
+		<result column="room_id" jdbcType="BIGINT" property="roomId" />
+		<result column="room_no" jdbcType="VARCHAR" property="roomNo" />
+		<result column="bed_id" jdbcType="BIGINT" property="bedId" />
+		<result column="bed_no" jdbcType="VARCHAR" property="bedNo" />
+		<result column="is_valid" jdbcType="TINYINT" property="isValid" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+		<result column="in_hospital_date" jdbcType="TIMESTAMP" property="inHospitalDate" />
+		<result column="out_hospital_date" jdbcType="TIMESTAMP" property="outHospitalDate" />
+		<result column="hospital_no" jdbcType="VARCHAR" property="hospitalNo" />
+		<result column="patient_card" jdbcType="VARCHAR" property="patientCard" />
+		<result column="pat_patient_id" jdbcType="VARCHAR" property="patPatientId" />
+		<result column="doctor_zg_code" jdbcType="VARCHAR" property="doctorZgCode" />
+		<result column="adm_no" jdbcType="BIGINT" property="admNo" />
+		<result column="main_nurse_desc" jdbcType="VARCHAR" property="mainNurseDesc" />
+		<result column="doctor_zg" jdbcType="VARCHAR" property="doctorZg" />
+		<result column="nur_level" jdbcType="VARCHAR" property="nurLevel" />
+		<result column="eat_model" jdbcType="VARCHAR" property="eatModel" />
+		<result column="charge_class" jdbcType="VARCHAR" property="chargeClass" />
+		<result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+	</resultMap>
+
+	<!--患者档案记录表 -->
+	<resultMap id="memberArchivesRecord" type="com.comvee.cdms.member.po.MemberArchivesRecordPO">
+		<id column="sid" jdbcType="BIGINT" property="sid" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+		<result column="archives_json_before" jdbcType="LONGVARCHAR" property="archivesJsonBefore" />
+		<result column="archives_json_after" jdbcType="LONGVARCHAR" property="archivesJsonAfter" />
+		<result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+		<result column="operation_id" jdbcType="BIGINT" property="operationId" />
+	</resultMap>
+
+	<!--患者探头-->
+	<resultMap id="memberSensorMap" type="com.comvee.cdms.dybloodsugar.po.DYMemberSensorPO">
+		<id column="sid" jdbcType="BIGINT" property="sid" />
+		<result column="sensor_no" jdbcType="VARCHAR" property="sensorNo" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="monitoring_time" jdbcType="VARCHAR" property="monitoringTime" />
+		<result column="modify_dt" jdbcType="VARCHAR" property="modifyDt" />
+		<result column="insert_dt" jdbcType="VARCHAR" property="insertDt" />
+		<result column="is_valid" jdbcType="TINYINT" property="isValid" />
+		<result column="run_status" jdbcType="TINYINT" property="runStatus" />
+		<result column="operation_type" jdbcType="TINYINT" property="operationType" />
+		<result column="operation_id" jdbcType="BIGINT" property="operationId" />
+		<result column="bind_type" jdbcType="BIGINT" property="bindType" />
+		<result column="app_id" jdbcType="VARCHAR" property="appId" />
+	</resultMap>
+	<!--患者胰岛素泵-->
+	<resultMap id="memberInsulinPumpMap" type="com.comvee.cdms.insulinpump.model.po.InsulinPumpNurseRecordPO">
+		<id column="sid" jdbcType="BIGINT" property="sid" />
+		<result column="member_id" jdbcType="BIGINT" property="memberId" />
+		<result column="hospital_no" jdbcType="VARCHAR" property="hospitalNo" />
+		<result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+		<result column="sign" jdbcType="VARCHAR" property="sign" />
+		<result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+		<result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+		<result column="valid" jdbcType="TINYINT" property="valid" />
+		<result column="model" jdbcType="VARCHAR" property="model" />
+		<result column="shift_over_dt" jdbcType="TIMESTAMP" property="shiftOverDt" />
+		<result column="pump_up_dt" jdbcType="TIMESTAMP" property="pumpUpDt" />
+		<result column="pump_down_dt" jdbcType="TIMESTAMP" property="pumpDownDt" />
+		<result column="electricity_quantity" jdbcType="VARCHAR" property="electricityQuantity" />
+		<result column="consumables" jdbcType="VARCHAR" property="consumables" />
+		<result column="data_json" jdbcType="VARCHAR" property="dataJson" />
+		<result column="virtual_ward_id" jdbcType="BIGINT" property="virtualWardId" />
+		<result column="is_low_blood_sugar" jdbcType="TINYINT" property="isLowBloodSugar" />
+		<result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+	</resultMap>
+
+    <resultMap id="gluListMember" type="com.comvee.cdms.glu.model.ListMemberVO">
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="member_name" jdbcType="VARCHAR" property="memberName" />
+        <result column="sex" jdbcType="VARCHAR" property="sex" />
+        <result column="birthday" jdbcType="DATE" property="birthday" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+        <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+        <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+        <result column="diabetes_type" jdbcType="VARCHAR" property="diabetesType" />
+        <result column="diabetes_type_name" jdbcType="VARCHAR" property="diabetesTypeName" />
+    </resultMap>
+
+    <resultMap id="memberMap" type="com.comvee.cdms.member.vo.MemberJoinHospitalVO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="doctor_id" jdbcType="BIGINT" property="doctorId"/>
+        <result column="member_id" jdbcType="BIGINT" property="memberId"/>
+        <result column="member_name" jdbcType="BIGINT" property="memberName"/>
+        <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone"/>
+        <result column="sex" jdbcType="VARCHAR" property="sex"/>
+        <result column="birthday" jdbcType="VARCHAR" property="birthday"/>
+        <result column="id_card" jdbcType="VARCHAR" property="idCard"/>
+        <result column="diabetesType" jdbcType="VARCHAR" property="diabetesType"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName"/>
+        <result column="thisHospital" jdbcType="TINYINT" property="thisHospital"/>
+        <result column="filingDate" jdbcType="VARCHAR" property="filingDate"/>
+        <result column="attention" jdbcType="TINYINT" property="attention"/>
+        <result column="visit_date" jdbcType="VARCHAR" property="visitDate"/>
+        <result column="depart_name" jdbcType="VARCHAR" property="departName"/>
+    </resultMap>
+
+    <resultMap id="gluMemberMap" type="com.comvee.cdms.glu.model.ListMemberVO">
+        <result column="member_id" jdbcType="BIGINT" property="memberId"/>
+        <result column="member_name" jdbcType="BIGINT" property="memberName"/>
+        <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone"/>
+        <result column="sex" jdbcType="VARCHAR" property="sex"/>
+        <result column="birthday" jdbcType="VARCHAR" property="birthday"/>
+        <result column="id_card" jdbcType="VARCHAR" property="idCard"/>
+        <result column="diabetesType" jdbcType="VARCHAR" property="diabetesType"/>
+        <result column="pic_url" jdbcType="VARCHAR" property="picUrl"/>
+        <result column="committee_id" jdbcType="VARCHAR" property="committeeId"/>
+        <result column="committee_name" jdbcType="VARCHAR" property="committeeName"/>
+    </resultMap>
+
+	<sql id="Hospital_Log_Column" >
+		sid, member_id, member_name, in_hospital_date, out_hospital_date, department_name,
+	department_id, bed_no, has_return_visit, insert_dt, modify_dt, is_valid, sex, card_no,
+	in_hospital_card_no, in_hospital_day, matters_needing_attent, in_status, pat_patient_id,
+	doctor_zg_code, adm_no, main_nurse_desc, doctor_zg, nur_level, eat_model, charge_class,
+	hospital_no, is_notification, hospital_id, initial_diagnosis, treatment_situation,
+	out_hospital_advice_json
+	</sql>
+
+    <select id="getMember" parameterType="com.comvee.cdms.member.dto.GetMemberDTO" resultMap="member">
+        select member_id, member_name, member_name_py, pic_url, mobile_phone, sex, birthday,
+        id_card, profession, diabetes_type, diabetes_date, insert_dt, modify_dt,
+        height, weight, bmi, sbp_pressure, dbp_pressure, country, address, essential_hyp, chd, nephropathy,
+		labour_intensity, hreat_rate, member_info, level_hx ,dsme_hx,is_diabetes, hyp_type, hyp_date,fat,
+		member_tag, treatment,social_card,committee_id,committee_name
+        from t_member
+        where is_valid = 1
+        <if test="memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test="idCard != null and '' != idCard">
+            and id_card = #{idCard}
+        </if>
+        <if test="socialCard != null and '' != socialCard">
+            and social_card = #{socialCard}
+        </if>
+        <if test="mobilePhone != null and '' != mobilePhone">
+            and mobile_phone = #{mobilePhone}
+        </if>
+		<if test="keyword!=null and keyword != ''">
+			AND (instr(mobile_phone ,#{keyword}) > 0 or instr(id_card  ,#{keyword}) > 0 )
+		</if>
+        limit 1
+    </select>
+    <insert id="addMember" parameterType="com.comvee.cdms.member.dto.AddMemberMapperDTO">
+        insert into t_member (member_id, member_name, member_name_py,
+        pic_url, mobile_phone, sex,
+        birthday, id_card, profession,
+        diabetes_type, diabetes_date,
+        insert_dt, modify_dt, height,
+        weight, bmi, sbp_pressure,dbp_pressure,
+        country, address, essential_hyp,
+        chd, nephropathy, labour_intensity,
+        hreat_rate, member_info,member_source,is_diabetes,hyp_type,hyp_date ,fat, member_tag,
+        treatment ,member_name_pys,social_card,committee_id,committee_name)
+		values (#{memberId,jdbcType=BIGINT}, #{memberName,jdbcType=VARCHAR}, #{memberNamePy,jdbcType=VARCHAR},
+				#{picUrl,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},
+				#{birthday,jdbcType=DATE}, #{idCard,jdbcType=VARCHAR}, #{profession,jdbcType=VARCHAR},
+				#{diabetesType,jdbcType=VARCHAR}, #{diabetesDate,jdbcType=DATE},
+				now(), now(), #{height,jdbcType=VARCHAR},
+				#{weight,jdbcType=VARCHAR}, #{bmi,jdbcType=VARCHAR}, #{sbpPressure,jdbcType=VARCHAR},#{dbpPressure,jdbcType=VARCHAR},
+				#{country,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{essentialHyp,jdbcType=VARCHAR},
+				#{chd,jdbcType=VARCHAR}, #{nephropathy,jdbcType=VARCHAR}, #{labourIntensity,jdbcType=VARCHAR},
+				#{hreatRate,jdbcType=VARCHAR}, #{memberInfo,jdbcType=LONGVARCHAR},#{memberSource,jdbcType=TINYINT},
+				#{isDiabetes,jdbcType=VARCHAR},#{hypType,jdbcType=VARCHAR}, #{hypDate,jdbcType=DATE} ,#{fat}, 'AGENT',
+				#{treatment,jdbcType=TINYINT} ,#{memberNamePys},#{socialCard,jdbcType=VARCHAR},
+				#{committeeId,jdbcType=BIGINT},#{committeeName,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updateMember" parameterType="com.comvee.cdms.member.dto.UpdateMemberDTO">
+        update t_member
+        set  modify_dt = now()
+        <if test="memberName != null and '' != memberName">
+            ,member_name = #{memberName}
+        </if>
+        <if test="memberNamePy != null and '' != memberNamePy">
+            ,member_name_py = #{memberNamePy}
+        </if>
+        <if test="memberNamePys != null and '' != memberNamePys">
+            ,member_name_pys = #{memberNamePys}
+        </if>
+        <if test="picUrl != null and '' != picUrl">
+            ,pic_url = #{picUrl}
+        </if>
+        <if test="idCard != null and '' != idCard">
+            ,id_card = #{idCard}
+        </if>
+        <if test="mobilePhone != null and '' != mobilePhone">
+            ,mobile_phone = #{mobilePhone}
+        </if>
+        <if test="sex != null and '' != sex">
+            ,sex = #{sex}
+        </if>
+        <if test="birthday != null and '' != birthday">
+            ,birthday = #{birthday}
+        </if>
+        <if test="profession != null and '' != profession">
+            ,profession = #{profession}
+        </if>
+        <if test="diabetesType != null and '' != diabetesType">
+            ,diabetes_type = #{diabetesType}
+        </if>
+        <if test="diabetesDate != null and '' != diabetesDate">
+            ,diabetes_date = #{diabetesDate}
+        </if>
+        <if test="height != null and '' != height">
+            ,height = #{height}
+        </if>
+        <if test="weight != null and '' != weight">
+            ,weight = #{weight}
+        </if>
+        <if test="bmi != null and '' != bmi">
+            ,bmi = #{bmi}
+        </if>
+        <if test="sbpPressure != null and '' != sbpPressure">
+            ,sbp_pressure = #{sbpPressure}
+        </if>
+        <if test="dbpPressure != null and '' != dbpPressure">
+            ,dbp_pressure = #{dbpPressure}
+        </if>
+        <if test="country != null and '' != country">
+            ,country = #{country}
+        </if>
+        <if test="address != null and '' != address">
+            ,address = #{address}
+        </if>
+        <if test="chd != null">
+            ,chd = #{chd}
+        </if>
+        <if test="essentialHyp != null and essentialHyp !=''">
+            ,essential_hyp = #{essentialHyp}
+        </if>
+        <if test="nephropathy != null and '' != nephropathy">
+            ,nephropathy = #{nephropathy}
+        </if>
+        <if test="labourIntensity != null and '' != labourIntensity">
+            ,labour_intensity = #{labourIntensity}
+        </if>
+        <if test="hreatRate != null and '' != hreatRate">
+            ,hreat_rate = #{hreatRate}
+        </if>
+        <if test="memberInfo != null and '' != memberInfo">
+            ,member_info = #{memberInfo}
+        </if>
+        <if test="levelHx != null and '' != levelHx">
+            ,level_hx = #{levelHx}
+        </if>
+        <if test="dsmeHx != null and '' != dsmeHx">
+            ,dsme_hx = #{dsmeHx}
+        </if>
+        <if test="isDiabetes != null and '' != isDiabetes">
+            ,is_diabetes = #{isDiabetes}
+        </if>
+		<if test="hypType != null and '' != hypType">
+			,hyp_type = #{hypType}
+		</if>
+		<if test="hypDate != null and '' != hypDate">
+			,hyp_date = #{hypDate}
+		</if>
+		<if test="fat !=null and fat !=''">
+			,fat = #{fat}
+		</if>
+		<if test="memberTag !=null and memberTag !=''">
+			,member_tag = #{memberTag}
+		</if>
+		<if test="treatment !=null ">
+			,treatment = #{treatment}
+		</if>
+        <if test="socialCard != null and '' != socialCard">
+            ,social_card = #{socialCard}
+        </if>
+        <if test="committeeId != null and '' != committeeId">
+            ,committee_id = #{committeeId}
+        </if>
+        <if test="committeeName != null and '' != committeeName">
+            ,committee_name = #{committeeName}
+        </if>
+        WHERE member_id = #{memberId}
+    </update>
+    <select id="listMember" parameterType="com.comvee.cdms.member.dto.ListMemberDTO" resultMap="memberList">
+        select q.doctor_id,q.member_id,q.group_id,q.label,q.is_attend
+        ,w.level_hx,w.member_name,w.birthday,w.hreat_rate,w.id_card,w.member_name_py
+        ,w.sbp_pressure,w.dbp_pressure,w.bmi,w.chd,w.diabetes_date,w.diabetes_type
+        ,w.essential_hyp,w.height,w.mobile_phone,w.pic_url,w.sex,w.weight,w.is_diabetes, w.hyp_type, w.hyp_date,q.concern_status,q.pay_status
+        from t_doctor_member q join t_member w
+        on q.member_id = w.member_id and w.is_valid = 1
+        where q.is_valid = 1
+		and not exists(
+		select 1 from t_member_checkin_info c where c.is_valid = 1 and c.checkin_status = 1
+		and c.hospital_id = #{hospitalId} and c.member_id = q.member_id
+		)
+        <if test="groupId != null and '' != groupId">
+            and q.group_Id = #{groupId}
+        </if>
+        <if test="doctorId != null and '' != doctorId">
+            and q.doctor_id = #{doctorId}
+        </if>
+        <if test="concernStatus != null">
+            and q.concern_status = #{concernStatus}
+        </if>
+        <if test="keyWord != null and '' != keyWord">
+            and (instr(w.member_name, #{keyWord}) > 0 or instr(w.member_name_py, #{keyWord}) > 0 )
+        </if>
+        <if test="doctorIdList != null and doctorIdList.size() > 0">
+			and q.doctor_id in
+			<foreach collection="doctorIdList" item="item" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+		</if>
+        order by FIELD(q.pay_status, 2, 3, 1),q.insert_dt desc
+    </select>
+    <select id="listMemberByWhere" parameterType="com.comvee.cdms.member.dto.MemberParamsDTO" resultMap="member">
+        select m.member_id, m.member_name, m.member_name_py, m.pic_url, m.mobile_phone, m.sex, m.birthday,
+		m.id_card, m.profession, m.diabetes_type, m.diabetes_date, m.insert_dt, m.modify_dt,
+		m.height, m.weight, m.bmi, m.sbp_pressure, m.dbp_pressure, m.country, m.address, m.essential_hyp, m.chd, m.nephropathy,
+		m.labour_intensity, m.hreat_rate, m.member_info,m.is_diabetes, m.hyp_type, m.hyp_date,
+		ifnull(mci.checkin_status,0)in_hos
+        from t_member m left join t_member_checkin_info mci ON mci.member_id=m.member_id and mci.is_valid=1
+        where m.is_valid = 1
+        <if test="memberId!=null and memberId!=''">
+            and m.member_id = #{memberId}
+        </if>
+        <if test="memberIds!=null">
+            and m.member_id in
+            <foreach collection="memberIds" separator="," open="(" close=")" item="item" index="index">
+                #{item}
+            </foreach>
+        </if>
+        <if test="memberName!=null and memberName!=''">
+            and (INSTR(m.member_name,#{memberName})) > 0
+        </if>
+        <if test="memberNamePy!=null and memberNamePy!=''">
+            and (INSTR(m.member_name_py,#{memberNamePy})) > 0
+        </if>
+        <if test="mobilePhone!=null and mobilePhone!=''">
+            and m.mobile_phone = #{mobilePhone}
+        </if>
+    </select>
+	<insert id="addDoctorMember"
+		parameterType="com.comvee.cdms.member.dto.DoctorMemberMapperDTO">
+		insert into t_doctor_member (sid, member_id, doctor_id,
+		insert_dt, modify_time_stamp,
+		is_attend, label, group_id,
+        operator_id ,concern_status,relation_way)
+		values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
+		#{doctorId,jdbcType=BIGINT},
+		now(),#{modifyTimeStamp},
+		#{isAttend,jdbcType=TINYINT}, #{label,jdbcType=VARCHAR}, #{groupId,jdbcType=BIGINT},
+        #{operatorId,jdbcType=BIGINT} ,#{concernStatus},#{relationWay})
+	</insert>
+
+	<update id="updateDoctorMember"
+		parameterType="com.comvee.cdms.member.dto.UpdateDoctorMemberDTO">
+		update t_doctor_member t set t.modify_time_stamp = #{modifyTimeStamp}
+		<if test="isAttend != null">
+			,t.is_attend = #{isAttend}
+		</if>
+		<if test="label != null and '' != label">
+			,t.label = #{label}
+		</if>
+		<if test="groupId != null and '' != groupId">
+			,t.group_id = #{groupId}
+		</if>
+		<if test="concernStatus != null">
+			,t.concern_status = #{concernStatus}
+		</if>
+		<if test="payStatus != null">
+			,t.pay_status = #{payStatus}
+		</if>
+		<where>
+			<if test="doctorId != null and doctorId != ''">
+				and t.doctor_id = #{doctorId}
+			</if>
+			<if test="memberId != null and memberId != ''">
+				and t.member_id = #{memberId}
+			</if>
+			<if test="sid != null and sid != ''">
+				and t.sid = #{sid}
+			</if>
+			<if test="groupIdWhere != null and '' != groupIdWhere">
+				and t.group_id = #{groupIdWhere}
+			</if>
+		</where>
+	</update>
+
+	<select id="getMemberArchives" resultMap="memberArchives">
+		select member_id, insert_dt, modify_dt, archives_json, hospital_id
+		from t_member_archives
+		where member_id = #{memberId}
+		<if test="hospitalId != null and '' != hospitalId">
+			and hospital_id = #{hospitalId}
+		</if>
+		LIMIT 1
+	</select>
+
+	<update id="updateMemberArchivesById" parameterType="com.comvee.cdms.member.po.MemberArchivesPO">
+		update t_member_archives
+		set modify_dt = now()
+		<if test="memberArchivesPO.archivesJson != null and '' != memberArchivesPO.archivesJson">
+			,archives_json = #{memberArchivesPO.archivesJson,jdbcType=LONGVARCHAR}
+		</if>
+		where member_id = #{memberArchivesPO.memberId}
+	</update>
+
+	<insert id="addMemberArchives" parameterType="com.comvee.cdms.member.po.MemberArchivesPO">
+		insert into t_member_archives (sid ,member_id, insert_dt, modify_dt,
+		archives_json, hospital_id)
+		values (#{memberArchivesPO.sid,jdbcType=BIGINT} ,#{memberArchivesPO.memberId,jdbcType=BIGINT}, now(), now(),
+		#{memberArchivesPO.archivesJson,jdbcType=LONGVARCHAR}, #{memberArchivesPO.hospitalId,jdbcType=BIGINT})
+	</insert>
+
+	<!-- 获取用户设置目标 -->
+	<select id="getMemberRange" resultType="com.comvee.cdms.member.bo.RangeBO">
+		SELECT t.range_id rangeId,t.member_id memberId,
+		t.low_before_breakfast lowBeforeBreakfast,t.high_before_breakfast
+		highBeforeBreakfast,t.low_beforedawn lowBeforedawn,
+		t.high_beforedawn highBeforedawn,t.low_after_meal lowAfterMeal,
+		t.high_after_meal highAfterMeal,t.low_before_meal lowBeforeMeal,t.high_before_meal
+		highBeforeMeal,
+		t.low_before_sleep lowBeforeSleep,t.high_before_sleep highBeforeSleep,t.is_valid
+		isValid,
+		high_systolic_press highSystolicPress, low_systolic_press lowSystolicPress,
+		high_diastolic_press highDiastolicPress, low_diastolic_press
+		lowDiastolicPress,
+		low_glycosylated_val lowGlycosylatedVal, high_glycosylated_val HighGlycosylatedVal,
+		low_TCholesterol lowTCholesterol, high_TCholesterol highTCholesterol,
+		low_triglyceride lowTriglyceride, high_triglyceride highTriglyceride,
+		low_LDLCholesterol lowLDLCholesterol, high_LDLCholesterol
+		highLDLCholesterol,
+		low_HDLCholesterol lowHDLCholesterol, high_HDLCholesterol highHDLCholesterol,
+		low_random_sugar lowRandomSugar,high_random_sugar highRandomSugar,
+		low_after_meal_one_hour lowAfterMealOneHour,high_after_meal_one_hour
+		highAfterMealOneHour,high_ketone highKetone,
+		DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') insertDt,
+		DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') modifyDt
+		FROM t_member_range t where t.is_valid = 1
+		and t.member_id = #{memberId}
+		limit 1
+	</select>
+
+
+	<!-- 增加用户设置目标 -->
+	<insert id="addMemberRange" parameterType="com.comvee.cdms.member.bo.RangeBO">
+		insert into t_member_range
+		(range_id,member_id,low_before_breakfast,high_before_breakfast,
+		low_beforedawn,high_beforedawn,low_after_meal,high_after_meal,low_before_meal,
+		high_before_meal,low_before_sleep,high_before_sleep,
+		insert_dt,modify_dt,
+		high_systolic_press, low_systolic_press , high_diastolic_press , low_diastolic_press
+		, low_glycosylated_val , high_glycosylated_val , low_TCholesterol ,
+		high_TCholesterol
+		, low_triglyceride , high_triglyceride , low_LDLCholesterol ,
+		high_LDLCholesterol ,
+		low_HDLCholesterol, high_HDLCholesterol,low_random_sugar,high_random_sugar
+		,low_after_meal_one_hour ,high_after_meal_one_hour, high_ketone)
+		values
+		(#{rangeId},#{memberId},#{lowBeforeBreakfast},#{highBeforeBreakfast},#{lowBeforedawn},#{highBeforedawn},#{lowAfterMeal},
+		#{highAfterMeal},#{lowBeforeMeal},#{highBeforeMeal},#{lowBeforeSleep},#{highBeforeSleep},now(),now(),
+		#{highSystolicPress},#{lowSystolicPress},#{highDiastolicPress},#{lowDiastolicPress},
+		#{lowGlycosylatedVal},#{highGlycosylatedVal},#{lowTCholesterol},#{highTCholesterol},
+		#{lowTriglyceride},#{highTriglyceride},#{lowLDLCholesterol},#{highLDLCholesterol},
+		#{lowHDLCholesterol},#{highHDLCholesterol},#{lowRandomSugar},#{highRandomSugar}
+		,#{lowAfterMealOneHour} ,#{highAfterMealOneHour},#{highKetone})
+	</insert>
+
+	<!-- 修改用户设置目标 -->
+	<update id="modifyMemberRange" parameterType="com.comvee.cdms.member.bo.RangeBO">
+		UPDATE t_member_range
+		<set>
+			modify_dt = now(),
+			<if test="lowBeforeBreakfast != null">
+				low_before_breakfast = #{lowBeforeBreakfast,jdbcType=VARCHAR},
+			</if>
+			<if test="highBeforeBreakfast != null">
+				high_before_breakfast = #{highBeforeBreakfast,jdbcType=VARCHAR},
+			</if>
+			<if test="lowBeforedawn != null">
+				low_beforedawn = #{lowBeforedawn,jdbcType=VARCHAR},
+			</if>
+			<if test="highBeforedawn != null">
+				high_beforedawn = #{highBeforedawn,jdbcType=VARCHAR},
+			</if>
+			<if test="isValid != null">
+				is_valid = #{isValid,jdbcType=TINYINT},
+			</if>
+			<if test="insertDt != null">
+				insert_dt = #{insertDt,jdbcType=TIMESTAMP},
+			</if>
+
+			<if test="lowAfterMeal != null">
+				low_after_meal = #{lowAfterMeal,jdbcType=VARCHAR},
+			</if>
+			<if test="highAfterMeal != null">
+				high_after_meal = #{highAfterMeal,jdbcType=VARCHAR},
+			</if>
+			<if test="lowBeforeSleep != null">
+				low_before_sleep = #{lowBeforeSleep,jdbcType=VARCHAR},
+			</if>
+			<if test="highBeforeSleep != null">
+				high_before_sleep = #{highBeforeSleep,jdbcType=VARCHAR},
+			</if>
+			<if test="lowBeforeMeal != null">
+				low_before_meal = #{lowBeforeMeal,jdbcType=VARCHAR},
+			</if>
+			<if test="highBeforeMeal != null">
+				high_before_meal = #{highBeforeMeal,jdbcType=VARCHAR},
+			</if>
+			<if test="highSystolicPress != null">
+				high_systolic_press = #{highSystolicPress,jdbcType=VARCHAR},
+			</if>
+			<if test="lowSystolicPress != null">
+				low_systolic_press = #{lowSystolicPress,jdbcType=VARCHAR},
+			</if>
+			<if test="highDiastolicPress != null">
+				high_diastolic_press = #{highDiastolicPress,jdbcType=VARCHAR},
+			</if>
+			<if test="lowDiastolicPress != null">
+				low_diastolic_press = #{lowDiastolicPress,jdbcType=VARCHAR},
+			</if>
+			<if test="lowGlycosylatedVal != null">
+				low_glycosylated_val = #{lowGlycosylatedVal,jdbcType=VARCHAR},
+			</if>
+			<if test="highGlycosylatedVal != null">
+				high_glycosylated_val = #{highGlycosylatedVal,jdbcType=VARCHAR},
+			</if>
+			<if test="lowTCholesterol != null">
+				low_TCholesterol = #{lowTCholesterol,jdbcType=VARCHAR},
+			</if>
+			<if test="highTCholesterol != null">
+				high_TCholesterol = #{highTCholesterol,jdbcType=VARCHAR},
+			</if>
+			<if test="lowTriglyceride != null">
+				low_triglyceride = #{lowTriglyceride,jdbcType=VARCHAR},
+			</if>
+			<if test="highTriglyceride != null">
+				high_triglyceride = #{highTriglyceride,jdbcType=VARCHAR},
+			</if>
+			<if test="lowLDLCholesterol != null">
+				low_LDLCholesterol = #{lowLDLCholesterol,jdbcType=VARCHAR},
+			</if>
+			<if test="highLDLCholesterol != null">
+				high_LDLCholesterol = #{highLDLCholesterol,jdbcType=VARCHAR},
+			</if>
+			<if test="lowHDLCholesterol != null">
+				low_HDLCholesterol = #{lowHDLCholesterol,jdbcType=VARCHAR},
+			</if>
+			<if test="highHDLCholesterol != null">
+				high_HDLCholesterol = #{highHDLCholesterol,jdbcType=VARCHAR},
+			</if>
+			<if test="lowRandomSugar != null">
+				low_random_sugar = #{lowRandomSugar,jdbcType=VARCHAR},
+			</if>
+			<if test="highRandomSugar != null">
+				high_random_sugar = #{highRandomSugar,jdbcType=VARCHAR},
+			</if>
+			<if test="lowAfterMealOneHour != null">
+				low_after_meal_one_hour = #{lowAfterMealOneHour,jdbcType=VARCHAR},
+			</if>
+			<if test="highAfterMealOneHour != null">
+				high_after_meal_one_hour = #{highAfterMealOneHour,jdbcType=VARCHAR},
+			</if>
+			<if test="highKetone != null and '' != highKetone">
+				high_ketone = #{highKetone,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where member_id = #{memberId,jdbcType=BIGINT}
+	</update>
+
+	<select id="listMemberByIdList" resultMap="member">
+		select m.member_id, m.member_name, m.member_name_py, m.pic_url, m.mobile_phone,
+		m.sex, m.birthday,
+		m.id_card, m.profession, m.diabetes_type, m.diabetes_date, m.insert_dt, m.modify_dt,
+		m.height, m.weight, m.bmi, m.sbp_pressure, m.dbp_pressure, m.country, m.address,
+		m.essential_hyp, m.chd, m.nephropathy,
+		m.labour_intensity, m.hreat_rate, m.member_info,ifnull(mci.checkin_status,0)in_hos,mci.department_id
+		from t_member m left join t_member_checkin_info mci on mci.member_id=m.member_id
+		and mci.is_valid=1
+		where m.is_valid = 1
+		and m.member_id in
+		<foreach collection="list" separator="," open="(" close=")"
+			item="item" index="index">
+			#{item}
+		</foreach>
+	</select>
+
+	<select id="countGroupMember" parameterType="com.comvee.cdms.member.dto.ListMemberDTO"
+		resultType="long">
+		select count(*)
+		from t_doctor_member q join t_member w
+		on q.member_id = w.member_id and w.is_valid = 1
+		where q.is_valid = 1
+		<if test="groupId != null and '' != groupId">
+			and q.group_Id = #{groupId}
+		</if>
+		<if test="doctorId != null and '' != doctorId">
+			and q.doctor_id = #{doctorId}
+		</if>
+		<if test="concernStatus != null">
+			and q.concern_status = #{concernStatus}
+		</if>
+		<if test="keyWord != null and '' != keyWord">
+			and (instr(w.member_name, #{keyWord}) > 0 or instr(w.member_name_py,
+			#{keyWord}) > 0 )
+		</if>
+	</select>
+
+	<select id="countMemberDoctor"
+		parameterType="com.comvee.cdms.member.dto.CountDoctorMemberDTO"
+		resultType="long">
+		SELECT count(t.sid) from t_doctor_member t where t.is_valid = 1
+		<if test="memberId != null and '' != memberId">
+			and t.member_id = #{memberId}
+		</if>
+		<if test="doctorId != null and '' != doctorId">
+			and t.doctor_id = #{doctorId}
+		</if>
+		<if test="concernStatus != null">
+			and t.concern_status = #{concernStatus}
+		</if>
+		<if test="isAttend != null ">
+			and t.is_attend = #{isAttend}
+		</if>
+		<if test="groupId != null and '' != groupId">
+			and t.group_id = #{groupId}
+		</if>
+		<if test="payStatus != null">
+			and t.pay_status = #{payStatus}
+		</if>
+	</select>
+
+	<select id="getMemberVisitCard" resultMap="memberVisitCard"
+		parameterType="com.comvee.cdms.member.dto.MemberVisitCardDTO">
+		select sid, member_id, visit_no, hospital_id, insert_dt, update_dt,card_type
+		from t_member_visit_card
+		<where>
+			<if test="sid != null and '' != sid">
+				and sid = #{sid}
+			</if>
+			<if test="memberId != null and '' != memberId">
+				and member_id = #{memberId}
+			</if>
+			<if test="visitNo != null and '' != visitNo">
+				and visit_no = #{visitNo}
+			</if>
+			<if test="hospitalId != null and '' != hospitalId">
+				and hospital_id = #{hospitalId}
+			</if>
+			<if test="cardType!=null">
+				and card_type=#{cardType}
+			</if>
+		</where>
+		limit 1
+	</select>
+
+	<select id="getMemberDrugItemList"
+			parameterType="com.comvee.cdms.member.dto.GetMemberDrugItemDTO"
+			resultMap="memberDrugItem">
+		select id, name, drug_json, scheme_status, start_dt, end_dt,
+		insert_dt, modify_dt,
+		record_id,origin,remark
+		from t_member_drug_item
+		where  is_valid = 1
+		<if test="recordId != null and '' != recordId">
+			and record_id = #{recordId}
+		</if>
+		<if test="followId != null and '' != followId">
+			and follow_id = #{followId}
+		</if>
+		order by insert_dt desc
+	</select>
+
+	<select id="getMemberDrugItem"
+		parameterType="com.comvee.cdms.member.dto.GetMemberDrugItemDTO"
+		resultMap="memberDrugItem">
+		select id, name, drug_json, scheme_status, start_dt, end_dt,
+		insert_dt, modify_dt,
+		record_id,origin,remark
+		from t_member_drug_item
+		where is_valid = 1
+		<if test="id != null and '' != id">
+			and id = #{id}
+		</if>
+		<if test="recordId != null and '' != recordId">
+			and record_id = #{recordId}
+		</if>
+		limit 1
+	</select>
+
+
+	<insert id="addMemberDrugItem" parameterType="com.comvee.cdms.member.po.MemberDrugItemPO">
+		insert into t_member_drug_item (id, name, drug_json, scheme_status,
+		start_dt, end_dt, insert_dt, modify_dt,
+		is_valid, record_id, follow_id,origin,remark)
+		values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{drugJson},
+		1, #{startDt}, #{endDt},now(), now(),
+		1, #{recordId,jdbcType=BIGINT},
+		#{followId,jdbcType=BIGINT},#{origin},#{remark})
+	</insert>
+
+	<update id="updateMemberDrugItem" parameterType="com.comvee.cdms.member.po.MemberDrugItemPO">
+		update t_member_drug_item
+		set modify_dt = now()
+		<if test="name != null and '' != name">
+			,name = #{name,jdbcType=VARCHAR}
+		</if>
+		<if test="drugJson != null and '' != drugJson">
+			,drug_json = #{drugJson}
+		</if>
+		<if test="schemeStatus != null and '' != schemeStatus">
+			,scheme_status = #{schemeStatus}
+		</if>
+		<if test="startDt != null and '' != startDt">
+			,start_dt = #{startDt}
+		</if>
+		<if test="isValid != null and '' != isValid">
+			,is_valid = #{isValid}
+		</if>
+		<if test="origin != null">
+			,origin = #{origin}
+		</if>
+		<if test="remark != null and '' != remark">
+			,remark = #{remark}
+		</if>
+
+		where id = #{id}
+	</update>
+
+	<update id="delMemberDrugItem" parameterType="java.lang.String">
+		update t_member_drug_item
+		set modify_dt = now(),scheme_status = 2
+		where record_id = #{recordId}
+	</update>
+
+	<update id="delMemberDrugRecord" parameterType="java.lang.String">
+		update t_member_drug_record
+		set modify_dt = now(),is_valid = 1
+		where id = #{id}
+	</update>
+    <select id="getMemberDrugRecord" parameterType="com.comvee.cdms.member.dto.GetMemberDrugItemDTO" resultMap="memberDrugRecord">
+        select id, insert_dt, modify_dt,member_id,team_id,doctor_id
+        from t_member_drug_record
+        where is_valid = 1
+        <if test="memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test="doctorId != null and '' != doctorId">
+            and doctor_id = #{doctorId}
+        </if>
+        <if test="teamId != null and '' != teamId">
+            and team_id = #{teamId}
+        </if>
+        <if test="followId != null and '' != followId">
+            and follow_id = #{followId}
+        </if>
+        <if test="dType != null">
+            and type = #{dType}
+        </if>
+        order by insert_dt desc limit 1
+    </select>
+
+<select id="getMemberDrugRecordList"
+		parameterType="com.comvee.cdms.member.dto.GetMemberDrugItemDTO"
+		resultMap="memberDrugRecord">
+		select id, insert_dt, modify_dt, member_id,team_id,doctor_id
+		from t_member_drug_record
+		where is_valid = 1
+		<if test="memberId != null and '' != memberId">
+			and member_id = #{memberId}
+		</if>
+		<if test="doctorId != null and '' != doctorId">
+			and doctor_id = #{doctorId}
+		</if>
+		<if test="teamId != null and '' != teamId">
+			and team_id = #{teamId}
+		</if>
+		<if test="followId != null and '' != followId">
+			and follow_id = #{followId}</if>
+        <if test="dType != null">
+            and type = #{dType}
+		</if>
+		order by insert_dt desc
+	</select>
+
+	<select id="listDrugsMemberPage"
+		parameterType="com.comvee.cdms.member.dto.GetMemberDrugItemDTO"
+		resultMap="memberDrugItemBO">
+		select i.id, i.name, i.drug_json, i.scheme_status, i.start_dt,
+		i.end_dt, i.insert_dt, i.modify_dt,
+		i.record_id,i.origin,i.remark,r.doctor_id,d.doctor_name
+		from t_member_drug_item i join t_member_drug_record r
+		on i.record_id = r.id and i.is_valid=1 and r.is_valid=1
+		, t_doctor d
+		where d.doctor_id=r.doctor_id and  i.name != '至用药方案' and i.drug_json is NOT NULL and i.drug_json != ''
+		<if test="memberId != null and '' != memberId">
+			and r.member_id = #{memberId}
+		</if>
+		<if test="doctorId != null and '' != doctorId">
+			and r.doctor_id = #{doctorId}
+		</if>
+		<if test="teamId != null and '' != teamId">
+			and r.team_id = #{teamId}
+		</if>
+		<if test="followId != null and '' != followId">
+			and r.follow_id = #{followId}
+			and i.follow_id = #{followId}
+		</if>
+		<if test="recordId != null and '' != recordId">
+			and i.record_id = #{recordId}
+			and r.id = #{recordId}
+		</if>
+		<if test="id != null and '' != id">
+			and i.record_id = #{id}
+			and r.id = #{id}
+		</if>
+		<if test="startDt != null and '' != startDt">
+			and i.end_dt &gt;= #{startDt}
+		</if>
+		<if test="endDt != null and '' != endDt">
+			and i.end_dt &gt;= #{endDt}</if>
+        <if test="dType != null">
+            and r.type = #{dType}
+		</if>
+		<if test="origin!=null and origin!=''">
+			and i.origin = #{origin}
+		</if>
+		<if test="hasDrugType!=null">
+			and i.drug_json like #{hasDrugType}
+		</if>
+		ORDER BY i.id desc
+	</select>
+
+
+	<select id="countMonthMember"
+		parameterType="com.comvee.cdms.member.dto.CountMonthMemberDTO"
+		resultMap="monthMember">
+		select DATE_FORMAT(t.insert_dt,'%m') month , count(t.sid) count from
+		t_doctor_member t
+		where DATE_FORMAT(t.insert_dt,'%Y') = #{year}
+		and t.is_valid=1
+		and t.doctor_id = #{doctorId}
+		group by DATE_FORMAT(t.insert_dt, '%Y-%m')
+	</select>
+    <insert id="addMemberDrugRecord" parameterType="com.comvee.cdms.member.po.MemberDrugRecordPO">
+        insert into t_member_drug_record (id, insert_dt, modify_dt, is_valid, member_id, follow_id, doctor_id, team_id,type)
+        values (#{id,jdbcType=BIGINT}, now(), now(), 1, #{memberId,jdbcType=BIGINT}, #{followId,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, #{teamId,jdbcType=BIGINT},#{dType})
+    </insert>
+	<insert id="addMemberVisitCard"
+		parameterType="com.comvee.cdms.member.dto.AddMemberVisitCardDTO">
+		insert into t_member_visit_card (sid, member_id, visit_no,
+		hospital_id ,card_type
+		)
+		values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
+		#{visitNo,jdbcType=VARCHAR},
+		#{hospitalId,jdbcType=BIGINT} ,#{cardType}
+		)
+	</insert>
+	<select id="listDoctorMember"
+		parameterType="com.comvee.cdms.member.dto.ListDoctorMemberDTO"
+		resultMap="doctorMember">
+		select sid, member_id, doctor_id, insert_dt, modify_time_stamp,
+		is_valid, is_attend,
+		label, group_id, operator_id, concern_status ,pay_status
+		from t_doctor_member where is_valid = 1
+		<if test="memberId != null and '' != memberId">
+			and member_id = #{memberId}
+		</if>
+		<if test="doctorId != null and '' != doctorId">
+			and doctor_id = #{doctorId}
+		</if>
+		<if test="isAttend != null">
+			and is_attend = #{isAttend}
+		</if>
+		<if test="groupId != null and '' != groupId">
+			and group_id = #{groupId}
+		</if>
+		<if test="concernStatus != null">
+			and concern_status = #{concernStatus}
+		</if>
+	</select>
+
+	<select id="getDoctorMember"
+		parameterType="com.comvee.cdms.member.dto.ListDoctorMemberDTO"
+		resultMap="doctorMember">
+		select sid, member_id, doctor_id, insert_dt, modify_time_stamp,
+		is_valid, is_attend,
+		label, group_id, operator_id, concern_status ,pay_status
+		from t_doctor_member where is_valid = 1
+		<if test="memberId != null and '' != memberId">
+			and member_id = #{memberId}
+		</if>
+		<if test="doctorId != null and '' != doctorId">
+			and doctor_id = #{doctorId}
+		</if>
+		LIMIT 1
+	</select>
+
+	<!-- gwx添加201811051605 -->
+	<!-- 患者页 - 患者分组 -->
+	<select id="loadMemberListAndGroup"
+		resultType="com.comvee.cdms.app.doctorapp.model.app.MemberListAndGroupRespModel">
+		select t.doctor_id doctorId,t.group_id groupId,t.group_name
+		groupName,count(q.sid) num
+		from t_doctor_group t left join t_doctor_member q
+		on t.group_id = q.group_id and q.is_valid = 1 where t.is_valid = 1
+		and t.doctor_id in
+		<foreach collection="doctorList" item="item" open="(" close=")"
+			separator=",">
+			#{item}
+		</foreach>
+		group by t.group_id
+	</select>
+
+	<select id="loadMemberListByGroupId"
+		resultType="com.comvee.cdms.app.doctorapp.model.app.MemberListByGroupIdRespModel">
+		select q.member_id memberId,q.member_name memberName,q.member_name_py
+		memberNamePy,q.birthday,q.diabetes_type diabetesType
+		,q.diabetes_date diabetesDate,q.weight,q.height,q.sex,q.pic_url picUrl,t.doctor_id
+		doctorId,t.group_id groupId, t.is_valid isValid
+		,t.pay_status priceFlag
+		from t_doctor_member t ,t_member q where t.member_id = q.member_id
+		and t.is_valid = 1 and q.is_valid = 1
+		<if test="groupId != null and '' != groupId">
+			and t.group_id = #{groupId}
+		</if>
+		<if test="lastDate != null and '' != lastDate">
+			and t.modify_time_stamp &gt; #{lastDate}
+		</if>
+		<if test="doctorList != null and doctorList.size > 0">
+			and t.doctor_id in
+			<foreach collection="doctorList" open="(" close=")"
+				separator="," index="index" item="item">
+				#{item}
+			</foreach>
+		</if>
+		order by FIELD(t.pay_status, 2, 3, 1)
+	</select>
+
+	<update id="updatePayStatusByPackageStartDate">
+		update t_doctor_member t , t_member_package q
+		set t.pay_status = #{payStatus} where DATE_FORMAT(q.start_dt,'%Y-%m-%d')
+		= #{todayDate}
+		and t.doctor_id = q.doctor_id and t.member_id = q.member_id
+		and q.package_status = 1
+
+	</update>
+
+	<insert id="addDoctorMemberRemark"
+		parameterType="com.comvee.cdms.member.po.DoctorMemberRemarkPO">
+		insert into t_doctor_member_remark
+		(remark_id,member_id,doctor_id,remark,insert_dt,update_dt)
+		values(#{remarkId},#{memberId},#{doctorId},#{remark},now(),now())
+	</insert>
+
+	<delete id="delDoctorMemberRemark" parameterType="java.lang.String">
+		update t_doctor_member_remark
+		set update_dt = now(), is_valid = 0
+		where remark_id = #{remarkId}
+	</delete>
+
+	<select id="listDoctorMemberRemark" parameterType="java.lang.String"
+		resultMap="doctorMemberRemark">
+		select
+		t.remark_id,t.member_id,t.doctor_id,t.remark,t.insert_dt,t.update_dt
+		from t_doctor_member_remark t,t_doctor d where t.doctor_id = d.doctor_id and t.is_valid = 1
+		<if test="memberId != null and '' != memberId">
+			and t.member_id = #{memberId}
+		</if>
+		<if test="doctorId != null and '' != doctorId">
+			and t.doctor_id = #{doctorId}
+		</if>
+		<if test="hospitalId != null and '' != hospitalId">
+			and d.hospital_id = #{hospitalId}
+		</if>
+		order by t.insert_dt desc
+	</select>
+
+	<select id="listMemberArchives" resultMap="memberArchives">
+		select member_id, insert_dt, modify_dt, archives_json, hospital_id
+		from t_member_archives
+		where member_id = #{memberId}
+		<if test="hospitalId != null and '' != hospitalId">
+			and hospital_id = #{hospitalId}
+		</if>
+	</select>
+
+
+	<select id="listMemberByDoctorId"
+		parameterType="com.comvee.cdms.member.dto.ListMemberByDoctorDTO"
+		resultMap="member">
+		select b.member_id, b.member_name, b.member_name_py, b.pic_url,
+		b.mobile_phone, b.sex, b.birthday,
+		b.id_card, b.profession, b.diabetes_type, b.diabetes_date, b.insert_dt,
+		b.modify_dt,
+		b.height, b.weight, b.bmi, b.sbp_pressure, b.dbp_pressure, b.country,
+		b.address, b.essential_hyp, b.chd, b.nephropathy,
+		b.labour_intensity, b.hreat_rate, b.member_info, b.level_hx ,b.dsme_hx
+		from t_doctor_member a join t_member b
+		on a.member_id = b.member_id and a.is_valid= 1
+		<if test="doctorId != null and ''!=doctorId">
+			and a.doctor_id = #{doctorId}
+		</if>
+		<if test="memberName!= null and ''!=memberName">
+			and b.member_name = #{memberName}
+		</if>
+		<if test="idCard= null and ''!=idCard">
+			and b.id_card = #{idCard}
+		</if>
+		<if test="phoneNumber!= null and ''!=phoneNumber">
+			and b.mobile_phone = #{phoneNumber}
+		</if>
+		<if test="keyword != null and '' != keyword">
+			and (instr(b.member_name, #{keyword}) > 0 or instr(b.id_card,
+			#{keyword}) > 0 or instr(b.mobile_phone, #{keyword}) > 0)
+		</if>
+	</select>
+	<update id="cancelRelation" parameterType="java.lang.String">
+		update t_doctor_member set is_valid = 0
+		where doctor_id = #{doctorId}
+		and member_id = #{memberId}
+	</update>
+	<select id="listMemberData" parameterType="com.comvee.cdms.member.dto.MemberDataDTO"
+		resultType="com.comvee.cdms.member.bo.MemberDataBO">
+		select a.member_id memberId,a.member_name memberName,a.id_card
+		idCard,a.mobile_phone mobilePhone,a.diabetes_type diabetesType,
+		a.sex sex,b.doctor_id doctorId,DATE_FORMAT(b.insert_dt,'%Y-%m-%d')
+		insertDt,c.hospital_id hospitalId,c.depart_id departmentId
+		from t_member a,t_doctor_member b,t_doctor c where a.member_id=b.member_id
+		and b.doctor_id = c.doctor_id and b.is_valid=1
+		<if test="hospitalId != null and ''!=hospitalId">
+			and c.hospital_id = #{hospitalId}
+		</if>
+		<if test="departmentId != null and ''!=departmentId">
+			and c.depart_id = #{departmentId}
+		</if>
+		<if test="doctorId != null and ''!=doctorId">
+			and c.doctor_id = #{doctorId}
+		</if>
+		<if test="memberName != null and ''!=memberName">
+			and instr(a.member_name,#{memberName})>0
+		</if>
+		<if test="idCard != null and ''!=idCard">
+			and a.id_card = #{idCard}
+		</if>
+		GROUP BY a.member_id,c.hospital_id
+		order by a.insert_dt desc
+	</select>
+	<select id="countNewMember" resultType="java.lang.Long"
+		parameterType="com.comvee.cdms.statistics.dto.SynthesizeDataDTO">
+		select count(*) from (
+		select mjh.member_id from
+	    t_member_join_hospital mjh
+        left join t_member_checkin_info mci on mci.member_id = mjh.member_id
+        where mjh.valid=1
+        and (mci.checkin_status is null or mci.checkin_status != 1)
+		<if test="hospitalId != null and ''!=hospitalId">
+			and mjh.hospital_id = #{hospitalId}
+		</if>
+
+		 group by mjh.member_id ) a
+	</select>
+
+	<select id="getMemberByDoctor"
+		parameterType="com.comvee.cdms.member.dto.GetMemberByDoctorDTO"
+		resultType="java.lang.String">
+		select a.member_id
+		from t_doctor_member a join t_doctor b
+		on a.doctor_id = b.doctor_id where a.is_valid= 1
+		<if test="hospitalName != null and ''!=hospitalName">
+			and b.hospital_name = #{hospitalName}
+		</if>
+		<if test="departmentName!= null and ''!=departmentName">
+			and b.depart_name = #{departmentName}
+		</if>
+		<if test="doctorName= null and ''!=doctorName">
+			and b.doctor_name = #{doctorName}
+		</if>
+		<if test="startDt != null and ''!=startDt">
+			and a.insert_dt &gt;= #{startDt}
+		</if>
+		<if test="endDt != null and ''!=endDt">
+			and a.insert_dt &lt;= #{endDt}
+		</if>
+		order by a.insert_dt desc
+
+	</select>
+
+
+	<select id="getMemberArchivesById" resultMap="memberArchives"
+		parameterType="com.comvee.cdms.statistics.dto.SynthesizeDataDTO">
+		select member_id, insert_dt, modify_dt, archives_json, hospital_id
+		from t_member_archives
+		<where>
+			<if test="endDt != null and ''!=endDt">
+				and insert_dt >= #{startDt}
+			</if>
+			<if test="endDt != null and ''!=endDt">
+				and insert_dt &lt;= #{endDt}
+			</if>
+			<if test="memberList != null and memberList.size() > 0">
+				and member_id in
+				<foreach collection="memberList" open="(" close=")"
+					separator="," item="item">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+
+	</select>
+
+	<update id="updateMemberVisitNo" parameterType="com.comvee.cdms.member.po.MemberVisitCardPO">
+		update t_member_visit_card
+		<set>
+			<if test="visitNo != null and '' != visitNo">
+				visit_no = #{visitNo},
+			</if>
+		</set>
+		where sid = #{sid}
+	</update>
+
+    <select id="countGroupMemberForV4" parameterType="com.comvee.cdms.member.dto.ListMemberDTO" resultType="long">
+        select count(1) from (
+          select t.member_id from (
+            select q.group_id,w.member_id
+            from t_doctor_member q join t_member w on q.member_id = w.member_id and w.is_valid = 1
+            where q.is_valid = 1 and q.doctor_id = #{doctorId}
+            <!--门诊居家患者不显示在住院的患者-->
+            and NOT EXISTS (select member_id from t_member_checkin_info c,
+            t_doctor_department dd
+            where c.checkin_status=1 and c.is_valid=1 and c.member_id=q.member_id
+            and c.department_id=dd.department_id and dd.doctor_id=#{doctorId}
+            and dd.doctor_id = q.doctor_id)
+            <!--门诊居家患者不显示在住院的患者END-->
+            <if test="keyWord != null and '' != keyWord">
+                and (instr(w.member_name, #{keyWord}) > 0 or instr(w.member_name_py, #{keyWord}) > 0 )
+            </if>
+            <if test="concernStatus != null">
+                and q.concern_status = #{concernStatus}
+            </if>
+            <if test="type != null">
+                <if test="type == 1 ">
+                    and (w.is_diabetes != '2' or w.is_diabetes is null or w.is_diabetes = '')
+                </if>
+                <if test="type == 2">
+
+                    and (w.essential_hyp != '2' or w.essential_hyp is null or w.essential_hyp = '')
+                </if>
+            </if>
+
+            )t
+          where  1 = 1
+          <if test="groupId != null and '' != groupId">
+			  and t.group_id=#{groupId}
+		  </if>
+
+        )cnt
+    </select>
+
+	<select id="countGroupMemberForHospital" parameterType="com.comvee.cdms.member.dto.ListMemberDTO" resultType="long">
+		select count(1) from (
+		select t.member_id from (
+		select q.group_id,w.member_id
+		from t_doctor_member q join t_member w on q.member_id = w.member_id and w.is_valid = 1
+		where q.is_valid = 1 and q.doctor_id = #{doctorId}
+		<!--门诊居家患者不显示在住院的患者-->
+		and NOT EXISTS (select member_id from t_member_checkin_info c,
+		t_department dd
+		where c.checkin_status=1 and c.is_valid=1 and c.member_id=q.member_id
+		and c.department_id=dd.department_id and dd.hospital_id=#{hospitalId})
+		<!--门诊居家患者不显示在住院的患者END-->
+		<if test="keyWord != null and '' != keyWord">
+			and (instr(w.member_name, #{keyWord}) > 0 or instr(w.member_name_py, #{keyWord}) > 0 )
+		</if>
+		<if test="concernStatus != null">
+			and q.concern_status = #{concernStatus}
+		</if>
+		<if test="type != null">
+			<if test="type == 1 ">
+				and (w.is_diabetes != '2' or w.is_diabetes is null or w.is_diabetes = '')
+			</if>
+			<if test="type == 2">
+
+				and (w.essential_hyp != '2' or w.essential_hyp is null or w.essential_hyp = '')
+			</if>
+		</if>
+
+		)t
+		where t.group_id=#{groupId}
+
+		)cnt
+	</select>
+
+    <select id="countDepartMember" parameterType="com.comvee.cdms.member.dto.ListMemberDTO" resultType="long">
+          SELECT
+	          count(1)
+          FROM
+	          (
+		          SELECT
+			          t.member_id
+		          FROM
+			          (
+				        SELECT
+					        mci.member_id ,
+					        mci.department_id group_id
+				        FROM
+			          		t_member_checkin_info mci ,
+			          		t_member m
+			          	WHERE
+			          		mci.checkin_status = 1
+			          	AND mci.is_valid = 1
+			          	AND m.member_id = mci.member_id
+                        <if test="keyWord != null and '' != keyWord">
+                            and (instr(m.member_name, #{keyWord}) > 0 or instr(m.member_name_py, #{keyWord}) > 0 )
+                        </if>
+                        <if test="type != null">
+                            <if test="type == '1' ">
+                                and (m.is_diabetes != '2' or m.is_diabetes is null or m.is_diabetes = '')
+                            </if>
+                            <if test="type == '2'">
+                                and (m.essential_hyp != '2' or m.essential_hyp is null or m.essential_hyp = '')
+                            </if>
+							<if test="type == '3'">
+								and (m.fat != '0' or m.fat is null or m.fat = '')
+							</if>
+                        </if>
+						<if test="monitor != null">
+						    and
+							<if test="monitor == 0 ">
+								not
+							</if>
+							EXISTS (select plan_id from t_member_monitor_plan where is_valid=1 and member_id=m.member_id)
+						</if>
+						<if test="paramLevel != null">
+							and EXISTS (select t.member_id from (select * from (select * from t_blood_sugar
+							where is_valid=1
+							ORDER BY record_dt desc)t
+							GROUP BY member_id)t where t.member_id=m.member_id and t.param_level=#{paramLevel})
+						</if>
+			          	UNION ALL
+			          		SELECT
+		          				mvw.member_id ,
+					          	'517812E861921A665A9324275FDE8FE6' group_id
+		          			FROM
+		          				t_member_virtual_ward mvw ,
+		          				t_member m ,
+	          					t_member_checkin_info mci
+		          			WHERE
+		          				mvw.member_id = m.member_id
+	          				AND m.member_id = mci.member_id
+		          			AND mvw.department_id = mci.department_id
+		          			AND mci.checkin_status = 1
+	          				AND mci.is_valid = 1
+                            <if test="keyWord != null and '' != keyWord">
+                                and (instr(m.member_name, #{keyWord}) > 0 or instr(m.member_name_py, #{keyWord}) > 0 )
+                            </if>
+                            <if test="type != null">
+                                <if test="type == 1 ">
+                                    and (m.is_diabetes != '2' or m.is_diabetes is null or m.is_diabetes = '')
+                                </if>
+                                <if test="type == 2">
+                                    and (m.essential_hyp != '2' or m.essential_hyp is null or m.essential_hyp = '')
+                                </if>
+								<if test="type == 3">
+									and (m.fat != '0' or m.fat is null or m.fat = '')
+								</if>
+                            </if>
+							<if test="monitor != null">
+								and
+								<if test="monitor == 0 ">
+									not
+								</if>
+								EXISTS (select plan_id from t_member_monitor_plan where is_valid=1 and member_id=m.member_id)
+							</if>
+							<if test="paramLevel != null">
+								and EXISTS (select t.member_id from (select * from (select * from t_blood_sugar
+								where is_valid=1
+								ORDER BY record_dt desc)t
+								GROUP BY member_id)t where t.member_id=m.member_id and t.param_level=#{paramLevel})
+							</if>
+	          		) t
+          		WHERE
+	          		t.group_id = #{groupId}
+	          	GROUP BY
+          			t.member_id
+	          ) cnt
+    </select>
+
+    <select id="listMemberForV4" parameterType="com.comvee.cdms.member.dto.PagerMemberDTO" resultMap="memberList">
+        select q.doctor_id,q.member_id,q.group_id,q.label,q.is_attend
+        ,w.level_hx,w.member_name,w.birthday,w.hreat_rate,w.id_card,w.member_name_py
+        ,w.sbp_pressure,w.dbp_pressure,w.bmi,w.chd,w.diabetes_date,w.diabetes_type
+		,w.essential_hyp,w.height,w.mobile_phone,w.pic_url,w.sex,w.weight,w.fat,w.is_diabetes,q.concern_status,q.pay_status,
+        q.insert_dt,0 inHos
+        from t_doctor_member q join t_member w
+        on q.member_id = w.member_id and w.is_valid = 1
+        where q.is_valid = 1 and q.doctor_id = #{doctorId}
+        <!--门诊居家患者不显示在住院的患者-->
+        and NOT EXISTS (select member_id from t_member_checkin_info c,
+        t_doctor_department dd
+        where c.checkin_status=1 and c.is_valid=1 and c.member_id=q.member_id
+        and c.department_id=dd.department_id and dd.doctor_id=#{doctorId}
+        and dd.doctor_id = q.doctor_id)
+        <!--门诊居家患者不显示在住院的患者END-->
+        <if test="groupId != null and '' != groupId">
+            and q.group_Id = #{groupId}
+        </if>
+        <if test="concernStatus != null">
+            and q.concern_status = #{concernStatus}
+        </if>
+        <if test="keyWord != null and '' != keyWord">
+            and (instr(w.member_name, #{keyWord}) > 0 or instr(w.member_name_py, #{keyWord}) > 0 )
+        </if>
+        <if test="memberType != null and '' != memberType">
+            <if test="memberType == 1 ">
+                and (w.is_diabetes != '2' or w.is_diabetes is null or w.is_diabetes = '')
+            </if>
+            <if test="memberType == 2">
+                and (w.essential_hyp != '2' or w.essential_hyp is null or w.essential_hyp = '')
+            </if>
+			<if test="memberType == 3">
+				and (w.fat != '0' or w.fat is null or w.fat = '')
+			</if>
+        </if>
+        order by FIELD(q.pay_status, 2, 3, 1),q.insert_dt desc
+
+    </select>
+
+	<select id="listMemberForHospital" parameterType="com.comvee.cdms.member.dto.PagerMemberDTO" resultMap="memberList">
+
+		select q.doctor_id,q.member_id,q.group_id,q.label,q.is_attend
+		,w.level_hx,w.member_name,w.birthday,w.hreat_rate,w.id_card,w.member_name_py
+		,w.sbp_pressure,w.dbp_pressure,w.bmi,w.chd,w.diabetes_date,w.diabetes_type
+		,w.essential_hyp,w.height,w.mobile_phone,w.pic_url,w.sex,w.weight,w.is_diabetes,q.concern_status,q.pay_status,
+		q.insert_dt,0 inHos
+		from t_doctor_member q join t_member w
+		on q.member_id = w.member_id and w.is_valid = 1
+		where q.is_valid = 1 and q.doctor_id = #{doctorId}
+		<!--门诊居家患者不显示在住院的患者-->
+		and NOT EXISTS (select member_id from t_member_checkin_info c,
+		t_department dd
+		where c.checkin_status=1 and c.is_valid=1 and c.member_id=q.member_id
+		and c.department_id=dd.department_id and dd.hospital_id=#{hospitalId})
+		<!--门诊居家患者不显示在住院的患者END-->
+		<if test="groupId != null and '' != groupId">
+            and q.group_Id = #{groupId}
+        </if>
+		<if test="concernStatus != null">
+			and q.concern_status = #{concernStatus}
+		</if>
+		<if test="keyWord != null and '' != keyWord">
+			and (instr(w.member_name, #{keyWord}) > 0 or instr(w.member_name_py, #{keyWord}) > 0 )
+		</if>
+		<if test="memberType != null and '' != memberType">
+			<if test="memberType == 1 ">
+				and (w.is_diabetes != '2' or w.is_diabetes is null or w.is_diabetes = '')
+			</if>
+			<if test="memberType == 2">
+				and (w.essential_hyp != '2' or w.essential_hyp is null or w.essential_hyp = '')
+			</if>
+			<if test="memberType == 3">
+				and (w.fat != '0' or w.fat is null or w.fat = '')
+			</if>
+		</if>
+        order by FIELD(q.pay_status, 2, 3, 1),q.insert_dt desc
+	</select>
+
+    <select id="listMemberByDepart" parameterType="com.comvee.cdms.member.dto.PagerMemberDTO" resultMap="memberList">
+        SELECT *
+        FROM
+        (
+        SELECT
+        #{doctorId} doctor_id,mci.member_id,mci.department_id group_id,'' label,'' is_attend
+        ,m.level_hx,m.member_name,m.birthday,m.hreat_rate,m.id_card,m.member_name_py
+        ,m.sbp_pressure,m.dbp_pressure,m.bmi,m.chd,m.diabetes_date,m.diabetes_type
+        ,m.essential_hyp,m.height,m.mobile_phone,m.pic_url,m.sex,m.weight,m.is_diabetes,'' concern_status,'' pay_status,
+        mci.modify_dt insert_dt,1 inHos
+        FROM
+        t_member_checkin_info mci ,
+        t_member m
+        WHERE
+        mci.checkin_status = 1
+        AND mci.is_valid = 1
+        AND m.member_id = mci.member_id
+        <if test="keyWord != null and '' != keyWord">
+            and (instr(m.member_name, #{keyWord}) > 0 or instr(m.member_name_py, #{keyWord}) > 0 )
+        </if>
+        <if test="memberType != null and '' != memberType">
+            <if test="memberType == 1 ">
+                and (m.is_diabetes != '2' or m.is_diabetes is null or m.is_diabetes = '')
+            </if>
+            <if test="memberType == 2">
+                and (m.essential_hyp != '2' or m.essential_hyp is null or m.essential_hyp = '')
+            </if>
+			<if test="memberType == 3">
+				and (m.fat != '0' or m.fat is null or m.fat = '')
+			</if>
+        </if>
+        UNION ALL
+        SELECT
+        #{doctorId} doctor_id,m.member_id,
+        '517812E861921A665A9324275FDE8FE6' group_id,'' label,'' is_attend
+        ,m.level_hx,m.member_name,m.birthday,m.hreat_rate,m.id_card,m.member_name_py
+        ,m.sbp_pressure,m.dbp_pressure,m.bmi,m.chd,m.diabetes_date,m.diabetes_type
+        ,m.essential_hyp,m.height,m.mobile_phone,m.pic_url,m.sex,m.weight,m.is_diabetes,'' concern_status,'' pay_status,
+        mvw.modify_dt insert_dt,1 inHos
+        FROM
+        t_member_virtual_ward mvw ,
+        t_member m ,
+        t_member_checkin_info mci
+        WHERE
+        mvw.member_id = m.member_id
+        AND m.member_id = mci.member_id
+        AND mvw.department_id = mci.department_id
+        AND mci.checkin_status = 1
+        AND mci.is_valid = 1
+        <if test="keyWord != null and '' != keyWord">
+            and (instr(m.member_name, #{keyWord}) > 0 or instr(m.member_name_py, #{keyWord}) > 0 )
+        </if>
+		<if test="memberType != null and '' != memberType">
+			<if test="memberType == 1 ">
+				and (m.is_diabetes != '2' or m.is_diabetes is null or m.is_diabetes = '')
+			</if>
+			<if test="memberType == 2">
+				and (m.essential_hyp != '2' or m.essential_hyp is null or m.essential_hyp = '')
+			</if>
+			<if test="memberType == 3">
+				and (m.fat != '0' or m.fat is null or m.fat = '')
+			</if>
+		</if>
+        ) t
+        WHERE
+        t.group_id = #{groupId}
+        GROUP BY
+        t.member_id
+        order by FIELD(t.pay_status, 2, 3, 1),t.insert_dt desc
+    </select>
+	<select id="countMemberWhere"
+		parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO"
+		resultType="long">
+		<!--visitType 1住院 2门诊&居家-->
+		<if test="visitType==1">
+			select count(1) from (
+			select m.* from t_member m
+            join t_member_checkin_info mci on mci.member_id = m.member_id and mci.is_valid =1
+			join t_member_in_hospital_log h on m.member_id=h.member_id
+			where h.is_valid=1 and mci.checkin_status = 1
+			<if test="hospitalId!=null and hospitalId!=''">
+				and h.hospital_id=#{hospitalId}
+			</if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+            and (h.in_hospital_date &lt; #{endDt} and (h.out_hospital_date &gt; #{startDt} or h.out_hospital_date is null))
+            </if>
+			<if test="sex!=null and sex!=''">
+				and m.sex=#{sex}
+			</if>
+			GROUP BY m.member_id
+			)cnt
+		</if>
+		<if test="visitType==2">
+			select count(1) from (
+			select m.member_id from t_member m
+			join t_member_join_hospital mjh on m.member_id = mjh.member_id and mjh.valid = 1
+            left join
+            (select member_id,checkin_status,hospital_id from t_member_checkin_info where is_valid = 1) mci
+            on mci.member_id = mjh.member_id
+			where m.is_valid=1
+            and (mci.checkin_status is null or mci.checkin_status != 1)
+            <if test="hospitalId!=null and hospitalId!=''">
+                and mjh.hospital_id=#{hospitalId}
+            </if>
+			<if test="sex!=null and sex!=''">
+				and m.sex=#{sex}
+			</if>
+			GROUP BY m.member_id
+			)cnt
+		</if>
+		<!--科研-->
+		<if test="visitType==3">
+			select count(r.member_id) from (
+				select q.member_id from t_research_group t,t_research_group_member q,t_member m
+				where t.valid = 1 and q.valid = 1 and m.is_valid = 1
+				and t.group_id = q.research_group_id and q.member_id = m.member_id
+				and t.hospital_id = #{hospitalId}
+				<if test="researchGroupId != null and '' != researchGroupId">
+                    and t.group_id = #{researchGroupId}
+                </if>
+                <if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+                    and q.insert_dt between #{startDt} and #{endDt}
+                </if>
+                <if test="sex!=null and sex!=''">
+                    and m.sex=#{sex}
+                </if>
+				group by q.member_id
+			) r
+		</if>
+	</select>
+
+	<select id="getPrescriptionOfMemberCount"
+		parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO"
+		resultType="long">
+		<!--visitType类型 1住院 2门诊&居家 -->
+		<if test="visitType==1">
+			select count(1) from (
+			select m.* from t_member m
+			join t_prescription p
+			on p.member_id=m.member_id
+			join t_member_in_hospital_log h
+			on m.member_id=h.member_id
+			where h.is_valid=1 and p.`schedule`=3
+			<if test="hospitalId!=null and hospitalId!=''">
+				and h.hospital_id=#{hospitalId}
+			</if>
+			<if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+				and (h.out_hospital_date between #{startDt} and #{endDt}
+				or in_status=1)
+				and p.insert_dt between #{startDt} and #{endDt}
+			</if>
+			group by m.member_id
+			)cnt
+		</if>
+		<if test="visitType==2">
+			select count(1) from (
+			select m.* from t_member m
+			join t_prescription p
+			on p.member_id=m.member_id
+			join t_doctor_member dm on p.member_id = dm.member_id
+			and p.team_id=dm.doctor_id
+			join t_doctor d on dm.doctor_id=d.doctor_id
+			<if test="hospitalId!=null and hospitalId!=''">
+				and d.hospital_id=#{hospitalId}
+			</if>
+			LEFT JOIN (select * from t_member_visit
+			where visit_date BETWEEN DATE_FORMAT(date_add(#{endDt}, interval -7 day),'%Y-%m-%d 00:00:00')
+			and DATE_FORMAT(#{endDt},'%Y-%m-%d %H:%i:%s') group by member_id) v
+			ON m.member_id = v.member_id and d.depart_id = v.depart_code
+			and v.hospital_id=d.hospital_id
+			where (dm.is_valid=1 and m.is_valid=1 and p.`schedule`=3
+			<if test="doctorIdList!=null and doctorIdList.size&gt;0">
+				and dm.doctor_id in
+				<foreach collection="doctorIdList" index="index" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>
+			</if>
+			<if test="sex!=null and sex!=''">
+				and m.sex=#{sex}
+			</if>
+			<if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+				and p.insert_dt between #{startDt} and #{endDt}
+			</if>
+			)
+			OR (v.sid IS NOT NULL
+			<if test="sex!=null and sex!=''">
+				and m.sex=#{sex}
+			</if>
+			<if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+				and p.insert_dt between #{startDt} and #{endDt}
+			</if> and m.is_valid=1 and p.`schedule`=3)
+			group by m.member_id
+			)cnt
+		</if>
+	</select>
+
+	<select id="countMonthMemberForHos"
+		parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO"
+		resultMap="monthMember">
+		<!--visitType类型 1住院 2门诊&居家 -->
+		<if test="visitType==1">
+			select DATE_FORMAT(m.insert_dt,'%Y-%m') yearMonth, count(m.sid) count from
+			t_doctor_member m
+			join t_member_in_hospital_log h
+			on m.member_id=h.member_id
+			where h.is_valid=1
+			<if test="hospitalId!=null and hospitalId!=''">
+				and h.hospital_id=#{hospitalId}
+			</if>
+			<if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+				and (h.out_hospital_date between #{startDt} and #{endDt}
+				or in_status=1)
+				and m.insert_dt between #{startDt} and #{endDt}
+			</if>
+			<!-- and DATE_FORMAT(m.insert_dt,'%Y') = #{year} -->
+			and m.is_valid=1
+			group by DATE_FORMAT(m.insert_dt, '%Y-%m')
+		</if>
+		<if test="visitType==2">
+			select DATE_FORMAT(m.insert_dt,'%Y-%m') yearMonth, count(m.sid) count from
+			t_doctor_member m
+			join t_doctor d on m.doctor_id=d.doctor_id
+			<if test="hospitalId!=null and hospitalId!=''">
+				and d.hospital_id=#{hospitalId}
+			</if>
+			LEFT JOIN (select * from t_member_visit
+			where visit_date BETWEEN DATE_FORMAT(date_add(#{endDt}, interval -7 day),'%Y-%m-%d 00:00:00')
+			and DATE_FORMAT(#{endDt},'%Y-%m-%d %H:%i:%s') group by member_id) v
+			ON m.member_id = v.member_id and d.depart_id = v.depart_code
+			and v.hospital_id=d.hospital_id
+			where (m.is_valid=1
+			<if test="doctorIdList!=null and doctorIdList.size&gt;0">
+				and m.doctor_id in
+				<foreach collection="doctorIdList" index="index" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>
+			</if>
+			<if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+				and m.insert_dt between #{startDt} and #{endDt}
+			</if>
+			<!-- and DATE_FORMAT(m.insert_dt,'%Y') = #{year} -->
+			and m.is_valid=1
+			)
+			OR (v.sid IS NOT NULL
+			<if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+				and m.insert_dt between #{startDt} and #{endDt}
+			</if>
+			<!-- and DATE_FORMAT(m.insert_dt,'%Y') = #{year} -->
+			and m.is_valid=1 and m.is_valid=1)
+			group by DATE_FORMAT(m.insert_dt, '%Y-%m')
+		</if>
+	</select>
+
+	<select id="countMemberDoctorForHos"
+		parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO"
+		resultType="long">
+		<!--visitType类型 1住院 2门诊&居家 -->
+		<if test="visitType==1">
+			select count(1) from (
+			select m.* from t_doctor_member m
+			join t_member_in_hospital_log h
+			on m.member_id=h.member_id
+			where h.is_valid=1 and m.is_valid=1
+			<if test="hospitalId!=null and hospitalId!=''">
+				and h.hospital_id=#{hospitalId}
+			</if>
+			<if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+				and (h.out_hospital_date between #{startDt} and #{endDt}
+				or in_status=1)
+				and m.insert_dt between #{startDt} and #{endDt}
+			</if>
+			<if test="memberId != null and '' != memberId">
+				and m.member_id = #{memberId}
+			</if>
+			<if test="doctorId != null and '' != doctorId">
+				and m.doctor_id = #{doctorId}
+			</if>
+			<if test="concernStatus != null">
+				and m.concern_status = #{concernStatus}
+			</if>
+			<if test="isAttend != null ">
+				and m.is_attend = #{isAttend}
+			</if>
+			<if test="groupId != null and '' != groupId">
+				and m.group_id = #{groupId}
+			</if>
+			<if test="payStatus != null">
+				and m.pay_status = #{payStatus}
+			</if>
+			)cnt
+		</if>
+		<if test="visitType==2">
+			select count(1) from (
+			select m.* from t_doctor_member m
+			join t_doctor d on m.doctor_id=d.doctor_id
+			<if test="hospitalId!=null and hospitalId!=''">
+				and d.hospital_id=#{hospitalId}
+			</if>
+			LEFT JOIN (select * from t_member_visit
+			where visit_date BETWEEN DATE_FORMAT(date_add(#{endDt}, interval -7 day),'%Y-%m-%d 00:00:00')
+			and DATE_FORMAT(#{endDt},'%Y-%m-%d %H:%i:%s') group by member_id) v
+			ON m.member_id = v.member_id and d.depart_id = v.depart_code
+			and v.hospital_id=d.hospital_id
+			where (m.is_valid=1
+			<if test="doctorIdList!=null and doctorIdList.size&gt;0">
+				and m.doctor_id in
+				<foreach collection="doctorIdList" index="index" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>
+			</if>
+			<if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+				and m.modify_time_stamp/1000 between UNIX_TIMESTAMP(#{startDt}) and UNIX_TIMESTAMP(#{endDt})
+			</if>
+			<if test="memberId != null and '' != memberId">
+				and m.member_id = #{memberId}
+			</if>
+			<if test="concernStatus != null">
+				and m.concern_status = #{concernStatus}
+			</if>
+			<if test="isAttend != null ">
+				and m.is_attend = #{isAttend}
+			</if>
+			<if test="groupId != null and '' != groupId">
+				and m.group_id = #{groupId}
+			</if>
+			<if test="payStatus != null">
+				and m.pay_status = #{payStatus}
+			</if>)
+			OR (v.sid IS NOT NULL
+			<if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+				and m.modify_time_stamp/1000 between UNIX_TIMESTAMP(#{startDt}) and UNIX_TIMESTAMP(#{endDt})
+			</if>
+			<if test="memberId != null and '' != memberId">
+				and m.member_id = #{memberId}
+			</if>
+			<if test="concernStatus != null">
+				and m.concern_status = #{concernStatus}
+			</if>
+			<if test="isAttend != null ">
+				and m.is_attend = #{isAttend}
+			</if>
+			<if test="groupId != null and '' != groupId">
+				and m.group_id = #{groupId}
+			</if>
+			<if test="payStatus != null">
+				and m.pay_status = #{payStatus}
+			</if> and m.is_valid=1)
+			)cnt
+		</if>
+	</select>
+
+	<select id="getMemberNumber" resultType="long"
+		parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO">
+		<!--visitType类型 1住院 2门诊&居家 -->
+		<if test="visitType==1">
+			select count(1) from (
+			select m.* from t_member m
+            join t_member_checkin_info mci on mci.member_id = m.member_id and mci.is_valid =1
+            join t_member_in_hospital_log h on m.member_id=h.member_id
+            where h.is_valid=1 and mci.checkin_status = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and h.hospital_id=#{hospitalId}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and (h.in_hospital_date &lt; #{endDt} and (h.out_hospital_date &gt; #{startDt} or h.out_hospital_date is null))
+            </if>
+            GROUP BY m.member_id
+			)cnt
+		</if>
+		<if test="visitType==2">
+			select count(1) from (
+			select m.* from t_member m
+            join t_member_join_hospital mjh on m.member_id = mjh.member_id and mjh.valid = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and mjh.hospital_id=#{hospitalId}
+            </if>
+            left join
+            (select member_id,checkin_status,hospital_id from t_member_checkin_info where is_valid = 1) mci
+            on mci.member_id = mjh.member_id
+            where m.is_valid=1
+            and(mci.checkin_status is null or mci.checkin_status != 1)
+			<if test="sex!=null and sex!=''">
+				and m.sex=#{sex}
+			</if>
+
+            GROUP BY m.member_id
+			)cnt
+		</if>
+	</select>
+
+	<resultMap id="memberWarm"
+		type="com.comvee.cdms.member.po.MemberWarmPO">
+		<id column="sid" property="sid" jdbcType="BIGINT" />
+		<result column="member_ids" property="memberIds" />
+		<result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP" />
+		<result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP" />
+		<result column="is_valid" property="isValid" jdbcType="TINYINT" />
+		<result column="warm_type" property="warmType" jdbcType="TINYINT" />
+		<result column="push_dt_type" property="pushDtType" jdbcType="TINYINT" />
+		<result column="push_dt" property="pushDt" jdbcType="TIMESTAMP" />
+		<result column="push_status" property="pushStatus" jdbcType="TINYINT" />
+		<result column="warm_content" property="warmContent" jdbcType="LONGVARCHAR" />
+		<result column="doctor_id" property="doctorId" jdbcType="BIGINT" />
+		<result column="hospital_id" property="hospitalId" />
+	</resultMap>
+	<sql id="Member_Warm_Column">
+		sid, member_ids, insert_dt, modify_dt, is_valid, warm_type, push_dt_type,
+		push_dt, push_status,warm_content,doctor_id,hospital_id
+	</sql>
+	<select id="listMemberWarmByParams" parameterType="com.comvee.cdms.member.dto.ListMemberWarmDTO"
+		resultMap="memberWarm">
+		select
+		<include refid="Member_Warm_Column"></include>
+		from t_member_warm
+		where is_valid=1
+		<if test="doctorIdList!=null and doctorIdList.size()&gt;0">
+			and doctor_id in
+			<foreach collection="doctorIdList" index="index" item="item"
+					 open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+		</if>
+		<if test="startDt!=null and startDt!=''">
+			and push_dt &gt;= #{startDt}
+		</if>
+		<if test="endDt!=null and endDt!=''">
+			and push_dt &lt;= #{endDt}
+		</if>
+		<if test="pushStatus!=null">
+			and push_status = #{pushStatus}
+		</if>
+		<if test="pushType!=null">
+			and push_dt_type = #{pushType}
+		</if>
+		<if test="hospitalId!=null and hospitalId!=''">
+			and hospital_id = #{hospitalId}
+		</if>
+		order by push_status desc,insert_dt desc
+	</select>
+
+	<select id="listMemberWarmByUnSendStatus" resultMap="memberWarm">
+		select
+		<include refid="Member_Warm_Column"></include>
+		from t_member_warm
+		where is_valid=1 and push_status = 1
+	</select>
+
+	<insert id="saveMemberWarm" parameterType="com.comvee.cdms.member.po.MemberWarmPO">
+		insert into t_member_warm (sid, member_ids, insert_dt, modify_dt, is_valid,
+		warm_type, push_dt_type,
+		push_dt, push_status, warm_content,doctor_id,hospital_id
+		)
+		values (#{sid}, #{memberIds}, now(), now(), 1, #{warmType}, #{pushDtType},
+		#{pushDt}, #{pushStatus}, #{warmContent}, #{doctorId},#{hospitalId}
+		)
+	</insert>
+
+	<update id="updateMemberWarm" parameterType="com.comvee.cdms.member.po.MemberWarmPO">
+		update t_member_warm
+		set modify_dt = now()
+		<if test="memberIds != null">
+			, member_ids = #{memberIds}
+		</if>
+		<if test="insertDt != null">
+			, insert_dt = #{insertDt}
+		</if>
+		<if test="isValid != null">
+			, is_valid = #{isValid}
+		</if>
+		<if test="warmType != null">
+			, warm_type = #{warmType}
+		</if>
+		<if test="pushDtType != null">
+			, push_dt_type = #{pushDtType}
+		</if>
+		<if test="pushDt != null and pushDt != ''">
+			, push_dt = #{pushDt}
+		</if>
+		<if test="pushStatus != null">
+			, push_status = #{pushStatus}
+		</if>
+		<if test="warmContent != null">
+			, warm_content = #{warmContent}
+		</if>
+		<if test="doctorId != null and doctorId != ''">
+			, doctor_id = #{doctorId}
+		</if>
+		where sid = #{sid}
+	</update>
+
+	<select id="getMemberAgeRang" resultType="java.util.HashMap"
+		parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO">
+		<!--visitType类型 1住院 2门诊&居家 -->
+		<if test="visitType==1">
+			select age_rang,count(1) num from (
+			select CASE WHEN a.age &lt; 30 THEN '0-30'
+			WHEN a.age &lt;= 50 THEN '30-50'
+			WHEN a.age &lt;= 70 THEN '51-70'
+			ELSE '70'
+			END AS age_rang from(select
+			DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(m.birthday)), '%Y')+0 AS
+			age from t_member m
+            join t_member_checkin_info mci on mci.member_id = m.member_id and mci.is_valid =1
+            join t_member_in_hospital_log h on m.member_id=h.member_id
+            where h.is_valid=1 and mci.checkin_status = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and h.hospital_id=#{hospitalId}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and (h.in_hospital_date &lt; #{endDt} and (h.out_hospital_date &gt; #{startDt} or h.out_hospital_date is null))
+            </if>
+			GROUP BY m.member_id
+			)a
+			)cnt
+			GROUP BY age_rang
+		</if>
+		<if test="visitType==2">
+			select age_rang,count(1) num from (
+			select CASE WHEN a.age &lt; 30 THEN '0-30'
+			WHEN a.age &lt;= 50 THEN '30-50'
+			WHEN a.age &lt;= 70 THEN '51-70'
+			ELSE '70'
+			END AS age_rang from(select
+			DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(m.birthday)), '%Y')+0 AS
+			age from t_member m
+            join t_member_join_hospital mjh on m.member_id = mjh.member_id and mjh.valid = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and mjh.hospital_id=#{hospitalId}
+            </if>
+            left join
+            (select member_id,checkin_status,hospital_id from t_member_checkin_info where is_valid = 1) mci
+            on mci.member_id = mjh.member_id
+            where m.is_valid=1
+            and (mci.checkin_status is null or mci.checkin_status != 1)
+
+			<if test="sex!=null and sex!=''">
+				and m.sex=#{sex}
+			</if>
+			GROUP BY m.member_id
+			)a
+			)cnt
+			GROUP BY age_rang
+		</if>
+		<if test="visitType==3">
+			select age_rang,count(1) num from (
+			select CASE WHEN a.age &lt; 30 THEN '0-30'
+			WHEN a.age &lt;= 50 THEN '30-50'
+			WHEN a.age &lt;= 70 THEN '51-70'
+			ELSE '70'
+			END AS age_rang from(
+				select DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(q.birthday)), '%Y')+0 AS
+				age from t_member q ,t_research_group w,t_research_group_member e
+				where q.is_valid = 1 and w.valid = 1 and e.valid = 1
+				and q.member_id = e.member_id and w.group_id = e.research_group_id
+				and w.hospital_id = #{hospitalId}
+				<if test="researchGroupId != null and '' != researchGroupId">
+					and w.group_id = #{researchGroupId}
+				</if>
+				<if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+					and e.insert_dt between #{startDt} and #{endDt}
+				</if>
+				group by q.member_id
+				) a
+			) cnt
+			GROUP BY age_rang
+		</if>
+	</select>
+
+	<select id="listMemberHistoricMedicationPlan"
+		resultType="com.comvee.cdms.member.dto.MemberHistoricMedicationPlanDTO">
+		SELECT i.drug_json drugJson,i.id,m.member_id memberId,d.doctor_id doctorId,
+		d.doctor_name doctorName
+		FROM t_member_drug_item i
+		JOIN t_member_drug_record r ON i.record_id = r.id
+		AND i.is_valid = 1
+		JOIN t_member m ON m.member_id = r.member_id
+		AND m.is_valid = 1
+		join t_doctor d on d.doctor_id=r.doctor_id;
+	</select>
+
+	<select id="listNeedCreateSugarMonthReportMember" resultMap="member">
+		select t.member_id,t.member_name,t.sex,t.birthday,t.diabetes_type from
+		t_member t where t.is_valid = 1
+		and t.diabetes_type in ('SUGAR_TYPE_002' ,'SUGAR_TYPE_003')
+	</select>
+
+	<select id="listInHospitalMemberOfLevelLow" resultType="com.comvee.cdms.member.bo.MemberCheckinBO">
+		SELECT t.member_id memberId,t.member_name memberName,t.pic_url picUrl,
+		t.mobile_phone mobilePhone, t.sex, t.birthday,
+		t.id_card idCard, t.profession, t.diabetes_type diabetesType, t.diabetes_date
+		diabetesDate, t.is_valid isValid,
+		t.insert_dt insertDt, t.modify_dt modifyDt, t.height, t.weight, t.bmi,
+		'-1' hospitalId
+		FROM t_member_join_hospital mjh join t_member t on mjh.member_id = t.member_id
+		where t.is_diabetes = '1' and t.is_valid=1 and mjh.valid = 1
+		group by mjh.member_id
+	</select>
+
+	<select id="pagerMemberInspect" parameterType="String"
+		resultType="com.comvee.cdms.member.vo.MemberInspectVO">
+        select sid, inspect_title inspectTitle, inspect_id inspectId, inspect_doctor_id
+        , inspect_doctor_name inspectDoctorName, inspect_dt inspectTime,
+        report_dt, review_doctor_id, review_doctor_name reviewDoctorName, member_id memberId, visit_no visitNo, inspect_code,
+        inspect_method, department_id, department_name inspectDepartName, hospital_id, hospital_name, in_hos,
+        origin, insert_dt, modify_dt, is_valid, inspect_finding, diagnose_result, inspect_data_json,
+        report_url
+        from t_inspection where is_valid = 1 and member_id = #{memberId}
+    </select>
+
+	<select id="listAllMemberNearlyYearArchives" resultMap="memberArchives">
+		select member_id, insert_dt, modify_dt, archives_json, hospital_id
+		from t_member_archives
+		where modify_dt &gt;= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+		order by modify_dt desc
+		<!--TODO TODO test limit 10 -->
+		<!--limit 10 -->
+	</select>
+
+	<select id="listMemberByPackageGroup" resultMap="member">
+		select
+		r.member_id,r.member_name,r.pic_url,r.sex,r.birthday,r.diabetes_type,r.diabetes_date
+		from t_member_package t ,t_member_package_service q,t_member r
+		where t.is_valid = 1 and q.is_valid = 1 and r.is_valid = 1
+		and t.sid = q.member_package_id and t.package_id = #{packageId} and now()
+		BETWEEN t.start_dt and t.end_dt
+		and t.doctor_id in
+		<foreach collection="doctorList" open="(" close=")" separator=","
+			item="item">
+			#{item}
+		</foreach>
+		and q.remain_time > 0 and t.member_id = r.member_id group by
+		t.member_id order by null
+	</select>
+
+	<select id="listNoPackageMember" resultMap="member">
+		select
+		q.member_id,q.member_name,q.pic_url,q.sex,q.birthday,q.diabetes_type,q.diabetes_date
+		from t_doctor_member t ,t_member q
+		where t.is_valid = 1 and q.is_valid = 1 and t.member_id = q.member_id
+		and t.doctor_id in
+		<foreach collection="doctorIdList" open="(" close=")"
+			separator="," item="item">
+			#{item}
+		</foreach>
+		and t.pay_status in
+		<foreach collection="payStatusList" open="(" close=")"
+			separator="," item="item">
+			#{item}
+		</foreach>
+		group by q.member_id
+	</select>
+
+	<select id="countNoPayMember" resultType="long">
+		select count(*) from (
+		select t.member_id from t_doctor_member t where t.is_valid = 1
+		and t.pay_status in
+		<foreach collection="payStatus" open="(" close=")" separator=","
+			item="item">
+			#{item}
+		</foreach>
+		and t.doctor_id in
+		<foreach collection="doctorList" open="(" close=")" separator=","
+			item="item">
+			#{item}
+		</foreach>
+		group by t.member_id
+		) r
+	</select>
+
+    <select id="listAllMemberArchives" resultMap="memberArchives">
+        select member_id, insert_dt, modify_dt, archives_json, hospital_id
+        from t_member_archives
+    </select>
+
+	<select id="listDoctorMemberByDoctorId" parameterType="com.comvee.cdms.member.dto.ListDoctorMemberDTO" resultMap="doctorMember">
+		select sid, member_id, doctor_id, insert_dt, modify_time_stamp,
+		is_valid, is_attend,label, group_id, operator_id, concern_status ,pay_status
+		from t_doctor_member where is_valid = 1
+		<if test="memberId != null and '' != memberId">
+			and member_id = #{memberId}
+		</if>
+		<if test="doctorIdList != null and doctorIdList.size > 0">
+			and doctor_id in
+			<foreach collection="doctorIdList" open="(" close=")" separator="," index="index" item="item">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<!--V6.0.0 -->
+
+	<select id="listMemberByDepartment" parameterType="com.comvee.cdms.member.dto.ListMemberDTO" resultMap="memberList">
+		SELECT *
+		FROM
+		(
+		SELECT
+		#{doctorId} doctor_id,mci.member_id,mci.department_id group_id,'' label,'' is_attend
+		,m.level_hx,m.member_name,m.birthday,m.hreat_rate,m.id_card,m.member_name_py
+		,m.sbp_pressure,m.dbp_pressure,m.bmi,m.chd,m.diabetes_date,m.diabetes_type
+		,m.essential_hyp,m.mobile_phone,m.pic_url,m.sex,m.is_diabetes,'' concern_status,'' pay_status,
+		mci.modify_dt insert_dt,1 inHos,mci.hospital_no,mci.bed_no,mci.hospital_id,mci.in_hospital_date,
+		mci.department_id,mci.department_name,m.height,m.weight,mci.checkin_status
+		FROM
+		t_member_checkin_info mci ,
+		t_member m
+		WHERE
+		mci.checkin_status = 1
+		AND mci.is_valid = 1
+		AND m.member_id = mci.member_id
+		<if test="hospitalId!=null and hospitalId!=''">
+			and mci.hospital_id=#{hospitalId}
+		</if>
+		<if test="memberId != null and '' != memberId ">
+			and mci.member_id = #{memberId}
+		</if>
+		<if test="keyWord != null and '' != keyWord">
+			and (instr(m.member_name, #{keyWord}) > 0 or instr(m.member_name_py, #{keyWord}) > 0
+				  or instr(m.mobile_phone, #{keyWord}) > 0 or instr(mci.doctor_zg, #{keyWord}) > 0
+					or instr(mci.bed_no, #{keyWord}) > 0)
+		</if>
+		<if test="type != null and '' != type">
+			<if test="type == 1 ">
+				and (m.is_diabetes != '2' or m.is_diabetes is null or m.is_diabetes = '')
+			</if>
+			<if test="type == 2">
+				and (m.essential_hyp != '2' or m.essential_hyp is null or m.essential_hyp = '')
+			</if>
+		</if>
+		<if test="monitor != null">
+			and
+			<if test="monitor == 0 ">
+				not
+			</if>
+			EXISTS (select 1 from t_blood_sugar where is_valid=1 and member_id=m.member_id
+					and record_dt > DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00'))
+		</if>
+		<if test="paramLevel != null and paramLevel!=''">
+			and EXISTS (select t.member_id from (select * from (select * from t_blood_sugar
+			where is_valid=1
+			ORDER BY record_dt desc,insert_dt DESC)t
+			GROUP BY member_id)t where t.member_id=m.member_id and t.param_level in (${paramLevel})
+			and t.record_dt &gt;= mci.in_hospital_date)
+		</if>
+		<!--动态血糖 -->
+		<if test="useDynamic != null">
+			and
+			<if test="useDynamic == 0">
+				not
+			</if>
+			exists(
+				select 1 from dy_member_sensor r where r.is_valid = 1 and r.member_id = m.member_id
+			)
+		</if>
+		) t
+		WHERE 1=1
+		<if test="groupId!=null and groupId!=''">
+			and t.group_id = #{groupId}
+		</if>
+		<if test="groupIdList!=null and groupIdList.size()&gt;0">
+			and t.group_id in
+			<foreach collection="groupIdList" item="item" open="(" close=")" separator="," index="index">
+				#{item}
+			</foreach>
+		</if>
+		<if test="hospitalId!=null and hospitalId!=''">
+			and t.hospital_id=#{hospitalId}
+		</if>
+		GROUP BY
+		t.member_id
+		order by t.bed_no
+	</select>
+
+	<select id="getOutOrInHospitalMemberNum" resultType="long"
+			parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO">
+		select count(1) from (
+		select m.* from t_member m
+		join t_member_in_hospital_log h
+		on m.member_id=h.member_id
+        join t_member_checkin_info mci on mci.member_id = m.member_id and mci.is_valid =1
+		where h.is_valid=1
+		<if test="hospitalId!=null and hospitalId!=''">
+			and h.hospital_id=#{hospitalId}
+		</if>
+		<if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+			<if test="inHos!=null and inHos==1">
+                and mci.checkin_status = 1
+                and (h.in_hospital_date &lt; #{endDt} and (h.out_hospital_date &gt; #{startDt} or h.out_hospital_date is null))
+			</if>
+			<if test="inHos!=null and inHos==0">
+                and(mci.checkin_status is null or mci.checkin_status != 1)
+			</if>
+		</if>
+		GROUP BY h.member_id
+		)cnt
+	</select>
+<!--5.1.6-->
+	<select id="countPayMember"
+			parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO"
+			resultType="long">
+		<if test="visitType==1">
+			select count(1) from (
+			select m.* from t_member_package m
+			join t_doctor_member dm
+			on m.doctor_id = dm.doctor_id and m.price > 0 and dm.is_valid=1
+			join t_doctor d on dm.doctor_id = d.doctor_id
+			<if test="hospitalId!=null and hospitalId!=''">
+				and d.hospital_id=#{hospitalId}
+			</if>
+			join t_member_in_hospital_log h
+			on m.member_id=h.member_id
+			where h.is_valid=1 and m.is_valid=1
+			<if test="hospitalId!=null and hospitalId!=''">
+				and h.hospital_id=#{hospitalId}
+			</if>
+			<if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+				and (h.out_hospital_date between #{startDt} and #{endDt}
+				or in_status=1)
+				and m.insert_dt between #{startDt} and #{endDt}
+			</if>
+			<if test = "packageStatus != null">
+				and m.package_status = #{packageStatus}
+			</if>
+			)cnt
+		</if>
+		<if test="visitType==2">
+			select count(1) from (
+			select m.* from t_member_package m
+			join t_doctor_member dm
+			on m.doctor_id = dm.doctor_id and m.price > 0 and dm.is_valid=1
+			join t_doctor d on dm.doctor_id = d.doctor_id
+			<if test="hospitalId!=null and hospitalId!=''">
+				and d.hospital_id=#{hospitalId}
+			</if>
+			join t_member_visit v
+			on m.member_id=v.member_id
+			where v.visit_type='门诊' and m.is_valid=1
+			<if test="hospitalId!=null and hospitalId!=''">
+				and v.hospital_id=#{hospitalId}
+			</if>
+			<if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+				and m.insert_dt between #{startDt} and #{endDt}
+			</if>
+			<if test = "packageStatus != null">
+				and m.package_status = #{packageStatus}
+			</if>
+			)cnt
+		</if>
+	</select>
+
+	<update id="deleteDoctorMemberBizData" parameterType="string">
+		update t_prescription
+		set is_valid=0
+		where is_valid=1 and schedule!=3 and member_id=#{memberId} and team_id=#{doctorId};
+
+		update t_follow_remind a
+		set a.is_valid=0
+		where a.is_valid=1 and a.is_do=0 and a.member_id=#{memberId} and a.doctor_id=#{doctorId};
+	</update>
+
+	<!--获取该患者在该院的"某个"团队下-->
+	<select id="getDoctorMemberByHospital" parameterType="string" resultMap="doctorMember">
+		select sid, member_id, doctor_id, insert_dt, modify_time_stamp,
+		is_valid, is_attend,
+		label, group_id, operator_id, concern_status ,pay_status from t_doctor_member
+		where member_id=#{memberId} and is_valid=1
+		and doctor_id in(select doctor_id from t_doctor where hospital_id=#{hospitalId} and is_valid=1)
+		limit 1;
+	</select>
+	<select id="countInHospitalPatient" resultType="long">
+		select count(t.sid) from t_member_checkin_info t where t.is_valid = 1 and t.checkin_status = 1
+		<if test="departmentId != null and '' != departmentId">
+			and t.department_id = #{departmentId}
+		</if>
+	</select>
+
+	<!-- 获取患者每日血糖分页记录 -->
+	<select id="getMemberEverydaySugarList" resultType="com.comvee.cdms.glu.model.MemberEverydaySugarModel">
+		select  m.sex , ci.sid , ifnull(p.plan_type, 0) planType,m.member_id memberId ,
+		m.member_name memberName, ifnull(mc.concern_status , '0') concernStatus,
+		ci.department_name departmentName, ci.bed_no bedNo,es.param_value_json paramListJson,
+		DATE_FORMAT(es.param_dt, '%Y-%m-%d') paramDt,es.is_valid isValid , p.plan_detail as smbgScheme,
+		ci.department_id departmentId,ci.bed_id bedId,ci.in_hospital_date inHospitalDate
+		,ci.hospital_no hospitalNo,ci.adm_no admNo from t_member_checkin_info ci
+		LEFT JOIN t_doctor_member mc ON ci.member_id = mc.member_id AND mc.doctor_id=#{doctorId}
+		left JOIN t_member_everyday_sugar es ON ci.member_id = es.member_id
+		<if test="startDt != null and startDt != '' ">
+			and DATE_FORMAT(es.param_dt,'%Y-%m-%d') &gt;= #{startDt}
+		</if>
+		<if test="endDt != null and endDt != '' ">
+			and DATE_FORMAT(es.param_dt,'%Y-%m-%d') &lt;= #{endDt}
+		</if>
+		<if test="paramDt != null and paramDt != '' ">
+			and DATE_FORMAT(es.param_dt,'%Y-%m-%d') = #{paramDt}
+		</if>
+		left JOIN t_member m ON m.member_id = ci.member_id
+		left JOIN t_doctor_department ud ON ci.department_id = ud.department_id
+		<if test="optionType != null and optionType != '' ">
+			and ud.option_type = #{optionType}
+		</if>
+		left join t_member_monitor_plan p on p.member_id = ci.member_id and p.is_valid = 1 and p.in_progress = 1 and p.illness_type = 1
+		where ci.bed_no is not null and ci.bed_no !=''  and ci.is_valid = 1 AND ci.checkin_status = 1
+		AND ud.doctor_id = #{doctorId}
+		<if test="concernStatus != null and concernStatus != '' ">
+			<if test="concernStatus = 0">
+				(mc.concern_status = #{concernStatus} or mc.concern_status is null
+			</if>
+			<if test="concernStatus != 0">
+				and mc.concern_status = #{concernStatus}
+			</if>
+		</if>
+		<if test="memberId != null and memberId != '' ">
+			and es.member_id = #{memberId}
+		</if>
+		<if test="refreshTime != null and refreshTime != '' ">
+			and (DATE_FORMAT(es.modify_dt,'%Y-%m-%d %H:%i:%s') &gt;= #{refreshTime}
+			or DATE_FORMAT(ci.modify_dt,'%Y-%m-%d %H:%i:%s') &gt;= #{refreshTime}
+			or DATE_FORMAT(p.modify_dt,'%Y-%m-%d %H:%i:%s') &gt;= #{refreshTime})
+		</if>
+		<if test="departmentId != null and departmentId != ''">
+			and ci.department_id = #{departmentId}
+		</if>
+		GROUP BY ci.member_id
+		order by ci.department_id asc,(ci.bed_no+0) asc,es.param_dt desc
+	</select>
+
+	<select id="listMemberBySearch" resultType="com.comvee.cdms.member.dto.MemberBedDTO" parameterType="map">
+        select mc.department_id departmentId,mc.department_name departmentName,mc.room_id roomId,
+        mc.member_id memberId,sm.member_name memberName,
+        mc.bed_id bedId,mc.bed_no bedNo from t_member_checkin_info mc join t_member sm
+        on sm.member_id = mc.member_id
+        join t_doctor_department ud on ud.department_id = mc.department_id
+        where sm.is_valid = 1 and mc.checkin_status = 1 and mc.is_valid = 1 and ud.is_valid = 1
+		and ud.doctor_id = #{doctorId}
+		and (
+		INSTR(mc.bed_no,#{memberName}) > 0
+		OR INSTR(sm.member_name,#{memberName}) > 0
+		)
+		order by (mc.bed_no+0) asc
+	</select>
+
+	<select id="getDoctorMemberRemark" resultMap="doctorMemberRemark">
+		select
+		t.remark_id,t.member_id,t.doctor_id,t.remark,t.insert_dt,t.update_dt
+		from t_doctor_member_remark t where  t.is_valid = 1
+		and t.member_id = #{memberId} and t.doctor_id = #{doctorId}
+		order by t.insert_dt desc limit 1
+	</select>
+
+
+	<select id="listHospitalBedWithMember" parameterType="com.comvee.cdms.member.dto.ListMemberDTO" resultMap="memberList">
+		SELECT *
+		FROM
+		(
+		SELECT
+		#{doctorId} doctor_id,mci.member_id,mci.department_id group_id,'' label,'' is_attend
+		,m.level_hx,m.member_name,m.birthday,m.hreat_rate,m.id_card,m.member_name_py
+		,m.sbp_pressure,m.dbp_pressure,m.bmi,m.chd,m.diabetes_date,m.diabetes_type
+		,m.essential_hyp,m.mobile_phone,m.pic_url,m.sex,m.is_diabetes,'' concern_status,'' pay_status,
+		mci.modify_dt insert_dt,1 inHos,mci.hospital_no,mci.bed_no,mci.hospital_id,mci.in_hospital_date,
+		mci.department_id,mci.department_name,m.height,m.weight,mci.checkin_status,mci.sid,mci.doctor_zg_code,
+		mci.doctor_zg,d.position_name,mci.out_hospital_date
+		FROM
+		t_member_checkin_info mci left join
+		t_member m on m.is_valid = 1 and mci.member_id = m.member_id left join
+		t_doctor d on mci.doctor_zg_code = d.doctor_id
+		WHERE mci.is_valid = 1
+		<if test="checkinStatus != null and checkinStatus !=''">
+			and mci.checkin_status = #{checkinStatus}
+		</if>
+		<if test="hospitalId!=null and hospitalId!=''">
+			and mci.hospital_id=#{hospitalId}
+		</if>
+        <if test="origin != null and 1 == origin">
+            <if test="keyWord != null and '' != keyWord">
+                and (instr(m.member_name, #{keyWord}) > 0
+                or instr(mci.doctor_zg, #{keyWord}) > 0 or instr(mci.bed_no, #{keyWord}) > 0)
+            </if>
+        </if>
+        <if test="origin != null and 1 != origin">
+            <if test="keyWord != null and '' != keyWord">
+                and (instr(m.member_name, #{keyWord}) > 0
+                or instr(mci.bed_no, #{keyWord}) > 0)
+            </if>
+        </if>
+		<if test="inEndDt != null and '' != inEndDt">
+			and mci.in_hospital_date &lt;= #{inEndDt}
+		</if>
+		<if test="inStartDt != null and '' != inStartDt">
+			and mci.in_hospital_date &gt;= #{inStartDt}
+		</if>
+		<if test="type != null and '' != type">
+			<if test="type == 1 ">
+				and (m.is_diabetes != '2' or m.is_diabetes is null or m.is_diabetes = '')
+			</if>
+			<if test="type == 2">
+				and (m.essential_hyp != '2' or m.essential_hyp is null or m.essential_hyp = '')
+			</if>
+		</if>
+		<if test="monitor != null">
+			and
+			<if test="monitor == 0 ">
+				not
+			</if>
+			EXISTS (select 1 from t_blood_sugar where is_valid=1 and member_id=m.member_id
+			and record_dt > DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00'))
+		</if>
+		<if test="paramLevel != null and paramLevel!=''">
+			and EXISTS (select t.member_id from (select * from (select * from t_blood_sugar
+			where is_valid=1
+			ORDER BY record_dt desc,insert_dt DESC)t
+			GROUP BY member_id)t where t.member_id=m.member_id and t.param_level in (${paramLevel})
+			and t.record_dt &gt;= mci.in_hospital_date)
+		</if>
+		<!--动态血糖 -->
+		<if test="useDynamic != null">
+			and
+			<if test="useDynamic == 0">
+				not
+			</if>
+			exists(
+			select 1 from dy_member_sensor r where r.is_valid = 1 and r.member_id = m.member_id
+			)
+		</if>
+		) t
+		WHERE 1=1
+		<if test="groupId!=null and groupId!=''">
+			and t.group_id = #{groupId}
+		</if>
+		<if test="groupIdList!=null and groupIdList.size()&gt;0">
+			and t.group_id in
+			<foreach collection="groupIdList" item="item" open="(" close=")" separator="," index="index">
+				#{item}
+			</foreach>
+		</if>
+		<if test="hospitalId!=null and hospitalId!=''">
+			and t.hospital_id=#{hospitalId}
+		</if>
+		GROUP BY
+		t.sid
+		order by t.bed_no * 1
+	</select>
+
+
+	<select id="getMemberCheckinInfoById" resultMap="memberCheckingInfo">
+    select sid, member_id, checkin_status, department_id, department_name, room_id, room_no,
+    bed_id, bed_no, is_valid, insert_dt, modify_dt, in_hospital_date, out_hospital_date,
+    hospital_no, patient_card, pat_patient_id, doctor_zg_code, adm_no, main_nurse_desc,
+    doctor_zg, nur_level, eat_model, charge_class, hospital_id
+    from t_member_checkin_info
+    where sid = #{id,jdbcType=VARCHAR}
+	<if test="hospitalId!=null and hospitalId!=''">
+		and hospital_id = #{hospitalId}
+	</if>
+    limit 1
+	</select>
+
+	<select id="getDoctorByMemberId" parameterType="string" resultMap="doctorMember">
+		select tm.sid, tm.member_id, tm.doctor_id from t_doctor_member tm
+		where tm.member_id=#{memberId} and tm.is_valid=1 order by insert_dt desc limit 1
+	</select>
+
+	<select id="getMemberByMemberId" resultMap="member">
+		select member_id, member_name, member_name_py, pic_url, mobile_phone, sex, birthday,
+        id_card, profession, diabetes_type, diabetes_date, insert_dt, modify_dt,
+        height, weight, bmi, sbp_pressure, dbp_pressure, country, address, essential_hyp, chd, nephropathy,
+        labour_intensity, hreat_rate, member_info, level_hx ,dsme_hx,is_diabetes, hyp_type, hyp_date
+        from t_member
+        where is_valid = 1
+        and member_id = #{memberId}
+	</select>
+
+
+
+	<select id="getMemberArchivesByMemberID" resultMap="memberArchives">
+		select member_id, insert_dt, modify_dt,basic,acute_complication, diabetes_status, daily_habits,
+		diabetes_complication, hypoglycemia, smbg, current_status, education_situation,sign_json,treatment_json,
+		allergic_history,past_history,family_history,women_history,question_json
+		from t_member_archives
+		where member_id = #{memberId}
+	</select>
+
+	<insert id="addMemberArchivesRecord" parameterType="com.comvee.cdms.member.po.MemberArchivesRecordPO">
+		insert into t_member_archives_record (sid,member_id, insert_dt, modify_dt,
+		archives_json_before,archives_json_after, hospital_id,operation_id)
+		values (#{memberArchivesRecordPO.sid,jdbcType=BIGINT},#{memberArchivesRecordPO.memberId,jdbcType=BIGINT}, now(), now(),
+		#{memberArchivesRecordPO.archivesJsonBefore,jdbcType=LONGVARCHAR}, #{memberArchivesRecordPO.archivesJsonAfter,jdbcType=LONGVARCHAR},
+		#{memberArchivesRecordPO.hospitalId,jdbcType=BIGINT},#{memberArchivesRecordPO.operationId,jdbcType=BIGINT})
+	</insert>
+
+	<insert id="addOrUpdateMember" parameterType="com.comvee.cdms.member.dto.AddMemberMapperDTO">
+		insert into t_member (member_id, member_name, member_name_py,
+        pic_url, mobile_phone, sex,
+        birthday, id_card, profession,
+        diabetes_type, diabetes_date,
+        insert_dt, modify_dt, height,
+        weight, bmi, sbp_pressure,dbp_pressure,
+        country, address, essential_hyp,
+        chd, nephropathy, labour_intensity,
+        hreat_rate, member_info,member_source,is_diabetes,hyp_type,hyp_date ,fat ,member_name_pys)
+        values (#{memberId,jdbcType=BIGINT}, #{memberName,jdbcType=VARCHAR}, #{memberNamePy,jdbcType=VARCHAR},
+        #{picUrl,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},
+        #{birthday,jdbcType=DATE}, #{idCard,jdbcType=VARCHAR}, #{profession,jdbcType=VARCHAR},
+        #{diabetesType,jdbcType=VARCHAR}, #{diabetesDate,jdbcType=DATE},
+        now(), now(), #{height,jdbcType=VARCHAR},
+        #{weight,jdbcType=VARCHAR}, #{bmi,jdbcType=VARCHAR}, #{sbpPressure,jdbcType=VARCHAR},#{dbpPressure,jdbcType=VARCHAR},
+        #{country,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{essentialHyp,jdbcType=VARCHAR},
+        #{chd,jdbcType=VARCHAR}, #{nephropathy,jdbcType=VARCHAR}, #{labourIntensity,jdbcType=VARCHAR},
+        #{hreatRate,jdbcType=VARCHAR}, #{memberInfo,jdbcType=LONGVARCHAR},#{memberSource,jdbcType=TINYINT},
+        #{isDiabetes,jdbcType=VARCHAR},#{hypType,jdbcType=VARCHAR}, #{hypDate,jdbcType=DATE} ,#{fat} ,#{memberNamePys})
+		ON DUPLICATE KEY UPDATE
+        member_id = #{memberId}
+	</insert>
+
+	<select id="countMemberTotal" resultType="int">
+       select count(*) from t_member_archives
+	</select>
+
+	<select id="listMemberArchivesTwo" resultMap="memberArchives">
+        select member_id, insert_dt, modify_dt, archives_json, hospital_id
+        from t_member_archives  limit #{start},1000
+    </select>
+
+	<select id="getMemberSensorPOList" resultMap="memberSensorMap">
+		 select sid, sensor_no, member_id, monitoring_time, modify_dt, insert_dt, is_valid, run_status,
+    operation_type, operation_id ,bind_type ,app_id
+    from dy_member_sensor
+    where member_id = #{memberId} and is_valid = 1
+	</select>
+	<select id="getMemberInsulinPumpList" resultMap="memberInsulinPumpMap">
+		select sid, member_id, hospital_no, operator_id, sign, insert_dt, update_dt, valid,
+    model, shift_over_dt, pump_up_dt, pump_down_dt, electricity_quantity, consumables,
+    data_json ,virtual_ward_id ,card_no
+    from t_insulin_pump_nurse_record
+    where valid = 1 and member_id = #{memberId}
+	</select>
+	<select id="listHospitalOutMember" parameterType="com.comvee.cdms.member.dto.ListMemberDTO" resultMap="memberOutList">
+		SELECT
+		#{doctorId} doctor_id,mci.member_id,mci.department_id group_id,'' label,'' is_attend
+		,m.level_hx,m.member_name,m.birthday,m.hreat_rate,m.id_card,m.member_name_py
+		,m.sbp_pressure,m.dbp_pressure,m.bmi,m.chd,m.diabetes_date,m.diabetes_type
+		,m.essential_hyp,m.mobile_phone,m.pic_url,m.sex,m.is_diabetes,'' concern_status,'' pay_status,
+		mci.modify_dt insert_dt,1 inHos,mci.hospital_no,mci.bed_no,mci.hospital_id,mci.in_hospital_date,
+		mci.department_id,mci.department_name,m.height,m.weight,mci.sid,mci.doctor_zg_code,mci.doctor_zg,d.position_name,mci.out_hospital_date,mci.in_hospital_day
+		FROM
+		(select * from
+		(select <include refid="Hospital_Log_Column"/>
+		from t_member_in_hospital_log
+		having 1
+        /*keep orderby*/
+		order by insert_dt desc) mhl group by mhl.member_id having mhl.out_hospital_date is not null) mci
+		left join
+		t_member m on m.is_valid = 1 and mci.member_id = m.member_id left join
+		t_doctor d on mci.doctor_zg_code = d.doctor_id
+		WHERE mci.is_valid = 1
+		<if test="groupId!=null and groupId!=''">
+			and mci.department_id=#{groupId}
+		</if>
+		<if test="keyWord != null and '' != keyWord">
+			and (instr(m.member_name, #{keyWord}) > 0
+			or instr(mci.doctor_zg, #{keyWord}) > 0 or instr(mci.hospital_no, #{keyWord}) > 0)
+		</if>
+		<if test="inEndDt != null and '' != inEndDt">
+			and mci.in_hospital_date &lt;= #{inEndDt}
+		</if>
+		<if test="inStartDt != null and '' != inStartDt">
+			and mci.in_hospital_date &gt;= #{inStartDt}
+		</if>
+		<if test="outEndDt != null and '' != outEndDt">
+			and mci.out_hospital_date &lt;= #{outEndDt}
+		</if>
+		<if test="outStartDt != null and '' != outStartDt">
+			and mci.out_hospital_date &gt;= #{outStartDt}
+		</if>
+		<if test="groupIdList!=null and groupIdList.size()&gt;0">
+			and mci.department_id in
+			<foreach collection="groupIdList" item="item" open="(" close=")" separator="," index="index">
+				#{item}
+			</foreach>
+		</if>
+		order by mci.out_hospital_date desc
+	</select>
+	<select id="listHospitalAllLogMember" parameterType="com.comvee.cdms.member.dto.ListMemberDTO" resultMap="memberOutList">
+		SELECT *
+		FROM
+		(
+		SELECT
+		#{doctorId} doctor_id,mci.member_id,mci.department_id group_id,'' label,'' is_attend
+		,m.level_hx,m.member_name,m.birthday,m.hreat_rate,m.id_card,m.member_name_py
+		,m.sbp_pressure,m.dbp_pressure,m.bmi,m.chd,m.diabetes_date,m.diabetes_type
+		,m.essential_hyp,m.mobile_phone,m.pic_url,m.sex,m.is_diabetes,'' concern_status,'' pay_status,
+		mci.modify_dt insert_dt,1 inHos,mci.hospital_no,mci.bed_no,mci.hospital_id,mci.in_hospital_date,
+		mci.department_id,mci.department_name,m.height,m.weight,mci.sid,mci.doctor_zg_code,mci.doctor_zg,d.position_name,mci.out_hospital_date,mci.in_hospital_day
+		FROM
+		(select * from
+		(select <include refid="Hospital_Log_Column"/>
+		from t_member_in_hospital_log order by insert_dt desc) mhl group by mhl.member_id) mci
+		left join
+		t_member m on m.is_valid = 1 and mci.member_id = m.member_id left join
+		t_doctor d on mci.doctor_zg_code = d.doctor_id
+		WHERE mci.is_valid = 1
+		<if test="hospitalId!=null and hospitalId!=''">
+			and mci.hospital_id=#{hospitalId}
+		</if>
+		<if test="keyWord != null and '' != keyWord">
+			and (instr(m.member_name, #{keyWord}) > 0
+			or instr(mci.doctor_zg, #{keyWord}) > 0 or instr(mci.hospital_no, #{keyWord}) > 0)
+		</if>
+		<if test="inEndDt != null and '' != inEndDt">
+			and mci.in_hospital_date &lt;= #{inEndDt}
+		</if>
+		<if test="inStartDt != null and '' != inStartDt">
+			and mci.in_hospital_date &gt;= #{inStartDt}
+		</if>
+		<if test="outEndDt != null and '' != outEndDt">
+			and mci.out_hospital_date &lt;= #{outEndDt}
+		</if>
+		<if test="outStartDt != null and '' != outStartDt">
+			and mci.out_hospital_date &gt;= #{outStartDt}
+		</if>
+		<if test="type != null and '' != type">
+			<if test="type == 1 ">
+				and (m.is_diabetes != '2' or m.is_diabetes is null or m.is_diabetes = '')
+			</if>
+			<if test="type == 2">
+				and (m.essential_hyp != '2' or m.essential_hyp is null or m.essential_hyp = '')
+			</if>
+		</if>
+		<if test="monitor != null">
+			and
+			<if test="monitor == 0 ">
+				not
+			</if>
+			EXISTS (select 1 from t_blood_sugar where is_valid=1 and member_id=m.member_id
+			and record_dt > DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00'))
+		</if>
+		<if test="paramLevel != null and paramLevel!=''">
+			and EXISTS (select t.member_id from (select * from (select * from t_blood_sugar
+			where is_valid=1
+			ORDER BY record_dt desc,insert_dt DESC)t
+			GROUP BY member_id)t where t.member_id=m.member_id and t.param_level in (${paramLevel})
+			and t.record_dt &gt;= mci.in_hospital_date)
+		</if>
+		<!--动态血糖 -->
+		<if test="useDynamic != null">
+			and
+			<if test="useDynamic == 0">
+				not
+			</if>
+			exists(
+			select 1 from dy_member_sensor r where r.is_valid = 1 and r.member_id = m.member_id
+			)
+		</if>
+		) t
+		WHERE 1=1
+		<if test="groupId!=null and groupId!=''">
+			and t.group_id = #{groupId}
+		</if>
+		<if test="groupIdList!=null and groupIdList.size()&gt;0">
+			and t.group_id in
+			<foreach collection="groupIdList" item="item" open="(" close=")" separator="," index="index">
+				#{item}
+			</foreach>
+		</if>
+		<if test="hospitalId!=null and hospitalId!=''">
+			and t.hospital_id=#{hospitalId}
+		</if>
+		GROUP BY
+		t.sid
+		order by t.bed_no * 1
+	</select>
+	<select id="listHospitalBedWithSensor" parameterType="com.comvee.cdms.member.dto.ListMemberDTO" resultMap="memberOutList">
+		SELECT *
+		FROM
+		(
+		SELECT
+		#{doctorId} doctor_id,mci.member_id,mci.department_id group_id,'' label,'' is_attend
+		,m.level_hx,m.member_name,m.birthday,m.hreat_rate,m.id_card,m.member_name_py
+		,m.sbp_pressure,m.dbp_pressure,m.bmi,m.chd,m.diabetes_date,m.diabetes_type
+		,m.essential_hyp,m.mobile_phone,m.pic_url,m.sex,m.is_diabetes,'' concern_status,'' pay_status,
+		mci.modify_dt insert_dt,1 inHos,mci.hospital_no,mci.bed_no,mci.hospital_id,mci.in_hospital_date,
+		mci.department_id,mci.department_name,m.height,m.weight,mci.checkin_status,mci.sid,mci.doctor_zg_code,
+		mci.doctor_zg,d.position_name,mci.out_hospital_date
+		FROM
+		t_member_checkin_info mci left join
+		t_member m on m.is_valid = 1 and mci.member_id = m.member_id left join
+		t_doctor d on mci.doctor_zg_code = d.doctor_id inner join
+		dy_member_sensor ms on ms.member_id = mci.member_id
+		WHERE mci.is_valid = 1 and mci.checkin_status = 1 and ms.is_valid = 1
+		<if test="hospitalId!=null and hospitalId!=''">
+			and mci.hospital_id=#{hospitalId}
+		</if>
+		<if test="keyWord != null and '' != keyWord">
+			and (instr(m.member_name, #{keyWord}) > 0
+			or instr(mci.doctor_zg, #{keyWord}) > 0 or instr(mci.hospital_no, #{keyWord}) > 0)
+		</if>
+		<if test="inEndDt != null and '' != inEndDt">
+			and mci.in_hospital_date &lt;= #{inEndDt}
+		</if>
+		<if test="inStartDt != null and '' != inStartDt">
+			and mci.in_hospital_date &gt;= #{inStartDt}
+		</if>
+		<if test="type != null and '' != type">
+			<if test="type == 1 ">
+				and (m.is_diabetes != '2' or m.is_diabetes is null or m.is_diabetes = '')
+			</if>
+			<if test="type == 2">
+				and (m.essential_hyp != '2' or m.essential_hyp is null or m.essential_hyp = '')
+			</if>
+		</if>
+		<if test="monitor != null">
+			and
+			<if test="monitor == 0 ">
+				not
+			</if>
+			EXISTS (select 1 from t_blood_sugar where is_valid=1 and member_id=m.member_id
+			and record_dt > DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00'))
+		</if>
+		<if test="paramLevel != null and paramLevel!=''">
+			and EXISTS (select t.member_id from (select * from (select * from t_blood_sugar
+			where is_valid=1
+			ORDER BY record_dt desc,insert_dt DESC)t
+			GROUP BY member_id)t where t.member_id=m.member_id and t.param_level in (${paramLevel})
+			and t.record_dt &gt;= mci.in_hospital_date)
+		</if>
+		<!--动态血糖 -->
+		<if test="useDynamic != null">
+			and
+			<if test="useDynamic == 0">
+				not
+			</if>
+			exists(
+			select 1 from dy_member_sensor r where r.is_valid = 1 and r.member_id = m.member_id
+			)
+		</if>
+		) t
+		WHERE 1=1
+		<if test="groupId!=null and groupId!=''">
+			and t.group_id = #{groupId}
+		</if>
+		<if test="groupIdList!=null and groupIdList.size()&gt;0">
+			and t.group_id in
+			<foreach collection="groupIdList" item="item" open="(" close=")" separator="," index="index">
+				#{item}
+			</foreach>
+		</if>
+		<if test="hospitalId!=null and hospitalId!=''">
+			and t.hospital_id=#{hospitalId}
+		</if>
+		GROUP BY
+		t.sid
+		order by t.bed_no * 1
+	</select>
+	<select id="listHospitalOutWithSensor" parameterType="com.comvee.cdms.member.dto.ListMemberDTO" resultMap="memberOutList">
+		SELECT
+		#{doctorId} doctor_id,mci.member_id,mci.department_id group_id,'' label,'' is_attend
+		,m.level_hx,m.member_name,m.birthday,m.hreat_rate,m.id_card,m.member_name_py
+		,m.sbp_pressure,m.dbp_pressure,m.bmi,m.chd,m.diabetes_date,m.diabetes_type
+		,m.essential_hyp,m.mobile_phone,m.pic_url,m.sex,m.is_diabetes,'' concern_status,'' pay_status,
+		mci.modify_dt insert_dt,1 inHos,mci.hospital_no,mci.bed_no,mci.hospital_id,mci.in_hospital_date,
+		mci.department_id,mci.department_name,m.height,m.weight,mci.sid,mci.doctor_zg_code,mci.doctor_zg,d.position_name,mci.out_hospital_date,mci.in_hospital_day
+		FROM
+		(select * from
+		(select <include refid="Hospital_Log_Column"/>
+		from t_member_in_hospital_log
+		having 1
+        /*keep orderby*/
+		order by insert_dt desc) mhl group by mhl.member_id having mhl.out_hospital_date is not null) mci
+		left join
+		t_member m on m.is_valid = 1 and mci.member_id = m.member_id left join
+		t_doctor d on mci.doctor_zg_code = d.doctor_id inner join
+		dy_member_sensor ms on ms.member_id = mci.member_id
+		WHERE mci.is_valid = 1 and ms.is_valid = 1
+		<if test="groupId!=null and groupId!=''">
+			and mci.department_id=#{groupId}
+		</if>
+		<if test="keyWord != null and '' != keyWord">
+			and (instr(m.member_name, #{keyWord}) > 0
+			or instr(mci.doctor_zg, #{keyWord}) > 0 or instr(mci.hospital_no, #{keyWord}) > 0)
+		</if>
+		<if test="inEndDt != null and '' != inEndDt">
+			and mci.in_hospital_date &lt;= #{inEndDt}
+		</if>
+		<if test="inStartDt != null and '' != inStartDt">
+			and mci.in_hospital_date &gt;= #{inStartDt}
+		</if>
+		<if test="outEndDt != null and '' != outEndDt">
+			and mci.out_hospital_date &lt;= #{outEndDt}
+		</if>
+		<if test="outStartDt != null and '' != outStartDt">
+			and mci.out_hospital_date &gt;= #{outStartDt}
+		</if>
+		<if test="groupIdList!=null and groupIdList.size()&gt;0">
+			and mci.department_id in
+			<foreach collection="groupIdList" item="item" open="(" close=")" separator="," index="index">
+				#{item}
+			</foreach>
+		</if>
+		order by mci.out_hospital_date desc
+	</select>
+
+	<select id="getDoctorMemberIds" resultType="java.lang.String">
+		select d.member_id from t_doctor_member d left join t_member m on d.member_id = m.member_id
+		where d.doctor_id= #{doctorId} and d.is_valid = 1 and m.is_valid = 1
+	</select>
+    <select id="getMemberByInfo" parameterType="com.comvee.cdms.member.dto.GetMemberDTO" resultMap="member">
+		select t.member_id, t.member_name, t.member_name_py, t.pic_url, t.mobile_phone, t.sex, t.birthday,
+        t.id_card, t.profession, t.diabetes_type, t.diabetes_date, t.insert_dt, t.modify_dt,
+        t.height, t.weight, t.bmi, t.sbp_pressure, t.dbp_pressure, t.country, t.address, t.essential_hyp, t.chd,
+        t.nephropathy,t.labour_intensity, t.hreat_rate, t.member_info, t.level_hx ,t.dsme_hx,t.is_diabetes,
+        t.hyp_type, t.hyp_date,t.fat
+		from t_member t join t_member_join_hospital jh on jh.member_id = t.member_id
+		where t.is_valid = 1 and jh.valid = 1  and jh.hospital_id = #{hospitalId}
+		<if test="memberName != null and '' != memberName">
+			and t.member_name = #{memberName}
+		</if>
+		<if test="birthday != null and '' != birthday">
+			and t.birthday = #{birthday}
+		</if>
+		<if test="sex != null and '' != sex">
+			and t.sex = #{sex}
+		</if>
+
+	</select>
+	<select id="getMemberCheckinInfoByMemberId"
+			resultMap="memberCheckingInfo">
+		select sid, member_id, checkin_status, department_id, department_name, room_id, room_no,
+		bed_id, bed_no, is_valid, insert_dt, modify_dt, in_hospital_date, out_hospital_date,
+		hospital_no, patient_card, pat_patient_id, doctor_zg_code, adm_no, main_nurse_desc,
+		doctor_zg, nur_level, eat_model, charge_class, hospital_id
+		from t_member_checkin_info
+		where member_id = #{memberId}
+		limit 1
+	</select>
+    <select id="listGluMember" resultMap="gluListMember" parameterType="com.comvee.cdms.glu.model.ListMemberDto">
+        select m.member_id, m.member_name, m.sex, m.birthday, m.mobile_phone, m.id_card, m.pic_url, d.group_id, if(d.group_id != 0, g.group_name, '默认分组') group_name
+        from  t_doctor_member d join t_member m
+                                     on d.member_id = m.member_id and m.is_valid = 1
+                                left join t_doctor_group g on d.group_id = g.group_id
+        where d.is_valid = 1
+            and d.doctor_id = #{doctorId}
+        <!--门诊居家患者不显示在住院的患者-->
+        and NOT EXISTS (select member_id from t_member_checkin_info c,
+        t_doctor_department dd
+        where c.checkin_status=1 and c.is_valid=1 and c.member_id=m.member_id
+        and c.department_id=dd.department_id and dd.doctor_id=#{doctorId}
+        and dd.doctor_id = d.doctor_id)
+        <!--门诊居家患者不显示在住院的患者END-->
+        <if test="keyword != null and keyword != '' ">
+            and instr(m.member_name, #{keyword}) > 0
+        </if>
+        order by m.member_name
+    </select>
+
+    <select id="getMemberDoctorIds" resultType="java.lang.String">
+        select d.doctor_id from t_doctor_member d left join t_member m on d.member_id = m.member_id
+		where d.member_id= #{memberId} and d.is_valid = 1 and m.is_valid = 1
+    </select>
+
+    <select id="pagerMemberInspect2" parameterType="String"
+            resultType="com.comvee.cdms.member.vo.MemberInspectVO">
+		select * from (SELECT
+		2 type,t.`sid`, t.`inspect_title` inspectTitle, t.`inspect_id`
+		inspectId,
+		t.`inspect_` inspectTime, t1.department_name
+		inspectDepartName,t.`inspect_doctor_name` inspectDoctorName,
+		t.`review_doctor_name` reviewDoctorName, t.`member_id`
+		memberId,t.`visit_no` visitNo, t.`inspect_type` inspectType
+		FROM
+		t_inspection t,t_inspection_detail t1 where t.inspect_id =
+		t1.inspect_id and t.member_id = #{memberId}
+		union all
+		select 1 type,t.screening_id sid, t.modules inspectTitle, t.`screening_id` inspectId, DATE_FORMAT(t.`finish_dt`,'%Y-%m-%d') inspectDate,
+		  DATE_FORMAT(t.`finish_dt`,'%H:%i:%s') inspectTime, t1.depart_name inspectDepartName,t1.`doctor_name` inspectDoctorName,
+		  t1.`doctor_name` reviewDoctorName, t.`member_id` memberId,'' visitNo, t.`modules` inspectType
+        from t_screening_list t left join t_doctor t1 on t.doctor_id=t1.doctor_id
+				where valid = 1 and screening_status=3 and t.member_id = #{memberId}
+        union all
+        select * from (select 3 type,t.sid,'动态血压' inspectTitle,t.sid inspectId,DATE_FORMAT(t.record_time,'%Y-%m-%d') inspectDate,
+        DATE_FORMAT(t.record_time,'%H:%i:%s') inspectTime,'' inspectDepartName,'' inspectDoctorName,
+        '' reviewDoctorName, t.`member_id` memberId,'' visitNo, '' inspectType
+        from
+            t_dynamic_blood_pressure t inner join t_dynamic_bp_detail d ON t.sid = d.foreign_id
+            where t.member_id = #{memberId} and t.is_valid = 1
+            ORDER BY inspectDate desc,inspectTime desc limit 1) a
+            )t
+            order by t.inspectDate desc,t.inspectTime desc
+    </select>
+
+    <select id="countMemberNumByDTO" parameterType="com.comvee.cdms.statistics.dto.GetMemberStaticsDTO" resultType="java.lang.Long">
+        select ifnull(count(distinct(t.member_id)),0)
+        from t_member t join t_member_join_hospital h
+        on t.member_id = h.member_id
+        <where>
+            t.is_valid = 1 and h.valid = 1
+            <if test="hospitalId != null and ''!=hospitalId">
+                and h.hospital_id = #{hospitalId}
+            </if>
+            <if test="startDt != null and ''!=startDt">
+                and t.birthday > #{startDt}
+            </if>
+            <if test="endDt != null and ''!=endDt">
+                and t.birthday &lt;= #{endDt}
+            </if>
+            <if test="sex != null and ''!=sex">
+                and t.sex = #{sex}
+            </if>
+            <if test="lowBmi != null and ''!=lowBmi">
+                and t.bmi > #{lowBmi}
+            </if>
+            <if test="highBmi != null and ''!=highBmi">
+                and t.bmi &lt;= #{highBmi}
+            </if>
+            <if test="isDiabetes != null and ''!=isDiabetes">
+                and t.is_diabetes = #{isDiabetes}
+            </if>
+            <if test="diabetesType != null and ''!=diabetesType">
+                and t.diabetes_type = #{diabetesType}
+            </if>
+            <if test="essentialHyp != null and ''!=essentialHyp">
+                and t.essential_hyp = #{essentialHyp}
+            </if>
+            <if test="hypType != null and ''!=hypType">
+                and t.hyp_type = #{hypType}
+            </if>
+            <if test="committeeIdList != null and committeeIdList.size() > 0" >
+                and t.committee_id in
+                <foreach collection="committeeIdList" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="getMemberByCertificateNo" parameterType="com.comvee.cdms.member.dto.CertificateGetMemberDTO" resultMap="member">
+            select t.member_id, t.member_name, t.member_name_py, t.pic_url, t.mobile_phone, t.sex, t.birthday,
+        t.id_card, t.profession, t.diabetes_type, t.diabetes_date, t.insert_dt, t.modify_dt,
+        t.height, t.weight, t.bmi, t.sbp_pressure, t.dbp_pressure, t.country, t.address, t.essential_hyp, t.chd, t.nephropathy,
+        t.labour_intensity, t.hreat_rate, t.member_info, t.level_hx ,t.dsme_hx,t.is_diabetes, t.hyp_type, t.hyp_date,t.fat,
+        t.member_tag, t.treatment
+        from t_member t left join t_member_visit_card c
+        on t.member_id = c.member_id and c.hospital_id = #{hospitalId}
+        left join t_member_checkin_info ci
+        on ci.member_id =t.member_id and ci.hospital_id = #{hospitalId}
+        where t.is_valid = 1
+
+        <if test="idCard != null and '' != idCard">
+            and t.id_card = #{idCard}
+        </if>
+        <if test="visitNo != null and '' != visitNo">
+            and c.visit_no = #{visitNo}
+        </if>
+        <if test="hospitalNo != null and '' != hospitalNo">
+            and ci.hospital_no = #{hospitalNo}
+        </if>
+        limit 1
+    </select>
+    <select id="countMemberVisit" parameterType="com.comvee.cdms.member.dto.ListMemberVisitDTO" resultType="java.lang.Long">
+       select ifnull(count(distinct mv.member_id),0)
+        from t_member_visit mv
+       join t_member_join_hospital mjh on mjh.member_id = mv.member_id
+        <where>
+            <if test="hospitalId != null and '' != hospitalId">
+                and mv.hospital_id = #{hospitalId}
+            </if>
+            <if test="joinHospitalId != null and '' != joinHospitalId">
+                and mjh.hospital_id = #{joinHospitalId}
+            </if>
+            <if test = "visitStartDt != null and '' != visitStartDt">
+                and mv.visit_date &gt;= #{visitStartDt}
+            </if>
+            <if test = "visitEndDt != null and '' != visitEndDt">
+                and mv.visit_date &lt;= #{visitEndDt}
+            </if>
+            <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+                and mv.hospital_id in
+                <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                    #{hospitalId}
+                </foreach>
+            </if>
+        </where>
+
+    </select>
+    <select id="listMemberVisit" parameterType="com.comvee.cdms.member.dto.ListMemberVisitDTO" resultMap="memberMap">
+
+        select mv.sid,#{doctorId} doctor_id, m.member_id, m.member_name, m.mobile_phone, m.sex, m.birthday, m.id_card, case
+        when m.is_diabetes = 1 and m.essential_hyp = 1 then '高血压-糖尿病'
+        when m.is_diabetes = 1 then '糖尿病' when m.essential_hyp = 1 then '高血压' else '无' end diabetesType,
+        h.hospital_name,  m.insert_dt filingDate, mjh.attention,
+        mv.visit_date,mv.depart_name
+        from t_member_visit mv inner
+        join t_hospital h on mv.hospital_id = h.hospital_id
+         join t_member_join_hospital mjh on mv.member_id = mjh.member_id and mjh.valid = 1
+         join t_member m on m.member_id = mjh.member_id
+        where 1 = 1
+        <if test=" keyword != null and keyword != '' ">
+            and (instr(m.member_name, #{keyword}) or instr(m.member_name_py, #{keyword}) or instr(m.mobile_phone,
+            #{keyword}))
+        </if>
+        <if test = "visitStartDt != null and '' != visitStartDt">
+            and mv.visit_date &gt;= #{visitStartDt}
+        </if>
+        <if test = "visitEndDt != null and '' != visitEndDt">
+            and mv.visit_date &lt;= #{visitEndDt}
+        </if>
+        <if test=" begin != null and begin != '' ">
+            and m.insert_dt >= #{begin}
+        </if>
+        <if test=" end != null and end != '' ">
+            and #{end} >= m.insert_dt
+        </if>
+        <if test="attention != null">
+            and attention = #{attention}
+        </if>
+        <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+            and mv.hospital_id in
+            <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                #{hospitalId}
+            </foreach>
+        </if>
+        <if test = "joinHospitalId != null and '' != joinHospitalId">
+            and mjh.hospital_id = #{joinHospitalId}
+        </if>
+        <if test="diseaseType != null">
+            <if test='diseaseType == "1"'>
+                and m.is_diabetes = 1
+            </if>
+            <if test='diseaseType == "2"'>
+                and m.essential_hyp = 1
+            </if>
+        </if>
+        group by mv.sid
+        order by mv.visit_date desc
+    </select>
+    <select id="countMemberInspection" resultType="java.lang.Long">
+        select ifnull(count(distinct tr.member_id),0)
+        from t_member_physical_examination_record tr
+        <where>
+            tr.valid = 1
+            <if test = "checkYear != null and '' != checkYear">
+                and tr.check_year = #{checkYear}
+            </if>
+            <if test="hospitalIdList != null and hospitalIdList.size() > 0">
+                and tr.hospital_id in
+                <foreach collection="hospitalIdList" item="hospitalId" open="(" close=")" separator=",">
+                    #{hospitalId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="getStandardMemberCount" resultType="java.lang.Long">
+        select ifnull(count(1),0) from(
+        (select fm.member_id from
+        t_follow_main fm left join t_member_join_hospital mjh
+        on fm.member_id = mjh.member_id
+        <where>
+            fm.is_valid = 1 and fm.status = 1 and mjh.valid = 1
+            <if test="firstStartDt != null and '' != firstStartDt">
+                and fm.fill_dt &gt;= #{firstStartDt}
+            </if>
+            <if test="firstEndDt != null and '' != firstEndDt">
+                and fm.fill_dt &lt;= #{firstEndDt}
+            </if>
+            <if test="hospitalId != null and hospitalId != '' ">
+                and mjh.hospital_id = #{hospitalId}
+            </if>
+        </where>
+        group by fm.member_id ) a
+        inner join
+        (select fm.member_id from
+        t_follow_main fm left join t_member_join_hospital mjh
+        on fm.member_id = mjh.member_id
+        <where>
+            fm.is_valid = 1 and fm.status = 1 and mjh.valid = 1
+            <if test="secondStartDt != null and '' != secondStartDt">
+                and fm.fill_dt &gt;= #{secondStartDt}
+            </if>
+            <if test="secondEndDt != null and '' != secondEndDt">
+                and fm.fill_dt &lt;= #{secondEndDt}
+            </if>
+            <if test="hospitalId != null and hospitalId != '' ">
+                and mjh.hospital_id = #{hospitalId}
+            </if>
+        </where>
+        group by fm.member_id ) b on a.member_id = b.member_id
+        inner join
+        (select fm.member_id from
+        t_follow_main fm left join t_member_join_hospital mjh
+        on fm.member_id = mjh.member_id
+        <where>
+            fm.is_valid = 1 and fm.status = 1 and mjh.valid = 1
+            <if test="thirdStartDt != null and '' != thirdStartDt">
+                and fm.fill_dt &gt;= #{thirdStartDt}
+            </if>
+            <if test="thirdEndDt != null and '' != thirdEndDt">
+                and fm.fill_dt &lt;= #{thirdEndDt}
+            </if>
+            <if test="hospitalId != null and hospitalId != '' ">
+                and mjh.hospital_id = #{hospitalId}
+            </if>
+        </where>
+        group by fm.member_id ) c on a.member_id = c.member_id
+        inner join
+        (select fm.member_id from
+        t_follow_main fm left join t_member_join_hospital mjh
+        on fm.member_id = mjh.member_id
+        <where>
+            fm.is_valid = 1 and fm.status = 1 and mjh.valid = 1
+            <if test="fourthStartDt != null and '' != fourthStartDt">
+                and fm.fill_dt &gt;= #{fourthStartDt}
+            </if>
+            <if test="fourthEndDt != null and '' != fourthEndDt">
+                and fm.fill_dt &lt;= #{fourthEndDt}
+            </if>
+            <if test="hospitalId != null and hospitalId != '' ">
+                and mjh.hospital_id = #{hospitalId}
+            </if>
+        </where>
+        group by fm.member_id ) d on a.member_id = d.member_id
+        inner join
+        (select tr.member_id
+        from t_member_physical_examination_record tr
+        <where>
+            tr.valid = 1
+            <if test="year != null and '' != year">
+                and tr.check_year = #{year}
+            </if>
+            <if test="hospitalId != null and hospitalId != '' ">
+                and tr.hospital_id = #{hospitalId}
+            </if>
+        </where>
+        group by tr.member_id
+          ) e on a.member_id = e.member_id )
+    </select>
+    <select id="getInspectionMemberIds" resultType="java.lang.String">
+        select tr.member_id
+        from t_member_physical_examination_record tr
+        <where>
+            tr.valid = 1
+            <if test = "checkYear != null and '' != checkYear">
+                and tr.check_year = #{checkYear}
+            </if>
+            <if test="hospitalId != null and hospitalId != '' ">
+                and tr.hospital_id = #{hospitalId}
+            </if>
+        </where>
+    </select>
+    <select id="listGluMemberByKeyword" resultMap="gluListMember" parameterType="com.comvee.cdms.glu.model.ListMemberDto">
+        select m.member_id, m.member_name, m.sex, m.birthday, m.mobile_phone, m.id_card, m.pic_url, d.group_id, if(d.group_id != 0, g.group_name, '默认分组') group_name, m.diabetes_type,
+        case  when upper(m.diabetes_type) = 'SUGAR_TYPE_001' then '1型糖尿病'
+        when upper(m.diabetes_type) = 'SUGAR_TYPE_002' then '2型糖尿病'
+        when upper(m.diabetes_type) = 'SUGAR_TYPE_003' then '妊娠糖尿病'
+        when upper(m.diabetes_type) = 'SUGAR_TYPE_004' then '其它'end diabetes_type_name
+        from  t_doctor_member d join t_member m
+        on d.member_id = m.member_id and m.is_valid = 1
+        left join t_doctor_group g on d.group_id = g.group_id
+        where d.is_valid = 1
+        and d.doctor_id = #{doctorId}
+        <!--门诊居家患者不显示在住院的患者-->
+        and NOT EXISTS (select member_id from t_member_checkin_info c,
+        t_doctor_department dd
+        where c.checkin_status=1 and c.is_valid=1 and c.member_id=m.member_id
+        and c.department_id=dd.department_id and dd.doctor_id=#{doctorId}
+        and dd.doctor_id = d.doctor_id)
+        <!--门诊居家患者不显示在住院的患者END-->
+        <if test="keyword != null and keyword != '' ">
+            and (instr(m.mobile_phone, #{keyword}) > 0 or instr(m.member_name, #{keyword}) > 0)
+        </if>
+        order by d.insert_dt desc
+    </select>
+
+    <select id="listGluMemberWithGroup" resultMap="gluListMember" parameterType="com.comvee.cdms.glu.model.ListMemberDto">
+        select m.member_id, m.member_name, m.sex, m.birthday, m.mobile_phone, m.id_card, m.pic_url, d.group_id, if(d.group_id != 0, g.group_name, '默认分组') group_name, m.diabetes_type,
+        case  when upper(m.diabetes_type) = 'SUGAR_TYPE_001' then '1型糖尿病'
+        when upper(m.diabetes_type) = 'SUGAR_TYPE_002' then '2型糖尿病'
+        when upper(m.diabetes_type) = 'SUGAR_TYPE_003' then '妊娠糖尿病'
+        when upper(m.diabetes_type) = 'SUGAR_TYPE_004' then '其它'end diabetes_type_name
+        from  t_doctor_member d join t_member m
+        on d.member_id = m.member_id and m.is_valid = 1
+        left join t_doctor_group g on d.group_id = g.group_id
+        where d.is_valid = 1
+        and d.doctor_id = #{doctorId}
+        <!--门诊居家患者不显示在住院的患者-->
+        and NOT EXISTS (select member_id from t_member_checkin_info c,
+        t_doctor_department dd
+        where c.checkin_status=1 and c.is_valid=1 and c.member_id=m.member_id
+        and c.department_id=dd.department_id and dd.doctor_id=#{doctorId}
+        and dd.doctor_id = d.doctor_id)
+        <!--门诊居家患者不显示在住院的患者END-->
+        <if test="groupId != null and groupId != '' ">
+            and d.group_id = #{groupId}
+        </if>
+        <if test="begin != null and begin != '' ">
+            and d.insert_dt >= #{begin}
+        </if>
+        order by d.insert_dt desc
+    </select>
+    <select id="listGluHospitalMemberByKeyword" resultMap="gluMemberMap">
+        select tm.member_id, tm.member_name, tm.sex, tm.birthday, tm.mobile_phone,
+               tm.id_card, tm.pic_url,tm.committee_id ,tm.committee_name
+        from  t_member tm join t_member_join_hospital mjh
+        on tm.member_id = mjh.member_id
+        where tm.is_valid = 1 and  mjh.valid = 1
+        <if test="hospitalId != null and '' != hospitalId">
+            and mjh.hospital_id = #{hospitalId}
+        </if>
+        <if test="keyword != null and keyword != '' and mobilePhone != null and mobilePhone != '' ">
+            and (instr(tm.mobile_phone, #{mobilePhone}) > 0 or instr(tm.member_name, #{keyword}) > 0
+            or instr(tm.member_name_pys, #{keyword}) > 0)
+        </if>
+        order by tm.insert_dt desc
+    </select>
+</mapper>

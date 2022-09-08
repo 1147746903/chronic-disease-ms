@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.complication.mapper.ScreeningItemDictMapper">
+
+  <resultMap id="screeningItemDict" type="com.comvee.cdms.complication.model.po.ScreeningItemDictPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="item_name" jdbcType="VARCHAR" property="itemName" />
+    <result column="item_value" jdbcType="TINYINT" property="itemValue" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+  </resultMap>
+
+
+  <select id="listHospitalScreeningItemDict" resultMap="screeningItemDict">
+    select t.sid, t.item_name, t.item_value, t.update_dt, t.insert_dt
+    from t_screening_item_dict t,t_screening_item_hospital q
+    where t.sid = q.item_id and q.hospital_id = #{hospitalId}
+    order by item_value
+  </select>
+</mapper>

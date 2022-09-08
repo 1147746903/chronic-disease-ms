@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.DyRememberDietMapper">
+
+  <resultMap id="dyDietRemember" type="com.comvee.cdms.dybloodsugar.po.DyRememberDietPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="operation_id" jdbcType="BIGINT" property="operationId" />
+    <result column="param_code" jdbcType="VARCHAR" property="paramCode" />
+    <result column="param_dt" jdbcType="VARCHAR" property="paramDt" />
+    <result column="param_ingredient_json" jdbcType="VARCHAR" property="paramIngredientJson" />
+    <result column="record_dt" jdbcType="TIMESTAMP" property="recordDt" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+    <result column="is_valid" jdbcType="INTEGER" property="isValid" />
+    <result column="operation_type" jdbcType="INTEGER" property="operationType" />
+  </resultMap>
+    <update id="delLifeType">
+        update t_member_diet
+            <set>
+                is_valid = 0
+            </set>
+
+        where sid = #{sid}
+    </update>
+    <update id="delDietRemember" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberDietPO">
+        update dy_remember_diet
+        set is_valid = 0,
+            modify_dt = now()
+        where sid = #{sid}
+    </update>
+
+    <select id="listDyDietRememberPO" resultMap="dyDietRemember">
+        select
+        sid,
+        member_id,
+        operation_id,
+        param_code,
+        param_dt,
+        param_ingredient_json,
+        record_dt,
+        insert_dt,
+        modify_dt,
+        is_valid ,
+        operation_type
+        FROM dy_remember_diet
+        where is_valid=1 and member_id = #{memberId}
+        and record_dt between #{recordDtStart} and #{recordDtEnd}
+        <if test="operationType != null">
+            and operation_type = #{operationType}
+        </if>
+        <if test="isLife != null and isLife != ''">
+            and IFNULL(is_life,'')  != #{isLife}
+        </if>
+        order by param_code
+  </select>
+
+  <select id="getDyDietRemember"  resultMap="dyDietRemember">
+    SELECT
+        sid,
+        member_id,
+        operation_id,
+        param_code,
+        param_dt,
+        param_ingredient_json,
+        record_dt,
+        insert_dt,
+        modify_dt,
+        is_valid,
+        operation_type
+    FROM
+        dy_remember_diet
+    WHERE
+    is_valid=1
+    and member_id=#{memberId} and param_code=#{paramCode}
+	and operation_type = #{operationType}
+	and record_dt between #{recordDtStart} and #{recordDtEnd}
+  </select>
+
+    <select id="getDyDietRememberOne"  resultMap="dyDietRemember">
+    SELECT
+        sid,
+        member_id,
+        operation_id,
+        param_code,
+        param_dt,
+        param_ingredient_json,
+        record_dt,
+        insert_dt,
+        modify_dt,
+        is_valid,
+        operation_type
+    FROM
+        dy_remember_diet
+    WHERE
+    is_valid=1
+    and member_id=#{memberId} and param_code=#{paramCode} and param_dt=#{paramDt}
+	and operation_type = #{operationType}
+	and record_dt between #{recordDtStart} and #{recordDtEnd}
+  </select>
+
+  <select id="getDyDietRememberValues"  resultMap="dyDietRemember">
+    select
+    sid,
+    member_id,
+    operation_id,
+    param_code,
+    param_dt,
+    param_ingredient_json,
+    record_dt,
+    insert_dt,
+    modify_dt,
+    is_valid ,
+    operation_type
+    FROM dy_remember_diet where sid=#{sid} and is_valid=1
+</select>
+    <select id="getFoodLsit" parameterType="string" resultType="com.comvee.cdms.dybloodsugar.po.DyRememberFoodPO">
+        select *
+        from t_food_item
+        where is_valid = 1
+          and is_use = 1
+          <if test="foodName != null and foodName != ''">
+              and name like concat('%', #{foodName}, '%')
+          </if>
+        <if test="type != null and type != ''">
+            and one_name like concat('%', #{type}, '%')
+        </if>
+    </select>
+    <select id="getLiftTypeList" parameterType="com.comvee.cdms.dybloodsugar.dto.MemberLifeTypeDTO" resultType="com.comvee.cdms.dybloodsugar.po.MemberLifeTypePO">
+        select *,param_ingredient_json as content
+        from dy_remember_diet
+        where is_valid=1
+          and member_id = #{memberId}
+          and record_dt between #{recordDtStart} and #{recordDtEnd}
+          and operation_type = 1
+          and is_life = 1
+          order by param_dt
+    </select>
+    <select id="getFoodItemById" parameterType="string" resultType="com.comvee.cdms.dybloodsugar.po.DyRememberFoodPO">
+        select *
+        from t_food_item
+        where is_valid = 1
+          and is_use = 1
+          and id = #{id}
+    </select>
+    <select id="getFoodType" resultType="java.lang.String">
+        SELECT one_name FROM `t_food_item` where one_name != '' GROUP BY one_name
+    </select>
+    <select id="listDyDietRememberPOForWX"
+            resultType="com.comvee.cdms.dybloodsugar.po.DyRememberDietPO">
+        select
+            sid,
+            member_id,
+            param_code,
+            param_ingredient_json,
+            record_dt,
+            insert_dt,
+            modify_dt,
+            is_valid,
+            pic_url,
+            param_dt
+        FROM t_member_diet
+        where is_valid=1 and member_id = #{memberId}
+          and record_dt between #{recordDtStart} and #{recordDtEnd}
+        order by param_code
+    </select>
+    <select id="listDyDietRememberPOForHandleData"
+            resultType="com.comvee.cdms.dybloodsugar.po.DyRememberDietPO">
+        select
+            sid,
+            member_id,
+            param_code,
+            param_ingredient_json as content,
+            record_dt,
+            insert_dt,
+            modify_dt,
+            is_valid,
+            pic_url,
+            param_dt
+        FROM t_member_diet
+        where is_valid=1 and member_id = #{memberId}
+          and record_dt between #{recordDtStart} and #{recordDtEnd}
+        order by param_code
+    </select>
+
+    <insert id="addDietRemember" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberDietPO">
+    insert into dy_remember_diet (sid,member_id, operation_id,param_code,param_dt,
+    param_ingredient_json,record_dt, insert_dt, modify_dt, is_valid,operation_type)
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},#{operationId,jdbcType=BIGINT},
+    #{paramCode,jdbcType=VARCHAR},#{paramDt,jdbcType=VARCHAR},#{paramIngredientJson,jdbcType=VARCHAR},
+    #{recordDt,jdbcType=TIMESTAMP},now(), now(),1,#{operationType,jdbcType=TIMESTAMP}
+    )
+  </insert>
+    <insert id="addLifeType" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberDietPO">
+        insert  into
+            dy_remember_diet(sid, param_code, member_id, record_dt, insert_dt, modify_dt, is_valid, param_ingredient_json, param_dt, operation_id, operation_type,is_life)
+            values (#{sid}, #{paramCode}, #{memberId}, #{recordDt}, now(), now(), 1, #{content}, #{paramDt}, #{operationId}, #{operationType}, #{isLife})
+    </insert>
+    <insert id="addDietRememberNew">
+        INSERT INTO t_member_diet ( sid, member_id, param_ingredient_json, record_dt, insert_dt, modify_dt, is_valid, param_code ,pic_url, param_dt )
+        VALUES
+            (#{sid}, #{memberId}, #{paramIngredientJson}, #{recordDt}, now(), now(), 1, #{paramCode}, #{picUrl}, #{paramDt})
+    </insert>
+
+    <update id="updateDyDietRemember" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberDietPO">
+    update dy_remember_diet
+    <set>
+      <if test="operationId != null">
+          operation_id = #{operationId,jdbcType=BIGINT},
+      </if>
+      <if test="paramCode != null">
+        param_code = #{paramCode,jdbcType=VARCHAR},
+      </if>
+      <if test="paramDt != null">
+        param_dt = #{paramDt,jdbcType=VARCHAR},
+      </if>
+      <if test="recordDt != null">
+        record_dt =  #{recordDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        param_ingredient_json = #{content,jdbcType=VARCHAR},
+      </if>
+        modify_dt = now()
+    </set>
+    where
+      is_valid=1
+      and member_id=#{memberId}
+      and sid = #{sid}
+  </update>
+
+    <update id="modifyDyDietRememberBySid" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberDietPO">
+        update dy_remember_diet
+        <set>
+            <if test="operationId != null">
+                operation_id = #{operationId,jdbcType=BIGINT},
+            </if>
+            <if test="paramCode != null">
+                param_code = #{paramCode,jdbcType=VARCHAR},
+            </if>
+            <if test="paramDt != null">
+                param_dt = #{paramDt,jdbcType=VARCHAR},
+            </if>
+            <if test="recordDt != null">
+                record_dt =  #{recordDt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="paramIngredientJson != null">
+                param_ingredient_json = #{paramIngredientJson,jdbcType=VARCHAR},
+            </if>
+                modify_dt = now()
+        </set>
+        where
+            sid=#{sid}
+    </update>
+
+
+    <update id="updateDyDietRememberBySid" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberDietPO">
+        update dy_remember_diet
+        set is_valid = 0,
+        modify_dt = now()
+        where sid = #{sid}
+  </update>
+    <update id="updateLifeType" parameterType="com.comvee.cdms.dybloodsugar.po.MemberLifeTypePO">
+        update dy_remember_diet
+        <set>
+            <if test="recordDt != null">
+                record_dt = #{recordDt},
+            </if>
+            <if test="paramDt !=null">
+                param_dt = #{paramDt},
+            </if>
+            <if test="content != null">
+                param_ingredient_json = #{content},
+            </if>
+                modify_dt = now()
+        </set>
+        where member_id = #{memberId}
+        and is_valid = 1
+        and sid = #{sid}
+    </update>
+    <update id="updateDyDietRememberNew" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberDietPO">
+        update t_member_diet
+        <set>
+            <if test="paramCode != null">
+                param_code = #{paramCode,jdbcType=VARCHAR},
+            </if>
+            <if test="recordDt != null">
+                record_dt = #{recordDt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="paramIngredientJson != null">
+                param_ingredient_json = #{paramIngredientJson,jdbcType=VARCHAR},
+            </if>
+            <if test="paramDt != null and paramDt != ''">
+                param_dt = #{paramDt},
+            </if>
+            <if test="picUrl != null and picUrl != ''">
+                pic_url = #{picUrl},
+            </if>
+            modify_dt = now()
+        </set>
+        where
+        is_valid=1
+        and member_id = #{memberId}
+        and param_code = #{paramCode}
+        and sid = #{sid}
+    </update>
+    <select id="listDyDietRememberPOForWXv2"
+            resultMap="dyDietRemember">
+        select
+            sid,
+            member_id,
+            param_code,
+            param_ingredient_json,
+            record_dt,
+            insert_dt,
+            modify_dt,
+            is_valid,
+            pic_url,
+            param_dt
+        FROM t_member_diet
+        where is_valid=1 and member_id = #{memberId}
+          and record_dt between #{recordDtStart} and #{recordDtEnd}
+        order by param_code
+    </select>
+
+    <select id="listDyDietRememberDtForWX"
+            resultType="String">
+        select
+            distinct date_format(record_dt, '%Y-%m-%d')
+        FROM t_member_diet
+        where is_valid=1 and member_id = #{memberId}
+          and record_dt between #{recordDtStart} and #{recordDtEnd}
+        order by param_code
+    </select>
+</mapper>

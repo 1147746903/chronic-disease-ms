@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.referral.mapper.ReferralApplyMapper" >
+  <resultMap id="referralApplyResultMap" type="com.comvee.cdms.referral.po.ReferralApplyPO" >
+    <id column="sid" property="sid" jdbcType="BIGINT" />
+    <result column="doctor_id" property="doctorId" jdbcType="BIGINT" />
+    <result column="doctor_name" property="doctorName" jdbcType="VARCHAR" />
+    <result column="member_id" property="memberId" jdbcType="BIGINT" />
+    <result column="member_name" property="memberName" jdbcType="VARCHAR" />
+    <result column="hospital_id" property="hospitalId" jdbcType="BIGINT" />
+    <result column="hospital_name" property="hospitalName" jdbcType="VARCHAR" />
+    <result column="department_id" property="departmentId" jdbcType="BIGINT" />
+    <result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+    <result column="apply_doctor_id" property="applyDoctorId" jdbcType="BIGINT" />
+    <result column="apply_doctor_name" property="applyDoctorName" jdbcType="VARCHAR" />
+    <result column="apply_hospital_id" property="applyHospitalId" jdbcType="BIGINT" />
+    <result column="apply_hospital_name" property="applyHospitalName" jdbcType="VARCHAR" />
+    <result column="apply_department_id" property="applyDepartmentId" jdbcType="BIGINT" />
+    <result column="apply_department_name" property="applyDepartmentName" jdbcType="VARCHAR" />
+    <result column="apply_dt" property="applyDt" jdbcType="TIMESTAMP" />
+    <result column="apply_reason" property="applyReason" jdbcType="VARCHAR" />
+    <result column="member_info" property="memberInfo" jdbcType="VARCHAR" />
+    <result column="show_visit" property="showVisit" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="is_valid" property="isValid" jdbcType="INTEGER" />
+    <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP" />
+    <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP" />
+    <result column="referral_apply_type" property="referralApplyType" jdbcType="INTEGER" />
+    <result column="current_desc" property="currentDesc" jdbcType="LONGVARCHAR" />
+    <result column="mobile_no" property="mobileNo"/>
+  </resultMap>
+
+
+  <resultMap id="H5ListRefApply" type="com.comvee.cdms.referral.vo.H5ListReferralApplyVO" >
+    <id column="sid" property="sid" jdbcType="BIGINT" />
+    <result column="member_id" property="memberId" jdbcType="BIGINT" />
+    <result column="member_name" property="memberName" jdbcType="VARCHAR" />
+    <result column="hospital_id" property="hospitalId" jdbcType="BIGINT" />
+    <result column="hospital_name" property="hospitalName" jdbcType="VARCHAR" />
+    <result column="apply_hospital_id" property="applyHospitalId" jdbcType="BIGINT" />
+    <result column="apply_hospital_name" property="applyHospitalName" jdbcType="VARCHAR" />
+    <result column="apply_dt" property="applyDt" jdbcType="TIMESTAMP" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="birthday" property="birthday" jdbcType="VARCHAR" />
+    <result column="is_diabetes" property="isDiabetes" jdbcType="VARCHAR" />
+    <result column="essential_hyp" property="essentialHyp" jdbcType="VARCHAR" />
+    <result column="mobile_phone" property="mobilePhone" jdbcType="VARCHAR" />
+    <result column="committee_name" property="committeeName" jdbcType="VARCHAR" />
+    <result column="town_name" property="townName" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Referral_Apply_Column" >
+    sid, doctor_id, doctor_name, member_id, member_name, hospital_id, hospital_name,
+    department_id, department_name, apply_doctor_id, apply_doctor_name, apply_hospital_id, 
+    apply_hospital_name, apply_department_id, apply_department_name, apply_dt, apply_reason, 
+    member_info, show_visit, status, is_valid, insert_dt, modify_dt, referral_apply_type, current_desc,mobile_no
+  </sql>
+
+  <insert id="insertReferralApply" parameterType="com.comvee.cdms.referral.po.ReferralApplyPO">
+    insert into t_referral_apply (sid, doctor_id, doctor_name,
+      member_id, member_name, hospital_id,
+      hospital_name, department_id, department_name,
+      apply_doctor_id, apply_doctor_name, apply_hospital_id,
+      apply_hospital_name, apply_department_id, apply_department_name,
+      apply_dt, apply_reason, member_info, show_visit, status, is_valid,
+      insert_dt, modify_dt, referral_apply_type, current_desc,mobile_no)
+    values (#{sid}, #{doctorId}, #{doctorName},
+      #{memberId}, #{memberName}, #{hospitalId},
+      #{hospitalName}, #{departmentId}, #{departmentName},
+      #{applyDoctorId}, #{applyDoctorName}, #{applyHospitalId},
+      #{applyHospitalName}, #{applyDepartmentId}, #{applyDepartmentName},
+      #{applyDt}, #{applyReason}, #{memberInfo}, #{showVisit}, #{status}, 1,
+      now(), now(), #{referralApplyType}, #{currentDesc},#{mobileNo})
+  </insert>
+
+  <select id="listReferralByWhere" resultMap="referralApplyResultMap" parameterType="com.comvee.cdms.referral.dto.ListReferralApplyDTO">
+    <!--
+
+          WARNING - @mbggenerated
+          This element is automatically generated by MyBatis Generator, do not modify.
+          This element was generated on Wed Mar 28 17:03:20 CST 2018.
+
+    -->
+    select
+    <include refid="Referral_Apply_Column"/>
+    from t_referral_apply
+    where is_valid=1
+
+    <if test="hospitalId!=null and hospitalId!=''">
+      and hospital_id = #{hospitalId}
+    </if>
+    <if test="departmentId!=null and departmentId!=''">
+      and department_id = #{departmentId}
+    </if>
+    <if test="hospitalName!=null and hospitalName!=''">
+      and (INSTR(hospital_name,#{hospitalName})) > 0
+    </if>
+    <if test="applyHospitalId!=null and applyHospitalId!=''">
+      and apply_hospital_id = #{applyHospitalId}
+    </if>
+    <if test="applyDepartmentId!=null and applyDepartmentId!=''">
+      and apply_department_id = #{applyDepartmentId}
+    </if>
+    <if test="doctorId!=null and doctorId!=''">
+      and doctor_id = #{doctorId}
+    </if>
+    <if test="applyDoctorId!=null and applyDoctorId!=''">
+      and apply_doctor_id = #{applyDoctorId}
+    </if>
+    <if test="memberName!=null and memberName!=''">
+      and (INSTR(member_name,#{memberName})) > 0
+    </if>
+    <if test="applyHospitalName!=null and applyHospitalName!=''">
+      and (INSTR(apply_hospital_name,#{applyHospitalName})) > 0
+    </if>
+    <if test="startDt!=null and startDt!=''">
+      and apply_dt &gt;= #{startDt}
+    </if>
+    <if test="endDt!=null and endDt!=''">
+      and apply_dt &lt;= #{endDt}
+    </if>
+    <if test="status!=null">
+      and status = #{status}
+    </if>
+    <if test="mobileNo!=null and mobileNo!=''">
+      and mobile_no = #{mobileNo}
+    </if>
+    ORDER BY insert_dt desc
+  </select>
+
+  <select id="getReferralById" resultMap="referralApplyResultMap" parameterType="String">
+    <!--
+
+          WARNING - @mbggenerated
+          This element is automatically generated by MyBatis Generator, do not modify.
+          This element was generated on Wed Mar 28 17:03:20 CST 2018.
+
+    -->
+    select
+    <include refid="Referral_Apply_Column"/>
+    from t_referral_apply
+    where is_valid=1 and sid = #{sid}
+  </select>
+
+  <update id="modifyReferral" parameterType="com.comvee.cdms.referral.po.ReferralApplyPO">
+    <!--
+
+          WARNING - @mbggenerated
+          This element is automatically generated by MyBatis Generator, do not modify.
+          This element was generated on Wed Mar 28 17:03:20 CST 2018.
+
+    -->
+    update t_referral_apply
+    <set>
+      modify_dt=now(),
+      <if test="doctorId != null">doctor_id = #{doctorId,jdbcType=BIGINT},</if>
+      <if test="doctorName != null">
+        doctor_name = #{doctorName,jdbcType=VARCHAR},
+      </if>
+      <if test="memberId != null">member_id = #{memberId,jdbcType=BIGINT},</if>
+      <if test="memberName != null">
+        member_name = #{memberName,jdbcType=VARCHAR},
+      </if>
+      <if test="hospitalId != null">
+        hospital_id = #{hospitalId,jdbcType=BIGINT},
+      </if>
+      <if test="hospitalName != null">
+        hospital_name = #{hospitalName,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null">
+        department_id = #{departmentId,jdbcType=BIGINT},
+      </if>
+      <if test="departmentName != null">
+        department_name = #{departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyDoctorId != null">
+        apply_doctor_id = #{applyDoctorId,jdbcType=BIGINT},
+      </if>
+      <if test="applyDoctorName != null">
+        apply_doctor_name = #{applyDoctorName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyHospitalId != null">
+        apply_hospital_id = #{applyHospitalId,jdbcType=BIGINT},
+      </if>
+      <if test="applyHospitalName != null">
+        apply_hospital_name = #{applyHospitalName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyDepartmentId != null">
+        apply_department_id = #{applyDepartmentId,jdbcType=BIGINT},
+      </if>
+      <if test="applyDepartmentName != null">
+        apply_department_name = #{applyDepartmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyDt != null">apply_dt = #{applyDt,jdbcType=TIMESTAMP},</if>
+      <if test="applyReason != null">
+        apply_reason = #{applyReason,jdbcType=VARCHAR},
+      </if>
+      <if test="memberInfo != null">
+        member_info = #{memberInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="showVisit != null">show_visit = #{showVisit,jdbcType=INTEGER},</if>
+      <if test="status != null">status = #{status,jdbcType=INTEGER},</if>
+      <if test="isValid != null">is_valid = #{isValid,jdbcType=INTEGER},</if>
+      <if test="referralApplyType != null">
+        referral_apply_type = #{referralApplyType,jdbcType=INTEGER},
+      </if>
+      <if test="currentDesc != null">
+        current_desc = #{currentDesc,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="mobileNo != null">
+        mobile_no = #{mobileNo},
+      </if>
+    </set>
+    WHERE sid = #{sid}
+  </update>
+
+  <select id="getReferralApplyNew" parameterType="map" resultMap="referralApplyResultMap">
+    SELECT <include refid="Referral_Apply_Column"></include>
+    FROM t_referral_apply
+    WHERE is_valid=1 AND member_id = #{memberId}
+    ORDER BY insert_dt DESC
+    limit 1
+  </select>
+
+  <select id="getReferralApplyByMemberId" parameterType="string" resultMap="referralApplyResultMap">
+    SELECT <include refid="Referral_Apply_Column"></include>
+    FROM t_referral_apply
+    WHERE is_valid=1 AND member_id = #{memberId} and status=0
+    ORDER BY insert_dt DESC
+    limit 1
+  </select>
+
+  <select id="listSuggestReferralByWhere"  resultType="com.comvee.cdms.referral.po.ReferralSuggestPO">
+    SELECT tsr.sid,tsr.member_id memberId,tsr.reason,tsr.status,tsr.type
+    from t_suggest_referral tsr join t_member_join_hospital mjh on mjh.member_id = tsr.member_id
+    WHERE tsr.is_valid=1 and tsr.status=0 and mjh.valid = 1
+    <if test="hospitalId!=null and hospitalId!=''">
+      and mjh.hospital_id = #{hospitalId}
+    </if>
+    <if test="referralType != null">
+      <if test='referralType == "1"'>
+        and tsr.type like '1%'
+      </if>
+      <if test='referralType == "2"'>
+        and tsr.type like '2%'
+      </if>
+    </if>
+  </select>
+
+  <insert id="addSuggestReferralLog" parameterType="com.comvee.cdms.referral.po.ReferralSuggestPO">
+    INSERT INTO t_suggest_referral(sid,member_id,reason,insert_dt,modify_dt,hospital_id,type)
+    VALUES (#{sid},#{memberId},#{reason},now(),now(),#{hospitalId},#{type})
+  </insert>
+
+  <update id="modifySuggestReferralLog" parameterType="com.comvee.cdms.referral.po.ReferralSuggestPO">
+    UPDATE t_suggest_referral
+    <set>
+      modify_dt=now(),
+      <if test="status!=null">
+        status=#{status},
+      </if>
+      <if test="reason!=null and reason!=''">
+        reason=#{reason},
+      </if>
+      <if test="isValid!=null">
+        is_valid=#{isValid},
+      </if>
+    </set>
+    WHERE sid = #{sid}
+  </update>
+
+  <update id="modifySuggestLogByMIdAndHId" parameterType="com.comvee.cdms.referral.po.ReferralSuggestPO">
+    UPDATE t_suggest_referral
+    <set>
+      modify_dt=now(),
+      <if test="status!=null">
+        status=#{status},
+      </if>
+      <if test="reason!=null and reason!=''">
+        reason=#{reason},
+      </if>
+      <if test="isValid!=null">
+        is_valid=#{isValid},
+      </if>
+    </set>
+    WHERE hospital_id = #{hospitalId} AND member_id = #{memberId}
+  </update>
+
+  <insert id="batchInsertSuggestReferral">
+    <foreach collection="inserts" item="item" index="index">
+      INSERT INTO t_suggest_referral(sid,member_id,reason,insert_dt,modify_dt,hospital_id,type)
+      VALUES (#{item.sid},#{item.memberId},#{item.reason},now(),now(),#{item.hospitalId},#{item.type});
+    </foreach>
+  </insert>
+
+  <select id="listSuggestReferralOfInHos" parameterType="java.lang.String" resultType="com.comvee.cdms.referral.po.ReferralSuggestPO">
+    SELECT t.sid,t.member_id memberId,reason,t.status,t.type,t.hospital_id hospitalId
+    from t_suggest_referral t
+    where
+     t.is_valid=1 and t.member_id=#{memberId}
+  </select>
+  <select id="listReferralByWhereForH5" resultMap="H5ListRefApply" parameterType="com.comvee.cdms.referral.dto.ListReferralApplyDTO">
+    select
+    ra.sid, tm.member_id, tm.member_name, ra.hospital_id, ra.hospital_name,
+    ra.apply_hospital_id,
+    ra.apply_hospital_name, ra.apply_dt,
+    tm.sex,tm.birthday,tm.is_diabetes,tm.essential_hyp,tm.mobile_phone,tm.committee_name,hc.town_name
+    from t_referral_apply ra
+    join t_member tm on ra.member_id = tm.member_id
+    left join t_hospital_committee hc on hc.id = tm.committee_id
+    where ra.is_valid=1
+
+    <if test="hospitalId!=null and hospitalId!=''">
+      and ra.hospital_id = #{hospitalId}
+    </if>
+    <if test="departmentId!=null and departmentId!=''">
+      and ra.department_id = #{departmentId}
+    </if>
+    <if test="hospitalName!=null and hospitalName!=''">
+      and (INSTR(ra.hospital_name,#{hospitalName})) > 0
+    </if>
+    <if test="applyHospitalId!=null and applyHospitalId!=''">
+      and ra.apply_hospital_id = #{applyHospitalId}
+    </if>
+    <if test="applyDepartmentId!=null and applyDepartmentId!=''">
+      and ra.apply_department_id = #{applyDepartmentId}
+    </if>
+    <if test="doctorId!=null and doctorId!=''">
+      and ra.doctor_id = #{doctorId}
+    </if>
+    <if test="applyDoctorId!=null and applyDoctorId!=''">
+      and ra.apply_doctor_id = #{applyDoctorId}
+    </if>
+    <if test="memberName!=null and memberName!=''">
+      and (INSTR(ra.member_name,#{memberName})) > 0
+    </if>
+    <if test="applyHospitalName!=null and applyHospitalName!=''">
+      and (INSTR(ra.apply_hospital_name,#{applyHospitalName})) > 0
+    </if>
+    <if test="startDt!=null and startDt!=''">
+      and ra.apply_dt &gt;= #{startDt}
+    </if>
+    <if test="endDt!=null and endDt!=''">
+      and ra.apply_dt &lt;= #{endDt}
+    </if>
+    <if test="status!=null">
+      and ra.status = #{status}
+    </if>
+    <if test="mobileNo!=null and mobileNo!=''">
+      and ra.mobile_no = #{mobileNo}
+    </if>
+    ORDER BY ra.insert_dt desc
+  </select>
+  <select id="listDistinctMemberReferralByWhere" resultMap="referralApplyResultMap" parameterType="com.comvee.cdms.referral.dto.ListReferralApplyDTO">
+    select * from (
+    select
+    <include refid="Referral_Apply_Column"/>
+    from t_referral_apply
+    where is_valid=1
+
+    <if test="hospitalId!=null and hospitalId!=''">
+      and hospital_id = #{hospitalId}
+    </if>
+    <if test="departmentId!=null and departmentId!=''">
+      and department_id = #{departmentId}
+    </if>
+    <if test="hospitalName!=null and hospitalName!=''">
+      and (INSTR(hospital_name,#{hospitalName})) > 0
+    </if>
+    <if test="applyHospitalId!=null and applyHospitalId!=''">
+      and apply_hospital_id = #{applyHospitalId}
+    </if>
+    <if test="applyDepartmentId!=null and applyDepartmentId!=''">
+      and apply_department_id = #{applyDepartmentId}
+    </if>
+    <if test="doctorId!=null and doctorId!=''">
+      and doctor_id = #{doctorId}
+    </if>
+    <if test="applyDoctorId!=null and applyDoctorId!=''">
+      and apply_doctor_id = #{applyDoctorId}
+    </if>
+    <if test="memberName!=null and memberName!=''">
+      and (INSTR(member_name,#{memberName})) > 0
+    </if>
+    <if test="applyHospitalName!=null and applyHospitalName!=''">
+      and (INSTR(apply_hospital_name,#{applyHospitalName})) > 0
+    </if>
+    <if test="startDt!=null and startDt!=''">
+      and apply_dt &gt;= #{startDt}
+    </if>
+    <if test="endDt!=null and endDt!=''">
+      and apply_dt &lt;= #{endDt}
+    </if>
+    <if test="status!=null">
+      and status = #{status}
+    </if>
+    <if test="mobileNo!=null and mobileNo!=''">
+      and mobile_no = #{mobileNo}
+    </if>
+    having 1 /*keep orderby*/
+    ORDER BY insert_dt desc ) a group by a.member_id
+  </select>
+</mapper>

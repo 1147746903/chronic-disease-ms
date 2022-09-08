@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.sign.mapper.BloodKetoneMapper">
+
+    <resultMap id="bloodKetoneMap" type="com.comvee.cdms.sign.po.BloodKetonePO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="param_value" jdbcType="VARCHAR" property="paramValue" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="record_dt" jdbcType="TIMESTAMP" property="recordDt" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="operator_type" jdbcType="TINYINT" property="operatorType" />
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+        <result column="valid" jdbcType="TINYINT" property="valid" />
+        <result column="origin" jdbcType="TINYINT" property="origin" />
+        <result column="ketone_status" jdbcType="TINYINT" property="ketoneStatus" />
+        <result column="latest_type" jdbcType="TINYINT" property="latestType" />
+        <result column="reference_range" jdbcType="VARCHAR" property="referenceRange" />
+    </resultMap>
+
+    <insert id="addBloodKetone" parameterType="com.comvee.cdms.sign.dto.AddBloodKetoneMapperDTO">
+        insert into t_blood_ketone (sid, param_value,
+        record_dt, remark, member_id, operator_type, operator_id, reference_range,
+        origin, ketone_status,latest_type
+        )
+        values (#{sid,jdbcType=BIGINT}, #{paramValue,jdbcType=VARCHAR},
+        #{recordDt,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR},
+        #{memberId,jdbcType=BIGINT}, #{operatorType,jdbcType=TINYINT}, #{operatorId,jdbcType=BIGINT},
+        #{referenceRange,jdbcType=VARCHAR}, #{origin,jdbcType=TINYINT}, #{ketoneStatus,jdbcType=TINYINT},
+        #{latestType,jdbcType=TINYINT}
+        )
+    </insert>
+
+    <select id="listBloodKetone" parameterType="com.comvee.cdms.sign.dto.ListBloodKetoneDTO" resultMap="bloodKetoneMap">
+        select sid, param_value, insert_dt, update_dt, record_dt,
+        remark, member_id, operator_type, operator_id, reference_range, origin, ketone_status,latest_type
+        from t_blood_ketone where valid = 1
+        <if test = "memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            <![CDATA[ and record_dt >= #{startDt}]]>
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            <![CDATA[ and record_dt <= #{endDt}]]>
+        </if>
+        <if test = "operatorType != null">
+            and operator_type = #{operatorType}
+        </if>
+        <if test = "operatorId != null and '' != operatorId">
+            and operator_id = #{operatorId}
+        </if>
+        <if test = "sid != null and '' != sid">
+            and sid = #{sid}
+        </if>
+        <if test = "origin != null">
+            and origin = #{origin}
+        </if>
+        <if test = "latestType != null">
+            and latest_type = #{latestType}
+        </if>
+        <if test = "ketoneStatus != null">
+            and ketone_status = #{ketoneStatus}
+        </if>
+        order by record_dt desc
+    </select>
+
+    <select id="getBloodKetone" parameterType="com.comvee.cdms.sign.dto.GetBloodKetoneDTO" resultMap="bloodKetoneMap">
+        select sid, param_value, insert_dt, update_dt, record_dt,
+        remark, member_id, operator_type, operator_id, reference_range, origin, ketone_status,latest_type
+        from t_blood_ketone where valid = 1
+        <if test = "memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test = "recordDt != null and '' != recordDt">
+            and record_dt = #{recordDt}
+        </if>
+        <if test = "operatorType != null">
+            and operator_type = #{operatorType}
+        </if>
+        <if test = "operatorId != null and '' != operatorId">
+            and operator_id = #{operatorId}
+        </if>
+        <if test = "paramValue != null and '' != paramValue">
+            and param_value = #{paramValue}
+        </if>
+        <if test = "sid != null and '' != sid">
+            and sid = #{sid}
+        </if>
+        <if test = "origin != null">
+            and origin = #{origin}
+        </if>
+        <if test = "latestType != null">
+            and latest_type = #{latestType}
+        </if>
+        <if test = "ketoneStatus != null">
+            and ketone_status = #{ketoneStatus}
+        </if>
+        order by record_dt desc limit 1
+    </select>
+
+    <update id="modifyBloodKetone">
+        update t_blood_ketone
+        <set>
+            <if test="latestType != null">
+                latest_type = #{latestType},
+            </if>
+        </set>
+        where sid = #{sid}
+    </update>
+
+</mapper>

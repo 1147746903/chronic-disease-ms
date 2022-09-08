@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.wechat.mapper.ClientEventMapper">
+    <sql id="ClientEventColumns">
+         t.sid As sid ,  t.url As url ,  DATE_FORMAT(t.tm,'%Y-%m-%d %H:%i:%s') As tm ,  t.name As name ,  t.simuid As simuid ,  t.param As param ,  DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s') As insertDt ,  t.is_valid As isValid ,  DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s') As modifyDt 
+    </sql>
+
+	<!--根据id获取用户行为日志埋点表信息 -->
+	<select id="loadClientEventById" resultType="com.comvee.cdms.defender.wechat.model.ClientEventModel">
+		SELECT 
+			<include refid="ClientEventColumns"/>
+		FROM tiq_client_event t
+		WHERE t.sid = #{sid} 
+	</select>
+	
+	<!-- 获取用户行为日志埋点分页信息  -->
+	<select id="loadClientEvent" parameterType="Map" resultType="com.comvee.cdms.defender.wechat.model.ClientEventModel">
+		SELECT 
+			<include refid="ClientEventColumns"/>
+		FROM tiq_client_event t
+		
+		
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+        AND t.sid = #{sid}  
+        </if>  
+	    <if test="url!=null and url!='' ">     
+        AND t.url = #{url}  
+        </if>  
+	    <if test="tm!=null and tm!='' ">     
+        AND t.tm = #{tm}  
+        </if>  
+	    <if test="name!=null and name!='' ">     
+        AND t.name = #{name}  
+        </if>  
+	    <if test="simuid!=null and simuid!='' ">     
+        AND t.simuid = #{simuid}  
+        </if>  
+	    <if test="param!=null and param!='' ">     
+        AND t.param = #{param}  
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+        AND t.insert_dt = #{insertDt}  
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+        AND t.is_valid = #{isValid}  
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+        AND t.modify_dt = #{modifyDt}  
+        </if>  
+		</where>
+		-->
+		<!--
+		<if test="start != null  and rows != null ">
+		limit #{start},#{rows} 
+		</if>
+		-->
+	</select>
+
+    <!-- 统计用户行为日志埋点记录数 -->
+	<select id="countClientEvent" parameterType="Map" resultType="Long">
+		SELECT count( sid )
+		FROM tiq_client_event t
+		where is_valid = 1
+		<!--
+		<where>
+	    <if test="sid!=null and sid!='' ">     
+         AND t.sid = #{sid}    
+        </if>  
+	    <if test="url!=null and url!='' ">     
+         AND t.url = #{url}    
+        </if>  
+	    <if test="tm!=null and tm!='' ">     
+         AND t.tm = #{tm}    
+        </if>  
+	    <if test="name!=null and name!='' ">     
+         AND t.name = #{name}    
+        </if>  
+	    <if test="simuid!=null and simuid!='' ">     
+         AND t.simuid = #{simuid}    
+        </if>  
+	    <if test="param!=null and param!='' ">     
+         AND t.param = #{param}    
+        </if>  
+	    <if test="insertDt!=null and insertDt!='' ">     
+         AND t.insert_dt = #{insertDt}    
+        </if>  
+	    <if test="isValid!=null and isValid!='' ">     
+         AND t.is_valid = #{isValid}    
+        </if>  
+	    <if test="modifyDt!=null and modifyDt!='' ">     
+         AND t.modify_dt = #{modifyDt}    
+        </if>  
+		</where>
+		-->
+	</select>	
+	
+	<!-- 添加用户行为日志埋点记录 -->
+	<insert id="addClientEvent">
+		INSERT INTO tiq_client_event(
+				
+				    sid,
+				
+				url,
+				tm,
+				name,
+				simuid,
+				param,
+				insert_dt,
+				is_valid,
+				modify_dt
+		) VALUES (
+			         #{sid},
+				#{url},
+				#{tm},
+				#{name},
+				#{simuid},
+				#{param},
+				now(),
+				1,
+				now()
+		)
+	</insert>
+
+    <!-- 修改用户行为日志埋点记录 -->
+	<update id="modifyClientEvent">
+		UPDATE tiq_client_event 
+		<trim prefix="SET" suffixOverrides=",">
+	        <if test="sid!=null and sid!='' ">    
+	        sid = #{sid},
+	        </if>
+	        <if test="url!=null and url!='' ">    
+	        url = #{url},
+	        </if>
+	        <if test="tm!=null and tm!='' ">    
+	        tm = #{tm},
+	        </if>
+	        <if test="name!=null and name!='' ">    
+	        name = #{name},
+	        </if>
+	        <if test="simuid!=null and simuid!='' ">    
+	        simuid = #{simuid},
+	        </if>
+	        <if test="param!=null and param!='' ">    
+	        param = #{param},
+	        </if>
+		</trim>
+		WHERE sid = #{sid}
+	</update>
+	
+	<!-- 删除用户行为日志埋点记录  -->
+	<update id="delClientEvent" parameterType="Long">
+		UPDATE tiq_client_event SET  is_valid = 0,modify_dt = now()
+		WHERE sid = #{sid}
+	</update>
+	
+	
+
+</mapper>

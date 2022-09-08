@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.DyBloodSugarInformMapper">
+
+  <resultMap id="inform" type="com.comvee.cdms.dybloodsugar.po.DyBloodSugarInformPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="member_name" jdbcType="VARCHAR" property="memberName" />
+    <result column="sensor_no" jdbcType="VARCHAR" property="sensorNo" />
+    <result column="bind_type" jdbcType="INTEGER" property="bindType" />
+    <result column="insert_dt" jdbcType="VARCHAR" property="insertDt" />
+    <result column="modify_dt" jdbcType="VARCHAR" property="modifyDt" />
+    <result column="is_valid" jdbcType="INTEGER" property="isValid" />
+  </resultMap>
+
+
+  <insert id="addWebBloodSugar" parameterType="com.comvee.cdms.dybloodsugar.po.DyBloodSugarInformPO">
+    insert into dy_blood_sugar_inform (sid, member_id, member_name, sensor_no, bind_type,
+    insert_dt, modify_dt, is_valid ,survey
+    )
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{memberName,jdbcType=VARCHAR}, #{sensorNo,jdbcType=BIGINT},
+    #{bindType,jdbcType=INTEGER},now(), now(), 1 ,#{survey}
+    )
+  </insert>
+
+  <select id="listLatestDyBloodSugarInform" resultMap="inform">
+	SELECT
+      di.sid,
+      di.member_id,
+      di.member_name,
+      di.sensor_no,
+      di.bind_type,
+      di.insert_dt,
+      di.modify_dt,
+      di.is_valid,
+      di.survey
+    FROM
+      dy_blood_sugar_inform di
+    WHERE
+      di.is_valid = 1
+    <if test="latestDt != null">
+        AND di.insert_dt > #{latestDt}
+    </if>
+    <if test="listMemberId!=null and listMemberId.size()>0">
+        and di.member_id in
+        <foreach collection="listMemberId" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </if>
+    ORDER BY
+      di.insert_dt DESC
+  </select>
+
+    <select id="getInfoData" resultMap="inform">
+      SELECT
+      di.sid,
+      di.member_id,
+      di.member_name,
+      di.sensor_no,
+      di.bind_type,
+      di.insert_dt,
+      di.modify_dt,
+      di.is_valid,
+      di.survey
+    FROM
+      dy_blood_sugar_inform di
+    WHERE
+      di.is_valid = 1
+      AND di.member_id = #{memberId}
+    </select>
+    <update id="updateInfo" parameterType="com.comvee.cdms.dybloodsugar.po.DyBloodSugarInformPO">
+        update dy_blood_sugar_inform t set t.sensor_no = #{sensorNo},t.bind_type = #{bindType},t.modify_dt = now() ,t.insert_dt = now(),t.survey = #{survey}
+        where t.member_id = #{memberId}
+    </update>
+</mapper>

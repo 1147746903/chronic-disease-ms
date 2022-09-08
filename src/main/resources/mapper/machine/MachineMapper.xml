@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.machine.mapper.MachineMapper" >
+    <resultMap id="BaseResultMap" type="com.comvee.cdms.machine.po.MachinePO" >
+        <id column="machine_id" property="machineId" jdbcType="BIGINT" />
+        <result column="machine_type" property="machineType" jdbcType="TINYINT" />
+        <result column="machine_code" property="machineCode" jdbcType="VARCHAR" />
+        <result column="machine_no" property="machineNo" jdbcType="VARCHAR" />
+        <result column="machine_sn" property="machineSn" jdbcType="VARCHAR" />
+        <result column="is_valid" property="isValid" jdbcType="TINYINT" />
+        <result column="insert_dt" property="insertDt"  />
+        <result column="modify_dt" property="modifyDt"  />
+        <result column="machine_status" property="machineStatus" jdbcType="TINYINT" />
+    </resultMap>
+
+    <select id="getMachine" resultMap="BaseResultMap">
+        SELECT t.`machine_id`,t.`machine_type`,t.`machine_code`,t.`machine_no`,t.`machine_sn`,t.`is_valid`,t.`insert_dt`,t.`modify_dt`,t.`machine_status`
+        FROM `t_machine` t WHERE t.`is_valid`=1
+        <if test="machineNo != null and machineNo != '' ">
+          and t.machine_no = #{machineNo}
+        </if>
+        <if test="machineId != null and machineId != '' ">
+          and t.machine_id = #{machineId}
+        </if>
+        <if test="machineType != null ">
+            and t.machine_type = #{machineType}
+        </if>
+        limit 1
+    </select>
+    
+    <select id="getMachineVersionModel" resultType="com.comvee.cdms.glu.model.MachineVersionModel">
+        select
+		sid, machine_type as machineType, version_num as versionNum, version_msg as versionMsg, be_newest as beNewest, 
+		upgrade_num as upgradeNum, upgrade_url as upgradeUrl, is_force as isForce,
+		DATE_FORMAT(insert_dt,'%Y-%m-%d %H:%i:%s') as insertDt,
+		DATE_FORMAT(modify_dt,'%Y-%m-%d %H:%i:%s') as modifyDt
+		from t_machine_version t where t.is_valid = 1
+        <if test="appType !=null and appType !=''">
+			and machine_type = #{appType}
+		</if>
+		order by upgrade_num desc limit 0,1
+    </select>
+    
+    <insert id="addMachineModel" parameterType="com.comvee.cdms.machine.po.MachinePO">
+         insert into t_machine(machine_id,machine_type,machine_code,machine_no
+         ,machine_sn,insert_dt,modify_dt) values (#{machineId},#{machineType},#{machineCode},#{machineNo},#{machineSn},now(),now())
+    </insert>
+
+    <update id="updateMachineModel" parameterType="com.comvee.cdms.machine.po.MachinePO">
+        update t_machine t set t.modify_dt = now()
+        <if test="machineStatus != null">
+            ,t.machine_status = #{machineStatus}
+        </if>
+        where t.is_valid = 1 and t.machine_id = #{machineId}
+    </update>
+</mapper>

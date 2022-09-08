@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.defender.wechat.mapper.MemberDailyQuestionRecordMapper">
+
+    <resultMap type="com.comvee.cdms.defender.wechat.po.MemberDailyQuestionRecordPO"
+               id="TiqMemberDailyQuestionRecordMap">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="memberId" column="member_id" jdbcType="VARCHAR"/>
+        <result property="qid" column="qid" jdbcType="VARCHAR"/>
+        <result property="pushId" column="push_id" jdbcType="VARCHAR"/>
+        <result property="answer" column="answer" jdbcType="VARCHAR"/>
+        <result property="isCorrect" column="is_correct" jdbcType="INTEGER"/>
+        <result property="pushDt" column="push_dt" jdbcType="VARCHAR"/>
+        <result property="submitDt" column="submit_dt" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap type="com.comvee.cdms.defender.wechat.po.DailyQuestionPO" id="TiqDailyQuestionMap">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="groupCode" column="group_code" jdbcType="VARCHAR"/>
+        <result property="recommendCourse" column="recommend_course" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="answerOptions" column="answer_options" jdbcType="VARCHAR"/>
+        <result property="answerKey" column="answer_key" jdbcType="VARCHAR"/>
+        <result property="analyse" column="analyse" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="twoType" column="two_type" jdbcType="INTEGER"/>
+        <result property="quesType" column="ques_type" jdbcType="INTEGER"/>
+        <result property="quesSign" column="ques_sign" jdbcType="VARCHAR"/>
+        <result property="quesTag" column="ques_tag" jdbcType="VARCHAR"/>
+        <result property="lever" column="lever" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap type="com.comvee.cdms.defender.wechat.bo.DailyQuestionBO" id="DailyQuestionBOMap">
+        <result property="sid" column="sid" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="groupCode" column="group_code" jdbcType="VARCHAR"/>
+        <result property="recommendCourse" column="recommend_course" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="answerOptions" column="answer_options" jdbcType="VARCHAR"/>
+        <result property="answerKey" column="answer_key" jdbcType="VARCHAR"/>
+        <result property="analyse" column="analyse" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="twoType" column="two_type" jdbcType="INTEGER"/>
+        <result property="quesType" column="ques_type" jdbcType="INTEGER"/>
+        <result property="quesSign" column="ques_sign" jdbcType="VARCHAR"/>
+        <result property="quesTag" column="ques_tag" jdbcType="VARCHAR"/>
+        <result property="lever" column="lever" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="isValid" column="is_valid" jdbcType="INTEGER"/>
+        <result property="insertDt" column="insert_dt" jdbcType="VARCHAR"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="TIMESTAMP"/>
+        <result property="pushId" column="pushId" jdbcType="VARCHAR"/>
+        <result property="isCorrect" column="is_correct" jdbcType="VARCHAR"/>
+        <result property="isSubmit" column="is_submit" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TiqMemberDailyQuestionRecordMap">
+        select
+          sid, member_id, qid,push_id, answer, is_correct, is_valid, insert_dt, modify_dt
+        from  tiq_member_daily_question_record
+        where sid = #{sid}
+    </select>
+
+
+    <select id="queryRecordByMemberId" resultMap="TiqMemberDailyQuestionRecordMap">
+        select
+          sid, DATE_FORMAT(insert_dt,"%Y-%m-%d") insert_dt
+        from  tiq_member_daily_question_record
+        where member_id = #{memberId} and is_valid = 1 and
+        DATE_FORMAT(insert_dt,"%Y-%m-%d") &gt;= DATE_SUB(DATE_FORMAT(now(),"%Y-%m-%d"), INTERVAL 180 DAY)
+        order by insert_dt desc
+    </select>
+
+
+    <select id="queryByMemberId" resultMap="TiqMemberDailyQuestionRecordMap">
+        select
+          sid, member_id, qid,push_id, answer, is_correct, is_valid, DATE_FORMAT(insert_dt,"%Y-%m-%d") insert_dt, modify_dt
+        from  tiq_member_daily_question_record
+        where member_id = #{memberId} and is_valid = 1
+        order by insert_dt desc
+    </select>
+    <select id="loadQuesPOById" resultMap="DailyQuestionBOMap">
+       select
+          q.sid, q.sort, q.group_code, q.recommend_course, q.title, q.answer_options, q.answer_key,
+          q.analyse, q.type, q.two_type,q.ques_type, q.ques_sign, q.ques_tag, q.lever, q.remark,
+          q.is_valid, q.insert_dt, q.modify_dt,r.is_correct
+
+        from  tiq_member_daily_question_record r left join tiq_daily_question q on r.qid = q.sid
+        where r.sid = #{sid}
+    </select>
+    <select id="queryErrorsExcludeMember" resultMap="TiqMemberDailyQuestionRecordMap">
+        select
+          sid, member_id, qid, push_id,answer, is_correct, is_valid, DATE_FORMAT(insert_dt,"%Y-%m-%d"), modify_dt
+        from  tiq_member_daily_question_record
+        where member_id = #{memberId} and is_valid = 1 and is_correct = 0
+        and qid not in
+        (select qid from tiq_daily_question_push where stage = 2)
+        order by insert_dt asc
+        limit 1
+    </select>
+    <select id="queryDoneExcludeMember" resultMap="TiqMemberDailyQuestionRecordMap">
+        select
+          sid, member_id, qid, push_id,answer, is_correct, is_valid, DATE_FORMAT(insert_dt,"%Y-%m-%d"), modify_dt
+        from  tiq_member_daily_question_record
+        where member_id = #{memberId} and is_valid = 1
+        order by insert_dt asc
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sid" useGeneratedKeys="true">
+        insert into  tiq_member_daily_question_record(sid,member_id, qid, push_id,answer, is_correct, is_valid, insert_dt, modify_dt)
+        values (#{sid},#{memberId}, #{qid},#{pushId}, #{answer}, #{isCorrect},  1, now(), now())
+    </insert>
+
+
+</mapper>
+

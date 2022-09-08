@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.DyRememberSportMapper">
+
+  <resultMap id="dySportRemember" type="com.comvee.cdms.dybloodsugar.po.DyRememberSportPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="operation_id" jdbcType="BIGINT" property="operationId" />
+    <result column="sport_start_dt" jdbcType="VARCHAR" property="sportStartDt" />
+    <result column="sport_end_dt" jdbcType="VARCHAR" property="sportEndDt" />
+    <result column="sport_method_json" jdbcType="VARCHAR" property="sportMethodJson" />
+    <result column="record_dt" jdbcType="TIMESTAMP" property="recordDt" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+    <result column="is_valid" jdbcType="INTEGER" property="isValid" />
+    <result column="operation_type" jdbcType="INTEGER" property="operationType" />
+  </resultMap>
+
+
+  <select id="getDySportRememberPOList"  resultMap="dySportRemember">
+    select
+        sid,member_id, operation_id,sport_start_dt,sport_end_dt,sport_method_json,
+        record_dt, insert_dt, modify_dt, is_valid,operation_type
+    FROM dy_remember_sport
+    where is_valid=1 and member_id = #{memberId}
+    <if test="operationType != null">
+      and operation_type = #{operationType}
+    </if>
+    and record_dt between #{recordDtStart} and #{recordDtEnd} order by insert_dt desc
+  </select>
+
+  <select id="getDySportRememberPO"  resultMap="dySportRemember">
+    select
+    sid,member_id, operation_id,sport_start_dt,sport_end_dt,sport_method_json,
+    record_dt, insert_dt, modify_dt, is_valid,operation_type
+    FROM dy_remember_sport
+    where is_valid=1 and member_id = #{memberId}
+    and operation_type = #{operationType} and sport_start_dt=#{sportStartDt} and sport_end_dt=#{sportEndDt}
+    and record_dt between #{recordDtStart} and #{recordDtEnd}
+  </select>
+
+  <update id="updateDySportRemember" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberSportPO">
+    update dy_remember_sport
+    <set>
+      <if test="operationId != null">
+        operation_id = #{operationId,jdbcType=VARCHAR},
+      </if>
+      <if test="sportStartDt != null">
+        sport_start_dt = #{sportStartDt,jdbcType=VARCHAR},
+      </if>
+      <if test="sportEndDt != null">
+        sport_end_dt = #{sportEndDt,jdbcType=VARCHAR},
+      </if>
+      <if test="sportMethodJson != null">
+        sport_method_json = #{sportMethodJson,jdbcType=VARCHAR},
+      </if>
+        modify_dt = now()
+    </set>
+    where
+      is_valid=1 and member_id = #{memberId} and operation_type = #{operationType}
+      and sport_start_dt=#{sportStartDt} and sport_end_dt=#{sportEndDt}
+      and record_dt = #{recordDt}
+  </update>
+
+  <update id="updateDySportRememberBySid" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberSportPO">
+    update dy_remember_sport
+    <set>
+      <if test="operationId != null">
+        operation_id = #{operationId,jdbcType=VARCHAR},
+      </if>
+      <if test="sportStartDt != null">
+        sport_start_dt = #{sportStartDt,jdbcType=VARCHAR},
+      </if>
+      <if test="sportEndDt != null">
+        sport_end_dt = #{sportEndDt,jdbcType=VARCHAR},
+      </if>
+      <if test="sportMethodJson != null">
+        sport_method_json = #{sportMethodJson,jdbcType=VARCHAR},
+      </if>
+        modify_dt = now()
+    </set>
+    where
+      sid = #{sid}
+  </update>
+
+
+  <select id="getDySportRememberValues"  resultMap="dySportRemember">
+    select
+    sid,member_id, operation_id,sport_start_dt,sport_end_dt,sport_method_json,
+    record_dt, insert_dt, modify_dt, is_valid,operation_type
+    FROM dy_remember_sport where sid=#{sid} and is_valid=1
+  </select>
+
+  <insert id="insertSportRemember" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberSportPO">
+    insert into dy_remember_sport (sid,member_id, operation_id,sport_start_dt,sport_end_dt,sport_method_json,
+    record_dt, insert_dt, modify_dt, is_valid,operation_type)
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{operationId,jdbcType=BIGINT},
+    #{sportStartDt,jdbcType=VARCHAR},#{sportEndDt,jdbcType=VARCHAR},#{sportMethodJson,jdbcType=VARCHAR},
+    #{recordDt,jdbcType=TIMESTAMP}, now(), now(), 1,#{operationType,jdbcType=INTEGER}
+    )
+  </insert>
+
+  <update id="deleteSportRememberBySid" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberSportPO">
+        update dy_remember_sport
+        set is_valid = 0,
+        modify_dt = now()
+        where sid = #{sid}
+  </update>
+  <select id="listDySportRememberDtForWX"
+          resultType="String">
+    select
+      distinct date_format(record_dt, '%Y-%m-%d')
+    FROM dy_remember_sport
+    where is_valid=1 and member_id = #{memberId}
+      and record_dt between #{recordDtStart} and #{recordDtEnd}
+    order by record_dt
+  </select>
+</mapper>

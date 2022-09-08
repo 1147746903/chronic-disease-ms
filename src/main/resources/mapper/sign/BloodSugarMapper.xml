@@ -1,0 +1,2289 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.sign.mapper.BloodSugarMapper">
+
+    <resultMap id="bloodSugar" type="com.comvee.cdms.sign.po.BloodSugarPO">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="param_code" jdbcType="VARCHAR" property="paramCode" />
+        <result column="param_value" jdbcType="VARCHAR" property="paramValue" />
+        <result column="param_level" jdbcType="TINYINT" property="paramLevel" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="record_dt" jdbcType="TIMESTAMP" property="recordDt" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="origin" jdbcType="TINYINT" property="origin" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="operator_type" jdbcType="TINYINT" property="operatorType" />
+        <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+        <result column="in_hos" jdbcType="TINYINT" property="inHos"/>
+        <result column="range_min" jdbcType="VARCHAR" property="rangeMin" />
+        <result column="range_max" jdbcType="VARCHAR" property="rangeMax" />
+        <result column="department_id" jdbcType="VARCHAR" property="departmentId" />
+        <result column="record_type" jdbcType="TINYINT" property="recordType" />
+        <result column="strong_code" jdbcType="VARCHAR" property="strongCode" />
+    </resultMap>
+
+    <resultMap id="bloodSugarCount" type="com.comvee.cdms.app.doctorapp.model.app.BloodSugarCountModel">
+        <result column="param_level" property="paramLevel"/>
+        <result column="number" property="number"/>
+    </resultMap>
+
+    <resultMap id="memberBloodSugarPO" type="com.comvee.cdms.sign.po.MemberBloodSugarPO">
+        <result column="concern_status" property="concernStatus"/>
+        <result column="department_name" property="departmentName"/>
+        <result column="bed_no" property="bedNo"/>
+        <result column="member_name" property="memberName"/>
+        <result column="member_id" property="memberId"/>
+        <result column="hospital_no" property="hospitalNo"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="essential_hyp" property="essentialHyp" />
+        <result column="diabetes_type" property="diabetesType"/>
+        <result column="is_diabetes" property="isDiabetes"/>
+    </resultMap>
+
+    <resultMap id="memberParamValuePO" type="com.comvee.cdms.sign.po.MemberParamValuePO">
+        <result column="sid" property="sid"/>
+        <result column="member_id" property="memberId"/>
+        <result column="param_value_json" property="paramValueJson"/>
+        <result column="high_value" property="highValue"/>
+        <result column="low_value" property="lowValue"/>
+        <result column="three_times_high" property="treeTimesHigh"/>
+        <result column="high_rate" property="highRate"/>
+        <result column="low_rate" property="lowRate"/>
+        <result column="standard_value" property="standardValue"/>
+        <result column="param_level" property="paramLevel"/>
+        <result column="param_type" property="paramType"/>
+    </resultMap>
+
+    <resultMap id="paramSetting" type="com.comvee.cdms.sign.vo.BloodSugarParamSettingVO">
+        <result column="param_code" property="paramCode"/>
+        <result column="param_code_desc" property="paramCodeDesc"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+    </resultMap>
+
+
+    <resultMap id="memberSugarDayPO" type="com.comvee.cdms.member.po.MemberSugarDayRecordPO">
+        <result column="sid" property="sid"/>
+        <result column="member_id" property="memberId"/>
+        <result column="member_name" property="memberName"/>
+        <result column="insert_dt" property="insertDt"/>
+        <result column="modify_dt" property="modifyDt"/>
+        <result column="is_valid" property="isValid"/>
+        <result column="record_dt" property="recordDt"/>
+        <result column="hospital_no" property="hospitalNo"/>
+        <result column="bed_no" property="bedNo"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="doctor_name" property="doctorName"/>
+        <result column="randomtime_json" property="randomtimeJson"/>
+        <result column="beforedawn_json" property="beforedawnJson"/>
+        <result column="beforebreakfast_json" property="beforebreakfastJson"/>
+        <result column="afterbreakfast_json" property="afterbreakfastJson"/>
+        <result column="beforelunch_json" property="beforelunchJson"/>
+        <result column="afterlunch_json" property="afterlunchJson"/>
+        <result column="beforedinner_json" property="beforedinnerJson"/>
+        <result column="afterdinner_json" property="afterdinnerJson"/>
+        <result column="beforesleep_json" property="beforesleepJson"/>
+    </resultMap>
+
+    <resultMap id="memberStatics" type="com.comvee.cdms.member.vo.ListMemberBloodStaticsVO">
+        <result column="member_id" property="memberId"/>
+        <result column="monitorNum" property="monitorNum"/>
+        <result column="highSugarNum" property="highSugarNum"/>
+        <result column="lowSugarNum" property="lowSugarNum"/>
+        <result column="normalSugarNum" property="normalSugarNum"/>
+    </resultMap>
+
+    <resultMap id="bloodWarnMap" type="com.comvee.cdms.member.vo.ListBloodSugarWarnVO">
+        <result column="sid" property="sid"/>
+        <result column="department_name" property="departName"/>
+        <result column="member_name" property="memberName"/>
+        <result column="hospital_no" property="hospitalNo"/>
+        <result column="bed_no" property="bedNo"/>
+        <result column="record_dt" property="recordDt"/>
+        <result column="param_value" property="paramValue"/>
+        <result column="param_code" property="paramCode"/>
+        <result column="goal_range" property="range"/>
+        <result column="doctor_name" property="doctorName"/>
+        <result column="warn_status" property="warnStatus"/>
+        <result column="doctor_id" property="doctorId"/>
+        <result column="member_id" property="memberId"/>
+    </resultMap>
+
+    <sql id="Hospital_Log_Column" >
+		sid, member_id, member_name, in_hospital_date, out_hospital_date, department_name,
+	department_id, bed_no, has_return_visit, insert_dt, modify_dt, is_valid, sex, card_no,
+	in_hospital_card_no, in_hospital_day, matters_needing_attent, in_status, pat_patient_id,
+	doctor_zg_code, adm_no, main_nurse_desc, doctor_zg, nur_level, eat_model, charge_class,
+	hospital_no, is_notification, hospital_id, initial_diagnosis, treatment_situation,
+	out_hospital_advice_json
+	</sql>
+
+    <select id="listBloodSugar" parameterType="com.comvee.cdms.sign.dto.ListBloodSugarDTO" resultMap="bloodSugar">
+        select s.sid, s.param_code, s.param_value, s.param_level, s.insert_dt, s.update_dt, s.record_dt,
+        s.remark, s.origin, s.member_id,s. operator_type, s.operator_id,s.in_hos,s.range_min ,s.range_max,s.strong_code
+        from t_blood_sugar s
+        where s.is_valid = 1
+        <if test = "recordType != null">
+            and s.record_type = #{recordType}
+        </if>
+        <if test = "memberId != null and '' != memberId">
+            and s.member_id = #{memberId}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            and s.record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            and s.record_dt &lt;= #{endDt}
+        </if>
+        <if test="paramCodeList!=null and paramCodeList.size()&gt;0">
+            AND s.param_code IN
+            <foreach collection="paramCodeList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test = "paramLevel != null and '' != paramLevel">
+            and s.param_level in (${paramLevel})
+        </if>
+        <if test = "origin != null and '' != origin">
+            and s.origin = #{origin}
+        </if>
+        <if test = "operatorType != null and '' != operatorType">
+            and s.operator_type = #{operatorType}
+        </if>
+        <if test = "operatorId != null and '' != operatorId">
+            and s.operator_id = #{operatorId}
+        </if>
+<!--        <if test = "inHos != null">-->
+<!--            and in_hos = #{inHos}-->
+<!--        </if>-->
+        <if test="sidArray!=null and sidArray.length&gt;0">
+            AND s.sid IN
+            <foreach collection="sidArray" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="refreshTime != null and ''!=refreshTime">
+            and s.insert_dt &gt;= #{refreshTime}
+         </if>
+        <if test="orderASC!=null and orderASC!=''">
+            order by s.record_dt asc
+        </if>
+        <if test="orderASC==null or orderASC==''">
+            order by s.record_dt desc
+        </if>
+    </select>
+
+    <select id="getNewBloodSugar" parameterType="com.comvee.cdms.sign.dto.ListBloodSugarDTO" resultMap="bloodSugar">
+        select sid, param_code, param_value, param_level, insert_dt, update_dt, record_dt,
+        remark, origin, member_id, operator_type, operator_id,in_hos,range_min ,range_max
+        from t_blood_sugar where is_valid = 1
+        <if test = "memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            and record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            and record_dt &lt;= #{endDt}
+        </if>
+        <if test="paramCodeList!=null and paramCodeList.size()&gt;0">
+            AND param_code IN
+            <foreach collection="paramCodeList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        order by record_dt desc
+        limit 1
+    </select>
+
+
+    <select id="listSugar" parameterType="com.comvee.cdms.sign.dto.ListBloodSugarDTO" resultType="com.comvee.cdms.sign.po.BloodSugarPO">
+        select sid sid, param_code paramCode, param_value paramValue, param_level paramLevel, insert_dt insertDt, update_dt updateDt, DATE_FORMAT(record_dt,'%Y-%m-%d') recordDt,
+        remark remark, origin origin, member_id memberId, operator_type operatorType, operator_id operatorId,in_hos inHos,range_min rangeMin,range_max rangeMax
+        from t_blood_sugar where is_valid = 1
+        <if test = "memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            and record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            and record_dt &lt;= #{endDt}
+        </if>
+        <if test = "inHos != null">
+            and in_hos = #{inHos}
+        </if>
+        <if test = "paramCodeList != null and paramCodeList.size()&gt;0">
+            and param_code in
+            <foreach collection="paramCodeList" index="index" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        order by record_dt desc
+    </select>
+
+
+    <!--患者累计1周,2周,3周,1个月没有测血糖-->
+    <select id="loadBloodSugarByMemberIdAndDay" parameterType="com.comvee.cdms.sign.dto.ListBloodSugarByDayDTO" resultMap="bloodSugar">
+        select sid, param_code, param_value, param_level, insert_dt, update_dt, record_dt,
+        remark, origin, member_id, operator_type, operator_id,in_hos,range_min ,range_max
+        from t_blood_sugar where is_valid = 1
+        <if test = "memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            and record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            and record_dt &lt;= #{endDt}
+        </if>
+    </select>
+    <select id="countBloodSugarWeek" resultType="java.util.Map" parameterType="com.comvee.cdms.sign.dto.ListBloodSugarByDayDTO">
+        SELECT
+        COUNT(IF(a.param_level=5,TRUE,NULL)) AS highCount,
+        COUNT(IF(a.param_level=3,TRUE,NULL)) AS lowCount,
+        DATE_FORMAT(a.insert_dt,'%Y-%m-%d') AS dateTime
+        FROM
+        (SELECT t.sid,t.param_code,t.param_value,t.param_level,t.insert_dt,t.update_dt,t.record_dt,t.remark,t.origin,t.member_id,t.operator_type,t.operator_id
+        FROM t_blood_sugar t WHERE t.member_id=#{memberId} and t.is_valid = 1
+        <if test="startDt != null and '' !=startDt">
+            AND insert_dt >= #{startDt}
+        </if>
+        <if test="endDt != null and '' !=endDt">
+            AND insert_dt >= #{endDt}
+        </if>
+        ) a
+        GROUP BY LEFT(a.insert_dt,10)
+    </select>
+
+    <select id="loadBloodAvgMaxMin" resultType="java.util.Map" parameterType = "com.comvee.cdms.sign.dto.CountBloodSugarDTO">
+        select
+        FORMAT(AVG(t.param_value),2)*1 AS avgValue,
+        MAX(CAST(t.param_value AS DECIMAL(10,1))) AS maxValue1,
+        MIN(CAST(t.param_value AS DECIMAL(10,1))) AS minValue1
+        FROM t_blood_sugar t
+        where t.MEMBER_ID=#{memberId} and t.is_valid = 1
+        <if test = "startDt != null and '' != startDt">
+            AND t.record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            AND t.record_dt &lt;= #{endDt}
+        </if>
+        <if test = "inHos != null">
+            AND t.in_hos = #{inHos}
+        </if>
+        <if test="paramCodeList!=null and paramCodeList.size()&gt;0">
+            AND t.PARAM_CODE IN
+            <foreach collection="paramCodeList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="loadBloodNumHigLow" resultType="java.util.Map" parameterType = "com.comvee.cdms.sign.dto.CountBloodSugarDTO">
+        SELECT
+        COUNT(sid) AS totalNums,
+        COUNT(IF(pl.param_level = 5,TRUE,NULL)) AS high,
+        COUNT(IF(pl.param_level = 3,TRUE,NULL)) AS nomal,
+        COUNT(IF(pl.param_level = 1,TRUE,NULL)) AS low
+        FROM (
+        SELECT a.sid,a.param_code,a.param_level,a.insert_dt,a.update_dt,a.record_dt,a.member_id
+        FROM t_blood_sugar a ,(
+        SELECT MAX(sid) sid FROM t_blood_sugar WHERE member_id=#{memberId} and is_valid = 1 GROUP BY LEFT(record_dt,10),param_code
+        ) q
+        WHERE a.sid = q.sid and a.is_valid = 1
+        <if test = "inHos != null">
+            AND a.in_hos = #{inHos}
+        </if>
+        ) pl
+        <where>
+            <if test = "startDt != null and '' != startDt">
+                AND pl.record_dt &gt;= #{startDt}
+            </if>
+            <if test = "endDt != null and '' != endDt">
+                AND pl.record_dt &lt;= #{endDt}
+            </if>
+            <if test="paramCodeList!=null and paramCodeList.size()&gt;0">
+                AND pl.PARAM_CODE IN
+                <foreach collection="paramCodeList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="loadBloodNumHigLow2" resultType="java.util.Map" parameterType = "com.comvee.cdms.sign.dto.CountBloodSugarDTO">
+        SELECT
+        COUNT(sid) AS totalNums,
+        COUNT(IF(pl.param_level = 5,TRUE,NULL)) AS high,
+        COUNT(IF(pl.param_level = 3,TRUE,NULL)) AS nomal,
+        COUNT(IF(pl.param_level = 1,TRUE,NULL)) AS low
+        FROM (
+        SELECT a.sid,a.param_code,a.param_level,a.insert_dt,a.update_dt,a.record_dt,a.member_id
+        FROM t_blood_sugar a
+        WHERE member_id=#{memberId} and is_valid = 1
+        <if test = "inHos != null">
+            AND in_hos = #{inHos}
+        </if>
+        ) pl
+        <where>
+            <if test = "startDt != null and '' != startDt">
+                AND pl.record_dt &gt;= #{startDt}
+            </if>
+            <if test = "endDt != null and '' != endDt">
+                AND pl.record_dt &lt;= #{endDt}
+            </if>
+            <if test="paramCodeList!=null and paramCodeList.size()&gt;0">
+                AND pl.PARAM_CODE IN
+                <foreach collection="paramCodeList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="findBloodNormalByStageDay" resultType="java.util.HashMap" parameterType = "com.comvee.cdms.sign.dto.CountBloodSugarDTO">
+        SELECT
+        DATE_FORMAT(pl.record_dt,'%Y-%m-%d') AS day,
+        pl.PARAM_CODE as paramCode,
+        pl.param_value as sugarValue
+        FROM t_blood_sugar pl
+        WHERE pl.MEMBER_ID = #{memberId} and pl.is_valid = 1 and pl.record_type = 1
+        <if test = "startDt != null and '' != startDt">
+            AND pl.record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            AND pl.record_dt &lt;= #{endDt}
+        </if>
+        <if test = "inHos != null">
+            AND pl.in_hos = #{inHos}
+        </if>
+        <if test="paramCodeList!=null and paramCodeList.size()&gt;0">
+            AND pl.PARAM_CODE IN
+            <foreach collection="paramCodeList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="loadBloodSugarByDay" resultType="com.comvee.cdms.member.vo.SugarMemberVO" parameterType = "com.comvee.cdms.sign.dto.ListBloodSugarByDayDTO">
+        select b.param_value paramValue,b.record_dt recordDt,m.member_id memberId,m.member_name memberName,m.sex,m.birthday,m.pic_url picUrl,m.diabetes_type diabetesType,
+        ifnull(mci.checkin_status,0)inHos
+        from t_member m join
+        t_member_join_hospital mjh on m.member_id = mjh.member_id
+        JOIN t_blood_sugar b on b.member_id = mjh.member_id
+        left join
+        (select member_id,checkin_status,hospital_id from t_member_checkin_info where is_valid = 1) mci
+        on mci.member_id = mjh.member_id
+        where mjh.valid=1 and b.is_valid = 1
+        and IF(mci.checkin_status = 1, 1, 2) = 2
+        <if test = "paramLevel != null and '' != paramLevel">
+            and b.param_level=#{paramLevel,jdbcType=VARCHAR}
+        </if>
+        <if test = "paramValue != null and '' != paramValue">
+            and b.param_value &gt; #{paramValue,jdbcType=VARCHAR}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            and b.record_dt &gt;= #{startDt,jdbcType=VARCHAR}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            and b.record_dt &lt;= #{endDt,jdbcType=VARCHAR}
+        </if>
+        <if test="hospitalId != null and hospitalId != '' ">
+            and mjh.hospital_id = #{hospitalId,jdbcType=VARCHAR}
+        </if>
+        GROUP BY mjh.member_id
+    </select>
+
+    <select id="loadLowBloodSugarByMemberId" resultType="java.util.Map" parameterType = "com.comvee.cdms.sign.dto.ListBloodSugarByDayDTO">
+        select GROUP_CONCAT(b.sid) sidList,count(*) num from t_blood_sugar b LEFT JOIN t_member m on b.member_id=m.member_id
+        where m.is_valid=1 and b.is_valid = 1
+        <if test = "memberId != null and '' != memberId">
+            and m.member_id=#{memberId}
+        </if>
+        <if test = "paramLevel != null and '' != paramLevel">
+            and b.param_level=#{paramLevel}
+        </if>
+        <if test = "paramValue != null and '' != paramValue">
+            and b.param_value &gt; #{paramValue}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            and b.record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            and b.record_dt &lt;= #{endDt}
+        </if>
+    </select>
+
+    <select id="loadHasBloodSugarByDay" resultType="com.comvee.cdms.member.vo.SugarMemberVO" parameterType = "com.comvee.cdms.sign.dto.ListBloodSugarByDayDTO">
+        select m.member_id memberId from t_doctor_member d
+        JOIN t_blood_sugar b on b.member_id = d.member_id
+        JOIN t_member m on m.member_id = d.member_id
+        where m.is_valid=1 and b.is_valid = 1
+        <if test = "doctorId != null and '' != doctorId">
+            and d.doctor_id =#{doctorId}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            and b.record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            and b.record_dt &lt;= #{endDt}
+        </if>
+        GROUP BY m.member_id
+    </select>
+
+    <select id="loadNotBloodSugarByDay" resultType="com.comvee.cdms.member.vo.SugarMemberVO" parameterType = "com.comvee.cdms.sign.dto.ListBloodSugarByDayDTO">
+        select * from (
+        select m.member_id memberId,m.member_name memberName,m.sex,m.birthday,m.pic_url picUrl,m.diabetes_type diabetesType,
+        ifnull(mci.checkin_status,0)inHos
+        from t_member m
+        left join t_member_join_hospital mjh on m.member_id = mjh.member_id
+        left join
+        (select member_id,checkin_status,hospital_id from t_member_checkin_info where is_valid = 1) mci
+        on mci.member_id = mjh.member_id
+        where m.is_valid=1 and IF(mci.checkin_status = 1, 1, 2) = 2 and mjh.valid = 1
+        <if test="hospitalId != null and hospitalId != '' ">
+            and mjh.hospital_id = #{hospitalId}
+        </if>
+        <if test="codeDt == '1'.toString()">
+            and not EXISTS (
+            select * from t_blood_sugar b
+            where b.member_id = m.member_id and b.is_valid = 1
+            and b.record_dt BETWEEN DATE_FORMAT(date_add(NOW(), interval -6 day),'%Y-%m-%d %H:%i:%s')
+            and DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+            )
+        </if>
+        <if test="codeDt == '2'.toString()">
+            and not EXISTS (
+            select * from t_blood_sugar b
+            where b.member_id = m.member_id and b.is_valid = 1
+            and b.record_dt BETWEEN DATE_FORMAT(date_add(NOW(), interval -29 day),'%Y-%m-%d %H:%i:%s')
+            and DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+            )
+        </if>
+        GROUP BY m.member_id
+        )t
+        GROUP BY t.memberId
+    </select>
+
+    <select id="getBloodSugar" resultMap="bloodSugar">
+        select sid, param_code, param_value, param_level, insert_dt, update_dt, record_dt,
+        remark, origin, member_id, operator_type, operator_id ,range_min ,range_max,record_type
+        from t_blood_sugar where sid = #{sid} and is_valid = 1
+    </select>
+
+    <insert id="addBloodSugar" parameterType="com.comvee.cdms.sign.dto.AddBloodSugarMapperDTO">
+        insert into t_blood_sugar (sid, param_code, param_value,
+        param_level,
+        record_dt, remark, origin,
+        member_id, operator_type, operator_id,in_hos,range_min ,range_max ,app_id,department_id,record_type,strong_code
+        )
+        values (#{sid,jdbcType=BIGINT}, #{paramCode,jdbcType=VARCHAR}, #{paramValue,jdbcType=VARCHAR},
+        #{paramLevel,jdbcType=TINYINT},
+        #{recordDt,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{origin,jdbcType=TINYINT},
+        #{memberId,jdbcType=BIGINT}, #{operatorType,jdbcType=TINYINT}, #{operatorId,jdbcType=BIGINT},
+        #{inHos}
+        ,#{rangeMin} ,#{rangeMax} ,#{appId},#{departmentId,jdbcType=BIGINT},#{recordType},#{strongCode}
+        )
+    </insert>
+
+    <select id="listMemberBloodSugarByDoctorId" resultMap="bloodSugar">
+        select t.sid, t.param_code, t.param_value, t.param_level, t.insert_dt, t.update_dt, t.record_dt,
+        t.remark, t.origin, t.member_id, t.operator_type, t.operator_id ,t.range_min ,t.range_max
+        from t_blood_sugar t,t_doctor_member q
+        where q.is_valid = 1 and t.is_valid = 1 and q.member_id = t.member_id
+        and q.doctor_id = #{doctorId}
+        <if test="startDt != null and '' != startDt">
+            and t.record_dt &gt; #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and t.record_dt &lt; #{endDt}
+        </if>
+    </select>
+
+    <!-- gwx start 获取医生所属 患者血糖正常数、异常数  -->
+    <select id="getBloodNumForType"  resultMap="bloodSugarCount">
+        select t.param_level, count(*) number from t_blood_sugar t
+        <if test="doctorId != null and '' != doctorId">
+            join t_doctor_member q on t.member_id = q.member_id and q.is_valid = 1
+        </if>
+        where t.is_valid = 1
+        <if test="memberId != null and '' != memberId">
+            and t.member_id = #{memberId}
+        </if>
+        <if test="doctorId != null and '' != doctorId">
+            and q.doctor_id = #{doctorId}
+        </if>
+        <if test="startDt != null and '' != startDt">
+            and t.record_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and t.record_dt &lt;= #{endDt}
+        </if>
+
+        group by t.param_level
+    </select>
+
+    <!-- 根据状态获取血糖人数 -7天内 -->
+    <!-- 获取医生所属 患者血糖状态异常数  -->
+    <select id="getBloodNumByStatus" resultType="com.comvee.cdms.app.doctorapp.model.app.BloodNumByStatusResqModel" parameterType = "string">
+        select sug.member_id as memberId,count(1)as num from t_doctor_member dm , t_member m, t_blood_sugar sug
+        where dm.member_id=m.member_id and m.is_valid=1 and sug.member_id=m.member_id  and dm.is_valid=1
+        and sug.is_valid = 1
+        and not exists(
+        select 1 from t_member_checkin_info dc where dc.is_valid = 1 and dc.checkin_status = 1
+        and dc.hospital_id = #{hospitalId} and dc.member_id = dm.member_id
+        )
+        <if test = "doctorId != null and '' != doctorId">
+            and dm.doctor_id=#{doctorId}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            AND sug.record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            AND sug.record_dt &lt;= #{endDt}
+        </if>
+        <if test = "paramLevel == '2'.toString()">
+            and sug.param_level &lt;3
+        </if>
+        <if test = "paramLevel == '5'.toString()" >
+            and sug.param_level=#{paramLevel}
+        </if>
+        <if test = "paramCode == '1'.toString()"><!-- 空腹-->
+            and sug.param_code='beforeBreakfast'
+        </if>
+        <if test = "paramCode == '2'.toString()"><!-- 非空腹-->
+            and sug.param_code!='beforeBreakfast'
+        </if>
+        <if test = "payStatus == '0'.toString()">
+            and dm.pay_status != 2
+        </if>
+        <if test = "payStatus == '1'.toString()">
+            and dm.pay_status = 2
+        </if>
+        group by sug.member_id
+    </select>
+
+    <!-- 获取7日内超过三条血糖记录患者的时间排序  -->
+    <select id="getBloodThreeDayByStatus" resultType="com.comvee.cdms.app.doctorapp.model.app.BloodNumByStatusResqModel" parameterType = "com.comvee.cdms.app.doctorapp.model.app.BloodNumByStatusResqModel">
+        select sug.sid,sug.param_code as paramCode,sug.param_value as paramValue,sug.param_level as paramLevel,
+        sug.record_dt as recordDt,sug.member_id as memberId,m.pic_url as picUrl,m.member_name as memberName
+        from t_doctor_member dm , t_member m, t_blood_sugar sug
+        where dm.member_id=m.member_id and m.is_valid=1 and sug.member_id=m.member_id and dm.is_valid=1 and sug.is_valid = 1
+        and not exists(
+        select 1 from t_member_checkin_info dc where dc.is_valid = 1 and dc.checkin_status = 1
+        and dc.hospital_id = #{hospitalId} and dc.member_id = dm.member_id
+        )
+        and sug.member_id in(
+        select member_id from t_blood_sugar group by member_id HAVING count(member_id)>2
+        )
+        <if test = "doctorId != null and '' != doctorId">
+            and dm.doctor_id=#{doctorId}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            AND sug.record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            AND sug.record_dt &lt;= #{endDt}
+        </if>
+        <if test = "payStatus == '0'.toString()">
+            and  dm.pay_status != 2
+        </if>
+        <if test = "payStatus == '1'.toString()">
+            and  dm.pay_status = 2
+        </if>
+        ORDER BY sug.member_id,sug.record_dt
+    </select>
+
+    <!-- 获取7日内超过三条血糖记录患者的时间排序  -->
+    <select id="getBloodThreeDayListByStatus" resultType="com.comvee.cdms.app.doctorapp.model.app.SugarDetailListModel" parameterType = "string">
+        select sug.sid,sug.param_code as paramCode,sug.param_value as paramValue,sug.param_level as paramLevel,
+        sug.record_dt as recordDt,sug.member_id as memberId,m.pic_url as picUrl,m.member_name as memberName
+        from t_doctor_member dm , t_member m, t_blood_sugar sug
+        where dm.member_id=m.member_id and m.is_valid=1 and sug.member_id=m.member_id and dm.is_valid=1 and sug.is_valid = 1
+        and not exists(
+        select 1 from t_member_checkin_info dc where dc.is_valid = 1 and dc.checkin_status = 1
+        and dc.hospital_id = #{hospitalId} and dc.member_id = dm.member_id
+        )
+        and sug.member_id in(
+        select member_id from t_blood_sugar group by member_id HAVING count(member_id)>2
+        )
+        <if test = "doctorId != null and '' != doctorId">
+            and dm.doctor_id=#{doctorId}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            AND sug.record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            AND sug.record_dt &lt;= #{endDt}
+        </if>
+        <if test = "payStatus == '0'.toString()">
+            and  dm.pay_status != 2
+        </if>
+        <if test = "payStatus == '1'.toString()">
+            and  dm.pay_status = 2
+        </if>
+        ORDER BY sug.member_id,sug.record_dt
+    </select>
+
+    <!-- 患者血糖情况分组列表 - 偏低  -->
+    <select id="lowSugerList" resultType="com.comvee.cdms.app.doctorapp.model.app.SugarDetailListModel" parameterType = "string">
+        select sug.sid,sug.param_code as paramCode,sug.param_value as paramValue,sug.param_level as paramLevel,
+        sug.record_dt as recordDt,sug.member_id as memberId,col1.num,m.pic_url as picUrl,m.member_name as memberName
+        from t_doctor_member dm , t_member m, t_blood_sugar sug
+        INNER JOIN(
+        select tt.sid,max(record_dt)as record_dt,count(1)as num from(
+        select sid,member_id,record_dt from t_blood_sugar sug where sug.is_valid = 1
+
+        <if test = "startDt != null and '' != startDt">
+            AND record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            AND record_dt &lt;= #{endDt}
+        </if>
+        <if test = "paramLevel == '2'.toString()">
+            and param_level &lt;3
+        </if>
+        <!-- 以下空 - 非 腹高危 -->
+        <if test = "paramLevel == '5'.toString()" >
+            and param_level=#{paramLevel}
+        </if>
+        <if test = "paramCode == '1'.toString()"><!-- 空腹-->
+            and param_code='beforeBreakfast'
+        </if>
+        <if test = "paramCode == '2'.toString()"><!-- 非空腹-->
+            and param_code!='beforeBreakfast'
+        </if>
+        ORDER BY member_id,record_dt desc
+        )tt GROUP BY member_id
+        )col1 on col1.sid=sug.sid
+
+        where dm.member_id=m.member_id and m.is_valid=1 and sug.member_id=m.member_id and dm.is_valid=1 and sug.is_valid = 1
+
+        <if test = "doctorId != null and '' != doctorId">
+            and dm.doctor_id=#{doctorId}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            AND sug.record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            AND sug.record_dt &lt;= #{endDt}
+        </if>
+        <if test = "paramLevel == '2'.toString()">
+            and sug.param_level &lt;3
+        </if>
+        <if test = "payStatus == '0'.toString()">
+            and  dm.pay_status != 2
+        </if>
+        <if test = "payStatus == '1'.toString()">
+            and  dm.pay_status = 2
+        </if>
+        <!-- 以下空 - 非 腹高危 -->
+        <if test = "paramLevel == '5'.toString()" >
+            and param_level=#{paramLevel}
+        </if>
+        <if test = "paramCode == '1'.toString()"><!-- 空腹-->
+            and param_code='beforeBreakfast'
+        </if>
+        <if test = "paramCode == '2'.toString()"><!-- 非空腹-->
+            and param_code!='beforeBreakfast'
+        </if>
+        and not exists(
+        select 1 from t_member_checkin_info dc where dc.is_valid = 1 and dc.checkin_status = 1
+        and dc.hospital_id = #{hospitalId} and dc.member_id = dm.member_id
+        )
+        ORDER BY sug.record_dt
+
+    </select>
+
+    <!-- 患者血糖正常列表   -->
+    <select id="normalSugerList" resultType="com.comvee.cdms.app.doctorapp.model.app.NormalSugerListResqModel" parameterType = "string">
+        select r.member_id memberId,r.pay_status priceFlag,r.member_name memberName,r.sex,r.diabetes_type diabetesType from (
+        select t.member_id,t.pay_status,w.member_name,w.sex,w.diabetes_type from t_doctor_member t , t_blood_sugar q ,t_member w
+        where t.doctor_id = #{doctorId} and t.member_id = q.member_id and q.is_valid = 1 and t.member_id = w.member_id and w.is_valid = 1
+        AND w.is_valid = 1 AND t.is_valid = 1 and q.record_dt BETWEEN #{startDt} and #{endDt}
+        <if test="payStatusList != null and payStatusList.size() > 0">
+            and t.pay_status in
+            <foreach collection="payStatusList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+
+        group by t.member_id
+        ) r LEFT JOIN
+        (
+        select u.member_id from t_doctor_member u , t_blood_sugar i
+        where u.doctor_id = #{doctorId} and u.member_id = i.member_id
+        AND i.is_valid = 1 AND u.is_valid = 1
+        and i.record_dt BETWEEN #{startDt} and #{endDt}
+        and i.param_level in (1,5)
+        <if test="payStatusList != null and payStatusList.size() > 0">
+            and u.pay_status in
+            <foreach collection="payStatusList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        group by u.member_id
+        ) y
+        on r.member_id = y.member_id
+        where y.member_id is null
+    </select>
+
+    <!-- 患者血糖未测列表 -->
+    <select id="noMeasureList" resultType="com.comvee.cdms.app.doctorapp.model.app.NormalSugerListResqModel" parameterType = "string">
+        select q.member_id memberId,q.sex,q.diabetes_type diabetesType,t.pay_status priceFlag ,q.member_name memberName
+        from t_doctor_member t join t_member q
+        on t.member_id = q.member_id left join t_blood_sugar w
+        on t.member_id = w.member_id and w.record_dt &gt;= #{startDt} and w.is_valid = 1
+        and w.record_dt &lt;= #{endDt}
+        where t.is_valid = 1 and t.doctor_id = #{doctorId}
+        and w.sid is null
+        and not exists(
+        select 1 from t_member_checkin_info dc where dc.is_valid = 1 and dc.checkin_status = 1
+        and dc.hospital_id = #{hospitalId} and dc.member_id = t.member_id
+        )
+        <if test="payStatusList != null and payStatusList.size() > 0">
+            and t.pay_status in
+            <foreach collection="payStatusList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <!-- 20181114 -->
+    <select id="listBloodSugarSign" parameterType="com.comvee.cdms.sign.dto.ListBloodSugarDTO" resultType="com.comvee.cdms.app.doctorapp.model.app.BloodSugarModel">
+        select sug.sid, sug.param_code as paramCode, sug.param_value as paramValue, sug.param_level as paramLevel, sug.insert_dt as insertDt,
+        sug.update_dt as updateDt, sug.record_dt as recordDt,sug.remark, sug.origin, sug.member_id as memberId, sug.operator_type as operatorType,
+        sug.operator_id as operatorId,IFNULL(sign.dealNum,0) as dealNum -- ,col1.recordNum
+        from t_blood_sugar sug
+        INNER JOIN(
+        select sid,param_code,date_format(record_dt,'%Y-%m-%d')
+        -- ,count(1)as recordNum
+        from t_blood_sugar where 1=1
+        <if test = "memberId != null and '' != memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            and record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            and record_dt &lt;= #{endDt}
+        </if>
+--         group by param_code,date_format(record_dt,'%Y-%m-%d')
+        order by record_dt desc
+        )col1 on col1.sid=sug.sid
+        left join(select sign_id,count(1)as dealNum from t_sign_suggest group by sign_id)sign on sign.sign_id=sug.sid
+        where sug.is_valid = 1
+        <if test = "memberId != null and '' != memberId">
+            and sug.member_id = #{memberId}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            and sug.record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            and sug.record_dt &lt;= #{endDt}
+        </if>
+        order by sug.record_dt desc
+    </select>
+
+    <select id="getLatestBloodSugar" resultMap="bloodSugar">
+        select sid, param_code, param_value, param_level, insert_dt, update_dt, record_dt,
+        remark, origin, member_id, operator_type, operator_id ,range_min ,range_max,record_type
+        from t_blood_sugar where member_id = #{memberId}
+        <if test="paramCode != null and '' != paramCode">
+            and param_code = #{paramCode}
+        </if>
+        <if test="recordDt!=null and recordDt!=''">
+            and DATE_FORMAT(record_dt,'%Y-%m-%d')=DATE_FORMAT(#{recordDt},'%Y-%m-%d')
+        </if>
+        and is_valid = 1 order by record_dt desc,insert_dt desc limit 1
+    </select>
+
+    <select id="getBloodSugarByMemberIdAndRecordDt" resultMap="bloodSugar">
+        select sid, param_code, param_value, param_level, insert_dt, update_dt, record_dt,
+        remark, origin, member_id, operator_type, operator_id ,range_min ,range_max
+        from t_blood_sugar where member_id = #{memberId}
+        <if test="recordDt!=null and recordDt!=''">
+            and DATE_FORMAT(record_dt,'%Y-%m-%d')=DATE_FORMAT(#{recordDt},'%Y-%m-%d')
+        </if>
+        and is_valid = 1
+    </select>
+
+    <select id="getBloodSugarByMemberIdAndParamValue" resultMap="bloodSugar">
+        select sid, param_code, param_value, param_level, insert_dt, update_dt, record_dt,
+        remark, origin, member_id, operator_type, operator_id ,range_min ,range_max
+        from t_blood_sugar where member_id = #{memberId}
+        <if test="recordDt!=null and recordDt!=''">
+            and DATE_FORMAT(record_dt,'%Y-%m-%d')=DATE_FORMAT(#{recordDt},'%Y-%m-%d')
+        </if>
+        and param_value = #{paramValue}
+        and is_valid = 1 order by record_dt limit 1
+    </select>
+    <select id="getLatestBloodSugarInHos" resultType="com.comvee.cdms.sign.bo.BloodSugarInHosBO">
+        SELECT t.*,count(1) num FROM (
+          SELECT sid,param_code paramCode,param_value paramValue,param_level paramLevel,record_dt recordDt from t_blood_sugar
+          where member_id=#{memberId} and is_valid = 1
+          order by record_dt desc,insert_dt DESC)t
+          where t.recordDt &gt;= #{inHospitalDt}
+    </select>
+
+    <select id="countDoctorMemberAbnormalNumber" resultType="java.lang.Long">
+        select count(*) from (
+        select t.member_id from t_doctor_member t , t_blood_sugar q
+        where t.is_valid = 1 and t.doctor_id = #{doctorId} and q.is_valid = 1
+        and t.member_id = q.member_id and q.param_level in (1,5)
+        and not exists(
+        select 1 from t_member_checkin_info dc where dc.is_valid = 1 and dc.checkin_status = 1
+        and dc.hospital_id = #{hospitalId} and dc.member_id = t.member_id
+        )
+        <if test="startDt != null and '' != startDt">
+            and q.record_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and q.record_dt &lt;= #{endDt}
+        </if>
+        group by t.member_id
+        ) w
+    </select>
+    <select id="listAllMemberBloodSugar" parameterType="java.lang.String" resultType="com.comvee.cdms.sign.dto.ListAllBloodSugarDTO">
+        select sid as sid,DATE_FORMAT(record_dt,'%Y-%m-%d')as date ,param_code as paramCode,param_value as paramValue,DATE_FORMAT(record_dt,'%H:%i:%s')as recordTime,origin as origin,remark as remark
+          from t_blood_sugar  where member_id = #{memberId} and is_valid = 1 order by record_dt desc
+    </select>
+    <update id="deleteMemberBloodSugar" parameterType="java.lang.String">
+        update t_blood_sugar set is_valid = 0 where sid = #{sid}
+    </update>
+
+    <select id="countNewBloodAndMember" resultType="java.util.Map" parameterType="com.comvee.cdms.sign.dto.ListMemberBloodNumDTO">
+        select count(*) as countBlood,
+        count(distinct(t.member_id)) as countBloodMember
+        from t_blood_sugar t,t_doctor_member q
+        where  q.member_id = t.member_id and q.is_valid = 1 and t.is_valid = 1
+        <if test="startDt != null and '' != startDt">
+            and t.record_dt &gt; #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and t.record_dt &lt; #{endDt}
+        </if>
+        <if test="doctorList != null and doctorList.size() > 0">
+            and q.doctor_id in
+            <foreach collection="doctorList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+
+    <select id="countBloodSugar" parameterType="com.comvee.cdms.member.dto.MemberDataDTO" resultType="java.lang.Long">
+        select count(*) from t_blood_sugar where is_valid = 1
+        <if test="memberId != null and ''!=memberId">
+            and member_id = #{memberId}
+        </if>
+        <if test="startDt != null and ''!=startDt">
+            and insert_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and ''!=endDt">
+            and insert_dt &lt;= #{endDt}
+        </if>
+    </select>
+
+    <select id="listMemberParamValuesOfStatistics" parameterType="com.comvee.cdms.statistics.dto.GetStatisticsDTO"
+            resultType="com.comvee.cdms.sign.bo.BloodSugarOfParamCodeBO">
+        <!--visitType类型 1住院 2门诊&居家 -->
+        <if test="visitType==1">
+            select tmpl.param_level level,tmpl.PARAM_CODE paramCode,count(1)num
+            from t_blood_sugar tmpl , (
+            select m.member_id from t_member m
+            join t_member_checkin_info mci on mci.member_id = m.member_id and mci.is_valid =1
+            join t_member_in_hospital_log h on m.member_id=h.member_id
+            where h.is_valid=1 and mci.checkin_status = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and h.hospital_id=#{hospitalId}
+            </if>
+            <if test="startDt!=null and startDt!='' and endDt != null and endDt!=''">
+                and (h.in_hospital_date &lt; #{endDt} and (h.out_hospital_date &gt; #{startDt} or h.out_hospital_date is null))
+            </if>
+            <if test="sex!=null and sex!=''">
+                and m.sex=#{sex}
+            </if>
+            GROUP BY m.member_id
+            )t
+            where t.member_id=tmpl.member_id
+            <if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+                and tmpl.record_dt BETWEEN #{startDt} and #{endDt}
+            </if>
+            GROUP BY tmpl.PARAM_CODE,tmpl.param_level
+        </if>
+        <if test="visitType==2">
+            select tmpl.param_level level,tmpl.PARAM_CODE paramCode,count(1)num
+            from t_blood_sugar tmpl , (
+            select m.member_id from t_member m
+            join t_member_join_hospital mjh on m.member_id = mjh.member_id and mjh.valid = 1
+            <if test="hospitalId!=null and hospitalId!=''">
+                and mjh.hospital_id=#{hospitalId}
+            </if>
+            left join
+            (select member_id,checkin_status,hospital_id from t_member_checkin_info where is_valid = 1) mci
+            on mci.member_id = mjh.member_id
+            where m.is_valid=1
+            and(mci.checkin_status is null or mci.checkin_status != 1)
+            <if test="sex!=null and sex!=''">
+                and m.sex=#{sex}
+            </if>
+            GROUP BY m.member_id
+            )t
+            where t.member_id=tmpl.member_id
+            <if test="startDt!=null and startDt!='' and endDt!=null and endDt!=''">
+                and tmpl.record_dt BETWEEN #{startDt} and #{endDt}
+            </if>
+            GROUP BY tmpl.PARAM_CODE,tmpl.param_level
+        </if>
+        <if test="visitType==3">
+            select tmpl.param_level level,tmpl.PARAM_CODE paramCode,count(1)num
+            from t_blood_sugar tmpl , (
+                select q.member_id,e.insert_dt from t_member q ,t_research_group w,t_research_group_member e
+                where q.is_valid = 1 and w.valid = 1 and e.valid = 1
+                and q.member_id = e.member_id and w.group_id = e.research_group_id
+                and w.hospital_id = #{hospitalId}
+                <if test="researchGroupId != null and '' != researchGroupId">
+                    and w.group_id = #{researchGroupId}
+                </if>
+                group by q.member_id
+            )t
+            where t.member_id=tmpl.member_id
+            and tmpl.record_dt BETWEEN DATE_FORMAT(t.insert_dt,'%Y-%m-%d') and #{endDt}
+            GROUP BY tmpl.PARAM_CODE,tmpl.param_level
+        </if>
+    </select>
+
+    <select id="countDoctorsMemberAbnormalNumber" resultType="long">
+        select count(*) from (
+        select t.member_id from t_doctor_member t , t_blood_sugar q
+        where t.is_valid = 1 and t.doctor_id in
+        <foreach collection="list" item="doctorId" separator="," close=")" open="(" index="index">
+            #{doctorId}
+        </foreach>
+        and q.record_dt BETWEEN DATE_FORMAT(date_add(NOW(), interval -6 day),'%Y-%m-%d %H:%i:%s')
+        and DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+        and q.is_valid = 1
+        and t.member_id = q.member_id and q.param_level in (1,5)
+        group by t.member_id
+        ) w
+    </select>
+
+    <select id="listParamLogByMemberIdOfInHos" parameterType="string" resultType="com.comvee.cdms.sign.po.BloodSugarPO">
+        select t.sid sid, t.param_code paramCode, t.param_value paramValue, t.param_level paramLevel,
+        t.insert_dt insertDt, t.update_dt updateDt, DATE_FORMAT(t.record_dt,'%Y-%m-%d') recordDt,
+        t.remark remark, t.origin origin, t.member_id memberId, t.operator_type operatorType, t.operator_id operatorId,
+        t.in_hos inHos,t.range_min rangeMin,t.range_max rangeMax
+        from t_blood_sugar t
+        where t.is_valid=1 and
+        t.member_id=#{memberId}
+        order by record_dt desc
+    </select>
+
+    <select id="countBloodSugarMaxMin" resultType="java.util.Map" parameterType="com.comvee.cdms.sign.dto.ListBloodSugarByDayDTO">
+        SELECT
+        COUNT(IF(param_level=5,TRUE,NULL)) AS highCount,
+        COUNT(IF(param_level=1,TRUE,NULL)) AS lowCount,
+        DATE_FORMAT(record_dt,'%Y-%m-%d') AS dateTime
+        FROM t_blood_sugar  WHERE member_id=#{memberId} and is_valid = 1
+        <if test="startDt != null and '' !=startDt">
+            AND record_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and '' !=endDt">
+            AND record_dt &lt;= #{endDt}
+        </if>
+        <if test="paramCode != null and '' !=paramCode">
+            AND param_code = #{paramCode}
+        </if>
+        GROUP BY LEFT(record_dt,10) order by record_dt desc
+    </select>
+
+    <!--v6.0.0 start-->
+    <select id="listTodayBloodSugarOfMember" resultMap="memberBloodSugarPO" parameterType="com.comvee.cdms.sign.dto.MemberBloodSugarDTO">
+        SELECT t.department_name,t.bed_no,t.member_id,
+        ifnull(t.hospital_no,'--') hospital_no,t.department_id,m.member_name
+        ,ifnull(m.is_diabetes,0) is_diabetes, m.diabetes_type,
+        ifnull(m.essential_hyp,0) essential_hyp FROM t_member_checkin_info t
+        join t_member m on t.member_id=m.member_id
+        LEFT JOIN t_blood_sugar tb ON t.member_id = tb.member_id
+        WHERE t.checkin_status = 1 AND t.is_valid = 1 and tb.is_valid = 1
+        AND t.bed_no != '' AND t.bed_no IS NOT NULL
+        <if test="hospitalId!=null and hospitalId != ''">
+            AND t.hospital_id = #{hospitalId}
+        </if>
+        <if test="departmentId!=null and departmentId != ''">
+            AND t.department_id = #{departmentId}
+        </if>
+        <if test="departmentIdList!=null and departmentIdList.size>0">
+            AND t.department_id IN
+            <foreach collection="departmentIdList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="paramLevel!=null and paramLevel!=''">
+            AND tb.param_level in (${paramLevel})
+        </if>
+        <if test="startDt!=null and startDt!=''">
+            AND tb.record_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt!=null and endDt!=''">
+            AND tb.record_dt &lt;= #{endDt}
+        </if>
+        <if test="keyword!=null and keyword != ''">
+            AND (instr(m.member_name ,#{keyword}) > 0 or instr(t.bed_no  ,#{keyword}) > 0 or instr(t.hospital_no  ,#{keyword}) > 0)
+        </if>
+        GROUP BY t.member_id
+        ORDER BY t.department_id asc,t.bed_no asc
+    </select>
+    <select id="listTodayBloodSugarOfMemberByLog" resultMap="memberBloodSugarPO" parameterType="com.comvee.cdms.sign.dto.MemberBloodSugarDTO">
+        SELECT t.bed_no,t.member_id,
+        ifnull(t.hospital_no,'--') hospital_no,m.member_name
+        ,ifnull(m.is_diabetes,0) is_diabetes, m.diabetes_type,
+        ifnull(m.essential_hyp,0) essential_hyp ,t.department_id,t.department_name
+        FROM t_member_in_hospital_log t
+        join t_member m on t.member_id=m.member_id
+        JOIN t_blood_sugar tb ON t.member_id = tb.member_id
+        WHERE  t.is_valid = 1 and tb.is_valid = 1 and m.is_valid = 1
+        AND t.bed_no != '' AND t.bed_no IS NOT NULL
+        <if test="hospitalId!=null and hospitalId != ''">
+            AND t.hospital_id = #{hospitalId}
+        </if>
+        <if test="departmentId!=null and departmentId != ''">
+            AND t.department_id = #{departmentId}
+        </if>
+        <if test="keyword!=null and keyword != ''">
+            AND (instr(m.member_name ,#{keyword}) > 0 or instr(t.bed_no  ,#{keyword}) > 0 or instr(t.hospital_no  ,#{keyword}) > 0)
+        </if>
+        and tb.record_dt between #{startDt} and #{endDt} and tb.in_hos = 1
+        AND t.in_hospital_date &lt; #{endDt}
+        AND ( t.out_hospital_date &gt;= #{startDt} OR t.out_hospital_date IS NULL)
+        GROUP BY t.member_id
+        ORDER BY t.department_id,t.bed_no * 1 asc
+    </select>
+
+    <select id="getTodayMemberBlood" resultType="java.lang.Long" parameterType="com.comvee.cdms.sign.dto.TodayBloodDTO">
+        SELECT COUNT(1) FROM t_blood_sugar t LEFT JOIN t_member_checkin_info ci
+        on ci.member_id = t.member_id and ci.is_valid = 1
+        where  t.is_valid = 1 and t.record_type =1
+        <if test="memberId!=null and memberId!=''">
+            and t.member_id = #{memberId}
+        </if>
+        <if test="paramCode!=null and paramCode!=''">
+            and t.param_code = #{paramCode}
+        </if>
+        <if test="recordDt!=null and recordDt!=''">
+            and t.record_dt = #{recordDt}
+        </if>
+        <if test="paramLevel!=null and paramLevel!=''">
+            and t.param_level = #{paramLevel}
+        </if>
+        <if test="startDt!=null and startDt!=''">
+            and t.record_dt &gt;= str_to_date(#{startDt},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="endDt!=null and endDt!=''">
+            and t.record_dt &lt;= str_to_date(#{endDt},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="paramCodeList!=null">
+            and t.param_code IN
+            <foreach collection="paramCodeList" separator="," open="(" item="item" index="index" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="isAbnormal!=null and isAbnormal">
+            and t.param_level != 3
+        </if>
+        <if test="isAbnormal==null or !isAbnormal">
+            <if test="highAbnormal!=null and highAbnormal">
+                and t.param_level &gt; 3
+            </if>
+            <if test="highAbnormal==null or !highAbnormal">
+                <if test="lowAbnormal!=null and lowAbnormal">
+                    and t.param_level &lt; 3
+                </if>
+            </if>
+        </if>
+        <if test="departmentIdList!=null and departmentIdList.size>0">
+            and ci.department_id IN
+            <foreach collection="departmentIdList" close=")" index="index" item="item" open="(" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="checkinStatus!=null">
+            and ci.checkin_status = #{checkinStatus}
+        </if>
+        <if test="inHos!=null">
+            and t.in_hos = #{inHos}
+        </if>
+        <if test="highByValue!=null">
+            and t.param_value &gt; #{highByValue}
+        </if>
+        <if test="paramValue!=null">
+            and t.param_value = #{paramValue}
+        </if>
+    </select>
+
+    <select id="getMemberBloodForMemberId" resultType="java.lang.Long" parameterType="com.comvee.cdms.sign.dto.TodayBloodDTO">
+        select count(1) FROM (select t.member_id from t_member_everyday_sugar t left join t_member_checkin_info ci
+        on ci.member_id = t.member_id and ci.is_valid=1 and ci.checkin_status=1
+        where t.is_valid = 1
+        <if test="memberId!=null and memberId!=''">
+            and t.member_id = #{memberId}
+        </if>
+        <if test="recordDt!=null and recordDt!=''">
+            and t.param_dt = str_to_date(#{recordDt},'%Y-%m-%d')
+        </if>
+        <if test="paramLevel!=null and paramLevel!=''">
+            and t.param_level = #{paramLevel}
+        </if>
+        <if test="startDt!=null and startDt!=''">
+            and t.param_dt &gt;= str_to_date(#{startDt},'%Y-%m-%d')
+        </if>
+        <if test="endDt!=null and endDt!=''">
+            and t.param_dt &lt;= str_to_date(#{endDt},'%Y-%m-%d')
+        </if>
+        <if test="isAbnormal!=null and isAbnormal">
+            and t.param_level != 3
+        </if>
+        <if test="isAbnormal==null or !isAbnormal">
+            <if test="highAbnormal!=null and highAbnormal">
+                and t.param_level &gt; 3
+            </if>
+            <if test="highAbnormal==null or !highAbnormal">
+                <if test="lowAbnormal!=null and lowAbnormal">
+                    and t.param_level &lt; 3
+                </if>
+            </if>
+        </if>
+        <if test="departmentIdList!=null and departmentIdList.size>0">
+            and ci.department_id IN
+            <foreach collection="departmentIdList" close=")" index="index" item="item" open="(" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="checkinStatus!=null">
+            and ci.checkin_status = #{checkinStatus}
+        </if>
+        <if test="highByValue!=null">
+            and t.high_value &gt; #{highByValue}
+        </if>
+        <if test="highValue!=null and highValue!='' || lowValue!=null and lowValue!=''">
+            and (t.high_value &gt;= #{highValue} or t.low_value &lt;= #{lowValue})
+        </if>
+        <if test="isLook!=null">
+            and t.is_look = #{isLook}
+        </if>
+        <if test="hospitalId!=null">
+            and ci.hospital_id = #{hospitalId}
+        </if>
+        GROUP BY t.member_id) tempTable
+    </select>
+
+    <select id="getVirtualWardBloodForMemberId" resultType="java.lang.Long" parameterType="com.comvee.cdms.sign.dto.TodayBloodDTO">
+        select count(1) FROM (select t.member_id from t_member_everyday_sugar t left join t_virtual_ward ci
+        on ci.member_id = t.member_id and ci.valid=1 and ci.transfer_status=2
+        where t.is_valid = 1
+        <if test="memberId!=null and memberId!=''">
+            and t.member_id = #{memberId}
+        </if>
+        <if test="recordDt!=null and recordDt!=''">
+            and t.param_dt = str_to_date(#{recordDt},'%Y-%m-%d')
+        </if>
+        <if test="paramLevel!=null and paramLevel!=''">
+            and t.param_level = #{paramLevel}
+        </if>
+        <if test="startDt!=null and startDt!=''">
+            and t.param_dt &gt;= str_to_date(#{startDt},'%Y-%m-%d')
+        </if>
+        <if test="endDt!=null and endDt!=''">
+            and t.param_dt &lt;= str_to_date(#{endDt},'%Y-%m-%d')
+        </if>
+        <if test="isAbnormal!=null and isAbnormal">
+            and t.param_level != 3
+        </if>
+        <if test="isAbnormal==null or !isAbnormal">
+            <if test="highAbnormal!=null and highAbnormal">
+                and t.param_level &gt; 3
+            </if>
+            <if test="highAbnormal==null or !highAbnormal">
+                <if test="lowAbnormal!=null and lowAbnormal">
+                    and t.param_level &lt; 3
+                </if>
+            </if>
+        </if>
+        <if test="departmentIdList!=null and departmentIdList.size>0">
+            and ci.department_id IN
+            <foreach collection="departmentIdList" close=")" index="index" item="item" open="(" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="highByValue!=null">
+            and t.high_value &gt; #{highByValue}
+        </if>
+        <if test="highValue!=null and highValue!='' || lowValue!=null and lowValue!=''">
+            and (t.high_value &gt;= #{highValue} or t.low_value &lt;= #{lowValue})
+        </if>
+        <if test="isLook!=null">
+            and t.is_look = #{isLook}
+        </if>
+        <if test="hospitalId!=null">
+            and ci.hospital_id = #{hospitalId}
+        </if>
+        GROUP BY t.member_id) tempTable
+    </select>
+    <select id="listAllMemberBloodSugarForHos" parameterType="java.lang.String" resultType="com.comvee.cdms.sign.dto.ListAllBloodSugarDTO">
+        select sid as sid,DATE_FORMAT(record_dt,'%Y-%m-%d')as date ,param_code as paramCode,param_value as paramValue,DATE_FORMAT(record_dt,'%H:%i:%s')as recordTime,origin as origin,remark as remark
+        from t_blood_sugar  where is_valid = 1
+        <if test="memberId != null and memberId != ''">
+            and member_id = #{memberId}
+        </if>
+        <if test="inHos != null">
+            and in_hos = #{inHos}
+        </if>
+        <if test="startDt!=null and startDt!=''">
+            and record_dt &gt;= str_to_date(#{startDt},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="endDt!=null and endDt!=''">
+            and record_dt &lt;= str_to_date(#{endDt},'%Y-%m-%d %H:%i:%s')
+        </if>
+        group by param_code
+    </select>
+
+    <select id="listMemberBloodByWhere" resultType="com.comvee.cdms.sign.vo.TodayHosMemberBloodVO" parameterType="com.comvee.cdms.sign.dto.TodayHosMemberBloodDTO">
+        select * from (
+
+        SELECT t.sid sid, t.param_code paramCode, t.param_value paramValue, t.param_level paramLevel,
+        t.insert_dt insertDt, t.update_dt updateDt, DATE_FORMAT(t.record_dt,'%Y-%m-%d %H:%i:%s') recordDt,
+        t.remark remark, t.origin origin, t.member_id memberId, t.operator_type operatorType, t.operator_id operatorId,
+        t.in_hos inHos,t.range_min rangeMin,t.range_max rangeMax,ci.bed_no bedNo,
+        ci.department_id departmentId,ci.department_name departmentName,m.member_name memberName,d.doctor_name
+        doctorName
+        FROM t_blood_sugar t JOIN t_member_checkin_info ci ON ci.member_id = t.member_id and
+        ci.is_valid = 1
+        JOIN t_member m ON t.member_id = m.member_id
+        LEFT JOIN t_doctor d ON t.operator_id = d.doctor_id
+        where t.is_valid = 1
+        <if test="checkinStatus!=null">
+            and ci.checkin_status=#{checkinStatus}
+        </if>
+        <if test="hospitalId!=null">
+            and ci.hospital_id=#{hospitalId}
+        </if>
+        <if test="departmentIdList!=null and departmentIdList.size>0">
+        and ci.department_id IN
+        <foreach collection="departmentIdList" separator="," open="(" item="item" index="index"
+                 close=")">
+            #{item}
+        </foreach>
+    </if>
+        <if test="memberId!=null and memberId!=''">
+            and t.member_id = #{memberId}
+        </if>
+        <if test="paramCode!=null and paramCode!=''">
+            and t.param_code = #{paramCode}
+        </if>
+        <if test="recordDt!=null and recordDt!=''">
+            and t.record_dt = #{recordDt}
+        </if>
+        <if test="paramLevel!=null and paramLevel!=''">
+            and t.param_level = #{paramLevel}
+        </if>
+        <if test="startDt!=null and startDt!=''">
+            and t.record_dt &gt;= str_to_date(#{startDt},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="endDt!=null and endDt!=''">
+            and t.record_dt &lt;= str_to_date(#{endDt},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="paramCodeList!=null">
+            and t.param_code IN
+            <foreach collection="paramCodeList" separator="," open="(" item="item" index="index"
+                     close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="isAbnormal!=null and isAbnormal">
+            and t.param_level != 3
+        </if>
+        <if test="loadVirtualWard != null and loadVirtualWard">
+            UNION ALL
+            select t2.sid ,t2.param_code,t2.param_value,t2.param_level,t2.insert_dt,t2.update_dt,t2.record_dt,
+            t2.remark ,t2.origin,t2.member_id,t2.operator_type,t2.operator_id,t2.in_hos,t2.range_min,t2.range_max,'',
+            '','',t3.member_name,t4.doctor_name
+            from t_virtual_ward t1 join t_blood_sugar t2 on t1.member_id = t2.member_id
+            join t_member t3 on t1.member_id = t3.member_id
+            left join t_doctor t4 on t2.operator_id = t4.doctor_id
+            where t1.valid = 1 and t2.is_valid = 1 and t1.transfer_status = 1 and t1.hospital_id = #{hospitalId}
+            <if test="virtualWardDepartIdList!=null and virtualWardDepartIdList.size>0">
+                and t1.department_id IN
+                <foreach collection="virtualWardDepartIdList" separator="," open="(" item="item" index="index"
+                         close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="paramCode!=null and paramCode!=''">
+                and t2.param_code = #{paramCode}
+            </if>
+            <if test="recordDt!=null and recordDt!=''">
+                and t2.record_dt = #{recordDt}
+            </if>
+            <if test="paramLevel!=null and paramLevel!=''">
+                and t2.param_level = #{paramLevel}
+            </if>
+            <if test="startDt!=null and startDt!=''">
+                and t2.record_dt &gt;= str_to_date(#{startDt},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="endDt!=null and endDt!=''">
+                and t2.record_dt &lt;= str_to_date(#{endDt},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="paramCodeList!=null">
+                and t2.param_code IN
+                <foreach collection="paramCodeList" separator="," open="(" item="item" index="index"
+                         close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="isAbnormal!=null and isAbnormal">
+                and t2.param_level != 3
+            </if>
+        </if>
+        ) w
+        group by w.sid
+        ORDER by w.recordDt DESC,w.insertDt DESC
+    </select>
+
+    <select id="listWorkParamValueOfMember" resultType="com.comvee.cdms.sign.vo.MemberParamValueVO" parameterType="com.comvee.cdms.sign.dto.MemberParamValueDTO">
+        select * from (
+
+            SELECT es.member_id memberId,es.param_value_json paramValueJson,es.high_value highValue,es.low_value lowValue,
+            es.standard_value standardValue,es.three_times_high threeTimesHigh,es.high_rate highRate,es.low_rate
+            lowRate,es.insert_dt insertDt,
+            DATE_FORMAT(ci.in_hospital_date,'%Y-%m-%d') inHospitalDate,ci.hospital_no hospitalNo,ci.bed_no
+            bedNo,t.member_name memberName,ci.department_id departmentId
+            FROM t_member_everyday_sugar es
+            join t_member_checkin_info ci ON es.is_valid=1 and ci.is_valid=1 and es.member_id = ci.member_id
+            JOIN t_member t ON es.member_id = t.member_id
+            <where>
+                <if test="paramDt!=null and paramDt!=''">
+                    and es.param_dt = #{paramDt}
+                </if>
+                <if test="departmentIdList!=null and departmentIdList.size>0">
+                    and ci.department_id in
+                    <foreach collection="departmentIdList" close=")" index="index" item="item" open="(" separator=",">
+                        #{item}
+                    </foreach>
+                </if>
+                <if test="highValue!=null and highValue!='' || lowValue!=null and lowValue!=''">
+                    and (es.high_value &gt;= #{highValue} or es.low_value &lt;= #{lowValue})
+                </if>
+    <!--            <if test="lowValue!=null and lowValue!=''">-->
+    <!--                and es.low_value &lt; #{lowValue}-->
+    <!--            </if>-->
+    <!--            <if test="highValue!=null and highValue!=''">-->
+    <!--                and es.high_value &lt; #{highValue}-->
+    <!--            </if>-->
+                <if test="treeTimesHigh!=null and treeTimesHigh">
+                    and es.three_times_high = 1
+                </if>
+                <if test="highRate!=null and highRate!=''">
+                    and es.high_rate &gt; #{highRate}
+                </if>
+                <if test="lowRate!=null and lowRate!=''">
+                    and es.low_rate &lt; #{lowRate}
+                </if>
+                <if test="standardValue!=null and standardValue!=''">
+                    and es.standard_value &gt; #{standardValue}
+                </if>
+                <if test="bloodType!=null and bloodType!=4">
+                    <if test="bloodType==0">
+                        and es.param_level != 3
+                    </if>
+                    <if test="bloodType==1">
+                        and es.param_level &lt; 3
+                    </if>
+                    <if test="bloodType==2">
+                        and es.param_level &gt; 3
+                    </if>
+                    <if test="bloodType==3">
+                        and es.param_level = 3
+                    </if>
+                </if>
+                <if test="checkinStatus!=null">
+                    and ci.checkin_status=#{checkinStatus}
+                </if>
+                <if test="isLook!=null">
+                    and es.is_look =#{isLook}
+                </if>
+                <if test="moreModifyDt!=null and moreModifyDt!=''">
+                    and es.modify_dt &gt; #{moreModifyDt}
+                </if>
+            </where>
+            <if test="loadVirtualWard != null and loadVirtualWard">
+                union all
+                SELECT es.member_id memberId,es.param_value_json paramValueJson,es.high_value highValue,es.low_value
+                lowValue,
+                es.standard_value standardValue,es.three_times_high threeTimesHigh,es.high_rate highRate,es.low_rate
+                lowRate,es.insert_dt insertDt,
+                DATE_FORMAT(ci.in_hospital_date,'%Y-%m-%d') inHospitalDate,ci.hospital_no hospitalNo,ci.bed_no
+                bedNo,t.member_name memberName,ci.department_id departmentId
+                FROM t_member_everyday_sugar es
+                join t_member_checkin_info ci ON es.is_valid=1 and ci.is_valid=1 and es.member_id = ci.member_id
+                JOIN t_member t ON es.member_id = t.member_id
+                join t_virtual_ward t1 on t1.member_id = es.member_id
+                where t1.valid = 1 and t1.hospital_id = #{hospitalId} and t1.transfer_status = 1
+                <if test="paramDt!=null and paramDt!=''">
+                    and es.param_dt = #{paramDt}
+                </if>
+                <if test="highValue!=null and highValue!='' || lowValue!=null and lowValue!=''">
+                    and (es.high_value &gt;= #{highValue} or es.low_value &lt;= #{lowValue})
+                </if>
+                <if test="treeTimesHigh!=null and treeTimesHigh">
+                    and es.three_times_high = 1
+                </if>
+                <if test="highRate!=null and highRate!=''">
+                    and es.high_rate &gt; #{highRate}
+                </if>
+                <if test="lowRate!=null and lowRate!=''">
+                    and es.low_rate &lt; #{lowRate}
+                </if>
+                <if test="standardValue!=null and standardValue!=''">
+                    and es.standard_value &gt; #{standardValue}
+                </if>
+                <if test="bloodType!=null and bloodType!=4">
+                    <if test="bloodType==0">
+                        and es.param_level != 3
+                    </if>
+                    <if test="bloodType==1">
+                        and es.param_level &lt; 3
+                    </if>
+                    <if test="bloodType==2">
+                        and es.param_level &gt; 3
+                    </if>
+                    <if test="bloodType==3">
+                        and es.param_level = 3
+                    </if>
+                </if>
+                <if test="isLook!=null">
+                    and es.is_look =#{isLook}
+                </if>
+                <if test="moreModifyDt!=null and moreModifyDt!=''">
+                    and es.modify_dt &gt; #{moreModifyDt}
+                </if>
+                <if test="virtualWardDepartmentIdList!=null and virtualWardDepartmentIdList.size>0">
+                    and t1.department_id in
+                    <foreach collection="virtualWardDepartmentIdList" close=")" index="index" item="item" open="("
+                             separator=",">
+                        #{item}
+                    </foreach>
+                </if>
+            </if>
+        ) w group by w.memberId
+    </select>
+
+    <select id="lisVirtualWardOfMember" resultType="com.comvee.cdms.sign.vo.MemberParamValueVO" parameterType="com.comvee.cdms.sign.dto.MemberParamValueDTO">
+        SELECT es.member_id memberId,es.param_value_json paramValueJson,es.high_value highValue,es.low_value lowValue,
+        es.standard_value standardValue,es.three_times_high threeTimesHigh,es.high_rate highRate,es.low_rate lowRate,es.insert_dt insertDt,
+        ci.hospital_no hospitalNo,ci.bed_no bedNo,t.member_name memberName,ci.department_id departmentId,ci.hospital_id hospitalId
+        FROM t_member_everyday_sugar es
+        join t_virtual_ward ci ON  es.is_valid=1 and ci.valid=1 and es.member_id = ci.member_id
+        JOIN t_member t ON es.member_id = t.member_id
+        <where>
+            <if test="paramDt!=null and paramDt!=''">
+                and es.param_dt = #{paramDt}
+            </if>
+            <if test="departmentIdList!=null and departmentIdList.size>0">
+                and ci.department_id in
+                <foreach collection="departmentIdList" close=")" index="index" item="item" open="(" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="highValue!=null and highValue!='' and lowValue!=null and lowValue!=''">
+                and (es.high_value &gt;= #{highValue} or es.low_value &lt;= #{lowValue})
+            </if>
+<!--            <if test="lowValue!=null and lowValue!=''">-->
+<!--                and es.low_value &lt; #{lowValue}-->
+<!--            </if>-->
+<!--            <if test="highValue!=null and highValue!=''">-->
+<!--                and es.high_value &lt; #{highValue}-->
+<!--            </if>-->
+            <if test="treeTimesHigh!=null and treeTimesHigh">
+                and es.three_times_high = 1
+            </if>
+            <if test="highRate!=null and highRate!=''">
+                and es.high_rate &gt; #{highRate}
+            </if>
+            <if test="lowRate!=null and lowRate!=''">
+                and es.low_rate &lt; #{lowRate}
+            </if>
+            <if test="standardValue!=null and standardValue!=''">
+                and es.standard_value &gt; #{standardValue}
+            </if>
+            <if test="bloodType!=null and bloodType!=4">
+                <if test="bloodType==0">
+                    and es.param_level != 3
+                </if>
+                <if test="bloodType==1">
+                    and es.param_level &lt; 3
+                </if>
+                <if test="bloodType==2">
+                    and es.param_level &gt; 3
+                </if>
+                <if test="bloodType==3">
+                    and es.param_level = 3
+                </if>
+            </if>
+            <if test="transferStatus!=null">
+                and ci.transfer_status=#{transferStatus}
+            </if>
+            <if test="applyStatus!=null">
+                and ci.apply_status=#{applyStatus}
+            </if>
+        </where>
+    </select>
+
+    <select id="listMemberParamLogNumberByWhere" resultType="com.comvee.cdms.sign.vo.MemberParamValueVO" parameterType="com.comvee.cdms.sign.dto.TodayBloodDTO">
+        select str_to_date(ci.in_hospital_date,'%Y-%m-%d') inHospitalDate, t.member_id memberId,count(1) num
+        from t_blood_sugar t,t_member_checkin_info ci where ci.member_id = t.member_id
+        and t.is_valid = 1 and ci.is_valid = 1
+        <if test="memberIdList!=null">
+            and t.member_id IN
+            <foreach collection="memberIdList" close=")" index="index" item="item" open="(" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="paramCode!=null and paramCode!=''">
+            and t.param_code = #{paramCode}
+        </if>
+        <if test="recordDt!=null and recordDt!=''">
+            and t.record_dt = #{recordDt}
+        </if>
+        <if test="paramLevel!=null and paramLevel!=''">
+            and t.param_level = #{paramLevel}
+        </if>
+        <if test="startDt!=null and startDt!=''">
+            and t.record_dt &gt;= str_to_date(#{startDt},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="endDt!=null and endDt!=''">
+            and t.record_dt &lt;= str_to_date(#{endDt},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="paramCodeList!=null">
+            and t.param_code IN
+            <foreach collection="paramCodeList" separator="," open="(" item="item" index="index" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="isAbnormal!=null and isAbnormal">
+            and t.param_level != 3
+        </if>
+        <if test="isAbnormal==null or !isAbnormal">
+            <if test="highAbnormal!=null and highAbnormal">
+                and t.param_level &gt; 3
+            </if>
+            <if test="highAbnormal==null or !highAbnormal">
+                <if test="lowAbnormal!=null and lowAbnormal">
+                    and t.param_level &lt; 3
+                </if>
+            </if>
+        </if>
+        <if test="departmentIdList!=null and departmentIdList.size>0">
+            and ci.department_id IN
+            <foreach collection="departmentIdList" close=")" index="index" item="item" open="(" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY t.member_id
+    </select>
+
+    <select id="getWorkParamValueOfMember" resultMap="memberParamValuePO" parameterType="java.lang.String">
+        select sid,member_id,param_value_json,param_value_json,high_value,low_value,
+        three_times_high,high_rate,low_rate,standard_value,param_level,param_type
+        from t_member_everyday_sugar
+        where is_valid=1 and member_id = #{memberId}
+        and param_dt = #{paramDt}
+        LIMIT 1
+    </select>
+
+    <update id="updateMemberBloodSugarOfEverDay" parameterType="com.comvee.cdms.sign.po.MemberParamValuePO">
+        UPDATE t_member_everyday_sugar
+        SET modify_dt=now()
+        <if test="memberId!=null">
+            ,member_id = #{memberId}
+        </if>
+        <if test="paramValueJson!=null and paramValueJson!=''">
+            ,param_value_json = #{paramValueJson}
+        </if>
+        <if test="paramDt!=null and paramDt!=''">
+            ,param_dt = #{paramDt}
+        </if>
+        <if test="highValue!=null">
+            ,high_value = #{highValue}
+        </if>
+        <if test="lowValue!=null">
+            ,low_value = #{lowValue}
+        </if>
+        <if test="standardValue!=null">
+            ,standard_value = #{standardValue}
+        </if>
+        <if test="treeTimesHigh!=null">
+            ,three_times_high = #{treeTimesHigh}
+        </if>
+        <if test="highRate!=null">
+            ,high_rate = #{highRate}
+        </if>
+        <if test="lowRate!=null">
+            ,low_rate = #{lowRate}
+        </if>
+        <if test="paramLevel!=null">
+            ,param_level = #{paramLevel}
+        </if>
+        <if test="paramType!=null">
+            ,param_type = #{paramType}
+        </if>
+        <if test="isLook!=null">
+            ,is_look = #{isLook}
+        </if>
+        WHERE sid = #{sid};
+    </update>
+    <update id="updateBloodSugarEveryDayByMemberId">
+        UPDATE t_member_everyday_sugar
+        SET modify_dt=now(),
+        is_look = #{isLook}
+        where param_dt = #{paramDt}
+    </update>
+
+    <delete id="deleteMemberBloodSugarOfEverDay">
+        delete from t_member_everyday_sugar
+        where sid=#{sid}
+    </delete>
+
+    <update id="deleteMemberSugarDayRecord" parameterType="com.comvee.cdms.member.po.MemberSugarDayRecordPO">
+        update t_member_day_sugar_record
+        <set>
+            modify_dt = now(),
+            <if test="isValid !=null">
+                is_valid = #{isValid},
+            </if>
+                randomtime_json = #{randomtimeJson},
+                beforedawn_json = #{beforedawnJson},
+                beforebreakfast_json = #{beforebreakfastJson},
+                afterbreakfast_json = #{afterbreakfastJson},
+                beforelunch_json = #{beforelunchJson},
+                afterlunch_json = #{afterlunchJson},
+                beforedinner_json = #{beforedinnerJson},
+                afterdinner_json = #{afterdinnerJson},
+                beforesleep_json = #{beforesleepJson}
+        </set>
+        <where>
+            sid = #{sid}
+        </where>
+    </update>
+
+    <insert id="insertMemberBloodSugarOfEverDay" parameterType="com.comvee.cdms.sign.po.MemberParamValuePO">
+        INSERT INTO t_member_everyday_sugar(sid,member_id ,param_value_json ,insert_dt ,modify_dt ,is_valid ,param_dt ,
+        high_value ,low_value ,standard_value ,three_times_high ,high_rate ,low_rate ,param_level,param_type,is_look)
+        VALUES (#{sid},#{memberId},#{paramValueJson},now(),now(),1 ,#{paramDt} ,#{highValue} ,
+        #{lowValue} ,#{standardValue} ,#{treeTimesHigh},#{highRate},#{lowRate},#{paramLevel},#{paramType},#{isLook})
+    </insert>
+    <insert id="addMemberSugarDayRecord" parameterType = "com.comvee.cdms.member.po.MemberSugarDayRecordPO">
+        insert into t_member_day_sugar_record(sid,member_id,member_name,insert_dt,modify_dt,is_valid,record_dt,
+        hospital_no,bed_no,department_id,randomtime_json,beforedawn_json,
+        beforebreakfast_json,afterbreakfast_json,beforelunch_json,afterlunch_json,beforedinner_json,
+        afterdinner_json,beforesleep_json)
+          values (#{sid},#{memberId},#{memberName},now(),now(),1,DATE_FORMAT(#{recordDt},'%Y-%m-%d'),#{hospitalNo,jdbcType=BIGINT},#{bedNo},
+          #{departmentId},#{randomtimeJson},#{beforedawnJson},
+          #{beforebreakfastJson},#{afterbreakfastJson},#{beforelunchJson},#{afterlunchJson},#{beforedinnerJson},
+          #{afterdinnerJson},#{beforesleepJson})
+    </insert>
+
+    <select id="listTreeTimesParamLogsByMid" resultMap="bloodSugar">
+        select sid, param_code, param_value, param_level, insert_dt, update_dt, record_dt,
+        remark, origin, member_id, operator_type, operator_id ,range_min ,range_max
+        from t_blood_sugar where member_id = #{memberId} and DATE_FORMAT(record_dt,'%Y-%m-%d')=#{paramDt}  and is_valid = 1
+        and record_type = 1
+        order by record_dt asc
+    </select>
+
+    <!--v6.0.0 end-->
+
+    <!--v 5.1.6-->
+    <select id="listBloodSugarOneDayOfInHos" parameterType="com.comvee.cdms.sign.dto.ListBloodSugarDTO" resultType="com.comvee.cdms.sign.po.BloodSugarPO">
+        select t.sid sid, t.param_code paramCode, t.param_value paramValue, t.param_level paramLevel,
+        t.insert_dt insertDt, t.update_dt updateDt, DATE_FORMAT(t.record_dt,'%Y-%m-%d') recordDt,
+        t.remark remark, t.origin origin, t.member_id memberId, t.operator_type operatorType, t.operator_id operatorId,
+        t.in_hos inHos,t.range_min rangeMin,t.range_max rangeMax
+        from t_blood_sugar t
+         where t.is_valid=1
+        and t.member_id=#{memberId}
+        <if test="startDt != null and startDt != ''">
+            and t.record_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and endDt != ''">
+            and t.record_dt &lt;= #{endDt}
+        </if>
+        <if test="paramCode != null and paramCode != ''">
+            and t.param_code = #{paramCode}
+        </if>
+        <if test="paramCodeList != null and paramCodeList.size() > 0">
+            and t.param_code in
+            <foreach collection="paramCodeList" open="(" item="item" separator="," close=")" >
+                #{item}
+            </foreach>
+        </if>
+        <if test="paramLevel != null and paramLevel == 1">
+            and t.param_level &lt; 3
+            order by t.param_value asc
+        </if>
+        <if test="paramLevel != null and paramLevel == 5">
+            and t.param_level &gt; 3
+            order by t.param_value desc
+        </if>
+        limit 1
+    </select>
+
+    <select id="getMemberEveryDaySugarByParams" resultMap="memberParamValuePO">
+        select sid,member_id,param_value_json,param_value_json,high_value,low_value,
+        three_times_high,high_rate,low_rate,standard_value,param_level,param_type
+        FROM t_member_everyday_sugar
+        where is_valid=1 and member_id=#{memberId}
+        and param_dt = DATE_FORMAT(#{recordDt},'%Y-%m-%d')
+        and param_value_json like '%"sid":"${sid}"%'
+        limit 1;
+    </select>
+
+    <select id="countInHospitalPatientAbnormalNumber" resultType="long">
+        select count(*) from (
+        select t.member_id from t_member_checkin_info t , t_blood_sugar q
+        where t.is_valid = 1 and q.is_valid = 1 and t.checkin_status = 1 and t.department_id = #{departmentId}
+        and t.member_id = q.member_id and q.param_level in (1,5)
+        <if test="startDt != null and '' != startDt">
+            and q.record_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and q.record_dt &lt;= #{endDt}
+        </if>
+        group by t.member_id
+        ) w
+    </select>
+
+    <select id="countInHospitalPatientUnMeasureNumber" resultType="long">
+        select count(distinct t.member_id) from t_member_checkin_info t left join t_blood_sugar q
+        on t.member_id = q.member_id and q.record_dt BETWEEN #{startDt} and #{endDt}
+        and q.is_valid = 1
+        where t.department_id = #{departmentId} and t.is_valid = 1 and t.checkin_status = 1 and q.sid is null
+    </select>
+
+    <select id="listInHospitalNormalSugarPatient" resultType="com.comvee.cdms.app.doctorapp.model.app.NormalSugerListResqModel">
+        select q.member_id memberId,q.member_name memberName,q.sex,q.diabetes_type diabetes_type,q.pic_url picUrl
+        ,t.department_name departmentName,t.hospital_no hospitalNo,t.bed_no bedNo
+        from t_member_checkin_info t ,t_member q ,t_blood_sugar r
+        where t.is_valid = 1 and q.is_valid = 1 and r.is_valid = 1 and t.member_id = q.member_id and q.member_id = r.member_id
+        and t.checkin_status = 1 and t.department_id = #{departmentId} and r.record_dt BETWEEN #{startDt} and #{endDt}
+        and not exists
+        (
+            select 1 from t_blood_sugar w where w.is_valid = 1 and w.record_dt BETWEEN #{startDt} and #{endDt}
+            and w.param_level in (1,5) and w.member_id = t.member_id
+        )
+        group by q.member_id
+    </select>
+
+    <select id="listInHospitalNotMeasuredSugarPatient" resultType="com.comvee.cdms.app.doctorapp.model.app.NormalSugerListResqModel">
+        select q.member_id memberId,q.member_name memberName,q.sex,q.diabetes_type diabetes_type,q.pic_url picUrl
+        ,t.department_name departmentName,t.hospital_no hospitalNo,t.bed_no bedNo
+        from t_member_checkin_info t ,t_member q
+        where t.is_valid = 1 and q.is_valid = 1 and t.member_id = q.member_id
+        and t.checkin_status = 1 and t.department_id = #{departmentId}
+        and not exists
+        (
+            select 1 from t_blood_sugar w where w.is_valid = 1 and w.record_dt BETWEEN #{startDt} and #{endDt}
+            and w.member_id = t.member_id
+        )
+    </select>
+
+    <select id="listInHospitalBloodSugar" resultMap="bloodSugar">
+        select t2.sid,t2.param_code,t2.param_level,t2.param_value,t2.record_dt,t2.member_id
+        from t_member_checkin_info t1 ,t_blood_sugar t2
+        where t1.is_valid = 1 and t2.is_valid = 1 and t1.member_id = t2.member_id
+        and t1.checkin_status = 1 and t1.department_id = #{departmentId} and t2.record_dt BETWEEN #{startDt} and #{endDt}
+        order by t2.record_dt
+    </select>
+
+    <select id="listMembersLatestBloodSugarRecord" resultMap="bloodSugar">
+        select q.sid,q.member_id,q.param_code,q.param_level,q.param_value,q.range_max,q.range_min,q.remark,q.record_dt
+        from (
+            select t.sid,t.member_id,t.param_code,t.param_level,t.param_value,t.range_max,t.range_min
+            ,t.remark,t.record_dt from t_blood_sugar t where t.is_valid = 1
+            and t.member_id in
+            <foreach collection="idList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+            order by t.record_dt desc
+        )q group by q.member_id
+    </select>
+
+    <select id="listOneDayLatestBloodSugarGroupParamCode" resultMap="bloodSugar">
+        select q.sid,q.param_code,q.param_level,q.param_value,q.record_dt,q.member_id from (
+            select t.param_code,t.param_value,t.member_id,t.param_level,t.sid,t.record_dt from t_blood_sugar t where t.is_valid = 1
+            and t.member_id = #{memberId} and t.record_dt between #{startDt} and #{endDt}
+            order by t.record_dt desc
+        ) q group by q.param_code
+    </select>
+
+    <select id="listMembersLatestBloodSugarRecordByRecordDt" resultMap="bloodSugar" parameterType="com.comvee.cdms.sign.dto.ListMembersLatestBloodSugarRecordByRecordDtDTO">
+        select q.sid,q.param_code,q.param_level,q.param_value,q.record_dt,q.member_id from (
+            select t.param_code,t.param_value,t.member_id,t.param_level,t.sid,t.record_dt from t_blood_sugar t where t.is_valid = 1
+            and t.member_id = #{memberId} and t.record_dt between #{startDt} and #{endDt}
+            <if test="inHos != null">
+                and t.in_hos = #{inHos}
+            </if>
+            <if test="paramLevel != null">
+                and t.param_level = #{paramLevel}
+            </if>
+            order by t.record_dt desc
+        ) q group by q.param_code
+    </select>
+
+
+    <select id="listMembersLatestBloodSugarRecordByRecordDtAndMemberId" resultMap="bloodSugar">
+        SELECT
+        t.member_id,
+        t.record_dt
+        FROM
+        t_blood_sugar t
+        JOIN t_member_in_hospital_log mc ON t.member_id = mc.member_id
+        WHERE
+        t.is_valid = 1
+        and mc.hospital_id = #{hospitalId}
+        AND t.member_id = #{memberId}
+        AND t.record_dt BETWEEN #{startDt} and #{endDt}
+        <if test="paramLevel!=null and paramLevel!=''">
+            AND t.param_level =#{paramLevel}
+        </if>
+        AND t.param_code != '3am'
+        ORDER BY
+        t.record_dt asc,mc.department_id asc,mc.bed_no ASC
+    </select>
+
+    <select id="listBloodSugarParamSetting" resultMap="paramSetting">
+        SELECT t.sid,t.param_code,t.param_code_desc,t.start_time,t.end_time,t.hospital_id
+        FROM t_blood_sugar_param_setting t where t.valid = 1
+        and t.hospital_id = #{hostialId} order by null
+    </select>
+
+    <select id="searchBloodSugar" resultMap="bloodSugar" parameterType="com.comvee.cdms.sign.dto.GetBloodSugarDTO">
+        select sid, param_code, param_value, param_level, insert_dt, update_dt, record_dt,
+        remark, origin, member_id, operator_type, operator_id,in_hos,range_min ,range_max,department_id,record_type
+        from t_blood_sugar where is_valid = 1
+        <if test="memberId != null and '' != memberId">
+          and member_id = #{memberId}
+        </if>
+        <if test="paramCode != null and '' != paramCode">
+            and param_code = #{paramCode}
+        </if>
+        <if test="paramValue != null and '' != paramValue">
+            and param_value = #{paramValue}
+        </if>
+        <if test="recordDt != null and '' != recordDt">
+            and record_dt = #{recordDt}
+        </if>
+        limit 1
+    </select>
+
+    <select id="getMachineModel" resultType="com.comvee.cdms.machine.model.MachineModel">
+        SELECT t.machine_id as machineId,t.machine_type as machineType,t.machine_code as machineCode ,
+        t.machine_no as machineNo,t.machine_sn as machineSn,t.is_valid as isValid,machine_status as machineStatus,
+        DATE_FORMAT(t.insert_dt,'%Y-%m-%d %H:%i:%s')as insertDt,
+       	DATE_FORMAT(t.modify_dt,'%Y-%m-%d %H:%i:%s')as modifyDt
+       	FROM t_machine t where t.is_valid = 1
+       	<if test="machineId != null and machineId !=''">
+			and t.machine_id = #{machineId}
+		</if>
+		<if test="machineNo != null and machineNo !=''">
+			and t.machine_no = #{machineNo}
+		</if>
+		<if test="machineSn != null and machineSn !=''">
+			and t.machine_sn = #{machineSn}
+		</if>
+    </select>
+
+	<update id="modifyMachineModel">
+		update t_machine t  
+		<set>
+			t.modify_dt = now()
+			<if test="machineStatus !=null and machineStatus !=''">
+				, t.machine_status = #{machineStatus}
+			</if>
+		</set>
+		<where>
+			t.is_valid = 1
+			<if test="machineId !=null and machineId !=''">
+				and t.machine_id = #{machineId}
+			</if>
+			<if test="machineNo !=null and machineNo !=''">
+				and t.machine_no = #{machineNo}
+			</if>
+		</where>
+	</update>
+    <update id="updateMemberSugarDayRecord">
+        update t_member_day_sugar_record
+        <set>
+            modify_dt = now(),
+            <if test="hospitalNo !=null and hospitalNo !=''">
+                hospital_no = #{hospitalNo},
+            </if>
+            <if test="bedNo !=null and bedNo !=''">
+                bed_no = #{bedNo},
+            </if>
+            <if test="randomtimeJson !=null and randomtimeJson !=''">
+                randomtime_json = #{randomtimeJson},
+            </if>
+            <if test="beforedawnJson !=null and beforedawnJson !=''">
+                beforedawn_json = #{beforedawnJson},
+            </if>
+            <if test="beforebreakfastJson !=null and beforebreakfastJson !=''">
+                beforebreakfast_json = #{beforebreakfastJson},
+            </if>
+            <if test="afterbreakfastJson !=null and afterbreakfastJson !=''">
+                afterbreakfast_json = #{afterbreakfastJson},
+            </if>
+            <if test="beforelunchJson !=null and beforelunchJson !=''">
+                beforelunch_json = #{beforelunchJson},
+            </if>
+            <if test="afterlunchJson !=null and afterlunchJson !=''">
+                afterlunch_json = #{afterlunchJson},
+            </if>
+            <if test="beforedinnerJson !=null and beforedinnerJson !=''">
+                beforedinner_json = #{beforedinnerJson},
+            </if>
+            <if test="afterdinnerJson !=null and afterdinnerJson !=''">
+                afterdinner_json = #{afterdinnerJson},
+            </if>
+            <if test="beforesleepJson !=null and beforesleepJson !=''">
+                beforesleep_json = #{beforesleepJson},
+            </if>
+        </set>
+        <where>
+            sid = #{sid}
+        </where>
+    </update>
+    <update id="handleBloodSugarBySid">
+        update t_blood_sugar set warn_status = #{status} where sid = #{sid}
+    </update>
+
+    <select id="listBloodSugarByMemberIdAndRecordDt" resultMap="bloodSugar">
+        select sid, param_code, param_value, param_level, insert_dt, update_dt, record_dt,
+        remark, origin, member_id, operator_type, operator_id ,range_min ,range_max
+        from t_blood_sugar where member_id = #{memberId}
+        <if test="recordDt!=null and recordDt!=''">
+            and DATE_FORMAT(record_dt,'%Y-%m-%d')=DATE_FORMAT(#{recordDt},'%Y-%m-%d')
+        </if>
+        <if test="paramCode!=null and paramCode!=''">
+            and param_code = #{paramCode}
+        </if>
+        and is_valid = 1 order by record_dt limit 1
+    </select>
+    <select id="listAllBloodMemberHospital" parameterType="com.comvee.cdms.sign.dto.ListMemberBloodSugarHospitalDTO"
+            resultMap="memberSugarDayPO">
+       select a.* from(
+       select sr.sid, sr.member_id, sr.member_name, sr.insert_dt, sr.modify_dt, sr.is_valid, sr.record_dt,
+        sr.hospital_no, sr.bed_no, sr.department_id, sr.randomtime_json, sr.beforedawn_json,
+        sr.beforebreakfast_json, sr.afterbreakfast_json, sr.beforelunch_json, sr.afterlunch_json, sr.beforedinner_json,
+        sr.afterdinner_json, sr.beforesleep_json,mci.doctor_zg_code doctor_id,mci.doctor_zg doctor_name
+        from t_member_day_sugar_record sr left join
+        (select * from
+        (select <include refid="Hospital_Log_Column"/>
+        from t_member_in_hospital_log order by insert_dt desc) mhl group by mhl.member_id) mci on mci.member_id = sr.member_id
+        <where>
+            sr.is_valid = 1 and  sr.department_id != -1 and
+            <foreach collection="paramCodeList" separator="or" open="(" item="item" index="index" close=")">
+                 ${item} is not null
+            </foreach>
+            <if test="departmentId!=null and departmentId!=''">
+                and  sr.department_id = #{departmentId}
+            </if>
+            <if test = "startDt != null and '' != startDt">
+                and  sr.record_dt &gt;= #{startDt}
+            </if>
+            <if test = "endDt != null and '' != endDt">
+                and  sr.record_dt &lt;= #{endDt}
+            </if>
+            <if test="keyword!=null and keyword != ''">
+                AND (instr( sr.member_name ,#{keyword}) > 0 or instr( sr.bed_no  ,#{keyword}) > 0 or instr( mci.doctor_zg  ,#{keyword}) > 0)
+            </if>
+
+            <if test="departmentIdList!=null and departmentIdList.size>0">
+                and  sr.department_id IN
+                <foreach collection="departmentIdList" separator="," open="(" item="item" index="index" close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        order by record_dt desc
+        ) a
+    </select>
+    <select id="getSugarDayPOByMemberIdAndDt"
+            resultMap="memberSugarDayPO">
+        select sid,member_id,member_name,insert_dt,modify_dt,is_valid,record_dt,
+        hospital_no,bed_no,department_id,randomtime_json,beforedawn_json,
+        beforebreakfast_json,afterbreakfast_json,beforelunch_json,afterlunch_json,beforedinner_json,
+        afterdinner_json,beforesleep_json
+        from t_member_day_sugar_record
+        where is_valid=1 and member_id = #{memberId}
+        and record_dt = DATE_FORMAT(#{recordDt},'%Y-%m-%d')
+    </select>
+
+    <select id="getMemberBloodStaticsList"  resultMap="memberStatics">
+        select a.member_id,count(a.sid) monitorNum,count(b.sid) highSugarNum,
+        count(c.sid) lowSugarNum ,count(d.sid) normalSugarNum
+        from
+        (select sid,member_id,department_id from t_blood_sugar
+        <where>
+            is_valid = 1
+            <if test="memberId != null and memberId != ''">
+                and member_id = #{memberId}
+            </if>
+            <if test="departmentId != null and departmentId != ''">
+                and department_id = #{departmentId}
+            </if>
+        </where>) a left join
+        (select sid,member_id,department_id from t_blood_sugar
+        <where>
+            is_valid = 1 and param_level = 5
+            <if test="memberId != null and memberId != ''">
+                and member_id = #{memberId}
+            </if>
+            <if test="departmentId != null and departmentId != ''">
+                and department_id = #{departmentId}
+            </if>
+        </where>) b on a.sid =b.sid left join
+        (select sid,member_id,department_id from t_blood_sugar
+        <where>
+            is_valid = 1 and param_level = 1
+            <if test="memberId != null and memberId != ''">
+                and member_id = #{memberId}
+            </if>
+            <if test="departmentId != null and departmentId != ''">
+                and department_id = #{departmentId}
+            </if>
+        </where>) c on c.sid =a.sid left join
+        (select sid,member_id,department_id from t_blood_sugar
+        <where>
+            is_valid = 1 and param_level = 3
+            <if test="memberId != null and memberId != ''">
+                and member_id = #{memberId}
+            </if>
+            <if test="departmentId != null and departmentId != ''">
+                and department_id = #{departmentId}
+            </if>
+        </where>) d on d.sid =a.sid
+    </select>
+    <select id="getBloodSugarWarnVOList" resultMap="bloodWarnMap"
+    parameterType="com.comvee.cdms.sign.dto.SugarMonitorStaticsDTO">
+        select s.sid,mci.department_name,mci.member_name,mci.hospital_no,mci.bed_no,s.record_dt,s.param_value,s.param_code,
+        CONCAT_WS("-",s.range_min,s.range_max) goal_range,mci.doctor_zg doctor_name,s.warn_status,mci.doctor_zg_code doctor_id,s.member_id
+        from t_blood_sugar s
+         inner join
+        (select * from
+        (select <include refid="Hospital_Log_Column"/>
+        from t_member_in_hospital_log
+        order by insert_dt desc) mhl group by mhl.member_id) mci on mci.member_id = s.member_id
+        where s.is_valid = 1 and s.param_level = #{paramLevel} and
+         s.param_code in
+        <foreach collection="codeList" item="item" open="(" close=")" separator="," index="index">
+            #{item}
+        </foreach>
+        <if test="departmentId != null and departmentId != ''">
+            and s.department_id = #{departmentId}
+        </if>
+        <if test="departmentIdList!=null and departmentIdList.size()&gt;0">
+            and s.department_id in
+            <foreach collection="departmentIdList" item="item" open="(" close=")" separator="," index="index">
+                #{item}
+            </foreach>
+        </if>
+        <if test="startDt != null and startDt != ''">
+            and s.record_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and endDt != ''">
+            and s.record_dt &lt;= #{endDt}
+        </if>
+        <if test="keyword!=null and keyword != ''">
+            AND (instr( mci.member_name ,#{keyword}) > 0 or instr(mci.doctor_zg,#{keyword}) > 0 or instr(mci.hospital_no  ,#{keyword}) > 0)
+        </if>
+        order by s.record_dt desc
+    </select>
+    <select id="getSugarRecordDayByMemberId" resultType="java.lang.String">
+        select DATE_FORMAT(t.record_dt,'%Y-%m-%d') recordDt
+        from t_blood_sugar t
+        where t.is_valid=1 and t.member_id = #{memberId}
+        <if test="startDt != null and startDt != ''">
+            and t.record_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and endDt != ''">
+            and t.record_dt &lt;= #{endDt}
+        </if>
+        group by DATE_FORMAT(t.record_dt,'%Y-%m-%d')
+        order by t.record_dt desc
+    </select>
+    <select id="getBloodSugarWarnNum" resultType="java.lang.Integer">
+        select count(s.sid) num
+        from t_blood_sugar s
+        inner join
+        (select * from
+        (select <include refid="Hospital_Log_Column"/>
+        from t_member_in_hospital_log
+        order by insert_dt desc) mhl group by mhl.member_id) mci on mci.member_id = s.member_id
+        where s.is_valid = 1 and s.param_level in (1,5) and s.warn_status = 0
+        <if test="departmentId != null and departmentId != ''">
+            and s.department_id = #{departmentId}
+        </if>
+        <if test="departmentIdList!=null and departmentIdList.size()&gt;0">
+            and s.department_id in
+            <foreach collection="departmentIdList" item="item" open="(" close=")" separator="," index="index">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="listBloodSugarMemberIdList" resultType="java.lang.String">
+        select
+        s.member_id
+        from t_blood_sugar s join t_member_join_hospital h on s.member_id = h.member_id
+        where s.is_valid = 1 and h.valid = 1
+        <if test = "recordType != null">
+            and s.record_type = #{recordType}
+        </if>
+        <if test = "memberId != null and '' != memberId">
+            and s.member_id = #{memberId}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            and s.record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            and s.record_dt &lt;= #{endDt}
+        </if>
+        <if test="paramCodeList!=null and paramCodeList.size()&gt;0">
+            AND s.param_code IN
+            <foreach collection="paramCodeList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test = "paramLevel != null and '' != paramLevel">
+            and s.param_level in (${paramLevel})
+        </if>
+        <if test = "origin != null and '' != origin">
+            and s.origin = #{origin}
+        </if>
+        <if test = "operatorType != null and '' != operatorType">
+            and s.operator_type = #{operatorType}
+        </if>
+        <if test = "operatorId != null and '' != operatorId">
+            and s.operator_id = #{operatorId}
+        </if>
+
+        <if test="hospitalId != null and '' != hospitalId">
+            and h.hospital_id = #{hospitalId}
+        </if>
+        <if test="hospitalIdList!=null and hospitalIdList.size()&gt;0">
+            AND h.hospital_id IN
+            <foreach collection="hospitalIdList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        group by s.member_id
+    </select>
+    <select id="listBloodSugarByHospitalId" parameterType="com.comvee.cdms.sign.dto.ListBloodSugarDTO" resultMap="bloodSugar">
+        select s.sid, s.param_code, s.param_value, s.param_level, s.insert_dt, s.update_dt, s.record_dt,
+        s.remark, s.origin, s.member_id,s. operator_type, s.operator_id,s.in_hos,s.range_min ,s.range_max,s.strong_code
+        from t_blood_sugar s left join t_member_join_hospital h on s.member_id = h.member_id
+        where s.is_valid = 1 and h.valid = 1
+        <if test = "recordType != null">
+            and s.record_type = #{recordType}
+        </if>
+        <if test = "memberId != null and '' != memberId">
+            and s.member_id = #{memberId}
+        </if>
+        <if test = "startDt != null and '' != startDt">
+            and s.record_dt &gt;= #{startDt}
+        </if>
+        <if test = "endDt != null and '' != endDt">
+            and s.record_dt &lt;= #{endDt}
+        </if>
+        <if test="paramCodeList!=null and paramCodeList.size()&gt;0">
+            AND s.param_code IN
+            <foreach collection="paramCodeList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test = "paramLevel != null and '' != paramLevel">
+            and s.param_level in (${paramLevel})
+        </if>
+        <if test = "origin != null and '' != origin">
+            and s.origin = #{origin}
+        </if>
+        <if test = "operatorType != null and '' != operatorType">
+            and s.operator_type = #{operatorType}
+        </if>
+        <if test = "operatorId != null and '' != operatorId">
+            and s.operator_id = #{operatorId}
+        </if>
+        <!--        <if test = "inHos != null">-->
+        <!--            and in_hos = #{inHos}-->
+        <!--        </if>-->
+        <if test="sidArray!=null and sidArray.length&gt;0">
+            AND s.sid IN
+            <foreach collection="sidArray" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="hospitalId != null and '' != hospitalId">
+            and h.hospital_id = #{hospitalId}
+        </if>
+        <if test="hospitalIdList!=null and hospitalIdList.size()&gt;0">
+            AND h.hospital_id IN
+            <foreach collection="hospitalIdList" close=")" open="(" index="index" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="refreshTime != null and ''!=refreshTime">
+            and s.insert_dt &gt;= #{refreshTime}
+        </if>
+        <if test="orderASC!=null and orderASC!=''">
+            order by s.record_dt asc
+        </if>
+        <if test="orderASC==null or orderASC==''">
+            order by s.record_dt desc
+        </if>
+    </select>
+    <select id="getLastSugarYear" resultType="java.lang.Long">
+      select ifnull(count(1),0) from (
+        select * from(
+        select s.member_id,s.param_value
+        from t_blood_sugar s join t_member_join_hospital mjh
+        on mjh.member_id = s.member_id
+        <where>
+            record_type = 1
+            <if test="year != null and '' != year">
+                and DATE_FORMAT(s.record_dt,'%Y') = #{year}
+            </if>
+            <if test="paramCode != null and '' != paramCode">
+                and s.param_code = #{paramCode}
+            </if>
+            <if test="hospitalIdList!=null and hospitalIdList.size()&gt;0">
+                AND mjh.hospital_id IN
+                <foreach collection="hospitalIdList" close=")" open="(" index="index" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        having 1
+        order by s.record_dt desc ) a
+        group by member_id
+        <if test="abnormal != null">
+            having param_value &lt;= #{abnormal}
+        </if>
+        )b
+    </select>
+
+
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.sign.mapper.SugarMonthReportMapper">
+
+
+    <resultMap id="monthReport" type="com.comvee.cdms.sign.po.SugarMonthReportPO">
+        <id column="report_id" jdbcType="BIGINT" property="reportId" />
+        <result column="member_id" jdbcType="BIGINT" property="memberId" />
+        <result column="diabetes_type" jdbcType="VARCHAR" property="diabetesType" />
+        <result column="range_data" jdbcType="VARCHAR" property="rangeData" />
+        <result column="hba1c_data" jdbcType="VARCHAR" property="hba1cData" />
+        <result column="blood_sugar_data" jdbcType="VARCHAR" property="bloodSugarData" />
+        <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+        <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+        <result column="valid" jdbcType="TINYINT" property="valid" />
+        <result column="report_status" jdbcType="TINYINT" property="reportStatus" />
+        <result column="push_status" jdbcType="TINYINT" property="pushStatus" />
+        <result column="report_date" jdbcType="VARCHAR" property="reportDate" />
+    </resultMap>
+
+    <insert id="addSugarMonthReport" parameterType="com.comvee.cdms.sign.po.SugarMonthReportPO">
+        insert into t_sugar_month_report (report_id, member_id, diabetes_type,
+          range_data, hba1c_data, blood_sugar_data ,report_date)
+        values (#{reportId,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{diabetesType,jdbcType=VARCHAR},
+          #{rangeData,jdbcType=VARCHAR}, #{hba1cData,jdbcType=VARCHAR}, #{bloodSugarData,jdbcType=VARCHAR} ,#{reportDate})
+    </insert>
+
+    <insert id="updateSugarMonthReport" parameterType="com.comvee.cdms.sign.po.SugarMonthReportPO">
+        update t_sugar_month_report
+        <set>
+            <if test="hba1cData != null and '' != hba1cData">
+                hba1c_data = #{hba1cData,jdbcType=VARCHAR},
+            </if>
+            <if test="bloodSugarData != null and '' != bloodSugarData">
+                blood_sugar_data = #{bloodSugarData,jdbcType=VARCHAR},
+            </if>
+            <if test="valid != null">
+                valid = #{valid,jdbcType=TINYINT},
+            </if>
+            <if test="reportStatus != null">
+                report_status = #{reportStatus,jdbcType=TINYINT},
+            </if>
+            <if test="pushStatus != null">
+                push_status = #{pushStatus,jdbcType=TINYINT},
+            </if>
+        </set>
+        where report_id = #{reportId,jdbcType=BIGINT}
+    </insert>
+
+    <select id="getSugarMonthReportById" resultMap="monthReport">
+        select report_id, member_id, diabetes_type, range_data, hba1c_data, blood_sugar_data,
+        insert_dt, update_dt, valid, report_status, push_status ,report_date
+        from t_sugar_month_report
+        where valid = 1 and report_id = #{reportId,jdbcType=BIGINT} limit 1
+    </select>
+
+    <select id="listSugarMonthReport" resultMap="monthReport">
+        select report_id, member_id, diabetes_type, range_data, hba1c_data, blood_sugar_data,
+        insert_dt, update_dt, valid, report_status, push_status ,report_date
+        from t_sugar_month_report
+        where valid = 1 and  member_id = #{memberId} order by report_date desc
+    </select>
+
+    <select id="getSugarMonthReportByMemberId" resultMap="monthReport">
+        select report_id, member_id, diabetes_type, range_data, hba1c_data, blood_sugar_data
+        insert_dt, update_dt, valid, report_status, push_status ,report_date
+        from t_sugar_month_report
+        where valid = 1 and  member_id = #{memberId} and report_date = #{month} limit 1
+    </select>
+
+    <select id="listPushSugarMonthReport" resultMap="monthReport">
+        select report_id, member_id, diabetes_type, range_data, hba1c_data, blood_sugar_data,
+        insert_dt, update_dt, valid, report_status, push_status ,report_date
+        from t_sugar_month_report
+        where valid = 1 and  push_status = 0 and insert_dt &gt;= #{date} limit #{limit}
+    </select>
+
+    <update id="batchUpdateSugarMonthReportPushStatus">
+        update t_sugar_month_report t set push_status = 1
+        where report_id in
+        <foreach collection="idList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

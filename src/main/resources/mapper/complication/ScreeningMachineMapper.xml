@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.complication.mapper.ScreeningMachineMapper">
+
+  <resultMap id="screeningMachine" type="com.comvee.cdms.complication.model.po.ScreeningMachinePO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="machine_sn" jdbcType="VARCHAR" property="machineSn" />
+    <result column="hospital_id" jdbcType="BIGINT" property="hospitalId" />
+    <result column="doctor_id" jdbcType="BIGINT" property="doctorId" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="update_dt" jdbcType="TIMESTAMP" property="updateDt" />
+    <result column="secret_key" jdbcType="VARCHAR" property="secretKey" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName" />
+    <result column="doctor_name" jdbcType="VARCHAR" property="doctorName" />
+  </resultMap>
+
+  <insert id="addScreeningMachine" parameterType="com.comvee.cdms.complication.model.po.ScreeningMachinePO">
+    insert into t_screening_machine (sid, machine_sn, hospital_id, doctor_id, insert_dt,update_dt,secret_key,
+    description,hospital_name,doctor_name)
+    values (#{sid,jdbcType=BIGINT}, #{machineSn,jdbcType=VARCHAR}, #{hospitalId,jdbcType=BIGINT}, #{doctorId,jdbcType=BIGINT}, now(),now(),
+    #{secretKey,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR},#{hospitalName,jdbcType=VARCHAR},#{doctorName,jdbcType=VARCHAR})
+  </insert>
+
+  <select id="getScreeningMachine" resultMap="screeningMachine">
+    select sid, machine_sn, hospital_id, doctor_id, insert_dt,update_dt,secret_key,
+    description,hospital_name,doctor_name
+    from t_screening_machine
+    <where>
+      <if test="machineSn != null and '' != machineSn">
+         machine_sn = #{machineSn}
+      </if>
+      <if test="secretKey != null and '' != secretKey">
+        and secret_key = #{secretKey}
+      </if>
+    </where>
+    LIMIT 1
+  </select>
+
+  <select id="listHospitalNameOrDoctorIdOrEquipmentNo" resultMap="screeningMachine">
+    SELECT
+    sid, machine_sn, hospital_id, doctor_id, insert_dt,update_dt,secret_key,
+    description,hospital_name,doctor_name
+    FROM
+    t_screening_machine
+    WHERE
+    <if test="hospitalName != null">
+        hospital_name like  CONCAT(CONCAT('%', #{hospitalName},'%'))
+    </if>
+    <if test="doctorName != null">
+      and doctor_name like  CONCAT(CONCAT('%', #{doctorName},'%'))
+    </if>
+    <if test="machineSn != null">
+      and machine_sn like CONCAT(CONCAT('%', #{machineSn},'%'))
+    </if>
+    order by update_dt desc
+  </select>
+
+  <select id="getScreeningMachineBySid" resultMap="screeningMachine">
+    SELECT
+    sid, machine_sn, hospital_id, doctor_id, insert_dt,update_dt,secret_key,
+    description,hospital_name,doctor_name
+    FROM
+    t_screening_machine
+    WHERE
+     sid = #{sid}
+  </select>
+
+  <update id="updateScreeningMachine" parameterType="java.lang.String">
+    update t_screening_machine
+    <set>
+      <if test="doctorId != null">
+        doctor_id = #{doctorId,jdbcType=BIGINT},
+      </if>
+      <if test="doctorName != null">
+        doctor_name = #{doctorName,jdbcType=BIGINT},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="hospitalName != null">
+        hospital_name = #{hospitalName,jdbcType=VARCHAR},
+      </if>
+      update_dt = now()
+    </set>
+    where sid = #{sid}
+  </update>
+
+</mapper>

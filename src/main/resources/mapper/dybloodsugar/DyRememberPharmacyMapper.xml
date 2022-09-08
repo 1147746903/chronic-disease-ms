@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.DyRememberPharmacyMapper">
+
+  <resultMap id="dyPharmacyRemember" type="com.comvee.cdms.dybloodsugar.po.DyRememberPharmacyPO">
+    <id column="sid" jdbcType="BIGINT" property="sid" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="operation_id" jdbcType="BIGINT" property="operationId" />
+    <result column="pharmacy_dt" jdbcType="VARCHAR" property="pharmacyDt" />
+    <result column="pharmacy_details_json" jdbcType="VARCHAR" property="pharmacyDetailsJson" />
+    <result column="record_dt" jdbcType="TIMESTAMP" property="recordDt" />
+    <result column="insert_dt" jdbcType="TIMESTAMP" property="insertDt" />
+    <result column="modify_dt" jdbcType="TIMESTAMP" property="modifyDt" />
+    <result column="is_valid" jdbcType="INTEGER" property="isValid" />
+    <result column="operation_type" jdbcType="INTEGER" property="operationType" />
+  </resultMap>
+
+
+  <select id="getDyPharmacyRememberPOList"  resultMap="dyPharmacyRemember">
+    select
+        sid,member_id, operation_id,pharmacy_dt,pharmacy_details_json,
+        record_dt,insert_dt, modify_dt, is_valid,operation_type
+    FROM dy_remember_pharmacy
+    where is_valid=1 and member_id = #{memberId}
+    <if test="operationType != null">
+      and operation_type = #{operationType}
+    </if>
+
+    and record_dt between #{recordDtStart} and #{recordDtEnd} order by insert_dt desc
+  </select>
+
+  <select id="getDyPharmacyRememberValues"  resultMap="dyPharmacyRemember">
+    select
+        sid,member_id, operation_id,pharmacy_dt,pharmacy_details_json,
+        record_dt, insert_dt, modify_dt, is_valid,operation_type
+    FROM dy_remember_pharmacy where sid=#{sid} and is_valid=1
+  </select>
+
+  <select id="getDyPharmacyRememberPO"  resultMap="dyPharmacyRemember">
+    SELECT
+        sid,member_id, operation_id,pharmacy_dt,pharmacy_details_json,
+        record_dt, insert_dt, modify_dt, is_valid,operation_type
+    FROM
+        dy_remember_pharmacy
+    WHERE
+	    member_id=#{memberId} and pharmacy_dt=#{pharmacyDt} and is_valid=1 and operation_type = #{operationType}
+	and record_dt between #{recordDt} and #{recordDt}
+  </select>
+
+  <insert id="addDyPharmacyRemember" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberPharmacyPO">
+    insert into dy_remember_pharmacy (sid,member_id, operation_id,pharmacy_dt,
+    pharmacy_details_json,record_dt, insert_dt, modify_dt, is_valid,operation_type)
+    values (#{sid,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
+    #{operationId,jdbcType=BIGINT},#{pharmacyDt,jdbcType=TIMESTAMP},#{pharmacyDetailsJson,jdbcType=VARCHAR},
+    #{recordDt,jdbcType=TIMESTAMP},now(), now(),1,#{operationType,jdbcType=INTEGER}
+    )
+  </insert>
+
+  <update id="updateDyPharmacyRemember" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberPharmacyPO">
+    update dy_remember_pharmacy
+    <set>
+      <if test="operationId != null">
+        operation_id = #{operationId,jdbcType=VARCHAR},
+      </if>
+      <if test="pharmacyDt != null">
+        pharmacy_dt = #{pharmacyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="pharmacyDetailsJson != null">
+        pharmacy_details_json = #{pharmacyDetailsJson,jdbcType=VARCHAR},
+      </if>
+        modify_dt = now()
+    </set>
+    where
+      member_id=#{memberId} and pharmacy_dt=#{pharmacyDt} and is_valid=1 and operation_type = #{operationType}
+      and record_dt = #{recordDt}
+  </update>
+
+  <update id="updateDyPharmacyRememberBySid" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberPharmacyPO">
+    update dy_remember_pharmacy
+    <set>
+      <if test="operationId != null">
+        operation_id = #{operationId,jdbcType=VARCHAR},
+      </if>
+      <if test="pharmacyDt != null">
+        pharmacy_dt = #{pharmacyDt,jdbcType=VARCHAR},
+      </if>
+      <if test="pharmacyDetailsJson != null">
+        pharmacy_details_json = #{pharmacyDetailsJson,jdbcType=VARCHAR},
+      </if>
+        modify_dt = now()
+    </set>
+    where
+        sid=#{sid}
+  </update>
+
+  <update id="deletePharmacyRemember" parameterType="com.comvee.cdms.dybloodsugar.po.DyRememberPharmacyPO">
+        update dy_remember_pharmacy
+        set is_valid = 0,
+        modify_dt = now()
+        where sid = #{sid}
+  </update>
+</mapper>

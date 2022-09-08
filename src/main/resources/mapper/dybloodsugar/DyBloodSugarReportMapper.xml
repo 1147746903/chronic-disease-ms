@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.comvee.cdms.dybloodsugar.mapper.DyBloodSugarReportMapper" >
+
+    <resultMap id="dyBloodSugarReport" type="com.comvee.cdms.dybloodsugar.po.DyBloodSugarReportPO">
+        <id column="sid" property="sid" jdbcType="BIGINT"/>
+        <result column="sensor_no" property="sensorNo" jdbcType="VARCHAR"/>
+        <result column="doctor_id" property="doctorId" jdbcType="VARCHAR"/>
+        <result column="doctor_name" property="doctorName" jdbcType="VARCHAR"/>
+        <result column="details" property="details" jdbcType="VARCHAR"/>
+        <result column="start_dt" property="startDt" jdbcType="TIMESTAMP"/>
+        <result column="end_dt" property="endDt" jdbcType="TIMESTAMP"/>
+        <result column="insert_dt" property="insertDt" jdbcType="TIMESTAMP"/>
+        <result column="modify_dt" property="modifyDt" jdbcType="TIMESTAMP"/>
+        <result column="is_valid" property="isValid" jdbcType="TINYINT"/>
+    </resultMap>
+    <insert id="addReport" parameterType="com.comvee.cdms.dybloodsugar.po.DyBloodSugarReportPO">
+        insert into dy_blood_sugar_report(sid, sensor_no, doctor_id, details, start_dt, end_dt, insert_dt, modify_dt, is_valid)
+        values(#{sid}, #{sensorNo}, #{doctorId}, #{details}, #{startDt}, #{endDt}, now(), now(), #{isValid})
+    </insert>
+
+    <select id="getReportList" parameterType="com.comvee.cdms.dybloodsugar.dto.DyReportDTO" resultMap="dyBloodSugarReport">
+        select sid, sensor_no, a.doctor_id, b.doctor_name, start_dt, end_dt, a.insert_dt, a.modify_dt, a.is_valid
+        from dy_blood_sugar_report a
+                 left join t_doctor b on a.doctor_id = b.doctor_id
+        where 1 = 1
+          and a.doctor_id = #{doctorId}
+        <if test="isValid != null">
+           and a.is_valid = #{isValid}
+        </if>
+        order by a.insert_dt desc
+    </select>
+
+    <select id="getReportListByMember" parameterType="com.comvee.cdms.dybloodsugar.dto.DyReportDTO" resultMap="dyBloodSugarReport">
+        select sid, sensor_no, a.doctor_id, b.doctor_name, start_dt, end_dt, a.insert_dt, a.modify_dt, a.is_valid
+        from dy_blood_sugar_report a
+                 left join t_doctor b on a.doctor_id = b.doctor_id
+        where 1 = 1
+            and is_valid = 1
+          and a.sensor_no in (select sensor_no from dy_member_sensor where member_id = #{memberId})
+        order by a.insert_dt desc
+    </select>
+
+
+
+    <select id="getReportById" parameterType="String" resultMap="dyBloodSugarReport">
+        select sid, sensor_no, a.doctor_id, b.doctor_name, details, start_dt, end_dt, a.insert_dt, a.modify_dt
+        from dy_blood_sugar_report a
+        left join t_doctor b on a.doctor_id = b.doctor_id
+        where 1 = 1
+            and sid = #{reportId}
+    </select>
+
+    <update id="updateReport" parameterType="com.comvee.cdms.dybloodsugar.po.DyBloodSugarReportPO">
+        update dy_blood_sugar_report
+        set details = #{details}, modify_dt = now()
+        where sid = #{sid}
+    </update>
+
+    <update id="setReportValid" parameterType="String">
+        update dy_blood_sugar_report
+        set is_valid = 1, modify_dt = now()
+        where sid = #{sid}
+    </update>
+
+    <update id="setReportNotValid" parameterType="String">
+        update dy_blood_sugar_report
+        set is_valid = 0, modify_dt = now()
+        where sid = #{sid}
+    </update>
+</mapper>

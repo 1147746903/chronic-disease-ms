@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.comvee.cdms.dybloodpressure.mapper.DyBloodPressureReportMapper">
+
+    <resultMap type="com.comvee.cdms.dybloodpressure.po.DyBloodPressureReportPO" id="TDynamicBpReportMap">
+        <result property="sid" column="sid" jdbcType="INTEGER"/>
+        <result property="memberId" column="member_id" jdbcType="INTEGER"/>
+        <result property="operationId" column="operation_id" jdbcType="INTEGER"/>
+        <result property="details" column="details" jdbcType="VARCHAR"/>
+        <result property="sender" column="sender" jdbcType="VARCHAR"/>
+        <result property="senderSignDt" column="sender_sign_dt" jdbcType="TIMESTAMP"/>
+        <result property="reporter" column="reporter" jdbcType="VARCHAR"/>
+        <result property="reportSignDt" column="report_sign_dt" jdbcType="TIMESTAMP"/>
+        <result property="startDt" column="start_dt" jdbcType="VARCHAR"/>
+        <result property="endDt" column="end_dt" jdbcType="VARCHAR"/>
+        <result property="insertDt" column="insert_dt" jdbcType="TIMESTAMP"/>
+        <result property="modifyDt" column="modify_dt" jdbcType="TIMESTAMP"/>
+        <result property="isValid" column="is_valid" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TDynamicBpReportMap">
+        select
+        sid, member_id, operation_id, details, sender, sender_sign_dt, reporter, report_sign_dt, start_dt, end_dt,
+        insert_dt, modify_dt, is_valid
+        from t_dynamic_bp_report
+        <where>
+            <if test="sid != null">
+                and sid = #{sid}
+            </if>
+            <if test="memberId != null">
+                and member_id = #{memberId}
+            </if>
+            <if test="operationId != null">
+                and operation_id = #{operationId}
+            </if>
+            <if test="details != null and details != ''">
+                and details = #{details}
+            </if>
+            <if test="sender != null and sender != ''">
+                and sender = #{sender}
+            </if>
+            <if test="senderSignDt != null">
+                and sender_sign_dt = #{senderSignDt}
+            </if>
+            <if test="reporter != null and reporter != ''">
+                and reporter = #{reporter}
+            </if>
+            <if test="reportSignDt != null">
+                and report_sign_dt = #{reportSignDt}
+            </if>
+            <if test="startDt != null">
+                and start_dt = #{startDt}
+            </if>
+            <if test="endDt != null">
+                and end_dt = #{endDt}
+            </if>
+            <if test="insertDt != null">
+                and insert_dt = #{insertDt}
+            </if>
+            <if test="modifyDt != null">
+                and modify_dt = #{modifyDt}
+            </if>
+            <if test="isValid != null">
+                and is_valid = #{isValid}
+            </if>
+        </where>
+    </select>
+    <select id="queryByMemberId" resultMap="TDynamicBpReportMap">
+        select
+        sid, member_id, operation_id, details, sender, sender_sign_dt, reporter, report_sign_dt, start_dt, end_dt,
+        insert_dt, modify_dt, is_valid
+        from t_dynamic_bp_report
+         where is_valid = 1 and member_id = #{memberId} and start_dt = #{startDt} and end_dt = #{endDt}
+        limit 1
+    </select>
+    <select id="listByMemberId" resultMap="TDynamicBpReportMap">
+        select
+        sid, member_id, operation_id, details, sender, sender_sign_dt, reporter, report_sign_dt, start_dt, end_dt,
+        insert_dt, modify_dt, is_valid
+        from t_dynamic_bp_report
+         where is_valid = 1 and member_id = #{memberId}
+        <if test="startDt != null and '' != startDt">
+            and t.start_dt &gt;= #{startDt}
+        </if>
+        <if test="endDt != null and '' != endDt">
+            and t.end_dt &lt;= #{endDt}
+        </if>
+        limit 1
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sid" useGeneratedKeys="true">
+        insert into t_dynamic_bp_report(sid,member_id, operation_id, details, sender,
+        sender_sign_dt, reporter, report_sign_dt, start_dt, end_dt, insert_dt, modify_dt, is_valid)
+        values (#{sid},#{memberId}, #{operationId}, #{details}, #{sender}, #{senderSignDt}, #{reporter}, #{reportSignDt},
+        #{startDt}, #{endDt}, now(), now(), 1)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update t_dynamic_bp_report
+        <set>
+            <if test="memberId != null">
+                member_id = #{memberId},
+            </if>
+            <if test="operationId != null">
+                operation_id = #{operationId},
+            </if>
+            <if test="details != null and details != ''">
+                details = #{details},
+            </if>
+            <if test="sender != null and sender != ''">
+                sender = #{sender},
+            </if>
+            <if test="senderSignDt != null">
+                sender_sign_dt = #{senderSignDt},
+            </if>
+            <if test="reporter != null and reporter != ''">
+                reporter = #{reporter},
+            </if>
+            <if test="reportSignDt != null">
+                report_sign_dt = #{reportSignDt},
+            </if>
+            <if test="startDt != null">
+                start_dt = #{startDt},
+            </if>
+            <if test="endDt != null">
+                end_dt = #{endDt},
+            </if>
+            <if test="insertDt != null">
+                insert_dt = #{insertDt},
+            </if>
+            <if test="modifyDt != null">
+                modify_dt = #{modifyDt},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid},
+            </if>
+        </set>
+        where sid = #{sid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from t_dynamic_bp_report where sid = #{sid}
+    </delete>
+
+</mapper>
+
