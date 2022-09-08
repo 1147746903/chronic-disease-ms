@@ -45,6 +45,7 @@ gradle-app.setting
 /out/
 # Project exclude paths
 /.gradle/
+/gradle/
 /build/
 /build/classes/java/main/
 /build/classes/java/test/
