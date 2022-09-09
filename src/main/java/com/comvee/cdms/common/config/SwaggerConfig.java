@@ -13,7 +13,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 // http://localhost:9094/swagger-ui.html
-// http://localhost:9094/swagger-ui.html/doc.html
+// http://localhost:9094/doc.html
 @Configuration
 @EnableSwagger2 //添加swagger启用注解
 public class SwaggerConfig {
